@@ -1,0 +1,955 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="mini_pupper_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.0179797886471505 0.000523751291830455 0.0337636865660743"
+        rpy="0 0 0" />
+      <mass
+        value="0.190607936684523" />
+      <inertia
+        ixx="5.98534965652283E-05"
+        ixy="-1.32131255674723E-06"
+        ixz="-2.49661503676612E-06"
+        iyy="0.000165058784534265"
+        iyz="-4.27946665608711E-07"
+        izz="0.000197148646245224" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="lf1">
+    <inertial>
+      <origin
+        xyz="0.00771232718959003 0.0067186396063106 0.00674558698958273"
+        rpy="0 0 0" />
+      <mass
+        value="0.0265603147825122" />
+      <inertia
+        ixx="2.98631759151123E-06"
+        ixy="8.18377795906292E-08"
+        ixz="2.09602688634287E-08"
+        iyy="4.45634218251359E-06"
+        iyz="5.29427550390622E-08"
+        izz="3.77141996032552E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lf1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lf1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_lf1"
+    type="revolute">
+    <origin
+      xyz="0.06014 0.0235 0.0171"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="lf1" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lf2">
+    <inertial>
+      <origin
+        xyz="-0.00130209395151273 0.00515778853953289 -0.0176172918469175"
+        rpy="0 0 0" />
+      <mass
+        value="0.00429044082169227" />
+      <inertia
+        ixx="1.19156337300429E-06"
+        ixy="5.95712078537813E-09"
+        ixz="2.71831924772476E-08"
+        iyy="1.30259921175163E-06"
+        iyz="-2.34156643863565E-08"
+        izz="1.33345472554125E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lf2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lf2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lf1_lf2"
+    type="revolute">
+    <origin
+      xyz="-4E-05 0.0197 0"
+      rpy="0 0 0" />
+    <parent
+      link="lf1" />
+    <child
+      link="lf2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lf3">
+    <inertial>
+      <origin
+        xyz="0.00031909108086052 -1.31838984174237E-16 -0.0222374422607855"
+        rpy="0 0 0" />
+      <mass
+        value="0.000584099405055383" />
+      <inertia
+        ixx="3.16504102490712E-07"
+        ixy="8.81221968872311E-24"
+        ixz="6.63472586888225E-09"
+        iyy="3.18313787222592E-07"
+        iyz="-3.08209813370603E-22"
+        izz="2.02872204154094E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lf3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lf3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lf2_lf3"
+    type="revolute">
+    <origin
+      xyz="0 0.00475 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="lf2" />
+    <child
+      link="lf3" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lffoot">
+    <inertial>
+      <origin
+        xyz="0.000424477269554246 -1.81550998540336E-09 0.000743181675761886"
+        rpy="0 0 0" />
+      <mass
+        value="0.00125666639937702" />
+      <inertia
+        ixx="3.88852646564769E-08"
+        ixy="3.60583012428822E-14"
+        ixz="-2.99983098577409E-09"
+        iyy="5.81684749230997E-08"
+        iyz="1.31966996415902E-14"
+        izz="2.7893076025217E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lffoot.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lffoot.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lf3_lffoot"
+    type="fixed">
+    <origin
+      xyz="0 -4.9999999999939E-05 -0.056"
+      rpy="0 0 0" />
+    <parent
+      link="lf3" />
+    <child
+      link="lffoot" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="rf1">
+    <inertial>
+      <origin
+        xyz="0.00771232575275395 -0.0067186385947726 0.00674558683665216"
+        rpy="0 0 0" />
+      <mass
+        value="0.02656031490036" />
+      <inertia
+        ixx="2.9863183926807E-06"
+        ixy="-8.1837999503256E-08"
+        ixz="2.09594613488875E-08"
+        iyy="4.45634250173996E-06"
+        iyz="-5.29427714762225E-08"
+        izz="3.77141960626367E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rf1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rf1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_rf1"
+    type="revolute">
+    <origin
+      xyz="0.06014 -0.0235 0.0171"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="rf1" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="rf2">
+    <inertial>
+      <origin
+        xyz="-0.0013244765887904 -0.0051343619270348 -0.0176363794588138"
+        rpy="0 0 0" />
+      <mass
+        value="0.0042620311539195" />
+      <inertia
+        ixx="1.18859033754863E-06"
+        ixy="-6.03483475239074E-09"
+        ixz="2.85227031528059E-08"
+        iyy="1.29842934045622E-06"
+        iyz="2.33093029324045E-08"
+        izz="1.32101412456612E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rf2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rf2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rf1_rf2"
+    type="revolute">
+    <origin
+      xyz="-4E-05 -0.0197 0"
+      rpy="0 0 0" />
+    <parent
+      link="rf1" />
+    <child
+      link="rf2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="rf3">
+    <inertial>
+      <origin
+        xyz="0.000319091080860409 2.15105711021124E-16 -0.0222374422607852"
+        rpy="0 0 0" />
+      <mass
+        value="0.000584099405055381" />
+      <inertia
+        ixx="3.1650410249071E-07"
+        ixy="6.13187713496028E-24"
+        ixz="6.63472586888213E-09"
+        iyy="3.18313787222591E-07"
+        iyz="-5.33564208969727E-23"
+        izz="2.02872204154092E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rf3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rf3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rf2_rf3"
+    type="revolute">
+    <origin
+      xyz="0 -0.00475 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="rf2" />
+    <child
+      link="rf3" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="rffoot">
+    <inertial>
+      <origin
+        xyz="0.000424477269554552 4.99981844905087E-05 0.000743181675762233"
+        rpy="0 0 0" />
+      <mass
+        value="0.00125666639937702" />
+      <inertia
+        ixx="3.88852646564774E-08"
+        ixy="3.6058301279799E-14"
+        ixz="-2.99983098577438E-09"
+        iyy="5.81684749231005E-08"
+        iyz="1.31966996988182E-14"
+        izz="2.78930760252171E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rffoot.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rffoot.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rf3_rffoot"
+    type="fixed">
+    <origin
+      xyz="0 0 -0.056"
+      rpy="0 0 0" />
+    <parent
+      link="rf3" />
+    <child
+      link="rffoot" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="lb1">
+    <inertial>
+      <origin
+        xyz="0.00754252469364387 0.0066551192742683 0.00675967123128055"
+        rpy="0 0 0" />
+      <mass
+        value="0.0267711576459679" />
+      <inertia
+        ixx="3.01808412704522E-06"
+        ixy="7.57299449291852E-08"
+        ixz="-4.75534179340125E-08"
+        iyy="4.51849015725216E-06"
+        iyz="6.77511772715865E-08"
+        izz="3.82147345364853E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lb1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lb1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_lb1"
+    type="revolute">
+    <origin
+      xyz="-0.05886 0.0235 0.0171"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="lb1" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lb2">
+    <inertial>
+      <origin
+        xyz="-0.00130209340420589 0.00515778658087025 -0.0176172914629183"
+        rpy="0 0 0" />
+      <mass
+        value="0.00429044082420202" />
+      <inertia
+        ixx="1.19156337141332E-06"
+        ixy="5.95711454875407E-09"
+        ixz="2.7183194763861E-08"
+        iyy="1.30259921175235E-06"
+        iyz="-2.34156585372615E-08"
+        izz="1.33345474149573E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lb2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lb2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lb1_lb2"
+    type="revolute">
+    <origin
+      xyz="-4E-05 0.0197 0"
+      rpy="0 0 0" />
+    <parent
+      link="lb1" />
+    <child
+      link="lb2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lb3">
+    <inertial>
+      <origin
+        xyz="0.000319091080860257 -6.38378239159465E-16 -0.0222374422607851"
+        rpy="0 0 0" />
+      <mass
+        value="0.000584099405055381" />
+      <inertia
+        ixx="3.16504102490711E-07"
+        ixy="-8.46740476640062E-24"
+        ixz="6.63472586888202E-09"
+        iyy="3.18313787222592E-07"
+        iyz="4.97963325558077E-22"
+        izz="2.02872204154098E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lb3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lb3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lb2_lb3"
+    type="revolute">
+    <origin
+      xyz="0 0.00475 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="lb2" />
+    <child
+      link="lb3" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lbfoot">
+    <inertial>
+      <origin
+        xyz="0.000424477269554052 -5.00018155106322E-05 0.000743181675762469"
+        rpy="0 0 0" />
+      <mass
+        value="0.00125666639937702" />
+      <inertia
+        ixx="3.8885264656477E-08"
+        ixy="3.60583012800905E-14"
+        ixz="-2.99983098577426E-09"
+        iyy="5.81684749230999E-08"
+        iyz="1.31966997325943E-14"
+        izz="2.7893076025217E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lbfoot.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/lbfoot.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lb3_lbfoot"
+    type="fixed">
+    <origin
+      xyz="0 0 -0.056"
+      rpy="0 0 0" />
+    <parent
+      link="lb3" />
+    <child
+      link="lbfoot" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="rb1">
+    <inertial>
+      <origin
+        xyz="0.00765397554621387 -0.00661305690843236 0.00675282926715143"
+        rpy="0 0 0" />
+      <mass
+        value="0.0269414287477286" />
+      <inertia
+        ixx="3.0242395846017E-06"
+        ixy="-7.57300780698843E-08"
+        ixz="-4.73345285992556E-08"
+        iyy="4.52430597875725E-06"
+        iyz="-6.77514596150967E-08"
+        izz="3.82205692425116E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rb1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rb1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_rb1"
+    type="revolute">
+    <origin
+      xyz="-0.05886 -0.0235 0.0171"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="rb1" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="rb2">
+    <inertial>
+      <origin
+        xyz="-0.00132447903764232 -0.00513436179673909 -0.0176363800113225"
+        rpy="0 0 0" />
+      <mass
+        value="0.00426203115074646" />
+      <inertia
+        ixx="1.18859034114098E-06"
+        ixy="-6.03483283970166E-09"
+        ixz="2.85227015599491E-08"
+        iyy="1.29842934045501E-06"
+        iyz="2.33092712821301E-08"
+        izz="1.32101408863648E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rb2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rb2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rb1_rb2"
+    type="revolute">
+    <origin
+      xyz="-4E-05 -0.0197 0"
+      rpy="0 0 0" />
+    <parent
+      link="rb1" />
+    <child
+      link="rb2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="rb3">
+    <inertial>
+      <origin
+        xyz="0.000319091080860194 2.56739074444567E-16 -0.0222374422607856"
+        rpy="0 0 0" />
+      <mass
+        value="0.000584099405055381" />
+      <inertia
+        ixx="3.16504102490711E-07"
+        ixy="-1.34548321353187E-23"
+        ixz="6.63472586888246E-09"
+        iyy="3.18313787222591E-07"
+        iyz="8.19369972508618E-22"
+        izz="2.02872204154097E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rb3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rb3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rb2_rb3"
+    type="revolute">
+    <origin
+      xyz="0 -0.00475 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="rb2" />
+    <child
+      link="rb3" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="rbfoot">
+    <inertial>
+      <origin
+        xyz="0.000424477269553865 4.99981844908834E-05 0.000743181675761845"
+        rpy="0 0 0" />
+      <mass
+        value="0.00125666639937702" />
+      <inertia
+        ixx="3.88852646564774E-08"
+        ixy="3.60583012720433E-14"
+        ixz="-2.99983098577433E-09"
+        iyy="5.81684749231004E-08"
+        iyz="1.31966997366722E-14"
+        izz="2.78930760252172E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rbfoot.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini_pupper_description/meshes/rbfoot.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="rb3_rbfoot"
+    type="fixed">
+    <origin
+      xyz="0 0 -0.056"
+      rpy="0 0 0" />
+    <parent
+      link="rb3" />
+    <child
+      link="rbfoot" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>
