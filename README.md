@@ -13,10 +13,10 @@ Tested on
 ## 1.Installation Guide
 We recommend you explore Mini Pupper with ROS network, make sure your PC and Mini Pupper have connected to the same WiFi.
 
-### 1.0 PC Setup
+### 1.1 PC Setup
 **The PC Setup corresponds to the Remote PC (your desktop or laptop PC) which will control Mini Pupper. Do not apply this instruction to your Mini Pupper.**
 
-#### 1.0.0 Cartographer ROS packages installation
+#### 1.1.1 Cartographer ROS packages installation
 Our SLAM and Navigation functions are based on [cartographer_ros](https://google-cartographer-ros.readthedocs.io/en/latest/compilation.html). 
 ```
 cd ~
@@ -35,57 +35,7 @@ sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
 catkin_make_isolated --install --use-ninja
 source install_isolated/setup.bash
 ```
-#### 1.0.1 Mini Pupper ROS packages installation
-
-```
-cd <your_ws>/src
-git clone --recursive https://github.com/mangdangroboticsclub/minipupper_ros
-cd ..
-rosdep install --from-paths src --ignore-src -r -y
-catkin_make
-source <your_ws>/devel/setup.bash
-```
-
-#### 1.0.2 Network Setup
-Connect your PC and Mini Pupper to the same WiFi and find the assigned IP address with the command below.
-```
-ifconfig
-```
-Open the file and update the ROS IP settings with the command below.
-```
-sudo gedit ~/.bashrc
-```
-For example
-
-![ROS_IP](imgs/ROS_IP_1.png)
-
-### 1.1 Mini Pupper Setup
-**The Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.**
-
-#### 1.1.0 Hardware Dependencies
-You should first install the dependencies of the servos, battery moniter and display screen. See [minipupper_ros_bsp](https://github.com/mangdangroboticsclub/minipupper_ros_bsp).
-#### 1.1.1 PS4 Joystick interface installation
-The PS4 Joystick interface in ROS is based on [ps4-ros](https://github.com/solbach/ps4-ros) project. 
-```
-pip install ds4drv
-sudo apt install ros-noetic-joy
-sudo wget https://raw.githubusercontent.com/chrippa/ds4drv/master/udev/50-ds4drv.rules -O /etc/udev/rules.d/50-ds4drv.rules
-sudo udevadm control --reload-rules
-sudo udevadm trigger
-```
-Then go into pairing mode with PS4: Playstation button + share button for ~5 sec.
-Run $ds4drv from command line until PS4 Joystick is connected.
-```
-ds4drv
-```
-This will output something like "Created devices /dev/input/jsX".
-Then give the permissions to the device
-```
-sudo chmod a+rw /dev/input/jsX
-```
-
 #### 1.1.2 Mini Pupper ROS packages installation
-**Then you can install the ROS packages for Mini Pupper. This should be installed both on Mini Pupper and your PC.**
 
 ```
 cd <your_ws>/src
@@ -107,18 +57,68 @@ sudo gedit ~/.bashrc
 ```
 For example
 
+![ROS_IP](imgs/ROS_IP_1.png)
+
+### 1.2 Mini Pupper Setup
+**The Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.**
+
+#### 1.2.1 Hardware Dependencies
+You should first install the dependencies of the servos, battery moniter and display screen. See [minipupper_ros_bsp](https://github.com/mangdangroboticsclub/minipupper_ros_bsp).
+#### 1.2.2 PS4 Joystick interface installation
+The PS4 Joystick interface in ROS is based on [ps4-ros](https://github.com/solbach/ps4-ros) project. 
+```
+pip install ds4drv
+sudo apt install ros-noetic-joy
+sudo wget https://raw.githubusercontent.com/chrippa/ds4drv/master/udev/50-ds4drv.rules -O /etc/udev/rules.d/50-ds4drv.rules
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+Then go into pairing mode with PS4: Playstation button + share button for ~5 sec.
+Run $ds4drv from command line until PS4 Joystick is connected.
+```
+ds4drv
+```
+This will output something like "Created devices /dev/input/jsX".
+Then give the permissions to the device
+```
+sudo chmod a+rw /dev/input/jsX
+```
+
+#### 1.2.3 Mini Pupper ROS packages installation
+**Then you can install the ROS packages for Mini Pupper. This should be installed both on Mini Pupper and your PC.**
+
+```
+cd <your_ws>/src
+git clone --recursive https://github.com/mangdangroboticsclub/minipupper_ros
+cd ..
+rosdep install --from-paths src --ignore-src -r -y
+catkin_make
+source <your_ws>/devel/setup.bash
+```
+
+#### 1.2.4 Network Setup
+Connect your PC and Mini Pupper to the same WiFi and find the assigned IP address with the command below.
+```
+ifconfig
+```
+Open the file and update the ROS IP settings with the command below.
+```
+sudo gedit ~/.bashrc
+```
+For example
+
 ![ROS_IP](imgs/ROS_IP_2.png)
 
 
 ## 2.Quick Start Guide
-### 2.0 Calibration
+### 2.1 Calibration
 You should first calibrate the angles of every servo. Just input the angles.
 ```
 roslaunch servo_interface calibrate.launch
 ```
 The hip and shank should be horizontal, and the ham should be vertical.
-### 2.1 Walking
-#### 2.1.0 Run the base driver
+### 2.2 Walking
+#### 2.2.1 Run the base driver
 **You should run this command on Mini Pupper**
 ```
 roslaunch mini_pupper bringup.launch
@@ -130,21 +130,21 @@ Then you can go into pairing mode with PS4: Playstation button + share button fo
 * If you are pressing R2, then the right lever will control the angle of pitch and yaw axis.
 * If you are press L2, then the robot will go to the default state. 
 
-#### 2.1.1 Control with your PC
+#### 2.2.2 Control with your PC
 **You should run this command on PC.**
 If you didn't install the dependencies of PS4 Joystick and decided to use keyboard to control the robot, then you can run this command on your PC
 ```
 roslaunch champ_teleop teleop.launch
 ```
 
-### 2.2 SLAM
-#### 2.2.0 Run the base driver
+### 2.3 SLAM
+#### 2.3.1 Run the base driver
 **You should run this command on Mini Pupper**
 ```
 roslaunch mini_pupper bringup.launch
 ```
 
-#### 2.2.1 Run Cartographer
+#### 2.3.2 Run Cartographer
 **You should run this command on PC**
 ```
 roslaunch mini_pupper slam.launch
@@ -157,8 +157,8 @@ rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem=${HOME}/m
 ```
 
 
-### 2.3 Navigation
-#### 2.3.0 Change the map file
+### 2.4 Navigation
+#### 2.4.1 Change the map file
 Before running navigation, you should first change the launch file with the map you created. 
 ```
 roscd mini_pupper/launch
@@ -167,13 +167,13 @@ sudo gedit navigate.launch
 Then change arg of the map_file and pbstream_file.
 ![map_file](imgs/map_file.png)
 ![pbstream_file](imgs/pbstream_file.png)
-#### 2.3.1 Run the base driver
+#### 2.4.2 Run the base driver
 **You should run this command on Mini Pupper**
 ```
 roslaunch mini_pupper bringup.launch
 ```
 
-#### 2.3.2 Run Cartographer(for localization) and Move_Base
+#### 2.4.3 Run Cartographer(for localization) and Move_Base
 **You should run this command on PC**
 
 
