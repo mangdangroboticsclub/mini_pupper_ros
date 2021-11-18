@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(mini_pupper_config)
+project(mini_pupper)
 
 find_package(catkin REQUIRED COMPONENTS)
 
