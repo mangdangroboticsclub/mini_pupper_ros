@@ -218,7 +218,3 @@ Also, if you want to do some CV projects, you can add a usb camera on Mini Puppe
 ```sh
 rosrun image_transport republish compressed in:=(in_base_topic) raw out:=(out_base_topic)
 ```
-<<<<<<< HEAD
-
-=======
->>>>>>> 14c7d0298a3e300e632e0b2687f501f21ab14ed7
