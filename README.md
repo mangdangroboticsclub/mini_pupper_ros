@@ -72,6 +72,7 @@ sudo apt install ros-noetic-joy
 sudo wget https://raw.githubusercontent.com/chrippa/ds4drv/master/udev/50-ds4drv.rules -O /etc/udev/rules.d/50-ds4drv.rules
 sudo udevadm control --reload-rules
 sudo udevadm trigger
+sudo reboot
 ```
 Then go into pairing mode with PS4: Playstation button + share button for ~5 sec.
 Run $ds4drv from command line until PS4 Joystick is connected.
