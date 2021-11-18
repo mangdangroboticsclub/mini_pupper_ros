@@ -136,12 +136,23 @@ The hip and shank should be horizontal, and the ham should be vertical.
 ```sh
 roslaunch mini_pupper bringup.launch
 ```
+There are two ways to control Mini Pupper:
+
+1.using keyboard
+```sh
+roslaunch champ_teleop teleop.launch
+```
+
+2.using PS4 joystick
+```sh
+roslaunch ps4_interface ps4_interface.launch
+```
 Then you can go into pairing mode with PS4: Playstation button + share button for ~5 sec.
 * The left lever controls the linear velocity of x and y axis.
 * The right lever controls the angular velocity of z axis.
 * The arrow key controls the standing height and the angle of roll axis.
 * If you are pressing R2, then the right lever will control the angle of pitch and yaw axis.
-* If you are press L2, then the robot will go to the default state. 
+* If you are pressing L2, then the robot will go to the default state. 
 
 #### 2.2.2 Control with your PC
 **You should run this command on PC.**
