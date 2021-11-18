@@ -216,10 +216,3 @@ Also, if you want to do some CV projects, you can add a usb camera on Mini Puppe
 ```sh
 rosrun image_transport republish compressed in:=(in_base_topic) raw out:=(out_base_topic)
 ```
-
-## 4.Develop on your own
-You can try to develop the quadruped controller on your own by
-```sh
-roslaunch mini_pupper minimal.launch
-```
-Then you can control the servos by publishing specific topics.
