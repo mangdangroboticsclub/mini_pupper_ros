@@ -2,8 +2,8 @@
     <arg name="robot_name"         default="/"/> <!-- Change this for namespacing. -->
     <arg name="rviz"               default="false"/> <!-- Set to true to run rviz in parallel. -->
     <arg name="lite"               default="false" />  <!-- Set to true if you're using CHAMP lite version. Only useful for microcontrollers. -->
-    <arg name="ros_control_file"   default="$(find mini_pupper_config)/config/ros_control/ros_control.yaml" /> <!-- Path to ROS Control configurations. Do not touch. -->
-    <arg name="gazebo_world"       default="$(find mini_pupper_config)/worlds/outdoor.world" /> <!-- Path to Gazebo world you want to load. -->
+    <arg name="ros_control_file"   default="$(find mini_pupper)/config/ros_control/ros_control.yaml" /> <!-- Path to ROS Control configurations. Do not touch. -->
+    <arg name="gazebo_world"       default="$(find mini_pupper)/worlds/outdoor.world" /> <!-- Path to Gazebo world you want to load. -->
     <arg name="gui"                default="true"/>
     <arg name="world_init_x"       default="0.0" /> <!-- X Initial position of the robot in Gazebo World -->
     <arg name="world_init_y"       default="0.0" /> <!-- Y Initial position of the robot in Gazebo World -->
@@ -11,7 +11,7 @@
 
     <param name="use_sim_time" value="true" />
 
-    <include file="$(find mini_pupper_config)/launch/bringup.launch">
+    <include file="$(find mini_pupper)/launch/bringup.launch">
         <arg name="robot_name"             value="$(arg robot_name)"/>
         <arg name="gazebo"                 value="true"/>
         <arg name="lite"                   value="$(arg lite)"/>

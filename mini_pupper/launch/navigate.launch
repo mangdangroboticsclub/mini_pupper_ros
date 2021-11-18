@@ -1,23 +1,23 @@
 <launch>
     <param name="/use_sim_time" value="false" />
     <arg name="robot_name" default="/"/>
-    <arg name="rviz"       default="false"/>
+    <arg name="rviz"       default="true"/>
 
     <arg if="$(eval arg('robot_name') == '/')"  name="frame_prefix" value="" />
     <arg unless="$(eval arg('robot_name') == '/')" name="frame_prefix" value="$(arg robot_name)/" />
     
     <group ns="$(arg robot_name)">
         <!-- Map server -->
-        <arg name="map_file" default="$(find mini_pupper_config)/maps/map.yaml"/>
+        <arg name="map_file" default="$(find mini_pupper)/maps/map.yaml"/>
         <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)" >
             <param name="frame_id" value="$(arg frame_prefix)map" />
         </node>
 
         <!-- Localization -->
-        <arg name="pbstream_file" default="$(find mini_pupper_config)/maps/map.pbstream"/>
+        <arg name="pbstream_file" default="$(find mini_pupper)/maps/map.pbstream"/>
         <node name="cartographer_node" pkg="cartographer_ros"
             type="cartographer_node" args="
-            -configuration_directory $(find mini_pupper_config)/config/cartographer
+            -configuration_directory $(find mini_pupper)/config/cartographer
             -configuration_basename nav.lua
             -load_state_filename $(arg pbstream_file)"
             output="screen">
@@ -27,7 +27,7 @@
             type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
 
         <!-- Calls navigation stack -->
-        <include file="$(find mini_pupper_config)/launch/include/move_base.launch">
+        <include file="$(find mini_pupper)/launch/include/move_base.launch">
             <arg name="frame_prefix" value="$(arg frame_prefix)"/>
             <arg name="robot_name"   value="$(arg robot_name)"/>
         </include>

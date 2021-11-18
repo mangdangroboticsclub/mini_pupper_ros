@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from geometry_msgs.msg import Pose
 import math
@@ -7,7 +7,7 @@ pose = Pose()
 
 def callback(data):
     global pose
-    d = 0.025
+    d = 0.25
     pub_pose = rospy.Publisher('body_pose', Pose, queue_size=10)
     rate = rospy.Rate(200)
     if(data.orientation.w!=pose.orientation.w):
