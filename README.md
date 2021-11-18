@@ -55,9 +55,15 @@ Open the file and update the ROS IP settings with the command below.
 ```
 sudo gedit ~/.bashrc
 ```
-For example
+Then add your Master and hostname config.
 
 ![ROS_IP](imgs/ROS_IP_1.png)
+for example
+```
+export ROS_MASTER_URI=http://192.168.1.106:11311
+export ROS_HOSTNAME=192.168.1.106
+```
+
 
 ### 1.2 Mini Pupper Setup
 **The Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.**
@@ -106,10 +112,14 @@ Open the file and update the ROS IP settings with the command below.
 ```
 sudo gedit ~/.bashrc
 ```
-For example
+Then add your Master and hostname config.
 
 ![ROS_IP](imgs/ROS_IP_2.png)
-
+For example
+```
+export ROS_MASTER_URI=http://192.168.1.106:11311
+export ROS_HOSTNAME=192.168.1.107
+```
 
 ## 2.Quick Start Guide
 ### 2.1 Calibration
