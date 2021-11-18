@@ -141,12 +141,14 @@ roslaunch mini_pupper bringup.launch
 There are two options to control Mini Pupper:
 
 1.using keyboard
+
 **It's recommended to run this command on PC.**
 ```sh
 roslaunch champ_teleop teleop.launch
 ```
 
 2.using PS4 joystick
+
 **It's recommended to run this command on Mini Pupper.**
 ```sh
 roslaunch ps4_interface ps4_interface.launch
