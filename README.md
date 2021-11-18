@@ -151,7 +151,7 @@ roslaunch champ_teleop teleop.launch
 
 **It's recommended to run this command on Mini Pupper.**
 
-**Don't run this command while using move_base because when you are doing nothing with the joystick, it would still set all the values in cmd_vel to zero.**
+**Don't run this command while using move_base because when you are doing nothing with the joystick, it would set all the values in cmd_vel to zero.**
 ```sh
 roslaunch ps4_interface ps4_interface.launch
 ```
