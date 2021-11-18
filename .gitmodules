@@ -4,3 +4,6 @@
 [submodule "champ_teleop"]
 	path = champ_teleop
 	url = https://github.com/chvmp/champ_teleop.git
+[submodule "yocs_velocity_smoother"]
+	path = yocs_velocity_smoother
+	url = https://github.com/chvmp/yocs_velocity_smoother.git
