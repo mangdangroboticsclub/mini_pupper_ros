@@ -58,8 +58,9 @@ sudo gedit ~/.bashrc
 Then add your Master and hostname config.
 
 ![ROS_IP](imgs/ROS_IP_1.png)
-for example
-```
+
+For example
+```sh
 export ROS_MASTER_URI=http://192.168.1.106:11311
 export ROS_HOSTNAME=192.168.1.106
 ```
@@ -115,8 +116,9 @@ sudo gedit ~/.bashrc
 Then add your Master and hostname config.
 
 ![ROS_IP](imgs/ROS_IP_2.png)
+
 For example
-```
+```sh
 export ROS_MASTER_URI=http://192.168.1.106:11311
 export ROS_HOSTNAME=192.168.1.107
 ```
