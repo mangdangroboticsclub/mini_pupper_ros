@@ -1,0 +1,6 @@
+[submodule "champ"]
+	path = champ
+	url = https://github.com/chvmp/champ.git
+[submodule "champ_teleop"]
+	path = champ_teleop
+	url = https://github.com/chvmp/champ_teleop.git
