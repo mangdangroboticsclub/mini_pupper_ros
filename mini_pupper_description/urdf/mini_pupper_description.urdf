@@ -11,7 +11,7 @@
         xyz="0.0179797886471505 0.000523751291830455 0.0337636865660743"
         rpy="0 0 0" />
       <mass
-        value="0.190607936684523" />
+        value="0.2" />
       <inertia
         ixx="5.98534965652283E-05"
         ixy="-1.32131255674723E-06"
@@ -51,7 +51,7 @@
         xyz="0.00771232718959003 0.0067186396063106 0.00674558698958273"
         rpy="0 0 0" />
       <mass
-        value="0.0265603147825122" />
+        value="0.025" />
       <inertia
         ixx="2.98631759151123E-06"
         ixy="8.18377795906292E-08"
@@ -99,8 +99,9 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
+
   </joint>
   <link
     name="lf2">
@@ -109,7 +110,7 @@
         xyz="-0.00130209395151273 0.00515778853953289 -0.0176172918469175"
         rpy="0 0 0" />
       <mass
-        value="0.00429044082169227" />
+        value="0.025" />
       <inertia
         ixx="1.19156337300429E-06"
         ixy="5.95712078537813E-09"
@@ -157,8 +158,9 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
+
   </joint>
   <link
     name="lf3">
@@ -167,7 +169,7 @@
         xyz="0.00031909108086052 -1.31838984174237E-16 -0.0222374422607855"
         rpy="0 0 0" />
       <mass
-        value="0.000584099405055383" />
+        value="0.025" />
       <inertia
         ixx="3.16504102490712E-07"
         ixy="8.81221968872311E-24"
@@ -215,8 +217,9 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
+
   </joint>
   <link
     name="lffoot">
@@ -225,7 +228,7 @@
         xyz="0.000424477269554246 -1.81550998540336E-09 0.000743181675761886"
         rpy="0 0 0" />
       <mass
-        value="0.00125666639937702" />
+        value="0.025" />
       <inertia
         ixx="3.88852646564769E-08"
         ixy="3.60583012428822E-14"
@@ -257,6 +260,14 @@
           filename="package://mini_pupper_description/meshes/lffoot.STL" />
       </geometry>
     </collision>
+    <surface>
+      <friction>
+        <ode>
+          <mu>1.0</mu>
+          <mu2>1.0</mu2>       
+        </ode>
+      </friction>
+    </surface>
   </link>
   <joint
     name="lf3_lffoot"
@@ -278,7 +289,7 @@
         xyz="0.00771232575275395 -0.0067186385947726 0.00674558683665216"
         rpy="0 0 0" />
       <mass
-        value="0.02656031490036" />
+        value="0.025" />
       <inertia
         ixx="2.9863183926807E-06"
         ixy="-8.1837999503256E-08"
@@ -326,8 +337,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="rf2">
@@ -336,7 +347,7 @@
         xyz="-0.0013244765887904 -0.0051343619270348 -0.0176363794588138"
         rpy="0 0 0" />
       <mass
-        value="0.0042620311539195" />
+        value="0.025" />
       <inertia
         ixx="1.18859033754863E-06"
         ixy="-6.03483475239074E-09"
@@ -384,8 +395,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="rf3">
@@ -394,7 +405,7 @@
         xyz="0.000319091080860409 2.15105711021124E-16 -0.0222374422607852"
         rpy="0 0 0" />
       <mass
-        value="0.000584099405055381" />
+        value="0.025" />
       <inertia
         ixx="3.1650410249071E-07"
         ixy="6.13187713496028E-24"
@@ -442,8 +453,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="rffoot">
@@ -452,7 +463,7 @@
         xyz="0.000424477269554552 4.99981844905087E-05 0.000743181675762233"
         rpy="0 0 0" />
       <mass
-        value="0.00125666639937702" />
+        value="0.025" />
       <inertia
         ixx="3.88852646564774E-08"
         ixy="3.6058301279799E-14"
@@ -484,6 +495,14 @@
           filename="package://mini_pupper_description/meshes/rffoot.STL" />
       </geometry>
     </collision>
+    <surface>
+      <friction>
+        <ode>
+          <mu>1.0</mu>
+          <mu2>1.0</mu2>       
+        </ode>
+      </friction>
+    </surface>
   </link>
   <joint
     name="rf3_rffoot"
@@ -505,7 +524,7 @@
         xyz="0.00754252469364387 0.0066551192742683 0.00675967123128055"
         rpy="0 0 0" />
       <mass
-        value="0.0267711576459679" />
+        value="0.025" />
       <inertia
         ixx="3.01808412704522E-06"
         ixy="7.57299449291852E-08"
@@ -553,8 +572,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="lb2">
@@ -563,7 +582,7 @@
         xyz="-0.00130209340420589 0.00515778658087025 -0.0176172914629183"
         rpy="0 0 0" />
       <mass
-        value="0.00429044082420202" />
+        value="0.025" />
       <inertia
         ixx="1.19156337141332E-06"
         ixy="5.95711454875407E-09"
@@ -611,8 +630,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="lb3">
@@ -621,7 +640,7 @@
         xyz="0.000319091080860257 -6.38378239159465E-16 -0.0222374422607851"
         rpy="0 0 0" />
       <mass
-        value="0.000584099405055381" />
+        value="0.025" />
       <inertia
         ixx="3.16504102490711E-07"
         ixy="-8.46740476640062E-24"
@@ -669,8 +688,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="lbfoot">
@@ -679,7 +698,7 @@
         xyz="0.000424477269554052 -5.00018155106322E-05 0.000743181675762469"
         rpy="0 0 0" />
       <mass
-        value="0.00125666639937702" />
+        value="0.025" />
       <inertia
         ixx="3.8885264656477E-08"
         ixy="3.60583012800905E-14"
@@ -711,6 +730,14 @@
           filename="package://mini_pupper_description/meshes/lbfoot.STL" />
       </geometry>
     </collision>
+    <surface>
+      <friction>
+        <ode>
+          <mu>1.0</mu>
+          <mu2>1.0</mu2>       
+        </ode>
+      </friction>
+    </surface>
   </link>
   <joint
     name="lb3_lbfoot"
@@ -732,7 +759,7 @@
         xyz="0.00765397554621387 -0.00661305690843236 0.00675282926715143"
         rpy="0 0 0" />
       <mass
-        value="0.0269414287477286" />
+        value="0.025" />
       <inertia
         ixx="3.0242395846017E-06"
         ixy="-7.57300780698843E-08"
@@ -780,8 +807,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="rb2">
@@ -790,7 +817,7 @@
         xyz="-0.00132447903764232 -0.00513436179673909 -0.0176363800113225"
         rpy="0 0 0" />
       <mass
-        value="0.00426203115074646" />
+        value="0.025" />
       <inertia
         ixx="1.18859034114098E-06"
         ixy="-6.03483283970166E-09"
@@ -838,8 +865,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="rb3">
@@ -848,7 +875,7 @@
         xyz="0.000319091080860194 2.56739074444567E-16 -0.0222374422607856"
         rpy="0 0 0" />
       <mass
-        value="0.000584099405055381" />
+        value="0.025" />
       <inertia
         ixx="3.16504102490711E-07"
         ixy="-1.34548321353187E-23"
@@ -896,8 +923,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="0"
-      velocity="0" />
+      effort="2"
+      velocity="1" />
   </joint>
   <link
     name="rbfoot">
@@ -906,7 +933,7 @@
         xyz="0.000424477269553865 4.99981844908834E-05 0.000743181675761845"
         rpy="0 0 0" />
       <mass
-        value="0.00125666639937702" />
+        value="0.025" />
       <inertia
         ixx="3.88852646564774E-08"
         ixy="3.60583012720433E-14"
@@ -938,6 +965,14 @@
           filename="package://mini_pupper_description/meshes/rbfoot.STL" />
       </geometry>
     </collision>
+    <surface>
+      <friction>
+        <ode>
+          <mu>1.0</mu>
+          <mu2>1.0</mu2>       
+        </ode>
+      </friction>
+    </surface>
   </link>
   <joint
     name="rb3_rbfoot"
@@ -952,4 +987,218 @@
     <axis
       xyz="0 0 0" />
   </joint>
+
+  <transmission name="base_lf1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_lf1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_lf1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lf1_lf2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lf1_lf2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lf1_lf2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lf2_lf3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lf2_lf3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lf2_lf3_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="base_rf1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_rf1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_rf1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rf1_rf2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rf1_rf2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rf1_rf2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rf2_rf3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rf2_rf3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rf2_rf3_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="base_lb1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_lb1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_lb1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lb1_lb2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lb1_lb2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lb1_lb2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="lb2_lb3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lb2_lb3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="lb2_lb3_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="base_rb1_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_rb1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="base_rb1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rb1_rb2_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rb1_rb2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rb1_rb2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="rb2_rb3_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rb2_rb3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="rb2_rb3_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <!-- coloring Gazebo model -->
+  <gazebo reference="base_link">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lf1">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="lf2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lf3">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="lffoot">
+    <material>Gazebo/FlatBlack</material>
+    <kp>1000000.0</kp>    
+    <kd>1.0</kd>
+    <mu1>0.8</mu1>    
+    <mu2>0.8</mu2>  
+    <minDepth>0.001</minDepth>
+    <maxVel>0</maxVel>
+  </gazebo>
+  <gazebo reference="rf1">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="rf2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="rf3">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="rffoot">
+    <material>Gazebo/FlatBlack</material>
+    <kp>1000000.0</kp>    
+    <kd>1.0</kd>
+    <mu1>0.8</mu1>    
+    <mu2>0.8</mu2>  
+    <minDepth>0.001</minDepth>
+    <maxVel>0</maxVel>
+  </gazebo>
+  <gazebo reference="lb1">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="lb2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="lb3">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="lbfoot">
+    <material>Gazebo/FlatBlack</material>
+    <kp>1000000.0</kp>    
+    <kd>1.0</kd>
+    <mu1>0.8</mu1>    
+    <mu2>0.8</mu2>  
+    <minDepth>0.001</minDepth>
+    <maxVel>0</maxVel>
+  </gazebo>
+  <gazebo reference="rb1">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="rb2">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="rb3">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="rbfoot">
+    <material>Gazebo/FlatBlack</material>
+    <kp>1000000.0</kp>    
+    <kd>1.0</kd>
+    <mu1>0.8</mu1>    
+    <mu2>0.8</mu2>  
+    <minDepth>0.001</minDepth>
+    <maxVel>0</maxVel>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>base_link</bodyName>
+      <topicName>odom/ground_truth</topicName>
+      <gaussianNoise>0.01</gaussianNoise>
+      <frameName>world</frameName>
+      <xyzOffsets>0 0 0</xyzOffsets>
+      <rpyOffsets>0 0 0</rpyOffsets>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
 </robot>

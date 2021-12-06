@@ -20,15 +20,15 @@
           - rb2_rb3
 
       gains:
-        base_lf1 : {p: 180, d: 0.9, i: 20}
-        lf1_lf2 : {p: 180, d: 0.9, i: 20}
-        lf2_lf3 : {p: 180, d: 0.9, i: 20}
-        base_rf1 : {p: 180, d: 0.9, i: 20}
-        rf1_rf2 : {p: 180, d: 0.9, i: 20}
-        rf2_rf3 : {p: 180, d: 0.9, i: 20}
-        base_lb1 : {p: 180, d: 0.9, i: 20}
-        lb1_lb2 : {p: 180, d: 0.9, i: 20}
-        lb2_lb3 : {p: 180, d: 0.9, i: 20}
-        base_rb1 : {p: 180, d: 0.9, i: 20}
-        rb1_rb2 : {p: 180, d: 0.9, i: 20}
-        rb2_rb3 : {p: 180, d: 0.9, i: 20}
+        base_lf1 : {p: 5, d: 0, i: 1}
+        lf1_lf2 : {p: 5, d: 0, i: 1}
+        lf2_lf3 : {p: 5, d: 0, i: 1}
+        base_rf1 : {p: 5, d: 0, i: 1}
+        rf1_rf2 : {p: 5, d: 0, i: 1}
+        rf2_rf3 : {p: 5, d: 0, i: 1}
+        base_lb1 : {p: 5, d: 0, i: 1}
+        lb1_lb2 : {p: 5, d: 0, i: 1}
+        lb2_lb3 : {p: 5, d: 0, i: 1}
+        base_rb1 : {p: 5, d: 0, i: 1}
+        rb1_rb2 : {p: 5, d: 0, i: 1}
+        rb2_rb3 : {p: 5, d: 0, i: 1}
