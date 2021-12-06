@@ -40,10 +40,10 @@
         <arg name="close_loop_odom"        value="$(arg close_loop_odom)" />
     </include>
     
-    <!--rosparam file="$(find servo_interface)/config/calibration/calibration.yaml" command="load"/-->
-    <!--include file="$(find servo_interface)/launch/servo_interface.launch"/-->
+    <rosparam file="$(find servo_interface)/config/calibration/calibration.yaml" command="load"/>
+    <include file="$(find servo_interface)/launch/servo_interface.launch"/>
     <!--include file="$(find ps4_interface)/launch/ps4_interface.launch"/-->
-    <!--include file="$(find ldlidar)/launch/ld06.launch"/-->
+    <include file="$(find ldlidar)/launch/ld06.launch"/>
     
     <group if="$(arg hardware_connected)">
         <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_laser" args="0 0 0 0 0 0 $(arg frame_prefix)base_link $(arg frame_prefix)laser" />
