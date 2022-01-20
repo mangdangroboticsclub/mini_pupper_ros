@@ -1,4 +1,0 @@
-<launch>
-    <rosparam file="$(find servo_interface)/config/calibration/calibration.yaml" command="load"/>
-    <include file="$(find servo_interface)/launch/servo_interface.launch"/>
-</launch>
