@@ -52,20 +52,20 @@ def callback(data):
     rb3_position = (180/pi_value)*joint_positions[11]
 
     a1 = servo_configs[0]+rf1_position
-    a2 = servo_configs[1]-rf2_position+45
-    a3 = servo_configs[2]-90-rf2_position-rf3_position+45
+    a2 = servo_configs[1]-rf2_position
+    a3 = servo_configs[2]-90-rf2_position-rf3_position
 
     a4 = servo_configs[3]+lf1_position
-    a5 = servo_configs[4]+lf2_position-45
-    a6 = servo_configs[5]+90+lf2_position+lf3_position-45
+    a5 = servo_configs[4]+lf2_position
+    a6 = servo_configs[5]+90+lf2_position+lf3_position
 
     a7 = servo_configs[6]-rb1_position
-    a8 = servo_configs[7]-rb2_position+45
-    a9 = servo_configs[8]-90-rb2_position-rb3_position+45
+    a8 = servo_configs[7]-rb2_position
+    a9 = servo_configs[8]-90-rb2_position-rb3_position
 
     a10 = servo_configs[9]-lb1_position
-    a11 = servo_configs[10]+lb2_position-45
-    a12 = servo_configs[11]+90+lb2_position+lb3_position-45
+    a11 = servo_configs[10]+lb2_position
+    a12 = servo_configs[11]+90+lb2_position+lb3_position
     
     set_servo_angle(15,a1)
     set_servo_angle(14,a2)
