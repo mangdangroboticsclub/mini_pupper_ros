@@ -193,7 +193,7 @@ The first line should be
 ```yaml
 image: map.pgm
 ```
-Then, copy the map.pgm and map.yaml file you just saved to <your_ws>/src/minipupper_ros/mini_pupper/maps
+Then, copy map.pbstream, map.pgm and map.yaml files you just saved to <your_ws>/src/minipupper_ros/mini_pupper/maps
 
 ### 2.4 Navigation
 #### 2.4.1 Change the map file
