@@ -1,0 +1,5 @@
+<launch>
+
+  <node name="display_interface" pkg="display_interface" type="display_interface.py" args="LD06" output="screen" />
+    
+</launch>

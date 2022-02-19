@@ -1,0 +1,6 @@
+<launch>
+    <rosparam file="$(find servo_interface)/config/calibration/calibration.yaml" command="load"/>
+    <include file="$(find servo_interface)/launch/servo_interface.launch"/>
+    <include file="$(find ldlidar)/launch/ld06.launch"/>
+    <include file="$(find display_interface)/launch/display_interface.launch"/>
+</launch>
