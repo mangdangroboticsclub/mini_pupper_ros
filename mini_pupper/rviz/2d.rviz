@@ -3,9 +3,7 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /Submaps1
-        - /PointCloud21
+      Expanded: ~
       Splitter Ratio: 0.6006709933280945
     Tree Height: 719
   - Class: rviz/Selection
@@ -53,10 +51,92 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz/TF
-      Enabled: false
+      Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
+        base_footprint:
+          Value: true
+        base_link:
+          Value: true
+        camera_bottom_screw_frame:
+          Value: false
+        camera_color_frame:
+          Value: false
+        camera_color_optical_frame:
+          Value: false
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
+          Value: false
+        camera_infra1_frame:
+          Value: false
+        camera_infra1_optical_frame:
+          Value: false
+        camera_infra2_frame:
+          Value: false
+        camera_infra2_optical_frame:
+          Value: false
+        camera_link:
+          Value: false
+        imu_link:
+          Value: false
+        lb1:
+          Value: false
+        lb2:
+          Value: false
+        lb3:
+          Value: false
+        lbfoot:
+          Value: false
+        lf1:
+          Value: false
+        lf2:
+          Value: false
+        lf3:
+          Value: false
+        lffoot:
+          Value: false
+        lidar:
+          Value: false
+        lpb1:
+          Value: false
+        lpb2:
+          Value: false
+        lpf1:
+          Value: false
+        lpf2:
+          Value: false
+        map:
+          Value: false
+        odom:
+          Value: true
+        rb1:
+          Value: false
+        rb2:
+          Value: false
+        rb3:
+          Value: false
+        rbfoot:
+          Value: false
+        rf1:
+          Value: false
+        rf2:
+          Value: false
+        rf3:
+          Value: false
+        rffoot:
+          Value: false
+        rpb1:
+          Value: false
+        rpb2:
+          Value: false
+        rpf1:
+          Value: false
+        rpf2:
+          Value: false
+        yellow_plate:
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -64,164 +144,68 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        {}
-      Update Interval: 0
-      Value: false
-    - Alpha: 1
-      Class: rviz/RobotModel
-      Collision Enabled: false
-      Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lb1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lb2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lb3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lbfoot:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lf1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lf2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lf3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lffoot:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lidar:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lpb1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lpb2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lpf1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lpf2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rb1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rb2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rb3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rbfoot:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rf1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rf2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rf3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rffoot:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rpb1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rpb2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rpf1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        rpf2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        yellow_plate:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Name: RobotModel
-      Robot Description: robot_description
-      TF Prefix: ""
+        map:
+          odom:
+            base_footprint:
+              base_link:
+                camera_bottom_screw_frame:
+                  camera_link:
+                    camera_color_frame:
+                      camera_color_optical_frame:
+                        {}
+                    camera_depth_frame:
+                      camera_depth_optical_frame:
+                        {}
+                    camera_infra1_frame:
+                      camera_infra1_optical_frame:
+                        {}
+                    camera_infra2_frame:
+                      camera_infra2_optical_frame:
+                        {}
+                imu_link:
+                  {}
+                lb1:
+                  lb2:
+                    lb3:
+                      lbfoot:
+                        {}
+                    lpb2:
+                      {}
+                  lpb1:
+                    {}
+                lf1:
+                  lf2:
+                    lf3:
+                      lffoot:
+                        {}
+                    lpf2:
+                      {}
+                  lpf1:
+                    {}
+                lidar:
+                  {}
+                rb1:
+                  rb2:
+                    rb3:
+                      rbfoot:
+                        {}
+                    rpb2:
+                      {}
+                  rpb1:
+                    {}
+                rf1:
+                  rf2:
+                    rf3:
+                      rffoot:
+                        {}
+                    rpf2:
+                      {}
+                  rpf1:
+                    {}
+                yellow_plate:
+                  {}
       Update Interval: 0
       Value: true
-      Visual Enabled: true
     - Class: Submaps
       Enabled: true
       Fade-out distance: 1
@@ -322,7 +306,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 5.277319431304932
+      Distance: 16.527223587036133
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -338,9 +322,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.46539849042892456
+      Pitch: 0.8403981328010559
       Target Frame: <Fixed Frame>
-      Yaw: 1.0203980207443237
+      Yaw: 2.6604042053222656
     Saved: ~
 Window Geometry:
   Displays:
