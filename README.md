@@ -2,7 +2,7 @@
 
 ROS packages for Mini Pupper.
 
-![Mini Pupper CC Max Morse](imgs/MiniPupper.png)
+![Mini Pupper CC Max Morse](imgs/1.jpg)
 
 Mini Pupper is an open source dog-shaped 12-DOF quadruped robot,supporting ROS (Robot Operating System). With ROS, you can explore the SLAM and Navigation functions with Mini Pupper. The controller of Mini Pupper's ROS packages is based on [champ](https://github.com/chvmp/champ) project, and we made some changes to the SLAM and Navigation functions.
 
