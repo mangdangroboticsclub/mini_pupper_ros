@@ -135,7 +135,7 @@ Through this script, you can calibrate the angle of every servo in one turn. Jus
 roslaunch servo_interface calibrate.launch
 ```
 Make sure Mini Pupper looks like this after calibrating.
-[!calibrtaion](imgs/calibration.jpg)
+![calibrtaion](imgs/calibration.jpg)
 ### 2.2 Walking
 #### 2.2.1 Run the base driver
 **You should run this command on Mini Pupper**
