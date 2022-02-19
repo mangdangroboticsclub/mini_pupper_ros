@@ -243,13 +243,13 @@ You can follow these commands to try this demo(make sure you have connected OAK-
 
 ```sh
 # Terminal 1
-roslaunch minipupper bringup.launch
+roslaunch mini_pupper bringup.launch
  
 # Terminal 2
 roslaunch depthai_examples mobile_publisher.launch
  
 # Terminal 3
-rosrun minipupper_detect oak_detect.py
+rosrun mini_pupper_detect oak_detect.py
 ```
 </br>
 
