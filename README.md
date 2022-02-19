@@ -4,7 +4,7 @@ ROS packages for Mini Pupper.
 
 ![Mini Pupper CC Max Morse](imgs/1.jpg)
 
-Mini Pupper is an open source dog-shaped 12-DOF quadruped robot,supporting ROS (Robot Operating System). With ROS, you can explore the SLAM and Navigation functions with Mini Pupper. The controller of Mini Pupper's ROS packages is based on [champ](https://github.com/chvmp/champ) project, and we made some changes to the SLAM and Navigation functions.
+Mini Pupper is an open source dog-shaped 12-DOF quadruped robot,supporting ROS (Robot Operating System). With ROS, you can explore SLAM and Navigation functions with Mini Pupper. The controller of Mini Pupper's ROS packages is based on [champ](https://github.com/chvmp/champ) project, and we made some changes to SLAM and Navigation functions.
 
 Tested on
 * Ubuntu 20.04 (ROS Noetic)
@@ -14,7 +14,7 @@ Tested on
 We recommend you explore Mini Pupper with ROS network, make sure your PC and Mini Pupper have connected to the same WiFi.
 
 ### 1.1 PC Setup
-**The PC Setup corresponds to the Remote PC (your desktop or laptop PC) which will control Mini Pupper. Do not apply this instruction to your Mini Pupper.**
+**PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely. Do not apply these commands to your Mini Pupper.**
 
 #### 1.1.1 Cartographer ROS packages installation
 Our SLAM and Navigation functions are based on [cartographer_ros](https://google-cartographer-ros.readthedocs.io/en/latest/compilation.html). 
@@ -51,7 +51,7 @@ Connect your PC and Mini Pupper to the same WiFi and find the assigned IP addres
 ```sh
 ifconfig
 ```
-Open the file and update the ROS IP settings with the command below.
+Open the file and update ROS IP settings with commands below.
 ```sh
 sudo gedit ~/.bashrc
 ```
@@ -67,12 +67,13 @@ export ROS_HOSTNAME=192.168.1.106
 
 
 ### 1.2 Mini Pupper Setup
-**The Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.**
+**Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.**
 
 #### 1.2.1 Hardware Dependencies
-You should first install the dependencies of the servos, battery moniter and display screen. See [minipupper_ros_bsp](https://github.com/mangdangroboticsclub/minipupper_ros_bsp).
+You should first install dependencies of servos, battery moniter and display screen. </br>
+See [minipupper_ros_bsp](https://github.com/mangdangroboticsclub/minipupper_ros_bsp).
 #### 1.2.2 PS4 Joystick interface installation
-The PS4 Joystick interface in ROS is based on [ps4-ros](https://github.com/solbach/ps4-ros) project. 
+PS4 Joystick interface in ROS is based on [ps4-ros](https://github.com/solbach/ps4-ros) project. 
 ```sh
 pip install ds4drv
 sudo apt install ros-noetic-joy
@@ -99,6 +100,7 @@ sudo chmod a+rw /dev/input/jsX
 cd <your_ws>/src
 git clone --recursive https://github.com/mangdangroboticsclub/minipupper_ros
 cd minipupper_ros/champ
+# it's not recommend to compile gazebo on raspberry pi
 sudo rm -rf champ_gazebo
 cd ..
 cd ..
@@ -109,7 +111,7 @@ source <your_ws>/devel/setup.bash
 ```
 
 #### 1.2.4 Network Setup
-Connect your PC and Mini Pupper to the same WiFi and find the assigned IP address with the command below.
+Connect your PC and Mini Pupper to the same WiFi and find the assigned IP address with commands below.
 ```sh
 ifconfig
 ```
@@ -129,7 +131,6 @@ export ROS_HOSTNAME=192.168.1.107
 
 ## 2.Quick Start Guide
 ### 2.1 Calibration
-This step can be optional because you can also edit calibration.yaml in servo_interface/config/calibration to fix the angles.</br>
 Through this script, you can calibrate the angle of every servo in one turn. Just input the angles.
 ```sh
 roslaunch servo_interface calibrate.launch
@@ -147,7 +148,7 @@ If Mini Pupper didn't stand as what you expect, you can edit calibration.yaml in
 There are two options to control Mini Pupper:
 
 1.using keyboard
-
+![keyboard](imgs/keyboard.gif)
 **It's recommended to run this command on PC.**
 ```sh
 roslaunch champ_teleop teleop.launch
@@ -196,6 +197,7 @@ image: map.pgm
 Then, copy map.pbstream, map.pgm and map.yaml files you just saved to <your_ws>/src/minipupper_ros/mini_pupper/maps
 
 ### 2.4 Navigation
+![nav](imgs/instruction.gif)
 #### 2.4.1 Change the map file
 Before running navigation, you should first change the launch file with the map you created. 
 ```sh
@@ -252,7 +254,7 @@ rosrun minipupper_detect oak_detect.py
 </br>
 Here's a cool guy who launched this demo successfully.
 [https://www.techlife-hacking.com/?p=1197](https://www.techlife-hacking.com/?p=1197)
-
+![obj_tracking](imgs/obj_tracking.gif)
 
 Also, if you want to do some CV projects, you can add a usb camera on Mini Pupper, and subscribe the comressed image on your PC.</br>
 The transportation of raw image through network will be too slow, you may need to use image_transport to turn the compressed image to normal image and then use it.
