@@ -224,7 +224,16 @@ You can also play with Mini Pupper with only your laptop.
 roslaunch mini_pupper gazebo.launch
 ```
 
-## 4.Going further
+## 4.LCD Screen
+```sh
+python3 ~/minipupper_ros_bsp/mangdang/LCD/demo.py
+```
+We also made s simple ROS interface of the LCD screen, which subscribes sensor_msgs/Image.
+```sh
+rosrun display_interface display_interface.py
+```
+
+## 4.Computer Vision
 
 We've tested the integration with OAK-D-LITE. It's a great platform to run some deep learning models.</br>
 We made a simple demo of object tracking using OAK-D-LITE.</br>
