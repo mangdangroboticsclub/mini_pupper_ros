@@ -43,7 +43,7 @@
     <group if="$(arg hardware_connected)">
         <rosparam file="$(find servo_interface)/config/calibration/calibration.yaml" command="load"/>
         <include file="$(find servo_interface)/launch/servo_interface.launch"/>
-        <include file="$(find ps4_interface)/launch/ps4_interface.launch"/>
+        <!--include file="$(find ps4_interface)/launch/ps4_interface.launch"/-->
         <include file="$(find ldlidar)/launch/ld06.launch"/>
     </group>
 </launch>

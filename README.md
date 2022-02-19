@@ -149,6 +149,7 @@ There are two options to control Mini Pupper:
 
 1.using keyboard</br>
 ![keyboard](imgs/keyboard.gif)
+</br>
 **It's recommended to run this command on PC.**
 ```sh
 roslaunch champ_teleop teleop.launch
