@@ -87,5 +87,5 @@ def listener():
     rospy.spin()
  
 if __name__ == '__main__':
-    pub_pose = rospy.Publisher('mini_pupper/body_pose', Pose, queue_size=10)
+    pub_pose = rospy.Publisher('/body_pose', Pose, queue_size=10)
     listener()
