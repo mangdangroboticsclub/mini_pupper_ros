@@ -254,8 +254,8 @@ rosrun minipupper_detect oak_detect.py
 </br>
 Here's a cool guy who launched this demo successfully.
 [https://www.techlife-hacking.com/?p=1197](https://www.techlife-hacking.com/?p=1197)
-</br>
-![obj](imgs/obj_tracking.gif)
+Just use a bottle to let Mini Pupper look at you :)</br>
+![obj](imgs/obj.gif)
 
 Also, if you want to do some CV projects, you can add a usb camera on Mini Pupper, and subscribe the comressed image on your PC.</br>
 The transportation of raw image through network will be too slow, you may need to use image_transport to turn the compressed image to normal image and then use it.
