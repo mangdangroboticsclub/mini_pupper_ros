@@ -253,7 +253,7 @@ rosrun minipupper_detect oak_detect.py
 ```
 </br>
 Here's a cool guy who launched this demo successfully.
-[https://www.techlife-hacking.com/?p=1197](https://www.techlife-hacking.com/?p=1197)
+[https://www.techlife-hacking.com/?p=1197](https://www.techlife-hacking.com/?p=1197)</br>
 Just use a bottle to let Mini Pupper look at you :)</br>
 ![obj](imgs/obj.gif)
 
