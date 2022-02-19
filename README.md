@@ -239,7 +239,7 @@ rosrun display_interface display_interface.py
 
 We've tested the integration with OAK-D-LITE. It's a great platform to run some deep learning models.</br>
 We made a simple demo of object tracking using OAK-D-LITE.</br>
-You can follow these commands to try this demo(make sure you have connected OAK-D-LITE to Mini Pupper).
+You can follow these commands to try this demo(make sure you have connected OAK-D-LITE to Mini Pupper).</br>
 Just use a bottle to let Mini Pupper look at you :)</br>
 (Here's the cool guy who launched this demo successfully.)
 [https://www.techlife-hacking.com/?p=1197](https://www.techlife-hacking.com/?p=1197)</br>
