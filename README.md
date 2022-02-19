@@ -98,6 +98,10 @@ sudo chmod a+rw /dev/input/jsX
 ```sh
 cd <your_ws>/src
 git clone --recursive https://github.com/mangdangroboticsclub/minipupper_ros
+cd minipupper_ros/champ
+sudo rm -rf champ_gazebo
+cd ..
+cd ..
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
 catkin_make
@@ -125,18 +129,20 @@ export ROS_HOSTNAME=192.168.1.107
 
 ## 2.Quick Start Guide
 ### 2.1 Calibration
-You should first calibrate the angles of every servo. Just input the angles.
+This step can be optional because you can also edit calibration.yaml in servo_interface/config/calibration to fix the angles.</br>
+Through this script, you can calibrate the angle of every servo in one turn. Just input the angles.
 ```sh
 roslaunch servo_interface calibrate.launch
 ```
-The hip and shank should be horizontal, and the ham should be vertical.
+Make sure Mini Pupper looks like this after calibrating.
+[!calibrtaion](imgs/calibration.jpg)
 ### 2.2 Walking
 #### 2.2.1 Run the base driver
 **You should run this command on Mini Pupper**
 ```sh
 roslaunch mini_pupper bringup.launch
 ```
-
+If Mini Pupper didn't stand as what you expect, you can edit calibration.yaml in servo_interface/config/calibration to fix the angles.
 #### 2.2.2 Control Mini Pupper
 There are two options to control Mini Pupper:
 
@@ -151,7 +157,7 @@ roslaunch champ_teleop teleop.launch
 
 **It's recommended to run this command on Mini Pupper.**
 
-**Don't run this command while using move_base because when you are doing nothing with the joystick, it would set all the values in cmd_vel to zero.**
+**Don't run this command while using move_base because even if you are doing nothing with the joystick, it would still send cmd_vel with all the values as zero.**
 ```sh
 roslaunch ps4_interface ps4_interface.launch
 ```
@@ -160,7 +166,7 @@ Then you can go into pairing mode with PS4: Playstation button + share button fo
 * The right lever controls the angular velocity of z axis.
 * The arrow key controls the standing height and the angle of roll axis.
 * If you are pressing R2, then the right lever will control the angle of pitch and yaw axis.
-* If you are pressing L2, then the robot will go to the default state. 
+* If you are pressing L2, then the robot will turn to default state. 
 
 
 ### 2.3 SLAM
@@ -172,6 +178,7 @@ roslaunch mini_pupper bringup.launch
 
 #### 2.3.2 Run Cartographer
 **You should run this command on PC**
+**If you are using gazebo, set the param /use_sim_time to true in the launch file.**
 ```sh
 roslaunch mini_pupper slam.launch
 ```
@@ -181,7 +188,12 @@ rosservice call /finish_trajectory 0
 rosservice call /write_state "{filename: '${HOME}/map.pbstream'}"
 rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem=${HOME}/map -pbstream_filename=${HOME}/map.pbstream -resolution=0.05
 ```
-
+Remember to edit map.yaml</br>
+The first line should be
+```yaml
+image: map.pgm
+```
+Then, copy the map.pgm and map.yaml file you just saved to <your_ws>/src/minipupper_ros/mini_pupper/maps
 
 ### 2.4 Navigation
 #### 2.4.1 Change the map file
@@ -201,19 +213,40 @@ roslaunch mini_pupper bringup.launch
 
 #### 2.4.3 Run Cartographer(for localization) and Move_Base
 **You should run this command on PC**
-
-
+**If you are using gazebo, set the param /use_sim_time to true in the launch file.**
 ```sh
 roslaunch mini_pupper navigate.launch
 ```
 
+## 3.Simulation
+You can also play with Mini Pupper with only your laptop.
+```sh
+roslaunch mini_pupper gazebo.launch
+```
+
+## 4.Going further
+
+We've tested the integration with OAK-D-LITE. It's a great platform to run some deep learning models.</br>
+We made a simple demo of object tracking using OAK-D-LITE.</br>
+You can follow these commands to try this demo(make sure you have connected OAK-D-LITE to Mini Pupper).
+
+```sh
+# Terminal 1
+roslaunch minipupper bringup.launch
+ 
+# Terminal 2
+roslaunch depthai_examples mobile_publisher.launch
+ 
+# Terminal 3
+rosrun minipupper_detect oak_detect.py
+```
+</br>
+Here's a cool guy who launched this demo successfully.
+[https://www.techlife-hacking.com/?p=1197](https://www.techlife-hacking.com/?p=1197)
 
 
-## 3.Going further
-
-We've tested the integration with OAK-D-LITE. It's a great platform to run some deep learning models. If you want to use this platform, you can follow the official instructions to build the ROS dependencies and run the examples.
-
-Also, if you want to do some CV projects, you can add a usb camera on Mini Pupper, and subscribe the comressed image on your PC. But the transportation of raw image through network will be too slow, you may need to use image_transport to turn the compressed image to normal image and then use it.
+Also, if you want to do some CV projects, you can add a usb camera on Mini Pupper, and subscribe the comressed image on your PC.</br>
+The transportation of raw image through network will be too slow, you may need to use image_transport to turn the compressed image to normal image and then use it.
 
 ```sh
 rosrun image_transport republish compressed in:=(in_base_topic) raw out:=(out_base_topic)

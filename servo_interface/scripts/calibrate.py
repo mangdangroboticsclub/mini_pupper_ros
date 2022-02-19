@@ -12,7 +12,7 @@ key_list = [\
 'lb1_initial_angle','lb2_initial_angle','lb3_initial_angle']
 calibration_dict = {}
 
-#initialize(used by developers)
+#initialize
 #for i in servo_pins:
 #    p = "/sys/class/pwm/pwmchip0/pwm"+str(i)+"/duty_cycle"
 #    os.system('sudo chmod 777 '+p)
@@ -30,7 +30,7 @@ if __name__=='__main__':
     flag = ""
     i = 0
     for pin in servo_pins:
-        print("you are calibrating is servo "+str(i+1))
+        print("you are calibrating servo "+str(i+1))
         while(1):
             angle = input("input an angle: ")
             set_servo_angle(pin,float(angle))
