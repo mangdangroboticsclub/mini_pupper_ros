@@ -147,7 +147,7 @@ If Mini Pupper didn't stand as what you expect, you can edit calibration.yaml in
 #### 2.2.2 Control Mini Pupper
 There are two options to control Mini Pupper:
 
-1.using keyboard
+1.using keyboard</br>
 ![keyboard](imgs/keyboard.gif)
 **It's recommended to run this command on PC.**
 ```sh
@@ -197,7 +197,6 @@ image: map.pgm
 Then, copy map.pbstream, map.pgm and map.yaml files you just saved to <your_ws>/src/minipupper_ros/mini_pupper/maps
 
 ### 2.4 Navigation
-![nav](imgs/instruction.gif)
 #### 2.4.1 Change the map file
 Before running navigation, you should first change the launch file with the map you created. 
 ```sh
@@ -221,7 +220,8 @@ roslaunch mini_pupper navigate.launch
 ```
 
 ## 3.Simulation
-You can also play with Mini Pupper with only your laptop.
+You can also play with Mini Pupper with only your laptop.</br>
+![nav](imgs/instruction.gif)
 ```sh
 roslaunch mini_pupper gazebo.launch
 ```
@@ -254,7 +254,7 @@ rosrun minipupper_detect oak_detect.py
 </br>
 Here's a cool guy who launched this demo successfully.
 [https://www.techlife-hacking.com/?p=1197](https://www.techlife-hacking.com/?p=1197)
-![obj_tracking](imgs/obj_tracking.gif)
+![obj](imgs/obj_tracking.gif)
 
 Also, if you want to do some CV projects, you can add a usb camera on Mini Pupper, and subscribe the comressed image on your PC.</br>
 The transportation of raw image through network will be too slow, you may need to use image_transport to turn the compressed image to normal image and then use it.
