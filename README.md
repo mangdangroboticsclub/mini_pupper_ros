@@ -131,7 +131,8 @@ export ROS_HOSTNAME=192.168.1.107
 
 ## 2.Quick Start Guide
 ### 2.1 Calibration
-Through this script, you can calibrate the angle of every servo in one turn. Just input the angles.
+Through this script, you can calibrate the angle of every servo in one turn. Just input the angles.</br>
+The hip and shank should be horizontal, and the ham should be vertical.
 ```sh
 roslaunch servo_interface calibrate.launch
 ```
