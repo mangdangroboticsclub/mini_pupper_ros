@@ -3,8 +3,8 @@
 import rospy
 import numpy as np
 from sensor_msgs.msg import Image as Image_ROS
-from cv_bridge import CvBridge, CvBridgeError
 import cv2
+from cv_bridge import CvBridge, CvBridgeError
 
 import os
 import sys
