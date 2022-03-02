@@ -19,8 +19,8 @@ def callback(data):
     bridge = CvBridge()
     cv_img = bridge.imgmsg_to_cv2(data,"bgr8")
     image = Image.fromarray(cv2.cvtColor(cv_img,cv2.COLOR_BGR2RGB))
-    image.resize((320,240))
-    disp.display(image)
+    resized = image.resize((320,240))
+    disp.display(resized)
 
 def showImage():
     rospy.init_node('display_interface',anonymous = True)
