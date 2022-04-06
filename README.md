@@ -21,7 +21,7 @@ Our SLAM and Navigation functions are based on [cartographer_ros](https://google
 ```sh
 cd ~
 sudo apt-get update
-sudo apt-get install -y python3-wstool python3-rosdep ninja-build stow
+sudo apt-get install -y python3-wstool python3-rosdep python3-empy libudev-dev ninja-build stow
 mkdir carto_ws
 cd carto_ws
 wstool init src
@@ -32,11 +32,13 @@ rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
 src/cartographer/scripts/install_abseil.sh
 sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
+. /opt/ros/${ROS_DISTRO}/setup.sh
 catkin_make_isolated --install --use-ninja
 source install_isolated/setup.bash
 ```
 #### 1.1.2 Mini Pupper ROS packages installation
 
+This should be done in a workspace *outside* of the carto workspace
 ```sh
 cd <your_ws>/src
 git clone --recursive https://github.com/mangdangroboticsclub/minipupper_ros
