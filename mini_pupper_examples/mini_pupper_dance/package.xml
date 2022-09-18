@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mini_pupper_dance</name>
+  <version>0.1.0</version>
+  <description>mini_pupper_dance Package</description>
+
+  <maintainer email="thefoxfoxfox@outlook.com">0nhc</maintainer>
+  <author>Juan Miguel Jimeno</author>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>roslaunch</exec_depend>
+</package>

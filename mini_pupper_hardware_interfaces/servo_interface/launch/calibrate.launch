@@ -1,0 +1,3 @@
+<launch>
+  <node name="servo_calibration" pkg="servo_interface" type="calibrate.py" output="screen"/>
+</launch>

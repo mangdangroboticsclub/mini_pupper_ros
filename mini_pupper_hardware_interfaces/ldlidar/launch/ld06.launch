@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="LD06" pkg="ldlidar" type="ldlidar" args="LD06" output="screen" />
+ 
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_ld06"
+       args="0.0 -0.05 0.03 1.57 0.0 3.1415926 /base_link /lidar_frame 40" />
+       
+  <!--node pkg="tf" type="static_transform_publisher" name="base_link_to_ld05"
+       args="0.0 0.0 -0.06 0.0 0.0 0.0 /base_footprint /base_link 40" /-->
+ 
+
+  <!--node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find ldlidar)/rviz/ldlidar.rviz" /-->
+    
+</launch>
