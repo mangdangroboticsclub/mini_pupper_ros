@@ -208,7 +208,8 @@ roslaunch mini_pupper_control calibrate.launch
 
 Make sure Mini Pupper looks like this after calibrating.
 
-![calibrtaion](imgs/calibration.jpg)
+<!-- ![calibrtaion](imgs/calibration.jpg) -->
+TBD
 
 ### 2.2 Walking
 #### 2.2.1 Run the base driver
