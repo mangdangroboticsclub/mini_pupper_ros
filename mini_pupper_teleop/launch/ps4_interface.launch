@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- ds4drv -->
+    <node name="ds4drv" pkg="mini_pupper_teleop" type="ds4drv.sh" output="screen" />
+
+    <!-- joy node -->
+    <node pkg="joy" type="joy_node" name="joy_node" respawn="true">
+        <param name="dev" type="string" value="/dev/input/js0" />
+        <param name="deadzone" value="0.12" />
+
+    </node>
+
+    <!-- PS4 node -->
+    <node pkg="mini_pupper_teleop" type="ps4_interface.py" name="ps4_interface" output="screen"/>
+    <node pkg="mini_pupper_teleop" type="pose_controller.py" name="pose_controller" output="screen"/>
+
+</launch>
+
+
