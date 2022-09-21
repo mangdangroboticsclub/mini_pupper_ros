@@ -3,7 +3,7 @@
   <arg name="topic_name" default="scan" />
   <arg name="port_name" default="/dev/ttyUSB0" />
   <arg name="frame_id" default="lidar_frame" />
-  <arg name="fix_to_base_link" default="true" />
+  <arg name="fix_to_lidar_link" default="true" />
 
   <!-- ldldiar message publisher node -->
   <node name="LD06" pkg="ldlidar_stl_ros" type="ldlidar_stl_ros_node" output="screen" >
