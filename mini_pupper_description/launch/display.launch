@@ -7,8 +7,8 @@
     <arg name="description_file" value="$(arg description_file)"/>
   </include>
 
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mini_pupper_description)/urdf.rviz" if="$(arg gui)" />
-  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" if="(arg gui)" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mini_pupper_description)/rviz/urdf_viewer.rviz" if="$(arg gui)" />
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" if="$(arg gui)" />
 
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="(arg gui)" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="$(arg gui)" />
 </launch>

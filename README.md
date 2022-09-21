@@ -25,22 +25,30 @@ We recommend you explore Mini Pupper with ROS network, make sure your PC and Min
 
 Our SLAM and Navigation functions are based on [cartographer_ros](https://google-cartographer-ros.readthedocs.io/en/latest/compilation.html).
 
+First, install ROS Noetic Desktop-Full by following the page below.
+
+https://wiki.ros.org/noetic/Installation/Ubuntu
+
+Next, install cartographer_ros.
+
 ```sh
 sudo apt-get update
 sudo apt-get install -y python3-vcstool python3-rosdep ninja-build stow
 mkdir -p ~/carto_ws/src
 cd ~/carto_ws
 vcs import src --input https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/cartographer_ros.rosinstall
-sudo rosdep init
-rosdep update
-rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
-src/cartographer/scripts/install_abseil.sh
 # Hot fix for Ubuntu 20.04. See https://github.com/cartographer-project/cartographer_ros/pull/1745
 sed -i -e "s%<depend>libabsl-dev</depend>%<\!--<depend>libabsl-dev</depend>-->%g" src/cartographer/package.xml
+sudo rosdep init
+rosdep update
+source /opt/ros/noetic/setup.bash
+rosdep install --from-paths src --ignore-src -r -y
+src/cartographer/scripts/install_abseil.sh
 sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
 catkin_make_isolated --install --use-ninja
 source install_isolated/setup.bash
 ```
+
 #### 1.1.2 Mini Pupper ROS packages installation
 
 This should be done in a workspace *outside* of the `carto_ws` workspace, like `catkin_ws`.  
