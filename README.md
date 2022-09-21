@@ -220,6 +220,12 @@ TBD
 roslaunch mini_pupper_bringup bringup.launch
 ```
 
+If you don't have LD06 LiDAR, add `lidar_connected:=false` argument like the follwoing command.
+
+```sh
+roslaunch mini_pupper_bringup bringup.launch lidar_connected:=false
+```
+
 #### 2.2.2 Control Mini Pupper
 
 There are two options to control Mini Pupper:
