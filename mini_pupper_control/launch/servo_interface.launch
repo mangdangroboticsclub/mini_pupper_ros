@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="servo_interface" pkg="mini_pupper_control" type="servo_interface.py" output="screen" />
+</launch>

@@ -2,9 +2,9 @@
 <launch>
     <arg name="robot_name"              default="/"/>  <!-- Change this for namespacing. -->
     <arg name="base_frame"             default="base_link"/> <!-- Link name of floating base. Do not touch this. -->
-    <arg name="joints_map_file"        default="$(find mini_pupper_bringup)/config/joints/joints.yaml"/> <!--Path to list of joint names. Do not touch this. -->
-    <arg name="links_map_file"         default="$(find mini_pupper_bringup)/config/links/links.yaml"/> <!-- Path to list of link names. Do not touch this. -->
-    <arg name="gait_config_file"       default="$(find mini_pupper_bringup)/config/gait/gait.yaml"/>  <!-- Path to gait parameters. Do not touch this. -->
+    <arg name="joints_map_file"        default="$(find mini_pupper_control)/config/joints.yaml"/> <!--Path to list of joint names. Do not touch this. -->
+    <arg name="links_map_file"         default="$(find mini_pupper_control)/config/links.yaml"/> <!-- Path to list of link names. Do not touch this. -->
+    <arg name="gait_config_file"       default="$(find mini_pupper_control)/config/gait.yaml"/>  <!-- Path to gait parameters. Do not touch this. -->
     <arg name="description_file"       default="$(find mini_pupper_description)/urdf/mini_pupper_description.urdf"/> <!-- Path to URDF file Do not touch this. -->
     <arg name="gazebo"                 default="false" /> <!-- Set to true during simulation. This is auto-set to true from gazebo.launch. -->
     <arg name="rviz"                   default="false"/> <!-- Set to true to run rviz in parallel. -->
@@ -21,7 +21,7 @@
     <arg if="$(eval arg('robot_name') == '/')"  name="frame_prefix" value="" />
     <arg unless="$(eval arg('robot_name') == '/')" name="frame_prefix" value="$(arg robot_name)/" />
 
-    <include file="$(find champ_bringup)/launch/bringup.launch">
+    <include file="$(find mini_pupper_bringup)/launch/champ_bringup.launch">
         <arg name="robot_name"             value="$(arg robot_name)"/>
         <arg name="base_frame"             value="$(arg base_frame)"/>
         <arg name="joints_map_file"        value="$(arg joints_map_file)"/>
@@ -40,11 +40,11 @@
         <arg name="publish_joint_control"  value="$(arg publish_joint_control)" />
         <arg name="close_loop_odom"        value="$(arg close_loop_odom)" />
     </include>
-    
+
     <group if="$(arg hardware_connected)">
-        <rosparam file="$(find servo_interface)/config/calibration/calibration.yaml" command="load"/>
-        <include file="$(find servo_interface)/launch/servo_interface.launch"/>
-        <!--include file="$(find ps4_interface)/launch/ps4_interface.launch"/-->
-        <include file="$(find ldlidar)/launch/ld06.launch"/>
+        <!-- <rosparam file="$(find mini_pupper_control)/config/calibration.yaml" command="load"/> -->
+        <include file="$(find mini_pupper_control)/launch/servo_interface.launch"/>
+        <!--include file="$(find mini_pupper_teleop)/launch/ps4_interface.launch"/-->
+        <include file="$(find mini_pupper_bringup)/launch/ld06_bringup.launch"/>
     </group>
 </launch>

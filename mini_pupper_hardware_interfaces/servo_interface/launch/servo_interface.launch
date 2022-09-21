@@ -1,3 +1,0 @@
-<launch>
-  <node name="servo_interface" pkg="servo_interface" type="servo_interface.py" output="screen"/>
-</launch>

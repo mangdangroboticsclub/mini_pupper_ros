@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mini_pupper_examples</name>
+  <version>0.1.0</version>
+  <description>mini_pupper_dance Package</description>
+
+  <maintainer email="fae@mangdang.net">MangDang</maintainer>
+  <author email="thefoxfoxfox@outlook.com">0nhc</author>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>roslaunch</exec_depend>
+  <exec_depend>rospy</exec_depend>
+</package>

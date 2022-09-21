@@ -1,21 +1,14 @@
 <?xml version="1.0"?>
 <launch>
-  <arg
-    name="model" />
-  <param
-    name="robot_description"
-    textfile="$(find mini_pupper_description)/urdf/mini_pupper_description.urdf" />
-  <node
-    name="joint_state_publisher_gui"
-    pkg="joint_state_publisher_gui"
-    type="joint_state_publisher_gui" />
-  <node
-    name="robot_state_publisher"
-    pkg="robot_state_publisher"
-    type="robot_state_publisher" />
-  <node
-    name="rviz"
-    pkg="rviz"
-    type="rviz"
-    args="-d $(find mini_pupper_description)/urdf.rviz" />
+  <arg name="gui" default="true" />
+  <arg name="description_file" default="$(find mini_pupper_description)/urdf/mini_pupper_description.urdf"/> <!-- Path to URDF file Do not touch this. -->
+
+  <include file="$(find mini_pupper_description)/launch/description.launch">
+    <arg name="description_file" value="$(arg description_file)"/>
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mini_pupper_description)/urdf.rviz" if="$(arg gui)" />
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" if="(arg gui)" />
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="(arg gui)" />
 </launch>

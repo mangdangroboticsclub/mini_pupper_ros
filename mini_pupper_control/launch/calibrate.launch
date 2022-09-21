@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="servo_calibration" pkg="mini_pupper_control" type="calibrate.py" output="screen" />
+</launch>

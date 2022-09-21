@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="topic_name" default="scan" />
+  <arg name="port_name" default="/dev/ttyUSB0" />
+  <arg name="frame_id" default="lidar_frame" />
+  <arg name="fix_to_base_link" default="true" />
+
+  <!-- ldldiar message publisher node -->
+  <node name="LD06" pkg="ldlidar_stl_ros" type="ldlidar_stl_ros_node" output="screen" >
+    <param name="product_name" value="LDLiDAR_LD06" />
+    <param name="topic_name" value="$(arg topic_name)" />
+    <param name="port_name" value="$(arg port_name)" />
+    <param name="frame_id" value="$(arg frame_id)" />
+
+    <!-- Set laser scan directon: -->
+    <!--    1. Set counterclockwise, example: <param name="laser_scan_dir" type="bool" value="true"/> -->
+    <!--    2. Set clockwise,        example: <param name="laser_scan_dir" type="bool" value="false"/> -->
+    <param name="laser_scan_dir" type="bool" value="true" />
+    <!-- Angle crop setting, Mask data within the set angle range -->
+    <!--    1. Enable angle crop fuction: -->
+    <!--       1.1. enable angle crop,  example: <param name="enable_angle_crop_func" type="bool" value="true"/> -->
+    <!--       1.2. disable angle crop, example: <param name="enable_angle_crop_func" type="bool" value="false"/> -->
+    <param name="enable_angle_crop_func" type="bool" value="false" />
+    <!--    2. Angle cropping interval setting, The distance and intensity data within the set angle range will be set to 0 --> 
+    <!--       angle >= "angle_crop_min" and angle <= "angle_crop_max", unit is degress -->
+    <param name="angle_crop_min" type="double" value="135.0" />
+    <param name="angle_crop_max" type="double" value="225.0" />
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_ld06"
+    args="0 0 0 1.57 0 0 /lidar /lidar_frame 100" if="$(arg fix_to_lidar_link)" />
+</launch>
