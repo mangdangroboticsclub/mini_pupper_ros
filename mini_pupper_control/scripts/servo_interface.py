@@ -5,6 +5,11 @@ import time
 import rospy
 from trajectory_msgs.msg import JointTrajectory
 import numpy as np
+try:
+    from MangDang.minipupper.ServoCalibration import NEUTRAL_ANGLE_DEGREES
+    nvram_pickle = True
+except ImportError:
+    nvram_pickle = False
 
 servo_pins = [15,14,13,  12,11,10,  9,8,7,  6,5,4] #rf lf rb lb
 pi_value =3.1415926535
@@ -18,18 +23,22 @@ def set_servo_angle(pin,angle):
 
 def get_param():
     global servo_configs
+
     try:
-        with open("/sys/bus/nvmem/devices/3-00500/nvmem", "rb") as nv_f:
-            arr1 = np.array(eval(nv_f.readline()))
-            arr2 = np.array(eval(nv_f.readline()))
-            matrix = np.append(arr1, arr2)
-            arr3 = np.array(eval(nv_f.readline()))
-            matrix = np.append(matrix, arr3)
-            matrix.resize(3,4)
-            rospy.loginfo("Get nv calibration params: "+str(matrix))
-    except:
+        if nvram_pickle:
+            matrix = NEUTRAL_ANGLE_DEGREES
+        else:
+            with open("/sys/bus/nvmem/devices/3-00500/nvmem", "rb") as nv_f:
+                arr1 = np.array(eval(nv_f.readline()))
+                arr2 = np.array(eval(nv_f.readline()))
+                matrix = np.append(arr1, arr2)
+                arr3 = np.array(eval(nv_f.readline()))
+                matrix = np.append(matrix, arr3)
+                matrix.resize(3,4)
+        rospy.loginfo("Get nv calibration params: "+str(matrix))
+    except ValueError:
         matrix = np.array([[0, 0, 0, 0], [45, 45, 45, 45], [-45, -45, -45, -45]])
-        rospy.loginfo("Get nv calibration paramsfailed, set to default params: "+str(matrix))
+        rospy.logerr("Get nv calibration params failed, set to default params: "+str(matrix))
     line1 = matrix[0].tolist()
     line2 = matrix[1].tolist()
     line3 = matrix[2].tolist()
@@ -101,8 +110,8 @@ def callback(data):
 def listener():
     rospy.init_node('servo_interface',anonymous=True)
     get_param()
-    rospy.Subscriber("/joint_group_position_controller/command",JointTrajectory
-,callback,queue_size=1)
+    rospy.Subscriber("/joint_group_position_controller/command",
+                     JointTrajectory, callback, queue_size=1)
     rospy.spin()
 
 if __name__=='__main__':
