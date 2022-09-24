@@ -207,17 +207,9 @@ After editing, input Ctrl+X to save and exit the nano editor.
 ## 2.Quick Start Guide
 ### 2.1 Calibration
 
-Through this script, you can calibrate the angle of every servo in one turn. Just input the angles.  
-The hip and shank should be horizontal, and the ham should be vertical.
+Calibrate the servo angle offset according to the following document.
 
-```sh
-roslaunch mini_pupper_control calibrate.launch
-```
-
-Make sure Mini Pupper looks like this after calibrating.
-
-<!-- ![calibrtaion](imgs/calibration.jpg) -->
-TBD
+https://minipupperdocs.readthedocs.io/en/latest/guide/Software.html
 
 ### 2.2 Walking
 #### 2.2.1 Run the base driver
