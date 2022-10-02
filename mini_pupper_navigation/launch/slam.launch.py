@@ -27,7 +27,7 @@ def generate_launch_description():
     turtlebot3_cartographer_prefix = get_package_share_directory('mini_pupper_navigation')
     
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
-                                                  turtlebot3_cartographer_prefix, 'config','cartpgrapher'))
+                                                  turtlebot3_cartographer_prefix, 'config/cartographer'))
                                                   
     configuration_basename = LaunchConfiguration('configuration_basename',
                                                  default='slam.lua')
@@ -56,7 +56,7 @@ def generate_launch_description():
             description='Name of lua file for cartographer'),
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='false',
+            default_value=use_sim_time,
             description='Use simulation (Gazebo) clock if true'),
 
         Node(
