@@ -20,7 +20,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
-    this_package = FindPackageShare('mini_pupper_config')
+    this_package = FindPackageShare('mini_pupper_bringup')
 
     joints_config = PathJoinSubstitution(
         [this_package, 'config', 'joints', 'joints.yaml']

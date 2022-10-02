@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>mini_pupper_config</name>
+  <name>mini_pupper_gazebo</name>
   <version>0.1.0</version>
-  <description>CHAMP Config Package</description>
+  <description>Mini Pupper Gazebo Package</description>
 
-  <maintainer email="jimenojmm@gmail.com">Juan Miguel Jimeno</maintainer>
-  <author>Juan Miguel Jimeno</author>
+  <maintainer email="thefoxfoxfox@outlook.com">Han</maintainer>
+  <author>Han</author>
 
   <license>BSD</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <exec_depend>champ_base</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>rviz2</exec_depend>

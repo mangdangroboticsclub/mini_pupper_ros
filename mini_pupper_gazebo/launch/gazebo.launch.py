@@ -11,19 +11,20 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
     
 def generate_launch_description():
-    this_package = FindPackageShare('mini_pupper_config')
+    gazebo_package = FindPackageShare('mini_pupper_gazebo')
+    bringup_package = FindPackageShare('mini_pupper_bringup')
 
     joints_config = PathJoinSubstitution(
-        [this_package, 'config', 'joints', 'joints.yaml']
+        [bringup_package, 'config', 'joints', 'joints.yaml']
     )
     links_config = PathJoinSubstitution(
-        [this_package, 'config', 'links', 'links.yaml']
+        [bringup_package, 'config', 'links', 'links.yaml']
     )
     gait_config = PathJoinSubstitution(
-        [this_package, 'config', 'gait', 'gait.yaml']
+        [bringup_package, 'config', 'gait', 'gait.yaml']
     )
     ros_control_config = PathJoinSubstitution(
-        [this_package, 'config', 'ros_control', 'ros_control.yaml']
+        [gazebo_package, 'config', 'ros_control', 'ros_control.yaml']
     )
     description_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_description'), 'urdf', 'mini_pupper_description.urdf.xacro']
@@ -32,7 +33,7 @@ def generate_launch_description():
         [FindPackageShare('champ_bringup'), 'launch', 'bringup.launch.py']
     )
     default_world_path = PathJoinSubstitution(
-        [this_package, 'worlds', 'playground.world']
+        [gazebo_package, 'worlds', 'playground.world']
     )
 
     return LaunchDescription([

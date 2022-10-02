@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
-project(mini_pupper_config)
+project(mini_pupper_gazebo)
 
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY launch config maps worlds
+  DIRECTORY launch config worlds
   DESTINATION share/${PROJECT_NAME}
 )
 
