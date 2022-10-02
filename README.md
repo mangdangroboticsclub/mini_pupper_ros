@@ -5,11 +5,11 @@ Ubuntu 20.04 + ROS2 Galatic is required.
 ```sh
 cd ~
 mkdir ros2_ws
-cd ros2/ws
+cd ros2_ws
 mksir src
 cd src
-git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git --branch=ros2
-git clone https://github.com/chvmp/champ.git --branch=ros2
+git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
+git clone --recursive https://github.com/chvmp/champ -b ros2
 cd ..
 colcon build
 sudo apt-get install ros-galactic-teleop-twist-keyboard ros-galactic-cartographer-ros
