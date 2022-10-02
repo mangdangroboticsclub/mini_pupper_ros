@@ -10,7 +10,7 @@ mksir src
 cd src
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git --branch=ros2
 git clone https://github.com/chvmp/champ.git --branch=ros2
-cd .
+cd ..
 colcon build
 sudo apt-get install ros-galactic-teleop-twist-keyboard ros-galactic-cartographer-ros
 ```
