@@ -15,52 +15,82 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, ThisLaunchFileDir, EnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
-
+from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    this_package = FindPackageShare('mini_pupper_config')
+    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    
+    mini_pupper_cartographer_prefix = get_package_share_directory('mini_pupper_navigation')
+    
+    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
+                                                  mini_pupper_cartographer_prefix, 'config/cartographer'))
+                                                  
+    configuration_basename = LaunchConfiguration('configuration_basename',
+                                                 default='nav.lua')
 
-    default_map_path = PathJoinSubstitution(
-        [this_package, 'maps', 'playground.yaml']
-    )
+    load_state_filename = LaunchConfiguration('configuration_basename', default=mini_pupper_cartographer_prefix+'/maps/cartographer_map.pbstream')
+                                                 
+    resolution = LaunchConfiguration('resolution', default='0.05')
+    
+    publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
+    
+    rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'),
+                                   'rviz', 'cartographer.rviz')
 
-    nav2_config_path = PathJoinSubstitution(
-        [this_package, 'config/autonomy', 'navigation.yaml']
-    )
-
-    nav2_launch_path = PathJoinSubstitution(
-        [FindPackageShare('champ_navigation'), 'launch', 'navigate.launch.py']
-    )
+    ros_distro = EnvironmentVariable('ROS_DISTRO')
+    if ros_distro == 'foxy': 
+        slam_param_name = 'params_file'
+    else:
+        slam_param_name = 'slam_params_file'
 
     return LaunchDescription([
         DeclareLaunchArgument(
-            name='sim', 
-            default_value='false',
-            description='Enable use_sime_time to true'
-        ),
+            'cartographer_config_dir',
+            default_value=cartographer_config_dir,
+            description='Full path to config file to load'),
+        DeclareLaunchArgument(
+            'configuration_basename',
+            default_value=configuration_basename,
+            description='Name of lua file for cartographer'),
+        DeclareLaunchArgument(
+            'use_sim_time',
+            default_value=use_sim_time,
+            description='Use simulation (Gazebo) clock if true'),
+
+        Node(
+            package='cartographer_ros',
+            executable='cartographer_node',
+            name='cartographer_node',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time}],
+            arguments=['-configuration_directory', cartographer_config_dir,
+                       '-configuration_basename', configuration_basename]),
 
         DeclareLaunchArgument(
-            name='rviz', 
-            default_value='false',
-            description='Run rviz'
-        ),
+            'resolution',
+            default_value=resolution,
+            description='Resolution of a grid cell in the published occupancy grid'),
 
         DeclareLaunchArgument(
-            name='map', 
-            default_value=default_map_path,
-            description='Navigation map path'
-        ),
+            'publish_period_sec',
+            default_value=publish_period_sec,
+            description='OccupancyGrid publishing period'),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(nav2_launch_path),
-            launch_arguments={
-                'config': nav2_config_path,
-                'map': LaunchConfiguration("map"),
-                'sim': LaunchConfiguration("sim"),
-                'rviz': LaunchConfiguration("rviz")
-            }.items()
-        )
+            PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/occupancy_grid.launch.py']),
+            launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution,
+                              'publish_period_sec': publish_period_sec}.items(),
+        ),
+
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', rviz_config_dir],
+            parameters=[{'use_sim_time': use_sim_time}],
+            output='screen'),
     ])
