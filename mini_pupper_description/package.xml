@@ -6,7 +6,7 @@
   <author>TODO</author>
   <maintainer email="TODO@email.com" />
 
-  <license>BSD</license>
+  <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>launch_ros</build_depend>
