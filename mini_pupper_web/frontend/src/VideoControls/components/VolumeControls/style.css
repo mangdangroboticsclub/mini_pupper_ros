@@ -1,0 +1,17 @@
+.volume-slider {
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+  display: inline-flex;
+
+  transition: all 0.3s ease-in-out;
+  color: #fff;
+  margin: 0 4px 0 0;
+}
+
+.volume-slider.open {
+  margin: 0 12px 0 2px;
+  width: 60px;
+  opacity: 1;
+  pointer-events: auto;
+}

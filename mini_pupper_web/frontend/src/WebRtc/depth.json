@@ -1,0 +1,8 @@
+{
+  "camera_type": "depth",
+  "cam_width": "480",
+  "cam_height": "480",
+  "nn_model": "",
+  "mono_camera_resolution": "THE_480_P",
+  "median_filter": "KERNEL_7x7"
+}

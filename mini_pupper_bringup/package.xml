@@ -16,6 +16,9 @@
   <exec_depend>robot_localization</exec_depend>
   <exec_depend>ldlidar_stl_ros</exec_depend>
   <exec_depend>mini_pupper_control</exec_depend>
+  <exec_depend>mini_pupper_control_v2</exec_depend>
   <exec_depend>mini_pupper_description</exec_depend>
+  <exec_depend>mini_pupper_teleop</exec_depend>
+  <exec_depend>rosbridge_server</exec_depend>
 
 </package>

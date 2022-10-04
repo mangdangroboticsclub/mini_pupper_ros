@@ -1,0 +1,47 @@
+.video-controls {
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  padding-top: 34px;
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0.35) 60%, transparent);
+
+  pointer-events: none;
+  color: #fff;
+}
+
+.video-controls.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bottom-section {
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  padding: 4px 12px;
+}
+
+.bottom-section .MuiGrid-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.right-side-icons {
+  margin-left: auto !important;
+}
+
+#settings-icon {
+  transition-property: transform;
+  transition-duration: 0.1s;
+  transition-delay: 0.1s;
+  transition-timing-function: linear;
+}
+
+#settings-icon.open {
+  transform: rotate(45deg);
+}

@@ -1,0 +1,53 @@
+legs:
+  front_left:
+    hip:
+      # Higher value -> move up
+      initial_angle: 90
+      pin: 12
+    thigh:
+      # Higher value -> move backward
+      initial_angle: 90
+      pin: 11
+    calf:
+      # Higher value -> move down
+      initial_angle: 90
+      pin: 10
+  front_right:
+    hip:
+      # Higher value -> move down
+      initial_angle: 90
+      pin: 15
+    thigh:
+      # Higher value -> move forward
+      initial_angle: 90
+      pin: 14
+    calf:
+      # Higher value -> move up
+      initial_angle: 90
+      pin: 13
+  back_left:
+    hip:
+      # Higher value -> move down
+      initial_angle: 90
+      pin: 6
+    thigh:
+      # Higher value -> move backward
+      initial_angle: 90
+      pin: 5
+    calf:
+      # Higher value -> move down
+      initial_angle: 90
+      pin: 4
+  back_right:
+    hip:
+      # Higher value -> move up
+      initial_angle: 90
+      pin: 9
+    thigh:
+      # Higher value -> move forward
+      initial_angle: 90
+      pin: 8
+    calf:
+      # Higher value -> move up
+      initial_angle: 90
+      pin: 7

@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  master:
+    image: sskorol/rosmaster:latest
+    network_mode: host
+    command:
+      - roscore
+
+  bridge:
+    image: sskorol/rosmaster:latest
+    network_mode: host
+    environment:
+      - ROS_MASTER_URI=http://localhost:11311
+    depends_on:
+      - master
+    command:
+      - roslaunch
+      - --wait
+      - rosbridge_server
+      - rosbridge_websocket.launch
+
+  backend:
+    image: sskorol/minipupper-be:latest
+    network_mode: host
+    build: ./backend
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+    device_cgroup_rules:
+      - 'c 189:* rmw'
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    image: sskorol/minipupper-fe:latest
+    network_mode: host
+    build: ./frontend
+    environment:
+      - REACT_APP_ROSBRIDGE_SERVER_IP=$HOST_IP
+      - REACT_APP_ROSBRIDGE_SERVER_PORT=9090
+      - REACT_APP_RECONNECTION_TIMER=1000
+      - REACT_APP_BE_URL=http://$HOST_IP:8080
+      - REACT_APP_IS_SIMULATION=true
+    depends_on:
+      - bridge
+      - backend
+
+  pupper:
+    image: sskorol/minipupper-core:latest
+    privileged: true
+    network_mode: host
+    depends_on:
+      - master
+      - teleop
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ROS_MASTER_URI=http://localhost:11311
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - DISPLAY
+    command:
+      - roslaunch
+      - --wait
+      - mini_pupper
+      - gazebo.launch
+      - gui:=false
+      - respawn_controller:=true
+
+  teleop:
+    image: sskorol/minipupper-core:latest
+    network_mode: host
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ROS_MASTER_URI=http://localhost:11311
+    depends_on:
+      - master
+      - bridge
+    command:
+      - rosrun
+      - teleop_legged_robots
+      - teleop_legged_robots.py

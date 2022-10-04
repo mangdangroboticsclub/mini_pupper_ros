@@ -1,0 +1,25 @@
+<launch>
+    <arg name="robot_name" default="/" />
+    <arg name="twist_publisher_name" default="cmd_vel" />
+    <arg name="pose_publisher_name" default="body_pose" />
+    <arg name="key_publisher_name" default="key" />
+    <arg name="teleop_publisher_name" default="teleop_status" />
+    <arg name="speed" default="0.5" />
+    <arg name="turn" default="1.0" />
+    <arg name="pose_speed" default="0.01" />
+    <arg name="pose_turn" default="0.1" />
+    <arg name="repeat_rate" default="0.0" />
+
+    <param name="robot_name" value="$(arg robot_name)" />
+    <param name="twist_publisher_name" value="$(arg twist_publisher_name)" />
+    <param name="pose_publisher_name" value="$(arg pose_publisher_name)" />
+    <param name="key_publisher_name" value="$(arg key_publisher_name)" />
+    <param name="teleop_publisher_name" value="$(arg teleop_publisher_name)" />
+    <param name="speed" value="$(arg speed)" />
+    <param name="turn" value="$(arg turn)" />
+    <param name="pose_speed" value="$(arg pose_speed)" />
+    <param name="pose_turn" value="$(arg pose_turn)" />
+    <param name="repeat_rate" value="$(arg repeat_rate)"/>
+
+    <node name="mini_pupper_teleop" pkg="mini_pupper_teleop" type="remote_keyboard_controller.py" ns="$(arg robot_name)" output="screen"/>
+</launch>

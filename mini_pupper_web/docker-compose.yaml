@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  master:
+    image: sskorol/rosmaster:latest
+    network_mode: host
+    command:
+      - roscore
+
+  bridge:
+    image: sskorol/rosmaster:latest
+    network_mode: host
+    environment:
+      - ROS_MASTER_URI=http://localhost:11311
+    depends_on:
+      - master
+    command:
+      - roslaunch
+      - --wait
+      - rosbridge_server
+      - rosbridge_websocket.launch
+
+  backend:
+    image: sskorol/minipupper-be:latest
+    network_mode: host
+    build: ./backend
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+    device_cgroup_rules:
+      - 'c 189:* rmw'
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    image: sskorol/minipupper-fe:latest
+    network_mode: host
+    build: ./frontend
+    environment:
+      - REACT_APP_ROSBRIDGE_SERVER_IP=$HOST_IP
+      - REACT_APP_ROSBRIDGE_SERVER_PORT=9090
+      - REACT_APP_RECONNECTION_TIMER=1000
+      - REACT_APP_BE_URL=http://$HOST_IP:8080
+    depends_on:
+      - bridge
+      - backend
+
+  servo:
+    image: sskorol/minipupper-core:latest
+    privileged: true
+    network_mode: host
+    depends_on:
+      - master
+      - teleop
+      - smoother
+    volumes:
+      - ./calibration_settings.yaml:/root/minipupper_ws/src/servo_interface/config/calibration_settings.yaml
+      - /sys/class/pwm/pwmchip0:/sys/class/pwm/pwmchip0
+      - /sys/class/gpio:/sys/class/gpio
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ROS_MASTER_URI=http://localhost:11311
+    command:
+      - roslaunch
+      - --wait
+      - mini_pupper
+      - no.smoother.bringup.launch
+
+  smoother:
+    image: sskorol/minipupper-core:latest
+    network_mode: host
+    depends_on:
+      - master
+    environment:
+      - ROS_MASTER_URI=http://localhost:11311
+    command:
+      - roslaunch
+      - --wait
+      - champ_bringup
+      - velocity_smoother.launch
+
+  teleop:
+    image: sskorol/minipupper-core:latest
+    network_mode: host
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ROS_MASTER_URI=http://localhost:11311
+    depends_on:
+      - master
+      - bridge
+      - smoother
+    command:
+      - rosrun
+      - teleop_legged_robots
+      - teleop_legged_robots.py

@@ -38,6 +38,8 @@ CMakeLists.txt.user
 srv/_*.py
 *.pcd
 *.pyc
+__pycache__
+.pytest_cache
 qtcreator-*
 *.user
 
@@ -53,4 +55,8 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
+.vscode
+.idea
 
+node_modules
+*venv

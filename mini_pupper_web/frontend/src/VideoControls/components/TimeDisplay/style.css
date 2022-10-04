@@ -1,0 +1,11 @@
+.time-display {
+  font-size: 12px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+}
+
+.time-display span {
+  vertical-align: middle;
+}

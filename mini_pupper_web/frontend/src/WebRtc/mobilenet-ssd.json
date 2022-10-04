@@ -1,0 +1,8 @@
+{
+  "camera_type": "rgb",
+  "cam_width": "300",
+  "cam_height": "300",
+  "nn_model": "",
+  "mono_camera_resolution": "THE_800_P",
+  "median_filter": "KERNEL_7x7"
+}

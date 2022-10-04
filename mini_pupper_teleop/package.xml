@@ -1,7 +1,7 @@
 <package format="2">
   <name>mini_pupper_teleop</name>
   <version>0.1.0</version>
-  <description>ROS Package to control Mini Pupper from JoyStick</description>
+  <description>ROS Package to control Mini Pupper from joystick or remote keyboard</description>
 
   <maintainer email="fae@mangdang.net">MangDang</maintainer>
   <author email="fae@mangdang.net">MangDang</author>
@@ -10,4 +10,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roslaunch</depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>tf_conversions</exec_depend>
 </package>

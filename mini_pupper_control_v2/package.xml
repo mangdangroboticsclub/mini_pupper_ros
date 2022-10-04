@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mini_pupper_control_v2</name>
+  <version>0.0.1</version>
+  <description>Servo control package</description>
+  <maintainer email="serhii.s.korol@gmail.com">Sergey Korol</maintainer>
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>python3-pydantic</build_depend>
+  <build_depend>tf_conversions</build_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>sensor_msgs</build_export_depend>
+  <build_export_depend>python3-pydantic</build_export_depend>
+  <build_export_depend>tf_conversions</build_export_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>python3-pydantic</exec_depend>
+  <exec_depend>teleop_legged_robots</exec_depend>
+  <exec_depend>tf_conversions</exec_depend>
+</package>

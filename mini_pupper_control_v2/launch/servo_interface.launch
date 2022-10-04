@@ -1,0 +1,7 @@
+<launch>
+  <arg name="should_stand" default="false" />
+
+  <node name="mini_pupper_control_v2" pkg="mini_pupper_control_v2" type="servo_controller_v2.py" output="screen">
+    <param name="should_stand" value="$(arg should_stand)"/>
+  </node>
+</launch>
