@@ -330,6 +330,18 @@ See the [README in mini_pupper_gazebo](./mini_pupper_gazebo/README.md).
 ## 4.Computer Vision
 
 Mini Pupper OpenCV Object Detection Demo
+### Installation of OAK Camera SDK
+```sh
+sudo apt-get install ros-noetic-depthai-ros
+```
+### Try Object Following demo
+```sh
+# Terminal 1
+roslaunch mini_pupper_bringup bringup.launch
+
+# Terminal 2
+roslaunch mini_pupper_examples follow_object.launch
+```
 
 ![Mini Pupper OpenCV Object Detection](imgs/OpenCV.ObjDetect.gif)
 
