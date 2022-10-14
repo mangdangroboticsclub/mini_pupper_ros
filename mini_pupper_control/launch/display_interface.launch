@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-  <node name="display_interface" pkg="mini_pupper_control" type="display_interface.py" output="screen" />
-</launch>

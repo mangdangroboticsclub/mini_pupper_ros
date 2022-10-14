@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-  <arg name="legacy" default="false" />
-  <node name="servo_interface" pkg="mini_pupper_control" type="servo_interface.py" output="screen" unless="$(arg legacy)" />
-  <node name="servo_interface_legacy" pkg="mini_pupper_control" type="servo_interface_legacy.py" output="screen" if="$(arg legacy)" />
-</launch>
