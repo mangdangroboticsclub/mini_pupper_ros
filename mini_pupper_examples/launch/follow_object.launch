@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<?xml version="1.0"?>
 <launch>
     <include file="$(find depthai_examples)/launch/mobile_publisher.launch" />
     <node pkg="mini_pupper_examples" type="pose_controller.py" name="pose_controller" output="screen"/>
