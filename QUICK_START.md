@@ -1,6 +1,7 @@
 # Quick Start with Mini Pupper Simulation
 
-## Prerequisite 
+## Pre-requisite 
+
 - Ubuntu 20.04
 
 ## 1. Install ROS Noetic 
@@ -32,7 +33,7 @@ rosdep install --from-paths . --ignore-src -r -y
 
 ```
 
-### 4. Install cartographer
+## 4. Install cartographer
 
 ```sh
 mkdir -p ~/carto_ws/src
@@ -50,18 +51,18 @@ catkin_make_isolated --install --use-ninja
 source install_isolated/setup.bash
 ```
 
-## 4. Build
+## 5. Build
 
 ```sh
 catkin_make
 source $YOUR_WS/devel/setup.bash
 ```
 
-## 5. Run Simulation in Gazebo 
+## 6. Run Simulation in Gazebo 
 
 Terminal 1
 ```sh
-roslaunch mini_pupper_bringup bringup.launch
+roslaunch mini_pupper_gazebo gazebo.launch
 ```
 
 Terminal 2
