@@ -37,7 +37,7 @@ source install_isolated/setup.bash
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
 git clone -b ros1 https://github.com/mangdangroboticsclub/mini_pupper_ros.git
-vcs import < minipupper_ros/.minipupper.repos --recursive
+vcs import < mini_pupper_ros/.minipupper.repos --recursive
 ```
 
 ```sh
