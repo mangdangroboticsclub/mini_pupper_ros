@@ -10,15 +10,28 @@ First, install ROS Noetic Desktop-Full by following the page below.
 https://wiki.ros.org/noetic/Installation/Ubuntu
 
 
-## 2. Install Common ROS Tools
+## 2. Install Cartographer
 
 ```sh
 sudo apt-get update
 sudo apt-get install -y python3-vcstool python3-rosdep ninja-build stow
+mkdir -p ~/carto_ws/src
+cd ~/carto_ws
+vcs import src --input https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/cartographer_ros.rosinstall
 ```
 
-## 3. Install Mini-Pupper Packages and Dependencies
+```sh
+sudo rosdep init
+rosdep update
+source /opt/ros/noetic/setup.bash
+rosdep install --from-paths src --ignore-src -r -y
+src/cartographer/scripts/install_abseil.sh
+sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
+catkin_make_isolated --install --use-ninja
+source install_isolated/setup.bash
+```
 
+## 3. Install Mini-Pupper and Other Dependencies
 
 ```sh
 mkdir -p ~/catkin_ws/src
@@ -30,47 +43,23 @@ vcs import < minipupper_ros/.minipupper.repos --recursive
 ```sh
 cd ..
 rosdep install --from-paths . --ignore-src -r -y
-
-```
-
-## 4. Install cartographer
-
-```sh
-mkdir -p ~/carto_ws/src
-cd ~/carto_ws
-vcs import src --input https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/cartographer_ros.rosinstall
-# Hot fix for Ubuntu 20.04. See https://github.com/cartographer-project/cartographer_ros/pull/1745
-sed -i -e "s%<depend>libabsl-dev</depend>%<\!--<depend>libabsl-dev</depend>-->%g" src/cartographer/package.xml
-sudo rosdep init
-rosdep update
-source /opt/ros/noetic/setup.bash
-rosdep install --from-paths src --ignore-src -r -y
-src/cartographer/scripts/install_abseil.sh
-sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
-catkin_make_isolated --install --use-ninja
-source install_isolated/setup.bash
-```
-
-## 5. Build
-
-```sh
 catkin_make
-source $YOUR_WS/devel/setup.bash
+source ~/catkin_ws/devel/setup.bash
 ```
 
-## 6. Run Simulation in Gazebo 
+## 4. Run Simulation in Gazebo 
 
-Terminal 1
+# Terminal 1
 ```sh
 roslaunch mini_pupper_gazebo gazebo.launch
 ```
 
-Terminal 2
+# Terminal 2
 ```sh
 roslaunch mini_pupper_navigation navigate.launch
 ```
 
-Terminal 3
+# Terminal 3
 ```sh
 roslaunch champ_teleop teleop.launch
 ```
