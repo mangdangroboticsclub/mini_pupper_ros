@@ -49,18 +49,19 @@ source ~/catkin_ws/devel/setup.bash
 
 ## 4. Run Simulation in Gazebo 
 
-# Terminal 1
+
 ```sh
+# Terminal 1
 roslaunch mini_pupper_gazebo gazebo.launch
 ```
 
-# Terminal 2
 ```sh
+# Terminal 2
 roslaunch mini_pupper_navigation navigate.launch
 ```
 
-# Terminal 3
 ```sh
+# Terminal 3
 roslaunch champ_teleop teleop.launch
 ```
 
