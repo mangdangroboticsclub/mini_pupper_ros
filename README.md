@@ -56,7 +56,7 @@ Download the Mini Pupper ROS package in the workspace.
 
 ```sh
 cd $YOUR_WS/src
-git clone -b ros1 https://github.com/mangdangroboticsclub/minipupper_ros.git
+git clone -b ros1 https://github.com/mangdangroboticsclub/mini_pupper_ros.git
 ```
 
 Download Champ repo, you can also refer to the [champ](https://github.com/chvmp/champ) README.
@@ -64,7 +64,7 @@ Download Champ repo, you can also refer to the [champ](https://github.com/chvmp/
 
 ```sh
 cd $YOUR_WS/src
-vcs import < minipupper_ros/.minipupper.repos --recursive
+vcs import < mini_pupper_ros/.minipupper.repos --recursive
 ```
 
 Build and install all ROS packages.
