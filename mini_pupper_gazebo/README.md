@@ -2,7 +2,7 @@
 
 You can play with Mini Pupper with only your laptop or PC. Let's learn about Robotics by running the simulation in Gazebo.   
 
-![nav](imgs/instruction.gif)
+![nav](../imgs/instruction.gif)
 
 ## Pre-requisite 
 
