@@ -1,5 +1,7 @@
 # Quick Start with Mini Pupper Simulation
 
+![nav](imgs/instruction.gif)
+
 ## Pre-requisite 
 
 - Ubuntu 20.04
