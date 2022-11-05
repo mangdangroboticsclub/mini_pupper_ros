@@ -269,7 +269,6 @@ roslaunch mini_pupper_bringup bringup.launch
 #### 2.3.2 Run Cartographer
 
 **You should run this command on PC**  
-**Notice: If you are using gazebo, set the param /use_sim_time in navigate.launch as true.**
 
 ```sh
 roslaunch mini_pupper_navigation slam.launch
@@ -313,7 +312,6 @@ roslaunch mini_pupper_bringup bringup.launch
 #### 2.4.3 Run Cartographer(for localization) and move_base
 
 **You should run this command on PC**  
-**Notice: If you are using gazebo, set the param /use_sim_time in navigate.launch as true.**
 
 ```sh
 roslaunch mini_pupper_navigation navigate.launch
