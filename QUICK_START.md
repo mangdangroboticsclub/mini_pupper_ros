@@ -28,7 +28,6 @@ rosdep install --from-paths src --ignore-src -r -y
 src/cartographer/scripts/install_abseil.sh
 sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
 catkin_make_isolated --install --use-ninja
-source install_isolated/setup.bash
 ```
 
 ## 3. Install Mini-Pupper and Other Dependencies
@@ -41,10 +40,10 @@ vcs import < mini_pupper_ros/.minipupper.repos --recursive
 ```
 
 ```sh
-cd ..
-rosdep install --from-paths . --ignore-src -r -y
+cd ~/catkin_ws
+rosdep install --from-paths src --ignore-src -r -y
+source ../carto_ws/install_isolated/setup.bash
 catkin_make
-source ~/catkin_ws/devel/setup.bash
 ```
 
 ## 4. Run Simulation in Gazebo 
@@ -52,16 +51,19 @@ source ~/catkin_ws/devel/setup.bash
 
 ```sh
 # Terminal 1
+source ~/catkin_ws/devel/setup.bash
 roslaunch mini_pupper_gazebo gazebo.launch
 ```
 
 ```sh
 # Terminal 2
+source ~/catkin_ws/devel/setup.bash
 roslaunch mini_pupper_navigation navigate.launch
 ```
 
 ```sh
 # Terminal 3
+source ~/catkin_ws/devel/setup.bash
 roslaunch champ_teleop teleop.launch
 ```
 
