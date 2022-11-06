@@ -43,6 +43,10 @@ options = {
   landmarks_sampling_ratio = 1.,
 }
 
+if os.getenv("CARTOGRAPHER_USE_ODOM") == "true" then
+  options.use_odometry = true
+end
+
 MAP_BUILDER.use_trajectory_builder_2d = true
 
 TRAJECTORY_BUILDER_2D.submaps.num_range_data = 35

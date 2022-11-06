@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="robot_name" default="/"/>
-    <arg name="rviz"       default="false"/>
+    <arg name="rviz"       default="true"/>
+    <arg name="use_odom"   default="false"/>
+
+    <env name="CARTOGRAPHER_USE_ODOM" value="$(arg use_odom)" />
 
     <arg if="$(eval arg('robot_name') == '/')"  name="frame_prefix" value="" />
     <arg unless="$(eval arg('robot_name') == '/')" name="frame_prefix" value="$(arg robot_name)/" />
@@ -22,7 +25,7 @@
             <arg name="robot_name"   value="$(arg robot_name)"/>
         </include>
 
-        <node name="rviz" pkg="rviz" type="rviz" required="true"
+        <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" required="true"
             args="-d $(find mini_pupper_navigation)/rviz/2d.rviz" />
     </group>
 </launch>

@@ -2,6 +2,9 @@
 <launch>
     <arg name="robot_name" default="/"/>
     <arg name="rviz"       default="true"/>
+    <arg name="use_odom"   default="false"/>
+
+    <env name="CARTOGRAPHER_USE_ODOM" value="$(arg use_odom)" />
 
     <arg if="$(eval arg('robot_name') == '/')"  name="frame_prefix" value="" />
     <arg unless="$(eval arg('robot_name') == '/')" name="frame_prefix" value="$(arg robot_name)/" />
