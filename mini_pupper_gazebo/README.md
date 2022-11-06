@@ -18,7 +18,7 @@ https://wiki.ros.org/noetic/Installation/Ubuntu
 
 ```sh
 sudo apt-get update
-sudo apt-get install -y python3-vcstool python3-rosdep ninja-build stow
+sudo apt-get install -y python3-vcstool python3-rosdep ninja-build stow git
 mkdir -p ~/carto_ws/src
 cd ~/carto_ws
 vcs import src --input https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/cartographer_ros.rosinstall
@@ -46,7 +46,7 @@ vcs import < mini_pupper_ros/.minipupper.repos --recursive
 ```sh
 cd ~/catkin_ws
 rosdep install --from-paths src --ignore-src -r -y
-source ../carto_ws/install_isolated/setup.bash
+source ~/carto_ws/install_isolated/setup.bash
 catkin_make
 ```
 
@@ -62,7 +62,7 @@ roslaunch mini_pupper_gazebo gazebo.launch
 ```sh
 # Terminal 2
 source ~/catkin_ws/devel/setup.bash
-roslaunch mini_pupper_navigation navigate.launch
+roslaunch mini_pupper_navigation navigate.launch use_odom:=true
 ```
 
 ```sh
