@@ -2,7 +2,7 @@
 
 There was an effort upgrading Mini Pupper to ROS2 galactic. Basically, we made the simulation work in Gazebo. However, we paused the work due to many missing features in galactic and it's end of life for the community support already. 
 
-Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is a long-term support (LTS) release and it has become ROS2 community's primary choice for adding new features or maintaining. We are going to upgrade Mini Pupper's software to humble.
+Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is a long-term support (LTS) release and it has become ROS2 community's primary choice for adding new features or maintaining. **We are going to upgrade Mini Pupper's software to humble.**
 
 ## Goal
 
@@ -17,7 +17,7 @@ Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is 
 2. mini_pupper_bsp: hardware drivers for servo and display.
 3. ds4drv: Sony DualShock 4 userspace driver.
 
-*Outcome*: Mini Pupper can walk properly controlled by PS4 controller.
+**Outcome**: Mini Pupper can walk properly controlled by PS4 controller.
 
 ### Upgrade champ projects from galactic to humble
 
@@ -25,7 +25,7 @@ Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is 
 2. champ_robots
 3. champ_teleop  
 
-*Outcome*: champ and mini_pupper shall be able to do slam in simulation 
+**Outcome**: champ and mini_pupper shall be able to do slam in simulation 
 
 ### Upgrade mini_pupper_ros to humble
 
@@ -41,7 +41,7 @@ Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is 
 
 6. mini_pupper_examples: community to support.
 
-*Outcome*: Mini Pupper can do slam in real world.
+**Outcome**: Mini Pupper can do slam in real world.
 
 ### Apply humble to Mini Pupper 2
 1. Setup git repo/branch.
@@ -49,4 +49,6 @@ Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is 
 3. Update hardware drivers.
 4. Integrate new sensors.
 5. Testing and Tuning.
+
+**Outcome**: Mini Pupper 2 can do slam in real world.
 
