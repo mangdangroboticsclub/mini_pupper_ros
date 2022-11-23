@@ -33,7 +33,7 @@ Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is 
 
 ### 3. Upgrade mini_pupper_ros to humble
 
-1. cartographer: use [ROS2 version]https://github.com/ros2/cartographer) if possible. Otherwise, find alternatives. 
+1. cartographer: use [ROS2 version](https://github.com/ros2/cartographer) if possible. Otherwise, find alternatives. 
 
 2. ldlidar_stl_ros: use [ROS2 version](https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2). Might need to request them and work them to support humble.
 
