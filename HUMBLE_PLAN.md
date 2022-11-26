@@ -1,8 +1,8 @@
-# Plan for Upgrading to ROS2 Humble
+# Plan for Upgrading to ROS 2 Humble
 
-There was an effort upgrading Mini Pupper to ROS2 galactic. Basically, we made the simulation work in Gazebo. However, we paused the work due to many missing features in galactic and it's end of life for the official support at the end of November 2022. 
+There was an effort upgrading Mini Pupper to ROS 2 galactic. Basically, we made the simulation work in Gazebo. However, we paused the work due to many missing features in galactic and it's end of life for the official support at the end of November 2022. 
 
-Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is a long-term support (LTS) release and it has become ROS2 community's primary choice for adding new features or maintaining. **We are going to upgrade Mini Pupper's software to humble.**
+Humble Hawksbill (humble) is the most important ROS 2 distribution so far. It is a long-term support (LTS) release and it has become ROS 2 community's primary choice for adding new features or maintaining. **We are going to upgrade Mini Pupper's software to humble.**
 
 
 ## Goal
@@ -17,9 +17,9 @@ Humble Hawksbill (humble) is the most important ROS2 distribution so far. It is 
 
 1. [mangdangroboticsclub/StanfordQuadruped](https://github.com/mangdangroboticsclub/StanfordQuadruped): fork of the Stanford Pupper with modification to make it run on Mini Pupper
 2. [mangdangroboticsclub/mini_pupper_bsp](https://github.com/mangdangroboticsclub/mini_pupper_bsp): hardware drivers for servo and display.
-3. ds4drv: Sony DualShock 4 userspace driver.
+3. [ds4drv](https://github.com/chrippa/ds4drv): Sony DualShock 4 userspace driver.
 
-Note: Thanks to hdumcke, these steps have been almost done in September 2022.
+Note: Thanks to [@hdumcke](https://github.com/hdumcke), these steps have been almost done in September 2022.
 
 **Outcome**: Mini Pupper can walk properly controlled by PS4 controller.
 
@@ -38,9 +38,9 @@ Note: If we found some error caused by Gazebo (formerly called Ignition), we may
 
 ### 3. Upgrade mini_pupper_ros to humble
 
-1. cartographer: use [ROS2 version](https://github.com/ros2/cartographer) if possible. Otherwise, find alternatives. 
+1. cartographer: use ROS 2 version ([ros2/cartographer_ros](https://github.com/ros2/cartographer_ros), [ros2/cartographer](https://github.com/ros2/cartographer)) if possible. Otherwise, find alternatives. 
 
-2. ldlidar_stl_ros: use [ROS2 version](https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2). Might need to request them and work them to support humble or try the [community maintained version](https://github.com/Myzhar/ldrobot-lidar-ros2)
+2. ldlidar_stl_ros: use ROS 2 version ([ldrobotSensorTeam/ldlidar_stl_ros2](https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2)). Might need to request them and work them to support humble or try the community maintained version ([Myzhar/ldrobot-lidar-ros2](https://github.com/Myzhar/ldrobot-lidar-ros2)).
 
 3. mini_pupper_control, mini_pupper_teleop: update launch files and scripts to run in humble and ubuntu 22.04.
 
