@@ -44,7 +44,7 @@ rosdep update
 source /opt/ros/noetic/setup.bash
 rosdep install --from-paths src --ignore-src -r -y
 src/cartographer/scripts/install_abseil.sh
-sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
+sudo apt-get remove ros-noetic-abseil-cpp
 catkin_make_isolated --install --use-ninja
 source install_isolated/setup.bash
 ```
@@ -89,12 +89,15 @@ gedit ~/.bashrc
 ```
 Then add your ROS_MASTER_URI and ip address config.
 
-![ROS_IP](imgs/ROS_IP_1.png)
+```sh
+export ROS_MASTER_URI=http://${IP_ADDRESS_OF_RASPBERRY_PI}:11311
+export ROS_IP=${IP_ADDRESS_OF_REMOTE_PC}
+```
 
 For example:
 
 ```sh
-export ROS_MASTER_URI=http://192.168.1.106:11311
+export ROS_MASTER_URI=http://192.168.1.107:11311
 export ROS_IP=192.168.1.106
 ```
 
@@ -193,12 +196,15 @@ nano ~/.bashrc
 ```
 Then add your ROS_MASTER_URI and ip address config.
 
-![ROS_IP](imgs/ROS_IP_2.png)
+```sh
+export ROS_MASTER_URI=http://${IP_ADDRESS_OF_RASPBERRY_PI}:11311
+export ROS_IP=${IP_ADDRESS_OF_RASPBERRY_PI}
+```
 
 For example:
 
 ```sh
-export ROS_MASTER_URI=http://192.168.1.106:11311
+export ROS_MASTER_URI=http://192.168.1.107:11311
 export ROS_IP=192.168.1.107
 ```
 
