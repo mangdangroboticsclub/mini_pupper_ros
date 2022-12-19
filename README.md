@@ -1,21 +1,18 @@
 # Mini Pupper ROS2
 
 ## 1. Installation
-Ubuntu 20.04 + ROS2 Galatic/Humble is required.
+Ubuntu 20.04 + ROS2 Galatic is required.
 ```sh
 cd ~
-mkdir ros2_ws
-cd ros2_ws
-mkdir src
+mkdir colcon_ws
+cd colcon_ws
+mksir src
 cd src
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
 git clone --recursive https://github.com/chvmp/champ -b ros2
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
-colcon build
-# If your ROS version is Galactic
-sudo apt-get install ros-galactic-teleop-twist-keyboard ros-galactic-cartographer-ros
-# Else if your ROS version is Humble
+colcon build --packages-ignore champ_gazebo mini_pupper_gazebo
 sudo apt-get install ros-humble-ros2-controllers ros-humble-teleop-twist-keyboard ros-humble-cartographer-ros
 ```
 
