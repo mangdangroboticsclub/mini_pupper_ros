@@ -12,6 +12,7 @@ git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
 git clone --recursive https://github.com/chvmp/champ -b ros2
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
+pip install setuptools==58.2.0
 colcon build --packages-ignore champ_gazebo mini_pupper_gazebo
 sudo apt-get install ros-humble-ros2-controllers ros-humble-teleop-twist-keyboard ros-humble-cartographer-ros
 ```
