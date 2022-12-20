@@ -15,12 +15,14 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_bringup')
+    hardware_connected = LaunchConfiguration("hardware_connected", default='false')
 
     joints_config = PathJoinSubstitution(
         [this_package, 'config', 'joints', 'joints.yaml']
@@ -34,8 +36,14 @@ def generate_launch_description():
     description_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_description'), 'urdf', 'mini_pupper_description.urdf.xacro']
     )
-    bringup_launch_path = PathJoinSubstitution(
+    champ_bringup_launch_path = PathJoinSubstitution(
         [FindPackageShare('champ_bringup'), 'launch', 'bringup.launch.py']
+    )
+    servo_bringup_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_control'), 'launch', 'servo_interface.launch.py']
+    )
+    lidar_bringup_launch_path = PathJoinSubstitution(
+        [FindPackageShare('ldlidar_stl_ros2'), 'launch', 'ld06.launch.py']
     )
 
     return LaunchDescription([
@@ -59,12 +67,12 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             name='hardware_connected', 
-            default_value='false',
+            default_value=hardware_connected,
             description='Set to true if connected to a physical robot'
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(bringup_launch_path),
+            PythonLaunchDescriptionSource(champ_bringup_launch_path),
             launch_arguments={
                 "use_sim_time": LaunchConfiguration("sim"),
                 "robot_name": LaunchConfiguration("robot_name"),
@@ -79,5 +87,17 @@ def generate_launch_description():
                 "gait_config_path": gait_config,
                 "description_path": description_path
             }.items(),
-        )
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(servo_bringup_launch_path),
+            launch_arguments={}.items(),
+            condition = IfCondition(hardware_connected),
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(lidar_bringup_launch_path),
+            launch_arguments={}.items(),
+            condition = IfCondition(hardware_connected),
+        ),
     ])
