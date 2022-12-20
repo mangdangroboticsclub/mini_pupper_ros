@@ -14,8 +14,16 @@ git clone https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
 pip install setuptools==58.2.0
+
+# execute on Mini Pupper
 colcon build --packages-ignore champ_gazebo mini_pupper_gazebo
+sudo apt-get install ros-humble-ros2-controllers
+# execute on PC
+colcon build
 sudo apt-get install ros-humble-ros2-controllers ros-humble-teleop-twist-keyboard ros-humble-cartographer-ros
+
+echo "source ~/colcon_ws/install/setup.bash" >> ~/.bashrc
+echo "export ROS_DOMAIN_ID=42"
 ```
 
 ## 2. RVIZ Test
@@ -60,6 +68,13 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Then control robot dog with your keyboard
 ```
 
+If you want to save map:
+```sh
+ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '~/mymap.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ~/mymap
+```
+
 ## 5. Cartographer Test in reality
 ```sh
 # Terminal 1, execute on Mini Pupper
@@ -71,4 +86,11 @@ ros2 launch mini_pupper_navigation slam.launch.py
 # Terminal 3
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Then control robot dog with your keyboard
+```
+
+If you want to save map:
+```sh
+ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '~/mymap.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ~/mymap
 ```
