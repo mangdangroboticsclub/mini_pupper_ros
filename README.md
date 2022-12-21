@@ -71,8 +71,8 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 If you want to save map:
 ```sh
 ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
-ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '~/mymap.pbstream'}"
-ros2 run nav2_map_server map_saver_cli -f ~/mymap
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/mymap.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ${HOME}/mymap
 ```
 
 ## 5. Cartographer Test in reality
@@ -91,6 +91,6 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 If you want to save map:
 ```sh
 ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
-ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '~/mymap.pbstream'}"
-ros2 run nav2_map_server map_saver_cli -f ~/mymap
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/mymap.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ${HOME}/mymap
 ```
