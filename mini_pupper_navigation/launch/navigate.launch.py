@@ -10,7 +10,18 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     
-    map_file = LaunchConfiguration('map_file', default=os.path.join(get_package_share_directory('mini_pupper_navigation'), 'maps', 'mymap.yaml'))
+    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
+                                                  get_package_share_directory('mini_pupper_navigation'), 'config/cartographer'))
+                                                  
+    configuration_basename = LaunchConfiguration('configuration_basename',
+                                                 default='nav.lua')
+    
+    load_state_filename = LaunchConfiguration('configuration_basename', default=os.path.join(
+                                                  get_package_share_directory('mini_pupper_navigation'), 'maps/mymap.pbstream'))
+                                                 
+    resolution = LaunchConfiguration('resolution', default='0.05')
+    
+    publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
     
     rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'), 'rviz', 'cartographer.rviz')
 
@@ -23,6 +34,26 @@ def generate_launch_description():
         #     parameters=[{'use_sim_time': use_sim_time},
         #                 {'yaml_filename': map_file}]),
         
+        DeclareLaunchArgument(
+            'use_sim_time',
+            default_value=use_sim_time,
+            description='use_sim_time'),
+        
+        DeclareLaunchArgument(
+            'cartographer_config_dir',
+            default_value=cartographer_config_dir,
+            description='Full path to config file to load'),
+        
+        DeclareLaunchArgument(
+            'configuration_basename',
+            default_value=configuration_basename,
+            description='Name of lua file for cartographer'),
+        
+        DeclareLaunchArgument(
+            'load_state_filename',
+            default_value=load_state_filename,
+            description='pbstream file'),
+        
         Node(
             package = 'cartographer_ros',
             executable = 'cartographer_node',
@@ -30,16 +61,28 @@ def generate_launch_description():
             output = 'screen',
             parameters = [{'use_sim_time': use_sim_time}],
             arguments = [
-                '-configuration_directory', os.path.join(get_package_share_directory('mini_pupper_navigation'), 'config/cartographer'),
-                '-configuration_basename', 'nav.lua',
-                '-load_state_filename', os.path.join(get_package_share_directory('mini_pupper_navigation'), 'maps', 'mymap.pbstream')]),
+                '-configuration_directory', cartographer_config_dir,
+                '-configuration_basename', configuration_basename,
+                '-load_state_filename', load_state_filename,
+            ]),
+        
+        DeclareLaunchArgument(
+            'resolution',
+            default_value=resolution,
+            description='resolution'),
+        
+        DeclareLaunchArgument(
+            'publish_period_sec',
+            default_value=publish_period_sec,
+            description='publish_period_sec'),
         
         Node(
             package = 'cartographer_ros',
             executable = 'cartographer_occupancy_grid_node',
             parameters = [
                 {'use_sim_time': use_sim_time},
-                {'resolution': 0.05}]),
+                {'-resolution': resolution},
+                {'-publish_period_sec': publish_period_sec}]),
         
         # Node(
         #     package='tf2_ros',
