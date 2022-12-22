@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 from glob import glob
 
-package_name = 'mini_pupper_control'
+package_name = 'mini_pupper_oak'
 
 setup(
     name=package_name,
@@ -16,14 +16,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='somebody very awesome',
-    maintainer_email='user@user.com',
+    maintainer='mangdang',
+    maintainer_email='thefoxfoxfox@outlook.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'servo_interface = mini_pupper_control.servo_interface:main'
+            'oak_detect = mini_pupper_oak.oak_detect:main'
         ],
     },
 )

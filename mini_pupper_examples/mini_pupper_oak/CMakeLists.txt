@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
-project(mini_pupper_control)
+project(mini_pupper_oak)
 
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY launch config
+  DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
 )
 

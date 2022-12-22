@@ -17,13 +17,15 @@ pip install setuptools==58.2.0
 
 # execute on Mini Pupper
 colcon build --packages-ignore champ_gazebo mini_pupper_gazebo
-sudo apt-get install ros-humble-ros2-controllers
+sudo apt-get install ros-humble-ros2-controllers ros-humble-depthai-ros
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
+sudo udevadm control --reload-rules && sudo udevadm trigger
 # execute on PC
 colcon build
 sudo apt-get install ros-humble-ros2-controllers ros-humble-teleop-twist-keyboard ros-humble-cartographer-ros
 
 echo "source ~/colcon_ws/install/setup.bash" >> ~/.bashrc
-echo "export ROS_DOMAIN_ID=42"
+echo "export ROS_DOMAIN_ID=42" >> ~/.bashrc
 ```
 
 ## 2. RVIZ Test
