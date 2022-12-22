@@ -46,16 +46,20 @@ class OAK_DETECT(Node):
         # pitch = euler_list[1]
         # yaw = euler_list[2]
         
-        self.robot_roll = self.limit_in_bounds(self.robot_roll, self.robot_rpy_upper_bounds[0], self.robot_rpy_lower_bounds[0])
-        self.robot_pitch = self.limit_in_bounds(self.robot_pitch, self.robot_rpy_upper_bounds[1], self.robot_rpy_lower_bounds[1])
-        self.robot_yaw = self.limit_in_bounds(self.robot_yaw, self.robot_rpy_upper_bounds[2], self.robot_rpy_lower_bounds[2])
+        self.robot_roll = self.limit_in_bounds(self.robot_roll,\
+                                               self.robot_rpy_upper_bounds[0]
+                                               self.robot_rpy_lower_bounds[0])
+        self.robot_pitch = self.limit_in_bounds(self.robot_pitch,\
+                                                self.robot_rpy_upper_bounds[1],\
+                                                self.robot_rpy_lower_bounds[1])
+        self.robot_yaw = self.limit_in_bounds(self.robot_yaw,\
+                                              self.robot_rpy_upper_bounds[2],\
+                                              self.robot_rpy_lower_bounds[2])
             
     def quaternion_from_euler(self, euler_list):
         # roll = euler_list[0]
         # pitch = euler_list[1]
         # yaw = euler_list[2]
-        
-        sy = math.sin(euler_list[2] * 0.5)
         
         w = math.cos(euler_list[2] * 0.5) * math.cos(euler_list[1] * 0.5) *\
             math.cos(euler_list[0] * 0.5) + math.sin(euler_list[2] * 0.5) *\
