@@ -6,10 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /TF1/Frames1
-        - /LaserScan1
         - /Cartographer1
       Splitter Ratio: 0.5794117450714111
-    Tree Height: 785
+    Tree Height: 791
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -48,33 +47,73 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_footprint:
           Value: true
+        base_inertia:
+          Value: false
+        base_laser:
+          Value: false
         base_link:
-          Value: true
-        base_scan:
-          Value: true
-        camera_link:
-          Value: true
-        camera_rgb_frame:
-          Value: true
-        camera_rgb_optical_frame:
-          Value: true
-        caster_back_left_link:
-          Value: true
-        caster_back_right_link:
-          Value: true
+          Value: false
         imu_link:
-          Value: true
+          Value: false
+        lb1:
+          Value: false
+        lb2:
+          Value: false
+        lb3:
+          Value: false
+        lbfoot:
+          Value: false
+        lf1:
+          Value: false
+        lf2:
+          Value: false
+        lf3:
+          Value: false
+        lffoot:
+          Value: false
+        lidar:
+          Value: false
+        lpb1:
+          Value: false
+        lpb2:
+          Value: false
+        lpf1:
+          Value: false
+        lpf2:
+          Value: false
         map:
-          Value: true
+          Value: false
         odom:
-          Value: true
-        wheel_left_link:
-          Value: true
-        wheel_right_link:
-          Value: true
+          Value: false
+        rb1:
+          Value: false
+        rb2:
+          Value: false
+        rb3:
+          Value: false
+        rbfoot:
+          Value: false
+        rf1:
+          Value: false
+        rf2:
+          Value: false
+        rf3:
+          Value: false
+        rffoot:
+          Value: false
+        rpb1:
+          Value: false
+        rpb2:
+          Value: false
+        rpf1:
+          Value: false
+        rpf2:
+          Value: false
+        yellow_plate:
+          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -85,95 +124,54 @@ Visualization Manager:
           odom:
             base_footprint:
               base_link:
-                base_scan:
+                base_inertia:
                   {}
-                camera_link:
-                  camera_rgb_frame:
-                    camera_rgb_optical_frame:
-                      {}
-                caster_back_left_link:
-                  {}
-                caster_back_right_link:
+                base_laser:
                   {}
                 imu_link:
                   {}
-                wheel_left_link:
+                lb1:
+                  lb2:
+                    lb3:
+                      lbfoot:
+                        {}
+                    lpb2:
+                      {}
+                  lpb1:
+                    {}
+                lf1:
+                  lf2:
+                    lf3:
+                      lffoot:
+                        {}
+                    lpf2:
+                      {}
+                  lpf1:
+                    {}
+                lidar:
                   {}
-                wheel_right_link:
+                rb1:
+                  rb2:
+                    rb3:
+                      rbfoot:
+                        {}
+                    rpb2:
+                      {}
+                  rpb1:
+                    {}
+                rf1:
+                  rf2:
+                    rf3:
+                      rffoot:
+                        {}
+                    rpf2:
+                      {}
+                  rpf1:
+                    {}
+                yellow_plate:
                   {}
       Update Interval: 0
       Value: true
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz_default_plugins/LaserScan
-      Color: 255; 255; 255
-      Color Transformer: Intensity
-      Decay Time: 0
-      Enabled: true
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 0
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: LaserScan
-      Position Transformer: XYZ
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.019999999552965164
-      Style: Points
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Best Effort
-        Value: /scan
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz_default_plugins/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: false
-      Enabled: false
-      Keep: 100
-      Name: Odometry
-      Position Tolerance: 0.10000000149011612
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 25; 0
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Arrow
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /odom
-      Value: false
     - Alpha: 0.699999988079071
       Class: rviz_default_plugins/Map
       Color Scheme: map
@@ -183,6 +181,7 @@ Visualization Manager:
       Topic:
         Depth: 5
         Durability Policy: Volatile
+        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /map
@@ -207,6 +206,7 @@ Visualization Manager:
               Topic:
                 Depth: 5
                 Durability Policy: Volatile
+                Filter size: 10
                 History Policy: Keep Last
                 Reliability Policy: Reliable
                 Value: /global_costmap/costmap
@@ -241,6 +241,7 @@ Visualization Manager:
               Topic:
                 Depth: 5
                 Durability Policy: Volatile
+                Filter size: 10
                 History Policy: Keep Last
                 Reliability Policy: Reliable
                 Value: /global_plan
@@ -257,6 +258,7 @@ Visualization Manager:
               Topic:
                 Depth: 5
                 Durability Policy: Volatile
+                Filter size: 10
                 History Policy: Keep Last
                 Reliability Policy: Reliable
                 Value: /local_costmap/footprint
@@ -270,6 +272,7 @@ Visualization Manager:
               Topic:
                 Depth: 5
                 Durability Policy: Volatile
+                Filter size: 10
                 History Policy: Keep Last
                 Reliability Policy: Reliable
                 Value: /local_costmap/costmap
@@ -304,6 +307,7 @@ Visualization Manager:
               Topic:
                 Depth: 5
                 Durability Policy: Volatile
+                Filter size: 10
                 History Policy: Keep Last
                 Reliability Policy: Reliable
                 Value: /local_plan
@@ -326,6 +330,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /particlecloud
@@ -361,6 +366,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /scan_matched_points2
@@ -433,6 +439,9 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /clicked_point
     - Class: rviz_default_plugins/SetInitialPose
+      Covariance x: 0.25
+      Covariance y: 0.25
+      Covariance yaw: 0.06853891909122467
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -446,25 +455,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 6.2725830078125
+      Distance: 6.832330226898193
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.4347907304763794
-        Y: 0.42844799160957336
-        Z: 0.801936149597168
+        X: 0.3709094524383545
+        Y: -0.15406078100204468
+        Z: 0.8008671402931213
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.17479735612869263
+      Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.795415163040161
+      Yaw: 3.1554110050201416
     Saved: ~
 Window Geometry:
   Displays:
@@ -472,7 +481,7 @@ Window Geometry:
   Height: 1014
   Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd0000000400000000000001560000039cfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000039c000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002f4fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000002f4000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d00650100000000000004500000000000000000000003800000039c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000156000003a0fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b000003a0000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f000002f4fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000002f4000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d0065010000000000000450000000000000000000000380000003a000000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Tool Properties:

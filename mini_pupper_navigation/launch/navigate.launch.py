@@ -15,13 +15,13 @@ def generate_launch_description():
     rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'), 'rviz', 'cartographer.rviz')
 
     return LaunchDescription([
-        Node(
-            package='nav2_map_server',
-            executable='map_server',
-            name='map_server',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time},
-                        {'yaml_filename': map_file}]),
+        # Node(
+        #     package='nav2_map_server',
+        #     executable='map_server',
+        #     name='map_server',
+        #     output='screen',
+        #     parameters=[{'use_sim_time': use_sim_time},
+        #                 {'yaml_filename': map_file}]),
         
         Node(
             package = 'cartographer_ros',
@@ -41,14 +41,21 @@ def generate_launch_description():
                 {'use_sim_time': use_sim_time},
                 {'resolution': 0.05}]),
         
-        Node(
-            package='nav2_lifecycle_manager',
-            executable='lifecycle_manager',
-            name='nav2_lifecycle_manager',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time},
-                        {'autostart': True},
-                        {'node_names': ['map_server']}]),
+        # Node(
+        #     package='tf2_ros',
+        #     executable='static_transform_publisher',
+        #     name='base_footprint_to_base_laser_ld06',
+        #     arguments=['0','0','0','0','0','0','base_footprint','base_laser']
+        # ),
+        
+        # Node(
+        #     package='nav2_lifecycle_manager',
+        #     executable='lifecycle_manager',
+        #     name='nav2_lifecycle_manager',
+        #     output='screen',
+        #     parameters=[{'use_sim_time': use_sim_time},
+        #                 {'autostart': True},
+        #                 {'node_names': ['map_server']}]),
         
         Node(
             package='rviz2',
