@@ -66,17 +66,11 @@ def generate_launch_description():
                 {'-publish_period_sec': publish_period_sec}]),
         
         Node(
-            package = 'tf2_ros',
-            executable = 'static_transform_publisher',
-            name = 'base_footprint_to_base_laser_ld06',
-            arguments = ['0', '0', '0', '0', '0', '0', 'base_footprint', 'base_laser']
-        ),
-        
-        Node(
             package = 'rviz2',
             executable = 'rviz2',
             name = 'rviz2',
             arguments = ['-d', rviz_config_dir],
             parameters = [{'use_sim_time': use_sim_time}],
             output = 'screen'),
-    ])
+            
+])
