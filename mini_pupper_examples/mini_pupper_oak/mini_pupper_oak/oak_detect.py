@@ -47,7 +47,7 @@ class OAK_DETECT(Node):
         # yaw = euler_list[2]
         
         self.robot_roll = self.limit_in_bounds(self.robot_roll,\
-                                               self.robot_rpy_upper_bounds[0]
+                                               self.robot_rpy_upper_bounds[0],\
                                                self.robot_rpy_lower_bounds[0])
         self.robot_pitch = self.limit_in_bounds(self.robot_pitch,\
                                                 self.robot_rpy_upper_bounds[1],\
