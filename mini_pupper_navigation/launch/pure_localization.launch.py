@@ -9,28 +9,14 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default = 'false')
-    
-    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default = os.path.join( get_package_share_directory('mini_pupper_navigation'), 'config/cartographer'))
-                                                  
+    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default = os.path.join( get_package_share_directory('mini_pupper_navigation'), 'config/cartographer'))     
     configuration_basename = LaunchConfiguration('configuration_basename', default = 'nav.lua')
-    
     load_state_filename = LaunchConfiguration('load_state_filename', default = os.path.join(get_package_share_directory('mini_pupper_navigation'), 'maps', 'mymap.pbstream'))
-                                                 
     resolution = LaunchConfiguration('resolution', default = '0.05')
-    
     publish_period_sec = LaunchConfiguration('publish_period_sec', default = '1.0')
-    
     rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'), 'rviz', 'cartographer.rviz')
 
     return LaunchDescription([
-        # Node(
-        #     package='nav2_map_server',
-        #     executable='map_server',
-        #     name='map_server',
-        #     output='screen',
-        #     parameters=[{'use_sim_time': use_sim_time},
-        #                 {'yaml_filename': map_file}]),
-        
         DeclareLaunchArgument(
             'use_sim_time',
             default_value = use_sim_time,
@@ -80,15 +66,6 @@ def generate_launch_description():
                 {'use_sim_time': use_sim_time},
                 {'-resolution': resolution},
                 {'-publish_period_sec': publish_period_sec}]),
-        
-        # Node(
-        #     package = 'nav2_lifecycle_manager',
-        #     executable = 'lifecycle_manager',
-        #     name = 'nav2_lifecycle_manager',
-        #     output = 'screen',
-        #     parameters = [{'use_sim_time': use_sim_time},
-        #                 {'autostart': True},
-        #                 {'node_names': ['map_server']}]),
         
         Node(
             package = 'rviz2',
