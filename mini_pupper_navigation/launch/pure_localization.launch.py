@@ -14,7 +14,7 @@ def generate_launch_description():
     load_state_filename = LaunchConfiguration('load_state_filename', default = os.path.join(get_package_share_directory('mini_pupper_navigation'), 'maps', 'mymap.pbstream'))
     resolution = LaunchConfiguration('resolution', default = '0.05')
     publish_period_sec = LaunchConfiguration('publish_period_sec', default = '1.0')
-    rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'), 'rviz', 'cartographer.rviz')
+    rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'), 'rviz', 'navigation.rviz')
 
     return LaunchDescription([
         DeclareLaunchArgument(
