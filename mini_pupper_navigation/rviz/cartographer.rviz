@@ -13,6 +13,7 @@ Panels:
     Name: Selection
   - Class: rviz_common/Tool Properties
     Expanded:
+      - /2D Goal Pose1
       - /Publish Point1
       - /2D Pose Estimate1
     Name: Tool Properties
@@ -429,7 +430,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /move_base_simple/goal
+        Value: /goal_pose
     - Class: rviz_default_plugins/PublishPoint
       Single click: true
       Topic:
@@ -447,7 +448,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: initialpose
+        Value: /initialpose
   Transformation:
     Current:
       Class: rviz_default_plugins/TF
