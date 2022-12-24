@@ -123,10 +123,10 @@ echo "export ROS_DOMAIN_ID=42" >> ~/.bashrc
 ```sh
 # Terminal 1
 # Execute on Mini Pupper
-ros2 launch mini_pupper_bringup bringup.launch.py hardware_connected:=true
+ros2 launch mini_pupper_bringup hardware_bringup.launch.py
 
 # Execute on PC
-rviz2 -d src/champ/champ_description/rviz/urdf_viewer.rviz
+ros2 launch mini_pupper_bringup bringup.launch.py
 
 # Execute on PC
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -146,13 +146,39 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Then control robot dog with your keyboard
 ```
 
-### 2.3 Cartographer in Gazebo
+### 2.3 Cartographer
+```sh
+# Execute on Mini Pupper
+ros2 launch mini_pupper_bringup hardware_bringup.launch.py
+
+# Execute on PC
+ros2 launch mini_pupper_bringup bringup.launch.py
+
+# Execute on PC
+ros2 launch mini_pupper_navigation slam.launch.py
+# if you have a pre-built map, try this command instead:
+# ros2 launch mini_pupper_navigation pure_localization.launch.py
+
+# Execute on PC
+ros2 launch mini_pupper_navigation nav2.launch.py
+```
+
+If you want to save the map:
+```sh
+ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/mymap.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ${HOME}/mymap
+```
+
+### 2.4 Cartographer in Gazebo
 ```sh
 # Execute on PC
 ros2 launch mini_pupper_gazebo gazebo.launch.py
 
 # Execute on PC
 ros2 launch mini_pupper_navigation slam.launch.py use_sim_time:=true
+# if you have a pre-built map, try this command instead:
+# ros2 launch mini_pupper_navigation pure_localization.launch.py use_sim_time:=true
 
 # Execute on PC
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -166,25 +192,6 @@ ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: 
 ros2 run nav2_map_server map_saver_cli -f ${HOME}/mymap
 ```
 
-### 2.4 Cartographer in reality
-```sh
-# Execute on Mini Pupper
-ros2 launch mini_pupper_bringup bringup.launch.py hardware_connected:=true
-
-# Execute on PC
-ros2 launch mini_pupper_navigation slam.launch.py
-
-# Execute on PC
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
-# Then control robot dog with your keyboard
-```
-
-If you want to save the map:
-```sh
-ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
-ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/mymap.pbstream'}"
-ros2 run nav2_map_server map_saver_cli -f ${HOME}/mymap
-```
 ### 2.5 OAK camera demo
 ```sh
 # Execute on Mini Pupper
