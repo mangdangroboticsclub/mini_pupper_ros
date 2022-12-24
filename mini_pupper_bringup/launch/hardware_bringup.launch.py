@@ -16,7 +16,6 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(servo_bringup_launch_path),
             launch_arguments={}.items(),
-            condition = IfCondition(hardware_connected),
         ),
 
         Node(
@@ -34,7 +33,6 @@ def generate_launch_description():
                 {'enable_angle_crop_func': False},
                 {'angle_crop_min': 135.0},
                 {'angle_crop_max': 225.0}],
-            condition = IfCondition(hardware_connected)
         ),
   
         Node(
@@ -42,6 +40,5 @@ def generate_launch_description():
             executable = 'static_transform_publisher',
             name = 'base_link_to_base_laser_ld06',
             arguments = ['0', '0', '0', '1.57', '0', '0', 'base_link', 'base_laser'],
-            condition = IfCondition(hardware_connected),
         ),
     ])
