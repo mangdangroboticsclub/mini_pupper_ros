@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mini_pupper_control</name>
+  <version>0.0.1</version>
+  <description>The mini_pupper_control package</description>
+  <maintainer email="ericc_feng@qq.com">Yunlong Feng</maintainer>
+  <maintainer email="thefoxfoxfox@outlook.com">Zhengxiao Han</maintainer>
+  <author email="fae@mangdang.net">MangDang</author>
+  <license>MIT</license>
+
+  <depend>sensor_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>rclpy</depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
