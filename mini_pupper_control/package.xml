@@ -4,9 +4,7 @@
   <name>mini_pupper_control</name>
   <version>0.0.1</version>
   <description>The mini_pupper_control package</description>
-  <maintainer email="ericc_feng@qq.com">Yunlong Feng</maintainer>
-  <maintainer email="thefoxfoxfox@outlook.com">Zhengxiao Han</maintainer>
-  <author email="fae@mangdang.net">MangDang</author>
+  <maintainer email="fae@mangdang.net">MangDang</maintainer>
   <license>MIT</license>
 
   <depend>sensor_msgs</depend>

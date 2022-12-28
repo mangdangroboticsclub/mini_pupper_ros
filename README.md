@@ -1,7 +1,8 @@
 # Mini Pupper ROS2
 
 ## 1. Installation
-Ubuntu 20.04 + ROS2 Humble is required.
+Ubuntu 22.04 + ROS2 Humble is required. Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/)
+
 ```sh
 cd ~
 mkdir -p ros2_ws/src
