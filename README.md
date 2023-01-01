@@ -15,7 +15,7 @@ colcon build --symlink-install
 sudo apt-get install ros-humble-teleop-twist-keyboard ros-humble-cartographer-ros
 ```
 
-## 2. Test in RVIZ
+## 2. Test in RViz
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
