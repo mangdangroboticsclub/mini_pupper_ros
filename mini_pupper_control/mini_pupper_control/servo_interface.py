@@ -31,7 +31,7 @@ from trajectory_msgs.msg import JointTrajectory
 from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 
 
-class SERVO_INTERFACE(Node):
+class ServoInterface(Node):
     def __init__(self):
         super().__init__('servo_interface')
         self.subscriber = self.create_subscription(
@@ -64,7 +64,7 @@ class SERVO_INTERFACE(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    servo_interface_node = SERVO_INTERFACE()
+    servo_interface_node = ServoInterface()
     rclpy.spin(servo_interface_node)
     rclpy.shutdown()
 
