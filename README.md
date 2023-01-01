@@ -12,7 +12,7 @@ git clone --recursive https://github.com/chvmp/champ -b ros2
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
-sudo apt-get install ros-humble-teleop-twist-keyboard ros-humble-cartographer-ros
+sudo apt-get install ros-humble-teleop-twist-keyboard
 ```
 
 ## 2. Test in RViz
