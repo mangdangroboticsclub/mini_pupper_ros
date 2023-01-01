@@ -1,7 +1,7 @@
 # Mini Pupper ROS2
 
 ## 1. Installation
-Ubuntu 22.04 + ROS2 Humble is required. Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/)
+Ubuntu 22.04 + ROS2 Humble is required. Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
 
 ```sh
 cd ~
