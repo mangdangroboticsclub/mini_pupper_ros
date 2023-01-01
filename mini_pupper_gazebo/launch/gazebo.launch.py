@@ -13,6 +13,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     gazebo_package = FindPackageShare('mini_pupper_gazebo')
     bringup_package = FindPackageShare('mini_pupper_bringup')
+    description_package = FindPackageShare('mini_pupper_description')
 
     joints_config = PathJoinSubstitution(
         [bringup_package, 'config', 'joints', 'joints.yaml']
@@ -24,10 +25,10 @@ def generate_launch_description():
         [bringup_package, 'config', 'gait', 'gait.yaml']
     )
     ros_control_config = PathJoinSubstitution(
-        [gazebo_package, 'config', 'ros_control', 'ros_control.yaml']
+        [description_package, 'config', 'mini_pupper_controller.yaml']
     )
     description_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_description'), 'urdf', 'mini_pupper_description.urdf.xacro']
+        [description_package, 'urdf', 'mini_pupper_description.urdf.xacro']
     )
     bringup_launch_path = PathJoinSubstitution(
         [FindPackageShare('champ_bringup'), 'launch', 'bringup.launch.py']
@@ -120,7 +121,8 @@ def generate_launch_description():
                 "joints_map_path": joints_config,
                 "links_map_path": links_config,
                 "gait_config_path": gait_config,
-                "description_path": description_path
+                "description_path": description_path,
+                "ros_control_file": ros_control_config
             }.items(),
         ),
         

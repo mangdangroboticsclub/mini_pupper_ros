@@ -1782,7 +1782,7 @@
   
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find mini_pupper_gazebo)/config/ros_control/ros_control.yaml</parameters>
+      <parameters>$(find mini_pupper_description)/config/mini_pupper_controller.yaml</parameters>
     </plugin>
   </gazebo>
   
