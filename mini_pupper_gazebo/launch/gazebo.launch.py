@@ -53,7 +53,7 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             name="robot_name",
-            default_value="",
+            default_value="mini_pupper",
             description="Robot name"
         ),
 
