@@ -1,7 +1,7 @@
 # Mini Pupper ROS2
 
 ## 1. Installation
-Ubuntu 22.04 + ROS2 Humble is required. Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/)
+Ubuntu 22.04 + ROS2 Humble is required. Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
 
 ```sh
 cd ~
@@ -12,7 +12,7 @@ git clone --recursive https://github.com/chvmp/champ -b ros2
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
-sudo apt-get install ros-humble-teleop-twist-keyboard ros-humble-cartographer-ros
+sudo apt-get install ros-humble-teleop-twist-keyboard
 ```
 
 ## 2. Test in RViz
