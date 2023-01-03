@@ -23,13 +23,13 @@ def generate_launch_description():
     description_package = FindPackageShare('mini_pupper_description')
 
     joints_config = PathJoinSubstitution(
-        [description_package, 'config', 'joints', 'joints.yaml']
+        [description_package, 'config', 'champ', 'joints.yaml']
     )
     links_config = PathJoinSubstitution(
-        [description_package, 'config', 'links', 'links.yaml']
+        [description_package, 'config', 'champ', 'links.yaml']
     )
     gait_config = PathJoinSubstitution(
-        [description_package, 'config', 'gait', 'gait.yaml']
+        [description_package, 'config', 'champ', 'gait.yaml']
     )
     description_path = PathJoinSubstitution(
         [description_package, 'urdf', 'mini_pupper_description.urdf.xacro']

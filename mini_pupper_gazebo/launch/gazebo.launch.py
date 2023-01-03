@@ -17,13 +17,13 @@ def generate_launch_description():
     description_package = get_package_share_directory('mini_pupper_description')
 
     joints_config_path = os.path.join(
-        description_package, 'config', 'joints', 'joints.yaml')
+        description_package, 'config', 'champ', 'joints.yaml')
     links_config_path = os.path.join(
-        description_package, 'config', 'links', 'links.yaml')
+        description_package, 'config', 'champ', 'links.yaml')
     gait_config_path = os.path.join(
-        description_package, 'config', 'gait', 'gait.yaml')
+        description_package, 'config', 'champ', 'gait.yaml')
     ros_control_config_path = os.path.join(
-        description_package, 'config', 'mini_pupper_controller.yaml')
+        description_package, 'config', 'ros_control', 'mini_pupper_controller.yaml')
     description_path = os.path.join(
         description_package, 'urdf', 'mini_pupper_description.urdf.xacro')
     default_world_path = os.path.join(
