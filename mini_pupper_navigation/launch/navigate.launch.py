@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http:#www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,28 +21,31 @@ from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
+
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    
-    mini_pupper_cartographer_prefix = get_package_share_directory('mini_pupper_navigation')
-    
-    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
-                                                  mini_pupper_cartographer_prefix, 'config/cartographer'))
-                                                  
-    configuration_basename = LaunchConfiguration('configuration_basename',
-                                                 default='nav.lua')
 
-    load_state_filename = LaunchConfiguration('configuration_basename', default=mini_pupper_cartographer_prefix+'/maps/cartographer_map.pbstream')
-                                                 
+    mini_pupper_cartographer_prefix = get_package_share_directory('mini_pupper_navigation')
+
+    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
+        mini_pupper_cartographer_prefix, 'config/cartographer'))
+
+    configuration_basename = LaunchConfiguration('configuration_basename', default='nav.lua')
+
+    load_state_filename = LaunchConfiguration(
+        'configuration_basename',
+        default=mini_pupper_cartographer_prefix+'/maps/cartographer_map.pbstream'
+    )
+
     resolution = LaunchConfiguration('resolution', default='0.05')
-    
+
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
-    
-    rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'),
-                                   'rviz', 'cartographer.rviz')
+
+    rviz_config_dir = os.path.join(get_package_share_directory(
+        'mini_pupper_navigation'), 'rviz', 'cartographer.rviz')
 
     ros_distro = EnvironmentVariable('ROS_DISTRO')
-    if ros_distro == 'foxy': 
+    if ros_distro == 'foxy':
         slam_param_name = 'params_file'
     else:
         slam_param_name = 'slam_params_file'

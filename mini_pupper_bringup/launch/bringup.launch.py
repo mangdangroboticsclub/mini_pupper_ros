@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http:#www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,20 +19,21 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 
+
 def generate_launch_description():
-    this_package = FindPackageShare('mini_pupper_bringup')
+    description_package = FindPackageShare('mini_pupper_description')
 
     joints_config = PathJoinSubstitution(
-        [this_package, 'config', 'joints', 'joints.yaml']
+        [description_package, 'config', 'champ', 'joints.yaml']
     )
     links_config = PathJoinSubstitution(
-        [this_package, 'config', 'links', 'links.yaml']
+        [description_package, 'config', 'champ', 'links.yaml']
     )
     gait_config = PathJoinSubstitution(
-        [this_package, 'config', 'gait', 'gait.yaml']
+        [description_package, 'config', 'champ', 'gait.yaml']
     )
     description_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_description'), 'urdf', 'mini_pupper_description.urdf.xacro']
+        [description_package, 'urdf', 'mini_pupper_description.urdf.xacro']
     )
     bringup_launch_path = PathJoinSubstitution(
         [FindPackageShare('champ_bringup'), 'launch', 'bringup.launch.py']
@@ -40,25 +41,25 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument(
-            name='robot_name', 
-            default_value='',
+            name='robot_name',
+            default_value='mini_pupper',
             description='Set robot name for multi robot'
         ),
 
         DeclareLaunchArgument(
-            name='sim', 
+            name='sim',
             default_value='false',
             description='Enable use_sime_time to true'
         ),
 
         DeclareLaunchArgument(
-            name='rviz', 
+            name='rviz',
             default_value='false',
             description='Run rviz'
         ),
 
         DeclareLaunchArgument(
-            name='hardware_connected', 
+            name='hardware_connected',
             default_value='false',
             description='Set to true if connected to a physical robot'
         ),
