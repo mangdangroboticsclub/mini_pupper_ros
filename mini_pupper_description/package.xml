@@ -3,8 +3,7 @@
   <name>mini_pupper_description</name>
   <version>0.2.0</version>
   <description>Mini Pupper Description Package</description>
-  <author>TODO</author>
-  <maintainer email="TODO@email.com" />
+  <maintainer email="fae@mangdang.net">MangDang</maintainer>
 
   <license>MIT</license>
 
@@ -17,8 +16,7 @@
   <exec_depend>urdf</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>rviz2</exec_depend>
-  <exec_depend>gazebo_plugins</exec_depend>
-  
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
