@@ -41,8 +41,8 @@ def generate_launch_description():
 
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
 
-    rviz_config_dir = os.path.join(get_package_share_directory(
-        'mini_pupper_navigation'), 'rviz', 'cartographer.rviz')
+    rviz_config_path = os.path.join(get_package_share_directory('mini_pupper_navigation'),
+                                   'rviz', 'cartographer.rviz')
 
     ros_distro = EnvironmentVariable('ROS_DISTRO')
     if ros_distro == 'foxy':
@@ -93,7 +93,7 @@ def generate_launch_description():
             package='rviz2',
             executable='rviz2',
             name='rviz2',
-            arguments=['-d', rviz_config_dir],
+            arguments=['-d', rviz_config_path],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen'),
     ])
