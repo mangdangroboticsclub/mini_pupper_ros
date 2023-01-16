@@ -9,18 +9,21 @@
 ### 1.1 PC Setup
 
 PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator.  
-__Do not apply these commands to your Mini Pupper.__
+__Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
 
 Ubuntu 22.04 + ROS 2 Humble is required.  
 Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
 
+After ROS 2 installation, download the Mini Pupper ROS package in the workspace.
+
 ```sh
-cd ~
-mkdir -p ros2_ws/src
+mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
 vcs import < minipupper_ros/.minipupper.repos --recursive
 ```
+
+Build and install all ROS packages.
 
 ```sh
 cd ~/ros2_ws
@@ -36,12 +39,14 @@ Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.
 Ubuntu 22.04 + ROS 2 Humble is required.  
 Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
 
+After ROS 2 installation, download the Mini Pupper ROS package in the workspace.
+
 ```sh
-cd ~
-mkdir -p ros2_ws/src
+mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
 vcs import < minipupper_ros/.minipupper.repos --recursive
+# compiling gazebo and cartographer on Raspberry Pi is not recommended
 touch champ/champ/champ_description/AMENT_IGNORE
 touch champ/champ/champ_gazebo/AMENT_IGNORE
 touch champ/champ/champ_navigation/AMENT_IGNORE
@@ -49,7 +54,10 @@ touch mini_pupper_ros/mini_pupper_gazebo/AMENT_IGNORE
 touch mini_pupper_ros/mini_pupper_navigation/AMENT_IGNORE
 ```
 
+Build and install all ROS packages.
+
 ```sh
+# install dependencies without unused heavy packages
 cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2
 sudo apt-get install ros-humble-teleop-twist-keyboard
