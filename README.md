@@ -56,6 +56,8 @@ touch mini_pupper_ros/mini_pupper_navigation/AMENT_IGNORE
 
 Build and install all ROS packages.
 
+If the Raspberry Pi has less than 4GB memory, try `MAKEFLAGS=-j1 colcon build --executor sequential --symlink-install` instead of `colcon build --symlink-install`
+
 ```sh
 # install dependencies without unused heavy packages
 cd ~/ros2_ws
