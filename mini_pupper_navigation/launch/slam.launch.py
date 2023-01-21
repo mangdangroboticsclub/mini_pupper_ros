@@ -1,16 +1,38 @@
+#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2022 MangDang
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# This program is based on https://github.com/ROBOTIS-GIT/turtlebot3 and https://github.com/champ/champ.
+# which are released under the Apache-2.0 License.
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Copyright 2019 Open Source Robotics Foundation, Inc.
+#
+# https://github.com/ROBOTIS-GIT/turtlebot3/blob/a7dd05ae176f3f3778b0a36f7065dc9655b050e3/turtlebot3_cartographer/launch/cartographer.launch.py
+#
 # Copyright (c) 2021 Juan Miguel Jimeno
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_navigation/launch/slam.launch.py
 
 import os
 from launch import LaunchDescription
@@ -43,12 +65,6 @@ def generate_launch_description():
     rviz_config_dir = os.path.join(
         get_package_share_directory('mini_pupper_navigation'), 'rviz', 'cartographer.rviz'
     )
-
-    ros_distro = EnvironmentVariable('ROS_DISTRO')
-    if ros_distro == 'foxy':
-        slam_param_name = 'params_file'
-    else:
-        slam_param_name = 'slam_params_file'
 
     return LaunchDescription([
         DeclareLaunchArgument(
