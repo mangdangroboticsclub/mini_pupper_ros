@@ -10,4 +10,4 @@ repositories:
   ldlidar_stl_ros:
     type: git
     url: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
-    version: ros2
+    version: master
