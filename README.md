@@ -79,6 +79,8 @@ colcon build --symlink-install
 ## 2.1 PC
 ### 2.1.1 Test in RViz
 
+Note: This step is only for PC
+
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
@@ -91,6 +93,8 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 ### 2.1.2 Test in Gazebo
 
+Note: This step is only for PC
+
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
@@ -102,6 +106,8 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
 ### 2.1.3 Cartographer Test in Gazebo
+
+Note: This step is only for PC
 
 ```sh
 # Terminal 1
