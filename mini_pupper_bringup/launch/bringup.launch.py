@@ -63,7 +63,7 @@ def generate_launch_description():
 
     robot_name = LaunchConfiguration("robot_name")
     sim = LaunchConfiguration("sim")
-    hardware_connected = LaunchConfiguration("hardware_connected")
+    joint_hardware_connected = LaunchConfiguration("joint_hardware_connected")
     rviz = LaunchConfiguration("rviz")
 
     declare_robot_name = DeclareLaunchArgument(
@@ -85,7 +85,7 @@ def generate_launch_description():
         )
 
     declare_hardware_connected = DeclareLaunchArgument(
-            name='hardware_connected',
+            name='joint_hardware_connected',
             default_value='false',
             description='Set to true if connected to a physical robot'
         )
@@ -106,7 +106,7 @@ def generate_launch_description():
                 "robot_name": robot_name,
                 "gazebo": sim,
                 "rviz": "false",  # set always false to launch RViz2 with costom .rviz file
-                "hardware_connected": hardware_connected,
+                "joint_hardware_connected": joint_hardware_connected,
                 "publish_foot_contacts": "true",
                 "close_loop_odom": "true",
                 "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
