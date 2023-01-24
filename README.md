@@ -55,7 +55,6 @@ cd ~/ros2_ws/src
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 # compiling gazebo and cartographer on Raspberry Pi is not recommended
-touch champ/champ/champ_description/AMENT_IGNORE
 touch champ/champ/champ_gazebo/AMENT_IGNORE
 touch champ/champ/champ_navigation/AMENT_IGNORE
 touch mini_pupper_ros/mini_pupper_gazebo/AMENT_IGNORE
@@ -69,7 +68,7 @@ If the Raspberry Pi has less than 4GB memory, try `MAKEFLAGS=-j1 colcon build --
 ```sh
 # install dependencies without unused heavy packages
 cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2
+rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2 --skip-keys=gazebo_plugins --skip-keys=velodyne_gazebo_plugins
 sudo apt-get install ros-humble-teleop-twist-keyboard
 colcon build --symlink-install
 ```
