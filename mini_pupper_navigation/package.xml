@@ -4,12 +4,13 @@
   <version>0.1.0</version>
   <description>Mini Pupper Navigation Package</description>
 
-  <maintainer email="thefoxfoxfox@outlook.com">Han</maintainer>
-  <author>Han</author>
+  <maintainer email="fae@mangdang.net">MangDang</maintainer>
+  <author email="thefoxfoxfox@outlook.com">Han</author>
 
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>cartographer_ros</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>rviz2</exec_depend>
