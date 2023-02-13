@@ -36,6 +36,7 @@ __PC OS + ROS version__
 
 ## Checklist
 
+- [ ] I have read the [CONTRIBUTING](https://github.com/mangdangroboticsclub/mini_pupper_ros/blob/ros2/CONTRIBUTING.md) guidelines.
 - [ ] I have checked to ensure there aren't other open [Pull Requests](../pulls) for the same change.
 
 
