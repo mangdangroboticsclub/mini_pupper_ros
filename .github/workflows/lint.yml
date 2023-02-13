@@ -1,0 +1,43 @@
+name: reviewdog
+on: pull_request
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v3
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - name: Download flake8 config
+        run: |
+          curl -L https://github.com/ament/ament_lint/raw/humble/ament_flake8/ament_flake8/configuration/ament_flake8.ini > tox.ini
+      - name: Run flake8
+        uses: reviewdog/action-flake8@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: "github-pr-review"
+          flake8_args: "--config tox.ini"
+  cpplint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v3
+      - name: Run cpplint
+        uses: reviewdog/action-cpplint@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: "github-pr-review"
+          flags: "--linelength=100"
+          filter: "-build/c++11 \
+                  ,-runtime/references \
+                  ,-whitespace/braces \
+                  ,-whitespace/indent \
+                  ,-whitespace/parens \
+                  ,-whitespace/semicolon"
