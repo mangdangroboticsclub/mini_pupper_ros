@@ -165,7 +165,7 @@ limitations under the License.
 * Q. Is ROS 2 Foxy/Galactic supported?
   * A. No. ROS 2 Humble only for now.
 * Q. `colcon build` shows `1 package had stderr output: mini_pupper_control`.
-  * A. The following warnings can be safely ignored
+  * A. The following warnings can be safely ignored. See [mini_pupper_ros#45](https://github.com/mangdangroboticsclub/mini_pupper_ros/pull/45#discussion_r1104759104) for details.
   ```
   Starting >>> mini_pupper_description
   --- stderr: mini_pupper_control
