@@ -15,7 +15,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 # This program is based on https://github.com/champ/champ.
 # which is released under the Apache-2.0 License.
 # http://www.apache.org/licenses/LICENSE-2.0
@@ -27,9 +27,8 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, ThisLaunchFileDir, EnvironmentVariable
+from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
@@ -44,23 +43,17 @@ def generate_launch_description():
 
     configuration_basename = LaunchConfiguration('configuration_basename', default='nav.lua')
 
-    load_state_filename = LaunchConfiguration(
-        'configuration_basename',
-        default=mini_pupper_cartographer_prefix+'/maps/cartographer_map.pbstream'
-    )
+    # load_state_filename = LaunchConfiguration(
+    #     'configuration_basename',
+    #     default=mini_pupper_cartographer_prefix+'/maps/cartographer_map.pbstream'
+    # )
 
     resolution = LaunchConfiguration('resolution', default='0.05')
 
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
 
     rviz_config_path = os.path.join(get_package_share_directory('mini_pupper_navigation'),
-                                   'rviz', 'cartographer.rviz')
-
-    ros_distro = EnvironmentVariable('ROS_DISTRO')
-    if ros_distro == 'foxy':
-        slam_param_name = 'params_file'
-    else:
-        slam_param_name = 'slam_params_file'
+                                    'rviz', 'cartographer.rviz')
 
     return LaunchDescription([
         DeclareLaunchArgument(

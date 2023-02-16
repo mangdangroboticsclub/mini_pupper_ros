@@ -15,8 +15,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# This program is based on https://github.com/ROBOTIS-GIT/turtlebot3 and https://github.com/champ/champ.
+
+# This program is based on https://github.com/ROBOTIS-GIT/turtlebot3
+# and https://github.com/champ/champ.
 # which are released under the Apache-2.0 License.
 # http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -31,9 +32,8 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, ThisLaunchFileDir, EnvironmentVariable
+from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
