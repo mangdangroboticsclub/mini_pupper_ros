@@ -5,7 +5,7 @@
   <description>Mini Pupper Description Package</description>
   <maintainer email="fae@mangdang.net">MangDang</maintainer>
 
-  <license>MIT</license>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>launch_ros</build_depend>

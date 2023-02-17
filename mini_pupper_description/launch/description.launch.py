@@ -1,3 +1,29 @@
+#!/usr/bin/env python3
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2022 MangDang
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# This program is based on https://github.com/champ/champ.
+# which is released under the BSD-3-Clause License.
+# https://spdx.org/licenses/BSD-3-Clause.html
+#
+# Copyright (c) 2019-2020 Juan Miguel Jimeno
+#
+# https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_description/launch/description.launch.py
+
 import os
 import launch_ros
 from launch_ros.actions import Node

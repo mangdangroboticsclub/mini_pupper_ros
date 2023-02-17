@@ -1,0 +1,13 @@
+repositories:
+  champ/champ:
+    type: git
+    url: https://github.com/chvmp/champ.git
+    version: ros2
+  champ/champ_teleop:
+    type: git
+    url: https://github.com/chvmp/champ_teleop.git
+    version: ros2
+  ldlidar_stl_ros:
+    type: git
+    url: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
+    version: master

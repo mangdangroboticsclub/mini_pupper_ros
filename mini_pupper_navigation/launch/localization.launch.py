@@ -11,6 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# This program is based on https://github.com/champ/champ.
+# which is released under the Apache-2.0 License.
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Copyright (c) 2021 Juan Miguel Jimeno
+#
+# https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_navigation/launch/navigate.launch.py
 
 import os
 from launch import LaunchDescription
@@ -31,7 +39,7 @@ def generate_launch_description():
     load_state_filename = LaunchConfiguration('load_state_filename')
     resolution = LaunchConfiguration('resolution')
     publish_period_sec = LaunchConfiguration('publish_period_sec')
-    rviz_config_dir = os.path.join(get_package_share_directory(
+    rviz_config_path = os.path.join(get_package_share_directory(
         'mini_pupper_navigation'), 'rviz', 'navigation.rviz')
 
     return LaunchDescription([
@@ -90,7 +98,7 @@ def generate_launch_description():
             package='rviz2',
             executable='rviz2',
             name='rviz2',
-            arguments=['-d', rviz_config_dir],
+            arguments=['-d', rviz_config_path],
             parameters=[{'use_sim_time': use_sim_time}],
             output='screen')
     ])

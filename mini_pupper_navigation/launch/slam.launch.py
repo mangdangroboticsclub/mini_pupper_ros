@@ -1,4 +1,8 @@
-# Copyright (c) 2021 Juan Miguel Jimeno
+#!/usr/bin/env python3
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2022-2023 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +15,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# This program is based on https://github.com/ROBOTIS-GIT/turtlebot3 and https://github.com/champ/champ.
+# which are released under the Apache-2.0 License.
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Copyright 2019 Open Source Robotics Foundation, Inc.
+#
+# https://github.com/ROBOTIS-GIT/turtlebot3/blob/a7dd05ae176f3f3778b0a36f7065dc9655b050e3/turtlebot3_cartographer/launch/cartographer.launch.py
+#
+# Copyright (c) 2021 Juan Miguel Jimeno
+#
+# https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_navigation/launch/slam.launch.py
 
 import os
 
