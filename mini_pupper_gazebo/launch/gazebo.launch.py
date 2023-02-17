@@ -50,7 +50,7 @@ def generate_launch_description():
     description_path = os.path.join(
         description_package, 'urdf', 'mini_pupper_description.urdf.xacro')
     default_world_path = os.path.join(
-        gazebo_package, 'worlds', 'outdoor.world')
+        gazebo_package, 'worlds', 'playground.world')
 
     bringup_launch_path = os.path.join(
         bringup_package, 'launch', 'bringup.launch.py')
