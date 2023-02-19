@@ -82,7 +82,7 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             'resolution',
-            default_value=resolution,
+            default_value='0.05',
             description='resolution'),
 
         DeclareLaunchArgument(

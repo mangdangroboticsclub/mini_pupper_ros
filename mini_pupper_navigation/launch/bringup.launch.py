@@ -33,7 +33,7 @@ from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription, SetEnvironmentVariable)
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.actions import PushRosNamespace
 from nav2_common.launch import RewrittenYaml
@@ -136,7 +136,8 @@ def generate_launch_description():
     )
 
     declare_cartographer_config_dir = DeclareLaunchArgument(
-        'cartographer_config_dir', default_value=os.path.join(bringup_dir, 'config', 'cartographer'),
+        'cartographer_config_dir',
+        default_value=os.path.join(bringup_dir, 'config', 'cartographer'),
         description='Cartographer config directory path'
     )
 
@@ -156,7 +157,8 @@ def generate_launch_description():
     )
 
     declare_load_state_filename = DeclareLaunchArgument(
-        'load_state_filename', default_value=os.path.join(bringup_dir, 'maps', 'cartographer_map.pbstream'),
+        'load_state_filename',
+        default_value=os.path.join(bringup_dir, 'maps', 'cartographer_map.pbstream'),
         description='Map state file path load for cartographer localization'
     )
 
