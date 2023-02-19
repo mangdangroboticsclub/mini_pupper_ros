@@ -1,4 +1,8 @@
-# Copyright (c) 2023 Yunlong Feng
+#!/usr/bin/env python3
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2023 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +15,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# This program is based on https://github.com/ros-planning/navigation2
+# which are released under the Apache-2.0 License.
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Copyright (c) 2018 Intel Corporation
+#
+# https://github.com/ros-planning/navigation2/blob/6d12726efb936797b527edfa2f3191ae52f9ae77/nav2_bringup/launch/navigation_launch.py
 
 import os
 
@@ -82,7 +94,8 @@ def generate_launch_description():
 
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(bringup_dir, 'config/nav2', 'mini_pupper.yaml'),
+        default_value=os.path.join(
+            bringup_dir, 'config/nav2', 'mini_pupper.yaml'),
         description='Full path to the ROS2 parameters file to use for all launched nodes')
 
     declare_autostart_cmd = DeclareLaunchArgument(
