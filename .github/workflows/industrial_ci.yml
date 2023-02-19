@@ -1,0 +1,29 @@
+name: industrial_ci
+
+on:
+  push:
+    paths-ignore:
+    - '**.md'
+  pull_request:
+    paths-ignore:
+    - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_WORKSPACE: .minipupper.repos
+  ROSDEP_SKIP_KEYS: ecl_threads
+
+jobs:
+  industrial_ci:
+    strategy:
+      matrix:
+        env:
+          - { ROS_DISTRO: humble, ROS_REPO: ros }
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: "ros-industrial/industrial_ci@master"
+        env: ${{ matrix.env }}
