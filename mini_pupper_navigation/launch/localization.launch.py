@@ -26,48 +26,45 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    bringup_dir = get_package_share_directory('mini_pupper_navigation')
 
-    mini_pupper_cartographer_prefix = get_package_share_directory('mini_pupper_navigation')
-
-    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
-        mini_pupper_cartographer_prefix, 'config/cartographer'))
-
-    configuration_basename = LaunchConfiguration('configuration_basename', default='nav.lua')
-
-    # load_state_filename = LaunchConfiguration(
-    #     'configuration_basename',
-    #     default=mini_pupper_cartographer_prefix+'/maps/cartographer_map.pbstream'
-    # )
-
-    resolution = LaunchConfiguration('resolution', default='0.05')
-
-    publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
-
-    rviz_config_path = os.path.join(get_package_share_directory('mini_pupper_navigation'),
-                                    'rviz', 'cartographer.rviz')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir')
+    configuration_basename = LaunchConfiguration('configuration_basename')
+    load_state_filename = LaunchConfiguration('load_state_filename')
+    resolution = LaunchConfiguration('resolution')
+    publish_period_sec = LaunchConfiguration('publish_period_sec')
+    rviz_config_path = os.path.join(get_package_share_directory(
+        'mini_pupper_navigation'), 'rviz', 'navigation.rviz')
 
     return LaunchDescription([
         DeclareLaunchArgument(
+            'use_sim_time',
+            default_value='false',
+            description='use_sim_time'),
+
+        DeclareLaunchArgument(
             'cartographer_config_dir',
-            default_value=cartographer_config_dir,
+            default_value=os.path.join(bringup_dir, 'config', 'cartographer'),
             description='Full path to config file to load'),
+
         DeclareLaunchArgument(
             'configuration_basename',
-            default_value=configuration_basename,
+            default_value='nav.lua',
             description='Name of lua file for cartographer'),
+
         DeclareLaunchArgument(
-            'use_sim_time',
-            default_value=use_sim_time,
-            description='Use simulation (Gazebo) clock if true'),
+            'load_state_filename',
+            default_value=os.path.join(
+                bringup_dir, 'maps', 'cartographer_map.pbstream'),
+            description='pbstream file'),
 
         Node(
             package='cartographer_ros',
@@ -75,24 +72,29 @@ def generate_launch_description():
             name='cartographer_node',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
-            arguments=['-configuration_directory', cartographer_config_dir,
-                       '-configuration_basename', configuration_basename]),
+            arguments=[
+                '-configuration_directory', cartographer_config_dir,
+                '-configuration_basename', configuration_basename,
+                '-load_state_filename', load_state_filename,
+            ]),
 
         DeclareLaunchArgument(
             'resolution',
-            default_value=resolution,
-            description='Resolution of a grid cell in the published occupancy grid'),
+            default_value='0.05',
+            description='resolution'),
 
         DeclareLaunchArgument(
             'publish_period_sec',
-            default_value=publish_period_sec,
+            default_value='1.0',
             description='OccupancyGrid publishing period'),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/occupancy_grid.launch.py']),
-            launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution,
-                              'publish_period_sec': publish_period_sec}.items(),
-        ),
+        Node(
+            package='cartographer_ros',
+            executable='cartographer_occupancy_grid_node',
+            parameters=[
+                {'use_sim_time': use_sim_time},
+                {'-resolution': resolution},
+                {'-publish_period_sec': publish_period_sec}]),
 
         Node(
             package='rviz2',
@@ -100,5 +102,5 @@ def generate_launch_description():
             name='rviz2',
             arguments=['-d', rviz_config_path],
             parameters=[{'use_sim_time': use_sim_time}],
-            output='screen'),
+            output='screen')
     ])
