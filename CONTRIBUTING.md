@@ -78,17 +78,24 @@ Please ensure that any new contributions are compatible with C++17 and Python3.x
 
 To check Python code style, run the following command in the ROS workspace.
 
-```
+```sh
 ament_flake8
 ament_pep257
 ```
 
 To check C++ code style, run the following command in the ROS workspace.
 
-```
+```sh
 ament_clang_format --reformat
 ament_uncrustify --reformat
 ament_cpplint
+```
+
+After checking all styles, run the following command to test the ROS package configuration in the ROS workspace.
+
+```sh
+colcon test --packages-select-regex "mini_pupper*"
+colcon test-result --verbose  # confirm this shows "0 errors, 0 failures, 0 skipped"
 ```
 
 This guide is based on https://autowarefoundation.gitlab.io/autoware.auto/AutowareAuto/contributor-guidelines.html#contributors-guidelines-formatting
