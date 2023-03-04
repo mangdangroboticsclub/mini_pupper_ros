@@ -74,12 +74,12 @@
   </joint>
   <link name="lidar">
     <inertial>
-      <origin rpy="0 0 0" xyz="1.56706411611127E-05 -5.16565672073303E-13 -0.0191835739440227"/>
+      <origin rpy="0 0 -1.57" xyz="1.56706411611127E-05 -5.16565672073303E-13 -0.0191835739440227"/>
       <mass value="0.0001"/>
       <inertia ixx="8.74731426973985E-06" ixy="-6.66781590704156E-08" ixz="1.89196685410159E-11" iyy="8.70097486591694E-06" iyz="-1.13397577799603E-17" izz="9.98821295317784E-06"/>
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 -1.57" xyz="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_description)/meshes/lidar.STL"/>
       </geometry>
@@ -88,14 +88,14 @@
       </material>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 -1.57" xyz="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_description)/meshes/lidar.STL"/>
       </geometry>
     </collision>
   </link>
   <joint name="base_lidar" type="fixed">
-    <origin rpy="0 0 0" xyz="-0.070475 0.0001 0.08"/>
+    <origin rpy="0 0 1.57" xyz="-0.070475 0.0001 0.08"/>
     <parent link="base_link"/>
     <child link="lidar"/>
     <axis xyz="0 0 0"/>
