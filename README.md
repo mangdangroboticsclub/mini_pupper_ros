@@ -83,7 +83,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_bringup bringup.launch.py rviz:=true
+ros2 launch mini_pupper_bringup bringup.launch.py joint_hardware_connected:=false rviz:=true
 
 # Terminal 2
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -124,7 +124,21 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 ## 2.2 Mini Pupper
 
-(To be prepared)
+### 2.1.1 Test walk
+
+Note: This step is only for Mini Pupper
+
+Open 2 terminals and ssh login to Mini Pupper on both.
+
+```sh
+# Terminal 1 (ssh)
+. ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
+ros2 launch mini_pupper_bringup bringup.launch.py
+
+# Terminal 2 (ssh)
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# Then control Mini Pupper with the keyboard
+```
 
 ## License
 
@@ -150,3 +164,19 @@ limitations under the License.
   * A. No. Ubuntu 22.04 only for now.
 * Q. Is ROS 2 Foxy/Galactic supported?
   * A. No. ROS 2 Humble only for now.
+* Q. `colcon build` shows `1 package had stderr output: mini_pupper_control`.
+  * A. The following warnings can be safely ignored. See [mini_pupper_ros#45](https://github.com/mangdangroboticsclub/mini_pupper_ros/pull/45#discussion_r1104759104) for details.
+  ```
+  Starting >>> mini_pupper_description
+  --- stderr: mini_pupper_control
+  /usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+    warnings.warn(
+  /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+    warnings.warn(
+  /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.1build1 is an invalid version and will not be supported in a future release
+    warnings.warn(
+  /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 0.1.43ubuntu1 is an invalid version and will not be supported in a future release
+    warnings.warn(
+  ---
+  Finished <<< mini_pupper_control [7.37s]
+  ```

@@ -54,6 +54,12 @@ def generate_launch_description():
     rviz_config_path = PathJoinSubstitution(
         [description_package, 'rviz', 'urdf_viewer.rviz']
     )
+    servo_interface_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_control'), 'launch', 'servo_interface.launch.py']
+    )
+    lidar_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']
+    )
 
     robot_name = LaunchConfiguration("robot_name")
     sim = LaunchConfiguration("sim")
@@ -74,13 +80,13 @@ def generate_launch_description():
 
     declare_rviz = DeclareLaunchArgument(
             name='rviz',
-            default_value='true',
+            default_value='false',
             description='Run rviz'
         )
 
     declare_hardware_connected = DeclareLaunchArgument(
             name='joint_hardware_connected',
-            default_value='false',
+            default_value='true',
             description='Set to true if connected to a physical robot'
         )
 
@@ -94,22 +100,32 @@ def generate_launch_description():
         )
 
     bringup_launch = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(bringup_launch_path),
-            launch_arguments={
-                "use_sim_time": sim,
-                "robot_name": robot_name,
-                "gazebo": sim,
-                "rviz": "false",  # set always false to launch RViz2 with costom .rviz file
-                "joint_hardware_connected": joint_hardware_connected,
-                "publish_foot_contacts": "true",
-                "close_loop_odom": "true",
-                "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
-                "joints_map_path": joints_config_path,
-                "links_map_path": links_config_path,
-                "gait_config_path": gait_config_path,
-                "description_path": description_path
-            }.items(),
-        )
+        PythonLaunchDescriptionSource(bringup_launch_path),
+        launch_arguments={
+            "use_sim_time": sim,
+            "robot_name": robot_name,
+            "gazebo": sim,
+            "rviz": "false",  # set always false to launch RViz2 with costom .rviz file
+            "joint_hardware_connected": joint_hardware_connected,
+            "publish_foot_contacts": "true",
+            "close_loop_odom": "true",
+            "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
+            "joints_map_path": joints_config_path,
+            "links_map_path": links_config_path,
+            "gait_config_path": gait_config_path,
+            "description_path": description_path
+        }.items(),
+    )
+
+    servo_interface_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(servo_interface_launch_path),
+        condition=IfCondition(joint_hardware_connected),
+    )
+
+    lidar_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(lidar_launch_path),
+        condition=IfCondition(joint_hardware_connected),
+    )
 
     return LaunchDescription([
         declare_robot_name,
@@ -117,5 +133,7 @@ def generate_launch_description():
         declare_rviz,
         declare_hardware_connected,
         rviz2_node,
-        bringup_launch
+        bringup_launch,
+        servo_interface_launch,
+        lidar_launch,
     ])
