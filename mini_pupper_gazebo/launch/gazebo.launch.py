@@ -15,7 +15,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 # This program is based on https://github.com/champ/champ.
 # which is released under the BSD-3-Clause License.
 # https://spdx.org/licenses/BSD-3-Clause.html
@@ -27,11 +27,9 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.substitutions import FindPackageShare
+from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
@@ -50,7 +48,7 @@ def generate_launch_description():
     description_path = os.path.join(
         description_package, 'urdf', 'mini_pupper_description.urdf.xacro')
     default_world_path = os.path.join(
-        gazebo_package, 'worlds', 'outdoor.world')
+        gazebo_package, 'worlds', 'playground.world')
 
     bringup_launch_path = os.path.join(
         bringup_package, 'launch', 'bringup.launch.py')
