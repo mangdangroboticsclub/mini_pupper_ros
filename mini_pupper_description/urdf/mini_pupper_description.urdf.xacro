@@ -153,6 +153,20 @@
     <axis
       xyz="0 0 0" />
   </joint>
+  <link name="lidar_link" />
+  <joint
+    name="lidar_link_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="lidar" />
+    <child
+      link="lidar_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
   <link
     name="lf1">
     <inertial>
