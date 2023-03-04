@@ -26,7 +26,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
@@ -56,6 +56,9 @@ def generate_launch_description():
     )
     servo_interface_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_control'), 'launch', 'servo_interface.launch.py']
+    )
+    lidar_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']
     )
 
     robot_name = LaunchConfiguration("robot_name")
@@ -114,11 +117,14 @@ def generate_launch_description():
         }.items(),
     )
 
-    servo_interface_launch = (
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(servo_interface_launch_path),
-            condition=IfCondition(joint_hardware_connected),
-        ),
+    servo_interface_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(servo_interface_launch_path),
+        condition=IfCondition(joint_hardware_connected),
+    )
+
+    lidar_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(lidar_launch_path),
+        condition=IfCondition(joint_hardware_connected),
     )
 
     return LaunchDescription([
@@ -128,5 +134,6 @@ def generate_launch_description():
         declare_hardware_connected,
         rviz2_node,
         bringup_launch,
-        servo_interface_launch
+        servo_interface_launch,
+        lidar_launch,
     ])
