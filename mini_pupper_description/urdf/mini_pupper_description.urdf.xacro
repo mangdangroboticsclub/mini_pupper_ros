@@ -1774,7 +1774,7 @@
           <argument>~/out:=/scan</argument>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>lidar</frame_name>
+        <frame_name>lidar_link</frame_name>
         <!--min_intensity>100.0</min_intensity-->
       </plugin>
     </sensor>
