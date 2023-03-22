@@ -36,7 +36,6 @@ class ServoInterface(Node):
         joint_angles = np.array(msg.position).reshape(3, 4)
         self.hardware_interface.set_actuator_postions(joint_angles)
 
-
 def main(args=None):
     rclpy.init(args=args)
     servo_interface_node = ServoInterface()
