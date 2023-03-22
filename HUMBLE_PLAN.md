@@ -24,23 +24,11 @@ Note: Thanks to [@hdumcke](https://github.com/hdumcke), these steps have been al
 **Outcome**: Mini Pupper can walk properly controlled by PS4 controller.
 
 
-### 2. Upgrade champ projects from galactic to humble
-
-1. champ  
-2. champ_robots
-3. champ_teleop  
-4. mini_pupper_description: update to latest physics/design in urdf to be provided by MangDang.
-
-Note: If we found some error caused by Gazebo (formerly called Ignition), we may postpone this goal.
-
-**Outcome**: champ and mini_pupper shall be able to do slam in simulation 
-
-
-### 3. Upgrade mini_pupper_ros to humble
+### 2. Upgrade mini_pupper_ros to humble
 
 1. cartographer: use ROS 2 version ([ros2/cartographer_ros](https://github.com/ros2/cartographer_ros), [ros2/cartographer](https://github.com/ros2/cartographer)) if possible. Otherwise, find alternatives. 
 
-2. ldlidar_stl_ros: use ROS 2 version ([ldrobotSensorTeam/ldlidar_stl_ros2](https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2)). Might need to request them and work them to support humble or try the community maintained version ([Myzhar/ldrobot-lidar-ros2](https://github.com/Myzhar/ldrobot-lidar-ros2)).
+2. ldlidar_stl_ros2: use ROS 2 version ([ldrobotSensorTeam/ldlidar_stl_ros2](https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2)). Might need to request them and work them to support humble or try the community maintained version ([Myzhar/ldrobot-lidar-ros2](https://github.com/Myzhar/ldrobot-lidar-ros2)).
 
 3. mini_pupper_control, mini_pupper_teleop: update launch files and scripts to run in humble and ubuntu 22.04.
 
@@ -51,7 +39,7 @@ Note: If we found some error caused by Gazebo (formerly called Ignition), we may
 **Outcome**: Mini Pupper can do slam in real world.
 
 
-### 4. Apply humble to Mini Pupper 2
+### 3. Apply humble to Mini Pupper 2
 
 1. Setup git repo/branch.
 2. Update robot description urdf.
