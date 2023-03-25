@@ -101,7 +101,7 @@
       xyz="0 0 0" />
   </joint>
   <link
-    name="lidar">
+    name="lidar_link">
     <inertial>
       <origin
         xyz="1.56706411611127E-05 -5.16565672073303E-13 -0.0191835739440227"
@@ -148,20 +148,6 @@
       rpy="0 0 1.57" />
     <parent
       link="base_link" />
-    <child
-      link="lidar" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link name="lidar_link" />
-  <joint
-    name="lidar_link_joint"
-    type="fixed">
-    <origin
-      xyz="0 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="lidar" />
     <child
       link="lidar_link" />
     <axis
@@ -1741,11 +1727,10 @@
     <material>Gazebo/FlatBlack</material>
   </gazebo>
   
-  <gazebo reference="lidar">
+  <gazebo reference="lidar_link">
     <material>Gazebo/FlatBlack</material>
     <sensor type="ray" name="lidar">
       <always_on>true</always_on>
-      <visualize>false</visualize>
       <update_rate>30</update_rate>
       <pose>0 0 0 0 0 0</pose>
       <visualize>false</visualize>
