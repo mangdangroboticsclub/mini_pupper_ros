@@ -38,11 +38,4 @@ def generate_launch_description():
                 {'angle_crop_min': 135.0},
                 {'angle_crop_max': 225.0}],
         ),
-        # Lidar
-        Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            name='base_to_lidar_tf2',
-            arguments=['0', '0', '0.02', '1.57', '0', '0', 'base_link', 'lidar_link']
-            ),
     ])
