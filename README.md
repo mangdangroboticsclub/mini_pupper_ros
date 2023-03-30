@@ -124,7 +124,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 ## 2.2 Mini Pupper
 
-### 2.1.1 Test walk
+### 2.2.1 Test walk
 
 Note: This step is only for Mini Pupper
 
@@ -139,6 +139,61 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Then control Mini Pupper with the keyboard
 ```
+### 2.2.2 Test Mapping
+  - Bring up real mini pupper
+ ```bash
+ # Terminal 1 (ssh to real mini pupper)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_bringup bringup.launch.py  # on real mini pupper
+ ```
+  - Mapping on PC
+ ```bash
+ # Terminal 2 (on PC)
+ . ~/ros2_ws/install/setup.bash
+ ros2 launch mini_pupper_navigation slam.launch.py  # on PC
+ ```
+ - Keyboard control  
+Use the keyboard to remotely control the mini pupper to complete the mapping.
+```bash
+# Terminal 3 (on PC)
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+- Save the map  
+If you want to save the map:
+```bash
+# Terminal 4 (on PC)
+ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/cartographer_map.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
+```
+the map will be saved at $HOME.
+#### 2.2.3 Test Navigation
+   - Bring up real mini pupper
+ ```bash
+ # Terminal 1 (ssh to real mini pupper)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_bringup bringup.launch.py  # on real mini pupper
+ ```
+ - Replace the map files  
+ Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
+ ```bash
+ # Terminal 2 (on PC)
+ sudo cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
+ sudo cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
+ sudo cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
+ ```
+ - Localization
+  ```bash
+ # Terminal 3 (on PC)
+ . ~/ros2_ws/install/setup.bash
+ ros2 launch mini_pupper_navigation localization.launch.py  # on PC
+ ```
+ - Navigation
+  ```bash
+ # Terminal 4 (on PC)
+ . ~/ros2_ws/install/setup.bash
+ ros2 launch mini_pupper_navigation navigation.launch.py  # on PC
+ ```
 
 ## License
 
