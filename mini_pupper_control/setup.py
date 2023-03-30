@@ -1,6 +1,4 @@
 from setuptools import setup
-from glob import glob
-import os
 
 package_name = 'mini_pupper_control'
 
