@@ -29,15 +29,6 @@ def generate_launch_description():
             name='vel_to_servo_controller',
             output='screen'
         ),
-<<<<<<< HEAD:mini_pupper_control/launch/vel_to_servo_controller.launch.py
-=======
-        Node(
-            package='mini_pupper_driver',
-            executable='servo_interface',
-            name='servo_interface',
-            output='screen'
-        )
->>>>>>> 7f9ceb167a3a6aebf3e5385cecbcf470b883753a:mini_pupper_driver/launch/vel_to_servo_controller.launch.py
     ])
 
 
