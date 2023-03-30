@@ -63,7 +63,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'load_state_filename',
             default_value=os.path.join(
-                bringup_dir, 'maps', 'mymap.pbstream'),
+                bringup_dir, 'maps', 'cartographer_map.pbstream'),
             description='pbstream file'),
 
         Node(
