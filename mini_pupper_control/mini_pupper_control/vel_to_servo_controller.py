@@ -1,13 +1,13 @@
 import numpy as np
 # from .StanfordQuadruped.src.IMU import IMU
-from .StanfordQuadruped.src.Controller import Controller
-from .StanfordQuadruped.src.Command import Command
-from .StanfordQuadruped.src.State import State
-from .StanfordQuadruped.pupper.Kinematics import four_legs_inverse_kinematics
+from ._thirdparty.StanfordQuadruped.src.Controller import Controller
+from ._thirdparty.StanfordQuadruped.src.Command import Command
+from ._thirdparty.StanfordQuadruped.src.State import State
+from ._thirdparty.StanfordQuadruped.pupper.Kinematics import four_legs_inverse_kinematics
 try:
     from MangDang.mini_pupper.Config import Configuration
 except ImportError:
-    from .StanfordQuadruped.pupper.Config import Configuration
+    from ._thirdparty.StanfordQuadruped.pupper.Config import Configuration
 
 # ROS 2 related packages
 import rclpy
