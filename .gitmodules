@@ -1,3 +1,3 @@
-[submodule "mini_pupper_driver/mini_pupper_driver/StanfordQuadruped"]
-	path = mini_pupper_driver/mini_pupper_driver/StanfordQuadruped
+[submodule "mini_pupper_control/mini_pupper_control/StanfordQuadruped"]
+	path = mini_pupper_control/mini_pupper_control/StanfordQuadruped
 	url = https://github.com/mangdangroboticsclub/StanfordQuadruped.git
