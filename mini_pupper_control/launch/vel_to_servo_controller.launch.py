@@ -16,7 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
@@ -28,5 +27,5 @@ def generate_launch_description():
             executable='vel_to_servo_controller',
             name='vel_to_servo_controller',
             output='screen'
-        ),
+        )
     ])
