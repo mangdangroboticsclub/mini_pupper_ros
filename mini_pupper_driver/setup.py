@@ -21,7 +21,7 @@ setup(
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',
     description='The mini_pupper_driver package',
-    license='MIT',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
