@@ -16,9 +16,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'),
-            glob('launch/*.launch.py')),
-        (os.path.join('lib', package_name), glob(
-            'mini_pupper_control/mini_pupper_control/StanfordQuadruped/*.py'))
+            glob('launch/*.launch.py'))
     ],
     install_requires=['setuptools', 'transforms3d', 'numpy'],
     zip_safe=True,
