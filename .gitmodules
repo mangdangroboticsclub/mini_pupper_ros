@@ -1,3 +1,0 @@
-[submodule "mini_pupper_control/mini_pupper_control/_thirdparty/StanfordQuadruped"]
-	path = mini_pupper_control/mini_pupper_control/_thirdparty/StanfordQuadruped
-	url = https://github.com/mangdangroboticsclub/StanfordQuadruped.git
