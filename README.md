@@ -178,9 +178,9 @@ ros2 launch mini_pupper_bringup bringup.launch.py  # on real mini pupper
  Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
  ```bash
  # Terminal 2 (on PC)
- sudo cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
- sudo cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
- sudo cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
+cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
+cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
+cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
  ```
  - Localization
   ```bash
