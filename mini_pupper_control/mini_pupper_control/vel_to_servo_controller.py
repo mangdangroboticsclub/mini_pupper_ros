@@ -64,6 +64,22 @@ class VelocityToServoController(Node):
         # Human Behaviors Counter
         self.counter = 0
 
+    def constrain_movement(self, command, config):
+        """
+        constrain the movement of the robot
+        in order to prevent the robot movement from being too fast
+        """
+        # constrain horizontal velocity
+        command.horizontal_velocity[0] = np.clip(
+            command.horizontal_velocity[0], -config.max_x_velocity, config.max_x_velocity)
+        command.horizontal_velocity[1] = np.clip(
+            command.horizontal_velocity[1], -config.max_y_velocity, config.max_y_velocity)
+
+        # constrain yaw rate
+        command.yaw_rate = np.clip(
+            command.yaw_rate, -config.max_yaw_rate, config.max_yaw_rate)
+        return command
+
     def publish_joint_positions(self, joint_angles):
         joint_state_msg = JointState()
         joint_state_msg.header = Header()
@@ -92,7 +108,7 @@ class VelocityToServoController(Node):
         command.horizontal_velocity = np.array(
             [self.target_linear_x, self.target_linear_y])
         command.yaw_rate = self.target_angular_z
-
+        command = self.constrain_movement(command, self.config)
         # Simulate Human Behaviors
         if (self.counter == 0):
             self.counter += 1
