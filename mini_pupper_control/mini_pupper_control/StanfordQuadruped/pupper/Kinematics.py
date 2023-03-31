@@ -20,11 +20,12 @@
 
 
 import numpy as np
-from transforms3d.euler import euler2mat
 
 
 def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
-    """Find the joint angles corresponding to the given body-relative foot position for a given leg and configuration
+    """
+    Find the joint angles corresponding to
+    the given body-relative foot position for a given leg and configuration
 
     Parameters
     ----------
@@ -48,28 +49,34 @@ def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
     # Distance from the leg's forward/back point of rotation to the foot
     R_hip_foot_yz = (R_body_foot_yz ** 2 - config.ABDUCTION_OFFSET ** 2) ** 0.5
 
-    # Interior angle of the right triangle formed in the y-z plane by the leg that is coincident to the ab/adduction axis
-    # For feet 2 (front left) and 4 (back left), the abduction offset is positive, for the right feet, the abduction offset is negative.
+    # Interior angle of the right triangle formed in the y-z plane
+    # by the leg that is coincident to the ab/adduction axis
+
+    # For feet 2 (front left) and 4 (back left),
+    # the abduction offset is positive,
+    # for the right feet, the abduction offset is negative.
     arccos_argument = config.ABDUCTION_OFFSETS[leg_index] / R_body_foot_yz
     arccos_argument = np.clip(arccos_argument, -0.99, 0.99)
     phi = np.arccos(arccos_argument)
 
-    # Angle of the y-z projection of the hip-to-foot vector, relative to the positive y-axis
+    # Angle of the y-z projection of the hip-to-foot vector,
+    # relative to the positive y-axis
     hip_foot_angle = np.arctan2(z, y)
 
     # Ab/adduction angle, relative to the positive y-axis
     abduction_angle = phi + hip_foot_angle
 
-    # theta: Angle between the tilted negative z-axis and the hip-to-foot vector
+    # theta: Angle between the tilted
+    # negative z-axis and the hip-to-foot vector
     theta = np.arctan2(-x, R_hip_foot_yz)
 
     # Distance between the hip and foot
     R_hip_foot = (R_hip_foot_yz ** 2 + x ** 2) ** 0.5
 
     # Angle between the line going from hip to foot and the link L1
-    arccos_argument = (config.LEG_L1 ** 2 + R_hip_foot ** 2 - config.LEG_L2 ** 2) / (
-        2 * config.LEG_L1 * R_hip_foot
-    )
+    arccos_argument = \
+        (config.LEG_L1 ** 2 + R_hip_foot ** 2 - config.LEG_L2 ** 2) \
+        / (2 * config.LEG_L1 * R_hip_foot)
     arccos_argument = np.clip(arccos_argument, -0.99, 0.99)
     trident = np.arccos(arccos_argument)
 
@@ -77,9 +84,9 @@ def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
     hip_angle = theta + trident
 
     # Angle between the leg links L1 and L2
-    arccos_argument = (config.LEG_L1 ** 2 + config.LEG_L2 ** 2 - R_hip_foot ** 2) / (
-        2 * config.LEG_L1 * config.LEG_L2
-    )
+    arccos_argument = \
+        (config.LEG_L1 ** 2 + config.LEG_L2 ** 2 - R_hip_foot ** 2) \
+        / (2 * config.LEG_L1 * config.LEG_L2)
     arccos_argument = np.clip(arccos_argument, -0.99, 0.99)
     beta = np.arccos(arccos_argument)
 
@@ -90,12 +97,14 @@ def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
 
 
 def four_legs_inverse_kinematics(r_body_foot, config):
-    """Find the joint angles for all twelve DOF correspoinding to the given matrix of body-relative foot positions.
+    """Find the joint angles for all twelve DOF
+    correspoinding to the given matrix of body-relative foot positions.
 
     Parameters
     ----------
     r_body_foot : numpy array (3,4)
-        Matrix of the body-frame foot positions. Each column corresponds to a separate foot.
+        Matrix of the body-frame foot positions.
+        Each column corresponds to a separate foot.
     config : Config object
         Object of robot configuration parameters.
 

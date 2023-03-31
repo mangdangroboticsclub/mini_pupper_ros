@@ -21,8 +21,7 @@
 
 import UDPComms
 import numpy as np
-import time
-from src.State import BehaviorState, State
+from src.State import BehaviorState
 from src.Command import Command
 from src.Utilities import deadband, clipped_first_order_filter
 from MangDang.mini_pupper.shutdown import ShutDown
@@ -49,8 +48,6 @@ class JoystickInterface:
             msg = self.udp_handle.get()
             command = Command()
 
-            ####### Handle discrete commands ########
-
             # Check for shotdown requests
             if msg["triangle"]:
                 disp.show_state(BehaviorState.SHUTDOWN)
@@ -58,12 +55,14 @@ class JoystickInterface:
             else:
                 self.sutdown_time.cancel_shutdown()
 
-            # Check if requesting a state transition to trotting, or from trotting to resting
+            # Check if requesting a state transition to trotting,
+            # or from trotting to resting
             gait_toggle = msg["R1"]
             command.trot_event = (
                 gait_toggle == 1 and self.previous_gait_toggle == 0)
 
-            # Check if requesting a state transition to hopping, from trotting or resting
+            # Check if requesting a state transition to hopping,
+            # from trotting or resting
             hop_toggle = msg["x"]
             command.hop_event = (
                 hop_toggle == 1 and self.previous_hop_toggle == 0)
@@ -77,7 +76,6 @@ class JoystickInterface:
             self.previous_hop_toggle = hop_toggle
             self.previous_activate_toggle = activate_toggle
 
-            ####### Handle continuous commands ########
             x_vel = msg["ly"] * self.config.max_x_velocity
             y_vel = msg["lx"] * -self.config.max_y_velocity
             command.horizontal_velocity = np.array([x_vel, y_vel])
@@ -103,7 +101,8 @@ class JoystickInterface:
                 self.config.z_speed * height_movement
 
             roll_movement = - msg["dpadx"]
-            command.roll = state.roll + message_dt * self.config.roll_speed * roll_movement
+            command.roll = state.roll + \
+                message_dt * self.config.roll_speed * roll_movement
 
             return command
 

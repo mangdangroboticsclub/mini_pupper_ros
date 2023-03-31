@@ -23,12 +23,10 @@ from .Gaits import GaitController
 from .StanceController import StanceController
 from .SwingLegController import SwingController
 from .Utilities import clipped_first_order_filter
-from .State import BehaviorState, State
+from .State import BehaviorState
 
 import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
-from transforms3d.quaternions import qconjugate, quat2axangle
-from transforms3d.axangles import axangle2mat
 
 
 class Controller:
@@ -50,12 +48,22 @@ class Controller:
         self.swing_controller = SwingController(self.config)
         self.stance_controller = StanceController(self.config)
 
-        self.hop_transition_mapping = {BehaviorState.REST: BehaviorState.HOP, BehaviorState.HOP: BehaviorState.FINISHHOP,
-                                       BehaviorState.FINISHHOP: BehaviorState.REST, BehaviorState.TROT: BehaviorState.HOP}
-        self.trot_transition_mapping = {BehaviorState.REST: BehaviorState.TROT, BehaviorState.TROT: BehaviorState.REST,
-                                        BehaviorState.HOP: BehaviorState.TROT, BehaviorState.FINISHHOP: BehaviorState.TROT}
+        self.hop_transition_mapping = {
+            BehaviorState.REST: BehaviorState.HOP,
+            BehaviorState.HOP: BehaviorState.FINISHHOP,
+            BehaviorState.FINISHHOP: BehaviorState.REST,
+            BehaviorState.TROT: BehaviorState.HOP
+        }
+        self.trot_transition_mapping = {
+            BehaviorState.REST: BehaviorState.TROT,
+            BehaviorState.TROT: BehaviorState.REST,
+            BehaviorState.HOP: BehaviorState.TROT,
+            BehaviorState.FINISHHOP: BehaviorState.TROT
+        }
         self.activate_transition_mapping = {
-            BehaviorState.DEACTIVATED: BehaviorState.REST, BehaviorState.REST: BehaviorState.DEACTIVATED}
+            BehaviorState.DEACTIVATED: BehaviorState.REST,
+            BehaviorState.REST: BehaviorState.DEACTIVATED
+        }
 
     def step_gait(self, state, command):
         """Calculate the desired foot locations for the next timestep
@@ -69,7 +77,6 @@ class Controller:
         new_foot_locations = np.zeros((3, 4))
         for leg_index in range(4):
             contact_mode = contact_modes[leg_index]
-            foot_location = state.foot_locations[:, leg_index]
             if contact_mode == 1:
                 new_location = self.stance_controller.next_foot_location(
                     leg_index, state, command)
@@ -96,13 +103,15 @@ class Controller:
             Robot controller object.
         """
 
-        ########## Update operating state based on command ######
         if command.activate_event:
-            state.behavior_state = self.activate_transition_mapping[state.behavior_state]
+            state.behavior_state = \
+                self.activate_transition_mapping[state.behavior_state]
         elif command.trot_event:
-            state.behavior_state = self.trot_transition_mapping[state.behavior_state]
+            state.behavior_state = \
+                self.trot_transition_mapping[state.behavior_state]
         elif command.hop_event:
-            state.behavior_state = self.hop_transition_mapping[state.behavior_state]
+            state.behavior_state = \
+                self.hop_transition_mapping[state.behavior_state]
 
         disp.show_state(state.behavior_state)
 
@@ -165,7 +174,6 @@ class Controller:
                     self.config.yaw_time_constant,
                 )
             )
-            # Set the foot locations to the default stance plus the standard height
             state.foot_locations = (
                 self.config.default_stance
                 + np.array([0, 0, command.height])[:, np.newaxis]
@@ -187,12 +195,3 @@ class Controller:
         state.pitch = command.pitch
         state.roll = command.roll
         state.height = command.height
-
-    def set_pose_to_default(self):
-        state.foot_locations = (
-            self.config.default_stance
-            + np.array([0, 0, self.config.default_z_ref])[:, np.newaxis]
-        )
-        state.joint_angles = controller.inverse_kinematics(
-            state.foot_locations, self.config
-        )

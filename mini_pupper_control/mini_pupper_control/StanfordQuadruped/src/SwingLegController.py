@@ -73,4 +73,5 @@ class SwingController:
             time_left * np.array([1, 1, 0])
         delta_foot_location = v * self.config.dt
         z_vector = np.array([0, 0, swing_height_ + command.height])
-        return foot_location * np.array([1, 1, 0]) + z_vector + delta_foot_location
+        return foot_location * np.array([1, 1, 0]) \
+            + z_vector + delta_foot_location

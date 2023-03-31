@@ -40,7 +40,8 @@ class HardwareInterface:
 
 
 def pwm_to_duty_cycle(pulsewidth_micros, pwm_params):
-    """Converts a pwm signal (measured in microseconds) to a corresponding duty cycle on the gpio pwm pin
+    """Converts a pwm signal (measured in microseconds)
+    to a corresponding duty cycle on the gpio pwm pin
 
     Parameters
     ----------
@@ -67,9 +68,11 @@ def angle_to_pwm(angle, servo_params, axis_index, leg_index):
     servo_params : ServoParams
         ServoParams object
     axis_index : int
-        Specifies which joint of leg to control. 0 is abduction servo, 1 is inner hip servo, 2 is outer hip servo.
+        Specifies which joint of leg to control.
+        0 is abduction servo, 1 is inner hip servo, 2 is outer hip servo.
     leg_index : int
-        Specifies which leg to control. 0 is front-right, 1 is front-left, 2 is back-right, 3 is back-left.
+        Specifies which leg to control.
+        0 is front-right, 1 is front-left, 2 is back-right, 3 is back-left.
 
     Returns
     -------
@@ -86,7 +89,12 @@ def angle_to_pwm(angle, servo_params, axis_index, leg_index):
     return pulse_width_micros
 
 
-def angle_to_duty_cycle(angle, pwm_params, servo_params, axis_index, leg_index):
+def angle_to_duty_cycle(
+        angle,
+        pwm_params,
+        servo_params,
+        axis_index,
+        leg_index):
     return pwm_to_duty_cycle(
         angle_to_pwm(angle, servo_params, axis_index, leg_index), pwm_params
     )

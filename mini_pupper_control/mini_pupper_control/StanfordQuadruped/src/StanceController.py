@@ -28,7 +28,9 @@ class StanceController:
         self.config = config
 
     def position_delta(self, leg_index, state, command):
-        """Calculate the difference between the next desired body location and the current body location
+        """
+        Calculate the difference between
+        the next desired body location and the current body location
 
         Parameters
         ----------

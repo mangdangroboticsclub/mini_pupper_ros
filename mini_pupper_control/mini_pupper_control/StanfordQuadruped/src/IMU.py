@@ -41,7 +41,8 @@ class IMU:
         self.serial_handle.reset_input_buffer()
 
     def read_orientation(self):
-        """Reads quaternion measurements from the Teensy until none are left. Returns the last read quaternion.
+        """Reads quaternion measurements from the Teensy until none are left.
+        Returns the last read quaternion.
 
         Parameters
         ----------
@@ -51,7 +52,9 @@ class IMU:
         Returns
         -------
         np array (4,)
-            If there was quaternion data to read on the serial port returns the quaternion as a numpy array, otherwise returns the last read quaternion.
+            If there was quaternion data to read on the serial port
+            returns the quaternion as a numpy array,
+            otherwise returns the last read quaternion.
         """
 
         while True:

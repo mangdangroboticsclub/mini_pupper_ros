@@ -18,14 +18,14 @@
 
 import numpy as np
 # from .StanfordQuadruped.src.IMU import IMU
-from ._thirdparty.StanfordQuadruped.src.Controller import Controller
-from ._thirdparty.StanfordQuadruped.src.Command import Command
-from ._thirdparty.StanfordQuadruped.src.State import State
-from ._thirdparty.StanfordQuadruped.pupper.Kinematics import four_legs_inverse_kinematics
+from .StanfordQuadruped.src.Controller import Controller
+from .StanfordQuadruped.src.Command import Command
+from .StanfordQuadruped.src.State import State
+from .StanfordQuadruped.pupper.Kinematics import four_legs_inverse_kinematics
 try:
     from MangDang.mini_pupper.Config import Configuration
 except ImportError:
-    from ._thirdparty.StanfordQuadruped.pupper.Config import Configuration
+    from .StanfordQuadruped.pupper.Config import Configuration
 
 # ROS 2 related packages
 import rclpy
@@ -90,9 +90,15 @@ class VelocityToServoController(Node):
         """
         # constrain horizontal velocity
         command.horizontal_velocity[0] = np.clip(
-            command.horizontal_velocity[0], -config.max_x_velocity, config.max_x_velocity)
+            command.horizontal_velocity[0],
+            -config.max_x_velocity,
+            config.max_x_velocity
+        )
         command.horizontal_velocity[1] = np.clip(
-            command.horizontal_velocity[1], -config.max_y_velocity, config.max_y_velocity)
+            command.horizontal_velocity[1],
+            -config.max_y_velocity,
+            config.max_y_velocity
+        )
 
         # constrain yaw rate
         command.yaw_rate = np.clip(

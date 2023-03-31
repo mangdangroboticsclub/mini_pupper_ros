@@ -22,7 +22,6 @@
 import numpy as np
 from .ServoCalibration import MICROS_PER_RAD, NEUTRAL_ANGLE_DEGREES
 from .HardwareConfig import PS4_COLOR, PS4_DEACTIVATED_COLOR
-from enum import Enum
 
 # TODO: put these somewhere else
 
@@ -40,7 +39,8 @@ class ServoParams:
         self.neutral_position_pwm = 1500  # Middle position
         self.micros_per_rad = MICROS_PER_RAD  # Must be calibrated
 
-        # The neutral angle of the joint relative to the modeled zero-angle in degrees, for each joint
+        # The neutral angle of the joint
+        # relative to the modeled zero-angle in degrees, for each joint
         self.neutral_angle_degrees = NEUTRAL_ANGLE_DEGREES
 
         self.servo_multipliers = np.array(
@@ -54,17 +54,14 @@ class ServoParams:
 
 class Configuration:
     def __init__(self):
-        ################# CONTROLLER BASE COLOR ##############
         self.ps4_color = PS4_COLOR
         self.ps4_deactivated_color = PS4_DEACTIVATED_COLOR
 
-        #################### COMMANDS ####################
         self.max_x_velocity = 0.4
         self.max_y_velocity = 0.3
         self.max_yaw_rate = 2.0
         self.max_pitch = 30.0 * np.pi / 180.0
 
-        #################### MOVEMENT PARAMS ####################
         self.z_time_constant = 0.02
         self.z_speed = 0.03  # maximum speed [m/s]
         self.pitch_deadband = 0.02
@@ -75,36 +72,36 @@ class Configuration:
         self.max_stance_yaw = 1.2
         self.max_stance_yaw_rate = 2.0
 
-        #################### STANCE ####################
         self.delta_x = 0.1
         self.delta_y = 0.09
         self.x_shift = 0.0
         self.default_z_ref = -0.16
 
-        #################### SWING ######################
         self.z_coeffs = None
         self.z_clearance = 0.07
+        # Ratio between touchdown distance and total horizontal stance movement
         self.alpha = (
-            0.5  # Ratio between touchdown distance and total horizontal stance movement
+            0.5
         )
+        # Ratio between touchdown distance and total horizontal stance movement
         self.beta = (
-            0.5  # Ratio between touchdown distance and total horizontal stance movement
+            0.5
         )
 
-        #################### GAIT #######################
         self.dt = 0.01
         self.num_phases = 4
         self.contact_phases = np.array(
             [[1, 1, 1, 0], [1, 0, 1, 1], [1, 0, 1, 1], [1, 1, 1, 0]]
         )
+        # duration of the phase where all four feet are on the ground
         self.overlap_time = (
-            0.10  # duration of the phase where all four feet are on the ground
+            0.10
         )
+        # duration of the phase when only two feet are on the ground
         self.swing_time = (
-            0.15  # duration of the phase when only two feet are on the ground
+            0.15
         )
 
-        ######################## GEOMETRY ######################
         self.LEG_FB = 0.10  # front-back distance from center line to leg axis
         self.LEG_LR = 0.04  # left-right distance from center line to leg plane
         self.LEG_L2 = 0.115
@@ -138,7 +135,6 @@ class Configuration:
             ]
         )
 
-        ################### INERTIAL ####################
         self.FRAME_MASS = 0.560  # kg
         self.MODULE_MASS = 0.080  # kg
         self.LEG_MASS = 0.030  # kg
@@ -173,7 +169,6 @@ class Configuration:
             ]
         )
 
-    ################## SWING ###########################
     @property
     def z_clearance(self):
         return self.__z_clearance
@@ -193,7 +188,6 @@ class Configuration:
         # )
         # self.z_coeffs = solve(A_z, b_z)
 
-    ########################### GAIT ####################
     @property
     def overlap_ticks(self):
         return int(self.overlap_time / self.dt)
@@ -226,16 +220,19 @@ class SimulationConfig:
         self.START_HEIGHT = 0.3
         self.MU = 1.5  # coeff friction
         self.DT = 0.001  # seconds between simulation steps
-        self.JOINT_SOLREF = "0.001 1"  # time constant and damping ratio for joints
+        # time constant and damping ratio for joints
+        self.JOINT_SOLREF = "0.001 1"
         self.JOINT_SOLIMP = "0.9 0.95 0.001"  # joint constraint parameters
-        self.GEOM_SOLREF = "0.01 1"  # time constant and damping ratio for geom contacts
+        # time constant and damping ratio for geom contacts
+        self.GEOM_SOLREF = "0.01 1"
         self.GEOM_SOLIMP = "0.9 0.95 0.001"  # geometry contact parameters
 
         # Joint params
         G = 220  # Servo gear ratio
         m_rotor = 0.016  # Servo rotor mass
         r_rotor = 0.005  # Rotor radius
-        self.ARMATURE = G ** 2 * m_rotor * r_rotor ** 2  # Inertia of rotational joints
+        # Inertia of rotational joints
+        self.ARMATURE = G ** 2 * m_rotor * r_rotor ** 2
         # print("Servo armature", self.ARMATURE)
 
         NATURAL_DAMPING = 1.0  # Damping resulting from friction

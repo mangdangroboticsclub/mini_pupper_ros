@@ -24,7 +24,9 @@ class GaitController:
         self.config = config
 
     def phase_index(self, ticks):
-        """Calculates which part of the gait cycle the robot should be in given the time in ticks.
+        """
+        Calculates which part of the gait cycle
+        the robot should be in given the time in ticks.
 
         Parameters
         ----------
@@ -47,7 +49,9 @@ class GaitController:
         assert False
 
     def subphase_ticks(self, ticks):
-        """Calculates the number of ticks (timesteps) since the start of the current phase.
+        """
+        Calculates the number of ticks (timesteps)
+        since the start of the current phase.
 
         Parameters
         ----------
@@ -73,7 +77,8 @@ class GaitController:
         assert False
 
     def contacts(self, ticks):
-        """Calculates which feet should be in contact at the given number of ticks
+        """
+        Calculates which feet should be in contact at the given number of ticks
 
         Parameters
         ----------
