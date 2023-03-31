@@ -19,5 +19,5 @@ import pytest
 @pytest.mark.copyright
 @pytest.mark.linter
 def test_copyright():
-    rc = main(argv=['.'])
+    rc = main(argv=['.', '--exclude', 'mini_pupper_control/StanfordQuadruped'])
     assert rc == 0, 'Found errors'
