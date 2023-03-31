@@ -17,11 +17,11 @@ import matplotlib.pyplot as plt
 
 from Kinematics import leg_explicit_inverse_kinematics
 from PupperConfig import *
-from Gaits import *
-from StanceController import position_delta, stance_foot_location
-from SwingLegController import *
+from .Gaits import *
+from .StanceController import position_delta, stance_foot_location
+from .SwingLegController import *
 from Types import MovementReference, GaitParams, StanceParams, SwingParams
-from Controller import *
+from .Controller import *
 
 # function round_(a, dec)
 #     return map(x -> round(x, digits=dec), a)

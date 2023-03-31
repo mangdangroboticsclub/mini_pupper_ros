@@ -1,5 +1,5 @@
 import pigpio
-from pupper.Config import ServoParams, PWMParams
+from .Config import ServoParams, PWMParams
 
 
 class HardwareInterface:
@@ -10,10 +10,12 @@ class HardwareInterface:
         initialize_pwm(self.pi, self.pwm_params)
 
     def set_actuator_postions(self, joint_angles):
-        send_servo_commands(self.pi, self.pwm_params, self.servo_params, joint_angles)
-    
+        send_servo_commands(self.pi, self.pwm_params,
+                            self.servo_params, joint_angles)
+
     def set_actuator_position(self, joint_angle, axis, leg):
-        send_servo_command(self.pi, self.pwm_params, self.servo_params, joint_angle, axis, leg)
+        send_servo_command(self.pi, self.pwm_params,
+                           self.servo_params, joint_angle, axis, leg)
 
 
 def pwm_to_duty_cycle(pulsewidth_micros, pwm_params):
@@ -75,7 +77,8 @@ def initialize_pwm(pi, pwm_params):
             pi.set_PWM_frequency(
                 pwm_params.pins[axis_index, leg_index], pwm_params.freq
             )
-            pi.set_PWM_range(pwm_params.pins[axis_index, leg_index], pwm_params.range)
+            pi.set_PWM_range(
+                pwm_params.pins[axis_index, leg_index], pwm_params.range)
 
 
 def send_servo_commands(pi, pwm_params, servo_params, joint_angles):
@@ -88,11 +91,13 @@ def send_servo_commands(pi, pwm_params, servo_params, joint_angles):
                 axis_index,
                 leg_index,
             )
-            pi.set_PWM_dutycycle(pwm_params.pins[axis_index, leg_index], duty_cycle)
+            pi.set_PWM_dutycycle(
+                pwm_params.pins[axis_index, leg_index], duty_cycle)
 
 
 def send_servo_command(pi, pwm_params, servo_params, joint_angle, axis, leg):
-    duty_cycle = angle_to_duty_cycle(joint_angle, pwm_params, servo_params, axis, leg)
+    duty_cycle = angle_to_duty_cycle(
+        joint_angle, pwm_params, servo_params, axis, leg)
     pi.set_PWM_dutycycle(pwm_params.pins[axis, leg], duty_cycle)
 
 

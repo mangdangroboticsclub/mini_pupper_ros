@@ -9,7 +9,7 @@ from MangDang.mini_pupper.shutdown import ShutDown
 
 class JoystickInterface:
     def __init__(
-        self, config, udp_port=8830, udp_publisher_port = 8840,
+        self, config, udp_port=8830, udp_publisher_port=8840,
     ):
         self.config = config
         self.previous_gait_toggle = 0
@@ -27,7 +27,7 @@ class JoystickInterface:
         try:
             msg = self.udp_handle.get()
             command = Command()
-            
+
             ####### Handle discrete commands ########
 
             # Check for shotdown requests
@@ -39,14 +39,17 @@ class JoystickInterface:
 
             # Check if requesting a state transition to trotting, or from trotting to resting
             gait_toggle = msg["R1"]
-            command.trot_event = (gait_toggle == 1 and self.previous_gait_toggle == 0)
+            command.trot_event = (
+                gait_toggle == 1 and self.previous_gait_toggle == 0)
 
             # Check if requesting a state transition to hopping, from trotting or resting
             hop_toggle = msg["x"]
-            command.hop_event = (hop_toggle == 1 and self.previous_hop_toggle == 0)            
-            
+            command.hop_event = (
+                hop_toggle == 1 and self.previous_hop_toggle == 0)
+
             activate_toggle = msg["L1"]
-            command.activate_event = (activate_toggle == 1 and self.previous_activate_toggle == 0)
+            command.activate_event = (
+                activate_toggle == 1 and self.previous_activate_toggle == 0)
 
             # Update previous values for toggles and state
             self.previous_gait_toggle = gait_toggle
@@ -75,8 +78,9 @@ class JoystickInterface:
             command.pitch = state.pitch + message_dt * pitch_rate
 
             height_movement = msg["dpady"]
-            command.height = state.height - message_dt * self.config.z_speed * height_movement
-            
+            command.height = state.height - message_dt * \
+                self.config.z_speed * height_movement
+
             roll_movement = - msg["dpadx"]
             command.roll = state.roll + message_dt * self.config.roll_speed * roll_movement
 
@@ -86,7 +90,6 @@ class JoystickInterface:
             if do_print:
                 print("UDP Timed out")
             return Command()
-
 
     def set_color(self, color):
         joystick_msg = {"ps4_color": color}

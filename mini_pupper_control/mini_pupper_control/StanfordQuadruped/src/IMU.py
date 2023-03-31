@@ -21,12 +21,12 @@ class IMU:
 
     def read_orientation(self):
         """Reads quaternion measurements from the Teensy until none are left. Returns the last read quaternion.
-        
+
         Parameters
         ----------
         serial_handle : Serial object
             Handle to the pyserial Serial object
-        
+
         Returns
         -------
         np array (4,)
