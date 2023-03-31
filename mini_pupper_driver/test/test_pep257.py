@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-# Copyright (c) 2022 MangDang
+# Copyright 2015 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,16 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch import LaunchDescription
-from launch_ros.actions import Node
+from ament_pep257.main import main
+import pytest
 
 
-def generate_launch_description():
-    return LaunchDescription([
-        Node(
-            package='mini_pupper_control',
-            executable='servo_interface',
-            name='servo_interface',
-            output='screen'
-        )
-    ])
+@pytest.mark.linter
+@pytest.mark.pep257
+def test_pep257():
+    rc = main(argv=['.'])
+    assert rc == 0, 'Found code style errors / warnings'

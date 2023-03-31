@@ -1,32 +1,34 @@
 from setuptools import setup
-from glob import glob
 import os
+from glob import glob
 
 package_name = 'mini_pupper_control'
 
 setup(
     name=package_name,
     version='0.0.1',
-    packages=[package_name],
+    packages=[package_name,
+              f'{package_name}.StanfordQuadruped',
+              f'{package_name}.StanfordQuadruped.pupper',
+              f'{package_name}.StanfordQuadruped.src'],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('share', package_name, 'launch'),
+            glob('launch/*.launch.py'))
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'transforms3d', 'numpy'],
     zip_safe=True,
-    author='MangDang',
-    author_email='fae@mangdang.net',
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',
-    description='The mini_pupper_control package',
-    license='MIT',
+    description='Mini pupper motor control package',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'servo_interface = mini_pupper_control.servo_interface:main',
-            'display_interface = mini_pupper_control.display_interface:main'
+            'vel_to_servo_controller =\
+                  mini_pupper_control.vel_to_servo_controller:main',
         ],
     },
 )
