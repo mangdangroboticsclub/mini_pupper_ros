@@ -35,7 +35,7 @@ class IMU:
 
         while True:
             x = self.serial_handle.readline().decode("utf").strip()
-            if x is "" or x is None:
+            if x == "" or x is None:
                 return self.last_quat
             else:
                 parsed = x.split(",")

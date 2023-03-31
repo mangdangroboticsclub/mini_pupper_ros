@@ -7,12 +7,17 @@ package_name = 'mini_pupper_control'
 setup(
     name=package_name,
     version='0.0.1',
-    packages=[package_name],
+    packages=[package_name,
+              f'{package_name}.StanfordQuadruped',
+              f'{package_name}.StanfordQuadruped.pupper',
+              f'{package_name}.StanfordQuadruped.src'],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py'))
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('lib', package_name), glob(
+            'mini_pupper_control/mini_pupper_control/StanfordQuadruped/*.py'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
