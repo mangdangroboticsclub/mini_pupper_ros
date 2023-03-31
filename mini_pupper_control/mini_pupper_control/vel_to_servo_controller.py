@@ -21,7 +21,7 @@ class VirtualDisplay():
     def __init__(self) -> None:
         pass
 
-    def show_state(self,virtual_behavior_state):
+    def show_state(self, virtual_behavior_state):
         pass
 
 
@@ -80,11 +80,12 @@ class VelocityToServoController(Node):
         self.target_angular_y = twist_msg.angular.y
 
     def data_processor(self):
-        # # IMU TODO
+        # IMU TODO
         # self.quat_orientation = (
         #         imu.read_orientation() if use_imu else np.array([1, 0, 0, 0])
         #     )
-        # self.state.quat_orientation = self.quat_orientation
+        self.quat_orientation = np.array([1, 0, 0, 0])
+        self.state.quat_orientation = self.quat_orientation
 
         # Command Formation
         command = Command()
