@@ -39,6 +39,8 @@ def generate_launch_description():
                 {'angle_crop_max': 225.0}],
         ),
         # Lidar
+        # TODO: the tf publisher here should 
+        #       be removed after URDF adjustment finished.
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
