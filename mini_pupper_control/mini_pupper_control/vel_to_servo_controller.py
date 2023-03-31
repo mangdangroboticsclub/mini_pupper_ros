@@ -21,7 +21,7 @@ class VirtualDisplay():
     def __init__(self) -> None:
         pass
 
-    def show_state(self):
+    def show_state(self,virtual_behavior_state):
         pass
 
 
