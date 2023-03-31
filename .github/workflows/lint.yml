@@ -17,7 +17,8 @@ jobs:
           python-version: "3.8"
       - name: Download flake8 config
         run: |
-          curl -L https://github.com/ament/ament_lint/raw/humble/ament_flake8/ament_flake8/configuration/ament_flake8.ini > tox.ini
+          curl -L https://github.com/ament/ament_lint/raw/humble/ament_flake8/ament_flake8/configuration/ament_flake8.ini > tox.ini |
+          echo "exclude = mini_pupper_control/mini_pupper_control/StanfordQuadruped" >> tox.ini
       - name: Run flake8
         uses: reviewdog/action-flake8@v3
         with:
