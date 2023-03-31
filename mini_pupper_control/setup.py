@@ -15,7 +15,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('share', package_name, 'launch'),
+            glob('launch/*.launch.py')),
         (os.path.join('lib', package_name), glob(
             'mini_pupper_control/mini_pupper_control/StanfordQuadruped/*.py'))
     ],
@@ -28,7 +29,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'vel_to_servo_controller = mini_pupper_control.vel_to_servo_controller:main',
+            'vel_to_servo_controller =\
+                  mini_pupper_control.vel_to_servo_controller:main',
         ],
     },
 )

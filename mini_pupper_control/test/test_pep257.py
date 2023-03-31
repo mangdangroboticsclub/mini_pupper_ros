@@ -19,5 +19,6 @@ import pytest
 @pytest.mark.linter
 @pytest.mark.pep257
 def test_pep257():
-    rc = main(argv=['.', 'test', '--exclude', 'mini_pupper_control/StanfordQuadruped'])
+    rc = main(argv=['.', 'test', '--exclude',
+              'mini_pupper_control/StanfordQuadruped'])
     assert rc == 0, 'Found code style errors / warnings'
