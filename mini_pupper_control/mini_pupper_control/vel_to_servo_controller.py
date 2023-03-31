@@ -66,8 +66,9 @@ class VelocityToServoController(Node):
 
     def constrain_movement(self, command, config):
         """
-        constrain the movement of the robot
-        in order to prevent the robot movement from being too fast
+        Constrain the movement of the robot.
+
+        Prevent the robot movement from being too fast.
         """
         # constrain horizontal velocity
         command.horizontal_velocity[0] = np.clip(
