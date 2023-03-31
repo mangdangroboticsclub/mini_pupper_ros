@@ -20,7 +20,7 @@ setup(
         (os.path.join('lib', package_name), glob(
             'mini_pupper_control/mini_pupper_control/StanfordQuadruped/*.py'))
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'transforms3d', 'numpy'],
     zip_safe=True,
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',
