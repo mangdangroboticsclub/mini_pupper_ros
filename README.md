@@ -159,7 +159,6 @@ Use the keyboard to remotely control the mini pupper to complete the mapping.
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - Save the map  
-If you want to save the map:
 ```bash
 # Terminal 4 (on PC)
 ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
