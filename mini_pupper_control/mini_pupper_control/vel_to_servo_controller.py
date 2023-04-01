@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# This program is based on https://github.com/stanfordroboticsclub/StanfordQuadruped/blob/master/run_robot.py
+# This program is based on 
+#     https://github.com/stanfordroboticsclub/StanfordQuadruped/blob/master/run_robot.py
 # which is released under the MIT License.
 # Copyright (c) 2020 Stanford Student Robotics
 
