@@ -3,7 +3,7 @@
 <package format="3">
   <name>mini_pupper_control</name>
   <version>0.0.1</version>
-  <description>Mini pupper control package</description>
+  <description>The mini_pupper_control package</description>
   <maintainer email="fae@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
