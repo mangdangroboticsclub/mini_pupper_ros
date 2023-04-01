@@ -1,6 +1,6 @@
 from setuptools import setup
-import os
 from glob import glob
+import os
 
 package_name = 'mini_pupper_control'
 
@@ -22,7 +22,7 @@ setup(
     zip_safe=True,
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',
-    description='Mini pupper motor control package',
+    description='The mini_pupper_control package',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
