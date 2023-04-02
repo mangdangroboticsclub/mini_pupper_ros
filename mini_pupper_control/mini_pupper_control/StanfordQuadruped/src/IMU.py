@@ -2,7 +2,7 @@
 # https://github.com/stanfordroboticsclub/StanfordQuadruped/blob/master/src/IMU.py
 # which is released under the MIT License.
 # Copyright (c) 2020 Stanford Student Robotics
-# https://github.com/stanfordroboticsclub/StanfordQuadruped/blob/master/LICENSE
+# https://github.com/stanfordroboticsclub/StanfordQuadruped/blob/62277f64dc4d1b293feddc8ecd0986d144f656d6/LICENSE
 
 
 import serial
