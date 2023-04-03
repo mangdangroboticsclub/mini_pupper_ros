@@ -21,10 +21,17 @@
 
 
 import numpy as np
-from .ServoCalibration import MICROS_PER_RAD, NEUTRAL_ANGLE_DEGREES
-from .HardwareConfig import PS4_COLOR, PS4_DEACTIVATED_COLOR
 
 # TODO: put these somewhere else
+
+MICROS_PER_RAD = 11.333 * 180.0 / np.pi
+NEUTRAL_ANGLE_DEGREES = np.array(
+    [[0.,  0.,  0.,  0.],
+     [45., 45., 45., 45.],
+     [-45., -45., -45., -45.]]
+)
+PS4_COLOR = {"red": 0, "blue": 0, "green": 255}
+PS4_DEACTIVATED_COLOR = {"red": 0, "blue": 0, "green": 50}
 
 
 class PWMParams:
