@@ -26,6 +26,7 @@ from .StanfordQuadruped.src.Controller import Controller
 from .StanfordQuadruped.src.Command import Command
 from .StanfordQuadruped.src.State import State
 from .StanfordQuadruped.pupper.Kinematics import four_legs_inverse_kinematics
+# In case to run in simulation
 try:
     from MangDang.mini_pupper.Config import Configuration
 except ImportError:

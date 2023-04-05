@@ -19,15 +19,34 @@
 
 
 from launch import LaunchDescription
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
+
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    namespace = LaunchConfiguration('namespace')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+
+    declare_namespace_cmd = DeclareLaunchArgument(
+        name='namespace', default_value='mini_pupper',
+    )
+
+    declare_use_sim_time_cmd = DeclareLaunchArgument(
+        name='use_sim_time', default_value='false',
+    )
+
     return LaunchDescription([
+        declare_namespace_cmd,
+        declare_use_sim_time_cmd,
+
         Node(
             package='mini_pupper_control',
             executable='vel_to_servo_controller',
             name='vel_to_servo_controller',
+            parameters=[{'namespace': namespace,
+                         'use_sim_time': use_sim_time}],
             output='screen'
         ),
     ])
