@@ -138,14 +138,7 @@ ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: 
 ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
 ```
 
-#### 2.1.4 Test Navigation on Gazebo
-
-- Bring up Gazebo
-```sh
-# Terminal 1
-. ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py
-```
+#### 2.1.4 Test Navigation in Gazebo
 
 - Replace the map files  
 Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
@@ -154,6 +147,13 @@ Remember to replace the cartographer_map.pbstream in the maps folder with your n
 cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
 cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
 cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
+```
+
+- Bring up Gazebo
+```sh
+# Terminal 1
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_gazebo gazebo.launch.py
 ```
 
 - Localization & Navigation
