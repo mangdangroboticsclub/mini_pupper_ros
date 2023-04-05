@@ -104,22 +104,79 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Then control robot dog with the keyboard
 ```
 
-### 2.1.3 Cartographer Test in Gazebo
+### 2.1.3 Test SLAM (Mapping) in Gazebo
 
 Note: This step is only for PC
 
+- Bring up Gazebo
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_gazebo gazebo.launch.py
+```
 
+- Mapping on PC
+```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_navigation slam.launch.py use_sim_time:=true
+```
 
+- Keyboard control  
+Use the keyboard to remotely control the Mini Pupper to complete the mapping.
+```sh
 # Terminal 3
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
-# Then control robot dog with your keyboard
+```
+
+- Save the map  
+The map will be saved at $HOME.
+```sh
+# Terminal 4 (on PC)
+ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/cartographer_map.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
+```
+
+#### 2.1.4 Test Navigation on Gazebo
+
+- Bring up Gazebo
+```sh
+# Terminal 1
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_gazebo gazebo.launch.py
+```
+
+- Replace the map files  
+Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
+```sh
+# Terminal 2 (on PC)
+cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
+cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
+cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
+```
+
+- Localization & Navigation
+```sh
+# Terminal 3
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation bringup.launch.py use_sim_time:=true
+```
+
+- Localization only  
+(This step is not necessary if you run `bringup.launch.py`.)
+```sh
+# Terminal 4
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation localization.launch.py use_sim_time:=true
+```
+
+- Navigation only  
+(This step is not necessary if you run `bringup.launch.py`.)
+```sh
+# Terminal 4
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation navigation.launch.py use_sim_time:=true
 ```
 
 ## 2.2 Mini Pupper
@@ -158,7 +215,7 @@ ros2 launch mini_pupper_navigation slam.launch.py
 ```
 
 - Keyboard control  
-Use the keyboard to remotely control the mini pupper to complete the mapping.
+Use the keyboard to remotely control the Mini Pupper to complete the mapping.
 ```sh
 # Terminal 3 (on PC)
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
