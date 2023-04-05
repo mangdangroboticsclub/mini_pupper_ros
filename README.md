@@ -139,60 +139,72 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Then control Mini Pupper with the keyboard
 ```
-### 2.2.2 Test Mapping
-  - Bring up real mini pupper
- ```bash
- # Terminal 1 (ssh to real mini pupper)
+### 2.2.2 Test SLAM (Mapping)
+
+Note: This step requires both PC and Mini Pupper
+
+- Bring up real mini pupper
+```sh
+# Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_bringup bringup.launch.py  # on real mini pupper
- ```
-  - Mapping on PC
- ```bash
- # Terminal 2 (on PC)
- . ~/ros2_ws/install/setup.bash
- ros2 launch mini_pupper_navigation slam.launch.py  # on PC
- ```
- - Keyboard control  
+ros2 launch mini_pupper_bringup bringup.launch.py
+```
+
+- Mapping on PC
+```sh
+# Terminal 2 (on PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation slam.launch.py
+```
+
+- Keyboard control  
 Use the keyboard to remotely control the mini pupper to complete the mapping.
-```bash
+```sh
 # Terminal 3 (on PC)
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
+
 - Save the map  
-```bash
+The map will be saved at $HOME.
+```sh
 # Terminal 4 (on PC)
 ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
 ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/cartographer_map.pbstream'}"
 ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
 ```
-the map will be saved at $HOME.
+
 #### 2.2.3 Test Navigation
-   - Bring up real mini pupper
- ```bash
- # Terminal 1 (ssh to real mini pupper)
+
+- Bring up real mini pupper
+```sh
+# Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_bringup bringup.launch.py  # on real mini pupper
- ```
- - Replace the map files  
- Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
- ```bash
- # Terminal 2 (on PC)
+ros2 launch mini_pupper_bringup bringup.launch.py
+
+```
+
+- Replace the map files  
+Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
+```sh
+# Terminal 2 (on PC)
 cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
 cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
 cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
- ```
- - Localization
-  ```bash
- # Terminal 3 (on PC)
- . ~/ros2_ws/install/setup.bash
- ros2 launch mini_pupper_navigation localization.launch.py  # on PC
- ```
- - Navigation
-  ```bash
- # Terminal 4 (on PC)
- . ~/ros2_ws/install/setup.bash
- ros2 launch mini_pupper_navigation navigation.launch.py  # on PC
- ```
+```
+
+- Localization
+```sh
+# Terminal 3 (on PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation localization.launch.py
+```
+
+- Navigation
+```sh
+# Terminal 4 (on PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation navigation.launch.py
+```
 
 ## License
 
