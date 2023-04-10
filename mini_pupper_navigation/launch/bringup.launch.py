@@ -43,11 +43,13 @@ def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory('mini_pupper_navigation')
     launch_dir = os.path.join(bringup_dir, 'launch')
+    rviz_config_path = os.path.join(bringup_dir, 'rviz', 'mini_pupper_nav.rviz')
 
     # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_namespace = LaunchConfiguration('use_namespace')
     slam = LaunchConfiguration('slam')
+    rviz = LaunchConfiguration('rivz')
     # map_yaml_file = LaunchConfiguration('map') # not used for now
     use_sim_time = LaunchConfiguration('use_sim_time')
     params_file = LaunchConfiguration('params_file')
@@ -96,6 +98,12 @@ def generate_launch_description():
         'slam',
         default_value='False',
         description='Whether run a SLAM')
+
+    declare_rviz_cmd = DeclareLaunchArgument(
+        'rivz',
+        default_value='true',
+        description='Whether to run rviz'
+    )
 
     declare_map_yaml_cmd = DeclareLaunchArgument(
         'map',
@@ -209,6 +217,16 @@ def generate_launch_description():
                               'use_composition': use_composition,
                               'use_respawn': use_respawn,
                               'container_name': 'nav2_container'}.items()),
+
+        Node(
+            condition=IfCondition(rviz),
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', rviz_config_path],
+            parameters=[{'use_sim_time': use_sim_time}],
+            output='screen'
+        ),
     ])
 
     # Create the launch description and populate
@@ -221,6 +239,7 @@ def generate_launch_description():
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_namespace_cmd)
     ld.add_action(declare_slam_cmd)
+    ld.add_action(declare_rviz_cmd)
     ld.add_action(declare_map_yaml_cmd)
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_params_file_cmd)
