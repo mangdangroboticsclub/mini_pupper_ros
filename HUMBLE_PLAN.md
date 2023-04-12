@@ -42,7 +42,7 @@ Note: If we found some error caused by Gazebo (formerly called Ignition), we may
 
 2. ldlidar_stl_ros: use ROS 2 version ([ldrobotSensorTeam/ldlidar_stl_ros2](https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2)). Might need to request them and work them to support humble or try the community maintained version ([Myzhar/ldrobot-lidar-ros2](https://github.com/Myzhar/ldrobot-lidar-ros2)).
 
-3. mini_pupper_control, mini_pupper_teleop: update launch files and scripts to run in humble and ubuntu 22.04.
+3. mini_pupper_driver, mini_pupper_teleop: update launch files and scripts to run in humble and ubuntu 22.04.
 
 4. mini_pupper_gazebo, mini_pupper_navigation, mini_pupper_bringup: mainly update launch files. Quite some work has been done during galactic upgrade. 
 
