@@ -41,8 +41,6 @@ def generate_launch_description():
     load_state_filename = LaunchConfiguration('load_state_filename')
     resolution = LaunchConfiguration('resolution')
     publish_period_sec = LaunchConfiguration('publish_period_sec')
-    rviz_config_path = os.path.join(get_package_share_directory(
-        'mini_pupper_navigation'), 'rviz', 'navigation.rviz')
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -76,7 +74,8 @@ def generate_launch_description():
                 '-configuration_directory', cartographer_config_dir,
                 '-configuration_basename', configuration_basename,
                 '-load_state_filename', load_state_filename,
-            ]),
+            ],
+            remappings=[('/imu/data', '/imu')]),
 
         DeclareLaunchArgument(
             'resolution',
@@ -94,13 +93,5 @@ def generate_launch_description():
             parameters=[
                 {'use_sim_time': use_sim_time},
                 {'-resolution': resolution},
-                {'-publish_period_sec': publish_period_sec}]),
-
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_path],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen')
+                {'-publish_period_sec': publish_period_sec}])
     ])
