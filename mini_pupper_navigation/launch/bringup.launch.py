@@ -203,6 +203,7 @@ def generate_launch_description():
             package='imu_complementary_filter',
             executable='complementary_filter_node',
             parameters=[{'use_sim_time': use_sim_time}],
+            condition=IfCondition(imu_enable),
             output='screen'
         ),
 
