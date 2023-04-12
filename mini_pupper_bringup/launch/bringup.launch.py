@@ -55,7 +55,7 @@ def generate_launch_description():
         [description_package, 'rviz', 'urdf_viewer.rviz']
     )
     servo_interface_launch_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_control'), 'launch', 'servo_interface.launch.py']
+        [FindPackageShare('mini_pupper_driver'), 'launch', 'servo_interface.launch.py']
     )
     lidar_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']

@@ -2,7 +2,7 @@ from setuptools import setup
 from glob import glob
 import os
 
-package_name = 'mini_pupper_control'
+package_name = 'mini_pupper_driver'
 
 setup(
     name=package_name,
@@ -20,13 +20,13 @@ setup(
     author_email='fae@mangdang.net',
     maintainer='MangDang',
     maintainer_email='fae@mangdang.net',
-    description='The mini_pupper_control package',
+    description='The mini_pupper_driver package',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'servo_interface = mini_pupper_control.servo_interface:main',
-            'display_interface = mini_pupper_control.display_interface:main'
+            'servo_interface = mini_pupper_driver.servo_interface:main',
+            'display_interface = mini_pupper_driver.display_interface:main'
         ],
     },
 )
