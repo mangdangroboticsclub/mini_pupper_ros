@@ -31,7 +31,7 @@ class DisplayNode(Node):
         super().__init__('display_interface')
         self.get_logger().info("Initializing display interface")
         self.bridge = CvBridge()
-        self.sub = self.create_subscription(Image, 'mini_pupper_lcd/image_raw')
+        self.sub = self.create_subscription(Image, 'mini_pupper_lcd/image_raw', self.callback, 10)
         self.get_logger().info("Creating LCD hardware interface")
         self.disp = ST7789()
         self.disp.begin()
