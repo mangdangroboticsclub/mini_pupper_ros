@@ -63,7 +63,7 @@ def generate_launch_description():
     nav_configuration_basename = LaunchConfiguration(
         'nav_configuration_basename')
     load_state_filename = LaunchConfiguration('load_state_filename')
-    imu_enable = LaunchConfiguration('imu_enable')
+    use_imu = LaunchConfiguration('use_imu')
     rviz = LaunchConfiguration('rviz')
     rviz_config_file = LaunchConfiguration('rviz_config_file')
 
