@@ -165,8 +165,8 @@ def generate_launch_description():
         description='Map state file path load for cartographer localization'
     )
 
-    declare_imu_enable = DeclareLaunchArgument(
-        'imu_enable', default_value='true',
+    declare_use_imu = DeclareLaunchArgument(
+        'use_imu', default_value='true',
         description='Enable IMU sensor'
     )
 
@@ -203,7 +203,7 @@ def generate_launch_description():
             package='imu_complementary_filter',
             executable='complementary_filter_node',
             parameters=[{'use_sim_time': use_sim_time}],
-            condition=IfCondition(imu_enable),
+            condition=IfCondition(use_imu),
             output='screen'
         ),
 
@@ -272,7 +272,7 @@ def generate_launch_description():
     ld.add_action(declare_slam_configuration_basename)
     ld.add_action(declare_nav_configuration_basename)
     ld.add_action(declare_load_state_filename)
-    ld.add_action(declare_imu_enable)
+    ld.add_action(declare_use_imu)
     ld.add_action(declare_rviz_cmd)
     ld.add_action(declare_rviz_config_file_cmd)
 
