@@ -39,6 +39,10 @@ class IMUNode(Node):
 
         self.get_logger().info("Creating IMU hardware interface")
         self.esp32_interface = ESP32Interface()
+        self.initialized = False
+        self.gyro_offset = [0, 0, 0]
+        self.acc_offset = [0, 0, 0]
+        self.calibration_count = 200
 
         self.get_logger().info("Creating IMU publisher")
         self.pub = self.create_publisher(Imu, 'imu/data_raw', 10)
@@ -62,15 +66,38 @@ class IMUNode(Node):
 
         ax, ay, az, gx, gy, gz = self.read_imu()
 
+        if not self.initialized:
+            self.acc_offset[0] += ax
+            self.acc_offset[1] += ay
+            self.acc_offset[2] += az
+            self.gyro_offset[0] += gx
+            self.gyro_offset[1] += gy
+            self.gyro_offset[2] += gz
+
+            self.calibration_count -= 1
+            if self.calibration_count == 0:
+                self.acc_offset[0] /= 200
+                self.acc_offset[1] /= 200
+                self.acc_offset[2] /= 200
+                self.acc_offset[2] -= GRAVITY
+                self.gyro_offset[0] /= 200
+                self.gyro_offset[1] /= 200
+                self.gyro_offset[2] /= 200
+
+                self.initialized = True
+                self.get_logger().info("IMU calibration finished")
+            else:
+                return
+
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = self.frame_id
 
-        msg.linear_acceleration.x = ax
-        msg.linear_acceleration.y = ay
-        msg.linear_acceleration.z = az
-        msg.angular_velocity.x = gx
-        msg.angular_velocity.y = gy
-        msg.angular_velocity.z = gz
+        msg.linear_acceleration.x = ax - self.acc_offset[0]
+        msg.linear_acceleration.y = ay - self.acc_offset[1]
+        msg.linear_acceleration.z = az - self.acc_offset[2]
+        msg.angular_velocity.x = gx - self.gyro_offset[0]
+        msg.angular_velocity.y = gy - self.gyro_offset[1]
+        msg.angular_velocity.z = gz - self.gyro_offset[2]
         msg.orientation_covariance[0] = -1
         msg.orientation.w = 1.0
         msg.orientation.x = 0.0
