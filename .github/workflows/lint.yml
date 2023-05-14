@@ -15,15 +15,13 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.8"
-      - name: Download flake8 config
-        run: |
-          curl -L https://github.com/ament/ament_lint/raw/humble/ament_flake8/ament_flake8/configuration/ament_flake8.ini > tox.ini
       - name: Run flake8
         uses: reviewdog/action-flake8@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: "github-pr-review"
-          flake8_args: "--config tox.ini"
+          flake8_args: "--config .flake8"
+          fail_on_error: "true"
   cpplint:
     runs-on: ubuntu-latest
     steps:
