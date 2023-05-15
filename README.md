@@ -6,7 +6,7 @@
 &nbsp;
 [![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FLeggedRobot)](https://twitter.com/LeggedRobot)
 
-# Mini Pupper ROS 2
+# Mini Pupper ROS 2 Humble
 
 Supported versions
 
@@ -24,14 +24,22 @@ PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupp
 __Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
 
 Ubuntu 22.04 + ROS 2 Humble is required.  
-Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
+Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the below [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
+
+```sh
+cd ~
+sudo apt update
+git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
+~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
+source /opt/ros/humble/setup.bash
+```
 
 After ROS 2 installation, download the Mini Pupper ROS package in the workspace.
 
 ```sh
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
-git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
+git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 ```
 
@@ -40,7 +48,7 @@ Build and install all ROS packages.
 ```sh
 cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y
-sudo apt-get install ros-humble-teleop-twist-keyboard
+sudo apt install ros-humble-teleop-twist-keyboard
 colcon build --symlink-install
 ```
 
@@ -49,36 +57,15 @@ colcon build --symlink-install
 Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.  
 Ubuntu 22.04 is required.
 
-You should first install dependencies of servos, battery moniter and display screen.  
-See [mini_pupper_bsp](https://github.com/mangdangroboticsclub/mini_pupper_bsp).
+Please install [mini_pupper_2_bsp](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) first. 
 
-After installing the driver software, install ROS 2. ROS 2 Humble is required.  
-Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
-
-After ROS 2 installation, download the Mini Pupper ROS package in the workspace.
+After installing mini_pupper_2_bsp, then follow the below steps.  
 
 ```sh
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/src
-git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2
-vcs import < mini_pupper_ros/.minipupper.repos --recursive
-# compiling gazebo and cartographer on Raspberry Pi is not recommended
-touch champ/champ/champ_gazebo/AMENT_IGNORE
-touch champ/champ/champ_navigation/AMENT_IGNORE
-touch mini_pupper_ros/mini_pupper_gazebo/AMENT_IGNORE
-touch mini_pupper_ros/mini_pupper_navigation/AMENT_IGNORE
-```
-
-Build and install all ROS packages.
-
-If the Raspberry Pi has less than 4GB memory, try `MAKEFLAGS=-j1 colcon build --executor sequential --symlink-install` instead of `colcon build --symlink-install`
-
-```sh
-# install dependencies without unused heavy packages
-cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2 --skip-keys=gazebo_plugins --skip-keys=velodyne_gazebo_plugins
-sudo apt-get install ros-humble-teleop-twist-keyboard
-colcon build --symlink-install
+cd ~
+git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+cd mini_pupper_ros
+./install.sh
 ```
 
 ## 2. Quick Start
