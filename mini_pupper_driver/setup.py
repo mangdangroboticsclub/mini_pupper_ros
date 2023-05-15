@@ -26,7 +26,8 @@ setup(
     entry_points={
         'console_scripts': [
             'servo_interface = mini_pupper_driver.servo_interface:main',
-            'display_interface = mini_pupper_driver.display_interface:main'
+            'display_interface = mini_pupper_driver.display_interface:main',
+            'imu_interface = mini_pupper_driver.imu_interface:main'
         ],
     },
 )
