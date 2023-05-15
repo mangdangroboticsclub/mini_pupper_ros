@@ -63,6 +63,9 @@ def generate_launch_description():
     nav_configuration_basename = LaunchConfiguration(
         'nav_configuration_basename')
     load_state_filename = LaunchConfiguration('load_state_filename')
+    use_imu = LaunchConfiguration('use_imu')
+    rviz = LaunchConfiguration('rviz')
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -162,6 +165,23 @@ def generate_launch_description():
         description='Map state file path load for cartographer localization'
     )
 
+    declare_use_imu = DeclareLaunchArgument(
+        'use_imu', default_value='true',
+        description='Enable IMU sensor'
+    )
+
+    declare_rviz_cmd = DeclareLaunchArgument(
+        'rviz',
+        default_value='true',
+        description='Whether to start RViz'
+    )
+
+    declare_rviz_config_file_cmd = DeclareLaunchArgument(
+        'rviz_config_file',
+        default_value=os.path.join(bringup_dir, 'rviz', 'mini_pupper_nav.rviz'),
+        description='Full path to the RViz config file to use'
+    )
+
     # Specify the actions
     bringup_cmd_group = GroupAction([
         PushRosNamespace(
@@ -177,6 +197,15 @@ def generate_launch_description():
             arguments=['--ros-args', '--log-level', log_level],
             remappings=remappings,
             output='screen'),
+
+        Node(
+            name='imu_filter',
+            package='imu_complementary_filter',
+            executable='complementary_filter_node',
+            parameters=[{'use_sim_time': use_sim_time}],
+            condition=IfCondition(use_imu),
+            output='screen'
+        ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -209,6 +238,15 @@ def generate_launch_description():
                               'use_composition': use_composition,
                               'use_respawn': use_respawn,
                               'container_name': 'nav2_container'}.items()),
+
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', rviz_config_file],
+            parameters=[{'use_sim_time': use_sim_time}],
+            condition=IfCondition(rviz),
+            output='screen')
     ])
 
     # Create the launch description and populate
@@ -234,6 +272,9 @@ def generate_launch_description():
     ld.add_action(declare_slam_configuration_basename)
     ld.add_action(declare_nav_configuration_basename)
     ld.add_action(declare_load_state_filename)
+    ld.add_action(declare_use_imu)
+    ld.add_action(declare_rviz_cmd)
+    ld.add_action(declare_rviz_config_file_cmd)
 
     # Add the actions to launch all of the navigation nodes
     ld.add_action(bringup_cmd_group)

@@ -41,8 +41,6 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     cartographer_prefix = get_package_share_directory('mini_pupper_navigation')
-    rviz_config_dir = os.path.join(get_package_share_directory('mini_pupper_navigation'),
-                                   'rviz', 'cartographer.rviz')
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir')
@@ -84,7 +82,8 @@ def generate_launch_description():
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=['-configuration_directory', cartographer_config_dir,
-                       '-configuration_basename', configuration_basename]),
+                       '-configuration_basename', configuration_basename],
+            remappings=[('/imu/data', '/imu')]),
 
         Node(
             package='cartographer_ros',
@@ -92,13 +91,5 @@ def generate_launch_description():
             parameters=[
                 {'use_sim_time': use_sim_time},
                 {'-resolution': resolution},
-                {'-publish_period_sec': publish_period_sec}]),
-
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_dir],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen')
+                {'-publish_period_sec': publish_period_sec}])
     ])
