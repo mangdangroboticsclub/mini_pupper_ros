@@ -57,9 +57,9 @@ colcon build --symlink-install
 Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.  
 Ubuntu 22.04 is required.
 
-Please install [mini_pupper_2_bsp](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) first. 
+Before installation, you need to install the BSP(board support package) repo for your [Mini Pupper 2](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) or [Mini Pupper](https://github.com/mangdangroboticsclub/mini_pupper_bsp.git).
 
-After installing mini_pupper_2_bsp, then follow the below steps.  
+After that, please follow the below steps to install this repo.
 
 ```sh
 cd ~
