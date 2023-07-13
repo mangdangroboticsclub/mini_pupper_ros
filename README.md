@@ -59,6 +59,9 @@ Ubuntu 22.04 is required.
 
 Before installation, you need to install the BSP(board support package) repo for your [Mini Pupper 2](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) or [Mini Pupper](https://github.com/mangdangroboticsclub/mini_pupper_bsp.git).
 
+After installing the driver software, install ROS 2. ROS 2 Humble is required.  
+Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
+
 After that, please follow the below steps to install this repo.
 
 ```sh
