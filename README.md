@@ -81,9 +81,15 @@ cd mini_pupper_ros
 ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
-## 2.2 PC
-# Terminal 2
 ```sh
+# Terminal 2 (ssh)
+. ~/ros2_ws/install/setup.bash 
+ros2 launch mini_pupper_music music.launch.py
+```
+
+## 2.2 PC (Or Mini Pupper)
+```sh
+# Terminal 3 (ssh)
 source ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_dance dance.launch.py
 ```
