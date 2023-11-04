@@ -4,10 +4,8 @@ import rclpy
 from rclpy.node import Node
 from mini_pupper_interfaces.srv import DanceCommand
 from std_srvs.srv import SetBool
-from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Pose
-import sys
-from .episode import * # change different espisodes here
+from .episode import dance_commands
+
 
 class MiniPupperDanceClientAsync(Node):
 
