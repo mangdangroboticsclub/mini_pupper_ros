@@ -52,7 +52,7 @@ def main():
         if response.executed:
             minimal_client.get_logger().info('Command Executed!')
 
-        # Stop music after the last command 
+        # Stop music after the last command
         if index == len(minimal_client.dance_commands) - 1:
             minimal_client.get_logger().info('Stopping music...')
             stop_music_response = minimal_client.send_music_request(False)
