@@ -7,14 +7,11 @@
   <maintainer email="sunhongshuai@gmail.com">cullensun</maintainer>
   <license>Apache-2.0</license>
   
-  <build_depend>sounddevice</build_depend>
-
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
-  <exec_depend>sounddevice</exec_depend>
   <exec_depend>std_srvs</exec_depend>
   <exec_depend>ros2launch</exec_depend>
 
