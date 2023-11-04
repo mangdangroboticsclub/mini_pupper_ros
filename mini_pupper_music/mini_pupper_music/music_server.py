@@ -9,6 +9,7 @@ import threading
 import os
 from ament_index_python.packages import get_package_share_directory
 
+
 class SoundPlayerNode(Node):
     def __init__(self):
         super().__init__('mini_pupper_music_service')
@@ -53,7 +54,7 @@ class SoundPlayerNode(Node):
         file_name = 'resource/robot1.wav'
         package_path = get_package_share_directory(package_name)
         sound_file = os.path.join(package_path, file_name)
-    
+
         data, fs = sf.read(sound_file, dtype='float32')
         while self.is_playing:
             sd.play(data, fs)
@@ -67,12 +68,14 @@ class SoundPlayerNode(Node):
                 # If the thread is still running, stop the sound playback
                 sd.stop()
 
+
 def main(args=None):
     rclpy.init(args=args)
     sound_player_node = SoundPlayerNode()
     rclpy.spin(sound_player_node)
     sound_player_node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
