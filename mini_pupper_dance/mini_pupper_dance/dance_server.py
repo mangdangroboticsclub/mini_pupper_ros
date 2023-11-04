@@ -25,43 +25,43 @@ class MiniPupperDanceService(Node):
     def _dance_callback(self, request, response):
         velocity_cmd = Twist()
         pose_cmd = Pose()
-        if(request.data == 'move_forward'):
+        if (request.data == 'move_forward'):
             velocity_cmd.linear.x = 0.5
             self.vel_publisher_.publish(velocity_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'move_backward'):
+        elif (request.data == 'move_backward'):
             velocity_cmd.linear.x = -0.5
             self.vel_publisher_.publish(velocity_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'move_left'):
+        elif (request.data == 'move_left'):
             velocity_cmd.linear.y = 0.5
             self.vel_publisher_.publish(velocity_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'move_right'):
+        elif (request.data == 'move_right'):
             velocity_cmd.linear.y = -0.5
             self.vel_publisher_.publish(velocity_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'turn_left'):
+        elif (request.data == 'turn_left'):
             velocity_cmd.angular.z = 1.0
             self.vel_publisher_.publish(velocity_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'turn_right'):
+        elif (request.data == 'turn_right'):
             velocity_cmd.angular.z = -1.0
             self.vel_publisher_.publish(velocity_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'look_up'):
+        elif (request.data == 'look_up'):
             pose_cmd.orientation.x,
             pose_cmd.orientation.y,
             pose_cmd.orientation.z,
@@ -71,7 +71,7 @@ class MiniPupperDanceService(Node):
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'look_down'):
+        elif (request.data == 'look_down'):
             pose_cmd.orientation.x,
             pose_cmd.orientation.y,
             pose_cmd.orientation.z,
@@ -81,7 +81,7 @@ class MiniPupperDanceService(Node):
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'look_left'):
+        elif (request.data == 'look_left'):
             pose_cmd.orientation.x,
             pose_cmd.orientation.y,
             pose_cmd.orientation.z,
@@ -91,7 +91,7 @@ class MiniPupperDanceService(Node):
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'look_right'):
+        elif (request.data == 'look_right'):
             pose_cmd.orientation.x,
             pose_cmd.orientation.y,
             pose_cmd.orientation.z,
@@ -101,7 +101,7 @@ class MiniPupperDanceService(Node):
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'look_middle'):
+        elif (request.data == 'look_middle'):
             pose_cmd.orientation.x,
             pose_cmd.orientation.y,
             pose_cmd.orientation.z,
@@ -111,7 +111,7 @@ class MiniPupperDanceService(Node):
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
-        elif(request.data == 'stay'):
+        elif (request.data == 'stay'):
             time.sleep(self.interval)  # do nothing
 
         else:
