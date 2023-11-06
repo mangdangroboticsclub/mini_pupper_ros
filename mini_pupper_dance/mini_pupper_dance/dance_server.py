@@ -67,7 +67,7 @@ class MiniPupperDanceService(Node):
             pose_cmd.orientation.y = y
             pose_cmd.orientation.z = z
             pose_cmd.orientation.w = w
-            
+
             self.pose_publisher_.publish(pose_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
