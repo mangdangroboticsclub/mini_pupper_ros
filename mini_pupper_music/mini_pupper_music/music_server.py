@@ -87,7 +87,8 @@ class SoundPlayerNode(Node):
             self.playback_thread.join(timeout=1.0)  # Wait for 1 second for the thread to finish
             if self.playback_thread.is_alive():
                 # If the thread is still running, terminate it forcefully
-                self.get_logger().warning('Playback thread did not terminate gracefully. Terminating forcefully.')
+                self.get_logger().warning('Playback thread did not terminate gracefully.')
+                self.get_logger().warning('Terminating forcefully.')
                 self.terminate_thread(self.playback_thread)
 
     def terminate_thread(self, thread):
@@ -96,7 +97,10 @@ class SoundPlayerNode(Node):
 
         thread_id = thread.ident
         # Terminate the thread using ctypes
-        ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread_id), ctypes.py_object(SystemExit))
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(
+            ctypes.c_long(thread_id), 
+            ctypes.py_object(SystemExit)
+        )
         self.get_logger().warning('Playback thread terminated forcefully.')
 
 

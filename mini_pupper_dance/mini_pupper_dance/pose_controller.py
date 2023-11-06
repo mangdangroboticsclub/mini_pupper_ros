@@ -64,12 +64,11 @@ class PoseController(Node):
         elif (reference_y > state_y):
             state_y = state_y + self.increment
 
-        self.pose_state.orientation.x,
-        self.pose_state.orientation.y,
-        self.pose_state.orientation.z,
-        self.pose_state.orientation.w = quaternion_from_euler(state_r,
-                                                              state_p,
-                                                              state_y)
+        x, y, z, w = quaternion_from_euler(state_r, state_p, state_y)
+        self.pose_state.orientation.x = x
+        self.pose_state.orientation.y = y
+        self.pose_state.orientation.z = z
+        self.pose_state.orientation.w = w
 
         self.pose_state.position.x = self.pose_reference.position.x
         self.pose_state.position.y = self.pose_reference.position.y
