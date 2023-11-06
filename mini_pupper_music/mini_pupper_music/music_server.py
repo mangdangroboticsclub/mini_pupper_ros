@@ -23,6 +23,7 @@ import soundfile as sf
 import threading
 import os
 from ament_index_python.packages import get_package_share_directory
+import ctypes
 
 
 class SoundPlayerNode(Node):
@@ -36,6 +37,17 @@ class SoundPlayerNode(Node):
         self.is_playing = False
         self.playback_thread = None
         self.lock = threading.Lock()
+        self.load_sound_data()
+
+    def load_sound_data(self):
+        package_name = 'mini_pupper_music'
+        file_name = 'resource/robot1.wav'
+        package_path = get_package_share_directory(package_name)
+        sound_file = os.path.join(package_path, file_name)
+        try:
+            self.sound_data, self.sound_fs = sf.read(sound_file, dtype='float32')
+        except Exception as e:
+            self.get_logger().error('Failed to load sound data: {}'.format(str(e)))
 
     def play_sound_callback(self, request, response):
         if request.data:
@@ -64,24 +76,28 @@ class SoundPlayerNode(Node):
         self.playback_thread.start()
 
     def play_sound_thread(self):
-        # Load and play the sound file continuously
-        package_name = 'mini_pupper_music'
-        file_name = 'resource/robot1.wav'
-        package_path = get_package_share_directory(package_name)
-        sound_file = os.path.join(package_path, file_name)
-
-        data, fs = sf.read(sound_file, dtype='float32')
         while self.is_playing:
-            sd.play(data, fs)
+            self.get_logger().info('Playing the song from the beginning')
+            sd.play(self.sound_data, self.sound_fs)
             sd.wait()
 
     def stop_sound(self):
         self.is_playing = False
         if self.playback_thread is not None:
-            self.playback_thread.join(timeout=0)
+            self.playback_thread.join(timeout=1.0)  # Wait for 1 second for the thread to finish
             if self.playback_thread.is_alive():
-                # If the thread is still running, stop the sound playback
-                sd.stop()
+                # If the thread is still running, terminate it forcefully
+                self.get_logger().warning('Playback thread did not terminate gracefully. Terminating forcefully.')
+                self.terminate_thread(self.playback_thread)
+
+    def terminate_thread(self, thread):
+        if not thread.is_alive():
+            return
+
+        thread_id = thread.ident
+        # Terminate the thread using ctypes
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread_id), ctypes.py_object(SystemExit))
+        self.get_logger().warning('Playback thread terminated forcefully.')
 
 
 def main(args=None):
