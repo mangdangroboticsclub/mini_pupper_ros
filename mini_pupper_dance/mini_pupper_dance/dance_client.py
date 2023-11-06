@@ -28,9 +28,7 @@ class MiniPupperDanceClientAsync(Node):
     def send_music_request(self, trigger):
         req = SetBool.Request()
         req.data = trigger
-        future = self.music_cli.call_async(req)
-        rclpy.spin_until_future_complete(self, future)
-        return future.result()
+        self.music_cli.call_async(req)  # Fire-and-forget style communication
 
 
 def main():
@@ -40,10 +38,8 @@ def main():
     for index, command in enumerate(minimal_client.dance_commands):
         # Start music for the first command
         if index == 0:
-            minimal_client.get_logger().info('Playing music...')
-            start_music_response = minimal_client.send_music_request(True)
-            if start_music_response.success:
-                minimal_client.get_logger().info('Music playback started.')
+            minimal_client.get_logger().info('Starting music...')
+            minimal_client.send_music_request(True)
 
         # Send movemoment comment for the robot to dance
         response = minimal_client.send_dance_request(command)
@@ -53,9 +49,7 @@ def main():
         # Stop music after the last command
         if index == len(minimal_client.dance_commands) - 1:
             minimal_client.get_logger().info('Stopping music...')
-            stop_music_response = minimal_client.send_music_request(False)
-            if stop_music_response.success:
-                minimal_client.get_logger().info('Music playback stopped.')
+            minimal_client.send_music_request(False)
 
     minimal_client.destroy_node()
     rclpy.shutdown()
