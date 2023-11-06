@@ -62,50 +62,55 @@ class MiniPupperDanceService(Node):
             time.sleep(self.interval)  # Make sure the robot moved
 
         elif (request.data == 'look_up'):
-            pose_cmd.orientation.x,
-            pose_cmd.orientation.y,
-            pose_cmd.orientation.z,
-            pose_cmd.orientation.w = quaternion_from_euler(0.0, -0.3, 0.0)
-
+            x, y, z, w = quaternion_from_euler(0.0, -0.3, 0.0)
+            pose_cmd.orientation.x = x
+            pose_cmd.orientation.y = y
+            pose_cmd.orientation.z = z
+            pose_cmd.orientation.w = w
+            
             self.pose_publisher_.publish(pose_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
         elif (request.data == 'look_down'):
-            pose_cmd.orientation.x,
-            pose_cmd.orientation.y,
-            pose_cmd.orientation.z,
-            pose_cmd.orientation.w = quaternion_from_euler(0.0, 0.3, 0.0)
+            x, y, z, w = quaternion_from_euler(0.0, 0.3, 0.0)
+            pose_cmd.orientation.x = x
+            pose_cmd.orientation.y = y
+            pose_cmd.orientation.z = z
+            pose_cmd.orientation.w = w
 
             self.pose_publisher_.publish(pose_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
         elif (request.data == 'look_left'):
-            pose_cmd.orientation.x,
-            pose_cmd.orientation.y,
-            pose_cmd.orientation.z,
-            pose_cmd.orientation.w = quaternion_from_euler(0.0, 0.0, 0.3)
+            x, y, z, w = quaternion_from_euler(0.0, 0.0, 0.3)
+            pose_cmd.orientation.x = x
+            pose_cmd.orientation.y = y
+            pose_cmd.orientation.z = z
+            pose_cmd.orientation.w = w
 
             self.pose_publisher_.publish(pose_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
         elif (request.data == 'look_right'):
-            pose_cmd.orientation.x,
-            pose_cmd.orientation.y,
-            pose_cmd.orientation.z,
-            pose_cmd.orientation.w = quaternion_from_euler(0.0, 0.0, -0.3)
+            x, y, z, w = quaternion_from_euler(0.0, 0.0, -0.3)
+            pose_cmd.orientation.x = x
+            pose_cmd.orientation.y = y
+            pose_cmd.orientation.z = z
+            pose_cmd.orientation.w = w
 
             self.pose_publisher_.publish(pose_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
             time.sleep(self.interval)  # Make sure the robot moved
 
         elif (request.data == 'look_middle'):
-            pose_cmd.orientation.x,
-            pose_cmd.orientation.y,
-            pose_cmd.orientation.z,
-            pose_cmd.orientation.w = quaternion_from_euler(0.0, 0.0, 0.0)
+            x, y, z, w = quaternion_from_euler(0.0, 0.0, 0.0)
+            pose_cmd.orientation.x = x
+            pose_cmd.orientation.y = y
+            pose_cmd.orientation.z = z
+            pose_cmd.orientation.w = w
 
             self.pose_publisher_.publish(pose_cmd)
             self.get_logger().info('Publishing: "%s"' % request.data)
