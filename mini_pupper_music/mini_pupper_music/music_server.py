@@ -19,6 +19,7 @@ import rclpy
 from rclpy.node import Node
 from mini_pupper_interfaces.srv import MusicCommand
 from playsound import playsound
+import threading
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -53,7 +54,14 @@ class SoundPlayerNode(Node):
         package_name = 'mini_pupper_music'
         package_path = get_package_share_directory(package_name)
         sound_path = os.path.join(package_path, 'resource', file_name)
-        playsound(sound_path, block=False)
+
+        # Create a new thread for playing the sound
+        thread = threading.Thread(target=self.play_sound_in_background, args=(sound_path,))
+        thread.daemon = True  # Set the thread as a daemon (will exit when the main program ends)
+        thread.start()
+
+    def play_sound_in_background(self, sound_path):
+        playsound(sound_path)
 
 
 def main(args=None):
