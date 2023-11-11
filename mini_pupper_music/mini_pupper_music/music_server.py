@@ -17,91 +17,43 @@
 
 import rclpy
 from rclpy.node import Node
-from std_srvs.srv import SetBool
-import sounddevice as sd
-import soundfile as sf
-import threading
+from mini_pupper_interfaces.srv import MusicCommand
+from playsound import playsound
 import os
 from ament_index_python.packages import get_package_share_directory
-import ctypes
 
 
 class SoundPlayerNode(Node):
     def __init__(self):
         super().__init__('mini_pupper_music_service')
         self.service = self.create_service(
-            SetBool,
+            MusicCommand,
             'music_command',
             self.play_sound_callback
         )
-        self.is_playing = False
-        self.playback_thread = None
-        self.lock = threading.Lock()
-        self.load_sound_data()
-
-    def load_sound_data(self):
-        package_name = 'mini_pupper_music'
-        file_name = 'resource/robot1.wav'
-        package_path = get_package_share_directory(package_name)
-        sound_file = os.path.join(package_path, file_name)
-        try:
-            self.sound_data, self.sound_fs = sf.read(sound_file, dtype='float32')
-        except Exception as e:
-            self.get_logger().error('Failed to load sound data: {}'.format(str(e)))
+        self.song_pool = {'robot1.mp3', 'robot1.wav'}
 
     def play_sound_callback(self, request, response):
-        if request.data:
-            with self.lock:
-                if not self.is_playing:
-                    self.play_sound()
-                    response.success = True
-                    response.message = 'Sound playback started.'
-                else:
-                    response.success = False
-                    response.message = 'Sound is already playing.'
+        if request.command == 'play':
+            if request.file_name in self.song_pool:
+                self.play_sound_file(request.file_name)
+                response.success = True
+                response.message = 'Sound playback started.'
+            else:
+                response.success = False
+                response.message = f'File {request.file_name} is not found.'
+
         else:
-            with self.lock:
-                if self.is_playing:
-                    self.stop_sound()
-                    response.success = True
-                    response.message = 'Sound playback stopped.'
-                else:
-                    response.success = False
-                    response.message = 'No sound is currently playing.'
+            response.success = False
+            response.message = f'Command {request.command} is not supported.'
+
         return response
 
-    def play_sound(self):
-        self.is_playing = True
-        self.playback_thread = threading.Thread(target=self.play_sound_thread)
-        self.playback_thread.start()
-
-    def play_sound_thread(self):
-        while self.is_playing:
-            self.get_logger().info('Playing the song from the beginning')
-            sd.play(self.sound_data, self.sound_fs)
-            sd.wait()
-
-    def stop_sound(self):
-        self.is_playing = False
-        if self.playback_thread is not None:
-            self.playback_thread.join(timeout=1.0)  # Wait for 1 second for the thread to finish
-            if self.playback_thread.is_alive():
-                # If the thread is still running, terminate it forcefully
-                self.get_logger().warning('Playback thread did not terminate gracefully.')
-                self.get_logger().warning('Terminating forcefully.')
-                self.terminate_thread(self.playback_thread)
-
-    def terminate_thread(self, thread):
-        if not thread.is_alive():
-            return
-
-        thread_id = thread.ident
-        # Terminate the thread using ctypes
-        ctypes.pythonapi.PyThreadState_SetAsyncExc(
-            ctypes.c_long(thread_id),
-            ctypes.py_object(SystemExit)
-        )
-        self.get_logger().warning('Playback thread terminated forcefully.')
+    def play_sound_file(self, file_name):
+        package_name = 'mini_pupper_music'
+        package_path = get_package_share_directory(package_name)
+        sound_path = os.path.join(package_path, 'resource', file_name)
+        playsound(sound_path, block=False)
 
 
 def main(args=None):

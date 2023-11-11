@@ -1,0 +1,5 @@
+string command  # The command to execute ("play")
+string file_name  # The name of the song file
+---
+bool success  # Indicates whether the command was executed successfully
+string message  # Additional information or error message
