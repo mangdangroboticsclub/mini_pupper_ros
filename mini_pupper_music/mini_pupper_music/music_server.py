@@ -18,7 +18,7 @@
 import rclpy
 from rclpy.node import Node
 from mini_pupper_interfaces.srv import MusicCommand
-from playsound import playsound
+import pygame
 import threading
 import os
 from ament_index_python.packages import get_package_share_directory
@@ -61,7 +61,9 @@ class SoundPlayerNode(Node):
         thread.start()
 
     def play_sound_in_background(self, sound_path):
-        playsound(sound_path)
+        pygame.init()
+        pygame.mixer.music.load(sound_path)
+        pygame.mixer.music.play()
 
 
 def main(args=None):
