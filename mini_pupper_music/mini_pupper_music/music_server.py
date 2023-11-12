@@ -19,7 +19,6 @@ import rclpy
 from rclpy.node import Node
 from mini_pupper_interfaces.srv import MusicCommand
 import pygame
-import concurrent.futures
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -33,7 +32,6 @@ class SoundPlayerNode(Node):
             self.play_sound_callback
         )
         self.song_pool = {'robot1.mp3', 'robot1.wav'}
-        self.thread_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1) 
 
     def play_sound_callback(self, request, response):
         if request.command == 'play':
@@ -56,10 +54,6 @@ class SoundPlayerNode(Node):
         package_path = get_package_share_directory(package_name)
         sound_path = os.path.join(package_path, 'resource', file_name)
 
-        # Submit the playback task to the thread pool
-        self.thread_executor.submit(self.play_sound_in_background, sound_path)
-
-    def play_sound_in_background(self, sound_path):
         pygame.init()
         pygame.mixer.music.load(sound_path)
         pygame.mixer.music.play()
