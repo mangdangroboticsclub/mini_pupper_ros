@@ -18,27 +18,33 @@
 import rclpy
 from rclpy.node import Node
 from mini_pupper_interfaces.srv import MusicCommand
-import pygame
+import threading
+from playsound import playsound
 import os
 from ament_index_python.packages import get_package_share_directory
 
 
-class SoundPlayerNode(Node):
+class MusicServiceNode(Node):
     def __init__(self):
         super().__init__('mini_pupper_music_service')
         self.service = self.create_service(
             MusicCommand,
             'music_command',
-            self.play_sound_callback
+            self.play_music_callback
         )
         self.song_pool = {'robot1.mp3', 'robot1.wav'}
+        self.playing_lock = threading.Lock()
 
-    def play_sound_callback(self, request, response):
+    def play_music_callback(self, request, response):
         if request.command == 'play':
             if request.file_name in self.song_pool:
-                self.play_sound_file(request.file_name)
-                response.success = True
-                response.message = 'Sound playback started.'
+                if not self.playing_lock.locked():
+                    self.play_sound_file(request.file_name)
+                    response.success = True
+                    response.message = 'Sound playback started.'
+                else:
+                    response.success = False
+                    response.message = 'Another sound is already playing.'
             else:
                 response.success = False
                 response.message = f'File {request.file_name} is not found.'
@@ -54,16 +60,26 @@ class SoundPlayerNode(Node):
         package_path = get_package_share_directory(package_name)
         sound_path = os.path.join(package_path, 'resource', file_name)
 
-        pygame.init()
-        pygame.mixer.music.load(sound_path)
-        pygame.mixer.music.play()
+        # Create a new thread for playing the sound
+        thread = threading.Thread(
+            target=self.play_sound_in_background,
+            args=(sound_path,)
+        )
+        # Set the thread as a daemon (will exit when the main program ends)
+        thread.daemon = True
+        thread.start()
+
+    def play_sound_in_background(self, sound_path):
+        with self.playing_lock:
+            self.get_logger().info(f"playsound: {sound_path}")
+            playsound(sound_path)
 
 
 def main(args=None):
     rclpy.init(args=args)
-    sound_player_node = SoundPlayerNode()
-    rclpy.spin(sound_player_node)
-    sound_player_node.destroy_node()
+    music_service_node = MusicServiceNode()
+    rclpy.spin(music_service_node)
+    music_service_node.destroy_node()
     rclpy.shutdown()
 
 
