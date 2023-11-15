@@ -4,7 +4,9 @@ import rclpy
 from rclpy.node import Node
 from mini_pupper_interfaces.srv import DanceCommand
 from mini_pupper_interfaces.srv import MusicCommand
-from .episode import dance_song_file_name, dance_commands
+from .episode import dance_commands
+from .episode import dance_song_file_name
+from .episode import dance_song_start_second
 
 
 class MiniPupperDanceClientAsync(Node):
@@ -25,10 +27,11 @@ class MiniPupperDanceClientAsync(Node):
         rclpy.spin_until_future_complete(self, future)
         return future.result()
 
-    def send_music_request(self, file_name):
+    def send_music_request(self, file_name, start_second):
         req = MusicCommand.Request()
         req.command = 'play'
         req.file_name = file_name
+        req.start_second = start_second
         self.music_cli.call_async(req)  # Fire-and-forget style communication
 
 
@@ -40,7 +43,8 @@ def main():
         # Start music for the first command
         if index == 0:
             minimal_client.get_logger().info('Starting music...')
-            minimal_client.send_music_request(dance_song_file_name)
+            minimal_client.send_music_request(dance_song_file_name,
+                                              dance_song_start_second)
 
         # Send movemoment comment for the robot to dance
         response = minimal_client.send_dance_request(command)

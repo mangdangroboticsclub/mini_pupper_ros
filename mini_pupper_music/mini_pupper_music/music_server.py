@@ -19,7 +19,6 @@ import rclpy
 from rclpy.node import Node
 from mini_pupper_interfaces.srv import MusicCommand
 import threading
-from playsound import playsound
 from pydub import AudioSegment
 from pydub.playback import play
 import os
@@ -41,7 +40,9 @@ class MusicServiceNode(Node):
         if request.command == 'play':
             if request.file_name in self.song_pool:
                 if not self.playing_lock.locked():
-                    self.play_sound_file(request.file_name)
+                    self.play_sound_file(request.file_name,
+                                         request.start_second,
+                                         request.duration)
                     response.success = True
                     response.message = 'Sound playback started.'
                 else:
@@ -57,32 +58,31 @@ class MusicServiceNode(Node):
 
         return response
 
-    def play_sound_file(self, file_name):
-        package_name = 'mini_pupper_music'
-        package_path = get_package_share_directory(package_name)
-        sound_path = os.path.join(package_path, 'resource', file_name)
-
+    def play_sound_file(self, file_name, start_second, duration):
         # Create a new thread for playing the sound
         thread = threading.Thread(
             target=self.play_sound_in_background,
-            args=(sound_path,)
+            args=(file_name, start_second, duration)
         )
         # Set the thread as a daemon (will exit when the main program ends)
         thread.daemon = True
         thread.start()
 
-    def play_sound_in_background(self, sound_path):
+    def play_sound_in_background(self, file_name, start_second, duration):
         with self.playing_lock:
-            audio = AudioSegment.from_file(sound_path, format="mp3")
+            package_name = 'mini_pupper_music'
+            package_path = get_package_share_directory(package_name)
+            sound_path = os.path.join(package_path, 'resource', file_name)
+            file_extension = file_name.split(".")[-1]
 
-            # Set the start time and end time
-            start_time = 5 * 1000  # Convert to milliseconds
-            end_time = len(audio)  # End at the end of the audio
+            audio = AudioSegment.from_file(
+                file=sound_path,
+                format=file_extension,
+                start_second=start_second,
+                duration=duration
+            )
 
-            # Extract the desired portion
-            portion = audio[start_time:]
-
-            play(portion)
+            play(audio)
 
 
 def main(args=None):

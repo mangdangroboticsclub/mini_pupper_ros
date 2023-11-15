@@ -13,6 +13,7 @@
 # stay: the robot will keep the last command
 
 dance_song_file_name = 'robot1.mp3'
+dance_song_start_second = 10.0
 
 dance_commands = [
     'move_forward',
