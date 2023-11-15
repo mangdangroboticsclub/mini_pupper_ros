@@ -20,6 +20,8 @@ from rclpy.node import Node
 from mini_pupper_interfaces.srv import MusicCommand
 import threading
 from playsound import playsound
+from pydub import AudioSegment
+from pydub.playback import play
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -71,8 +73,16 @@ class MusicServiceNode(Node):
 
     def play_sound_in_background(self, sound_path):
         with self.playing_lock:
-            self.get_logger().info(f"playsound: {sound_path}")
-            playsound(sound_path)
+            audio = AudioSegment.from_file(sound_path, format="mp3")
+
+            # Set the start time and end time
+            start_time = 5 * 1000  # Convert to milliseconds
+            end_time = len(audio)  # End at the end of the audio
+
+            # Extract the desired portion
+            portion = audio[start_time:]
+
+            play(portion)
 
 
 def main(args=None):
