@@ -75,7 +75,11 @@ class MusicServiceNode(Node):
             sound_path = os.path.join(package_path, 'resource', file_name)
             file_extension = file_name.split(".")[-1]
             self.get_logger().info(f'Play music at {sound_path}')
-            self.get_logger().info(f'File format {file_extension}')
+            
+            # ROS2 might automatically make the duration 0.0 if it's not passed
+            # Make it None to avoid program mistakes 
+            if duration == 0.0:
+                duration = None
 
             audio = AudioSegment.from_file(
                 file=sound_path,
