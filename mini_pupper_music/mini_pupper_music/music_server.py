@@ -74,6 +74,8 @@ class MusicServiceNode(Node):
             package_path = get_package_share_directory(package_name)
             sound_path = os.path.join(package_path, 'resource', file_name)
             file_extension = file_name.split(".")[-1]
+            self.get_logger().info(f'Play music at {sound_path}')
+            self.get_logger().info(f'File format {file_extension}')
 
             audio = AudioSegment.from_file(
                 file=sound_path,
