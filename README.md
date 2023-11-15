@@ -71,6 +71,12 @@ cd mini_pupper_ros
 ./install.sh
 ```
 
+Install packages for playing music
+```sh
+sudo apt-get install ffmpeg
+pip install pydub
+```
+
 ## 2. Quick Start
 
 ## 2.1 Mini Pupper
