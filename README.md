@@ -73,8 +73,10 @@ cd mini_pupper_ros
 
 Install packages for playing music
 ```sh
-sudo apt-get install ffmpeg
+sudo apt-get install ffmpeg portaudio19-dev -y
 pip install pydub
+pip install pyaudio
+
 ```
 
 ## 2. Quick Start
