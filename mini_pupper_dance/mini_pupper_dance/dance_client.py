@@ -15,7 +15,7 @@ class MiniPupperDanceClientAsync(Node):
         super().__init__('mini_pupper_dance_client_async')
         self.dance_cli = self.create_client(DanceCommand, 'dance_command')
         self.play_music_cli = self.create_client(PlayMusic, 'play_music')
-        self.stop_music_cli = self.create_client(StopMusic, 'Stop_music')
+        self.stop_music_cli = self.create_client(StopMusic, 'stop_music')
 
         while not self.dance_cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('service not available, waiting again...')
