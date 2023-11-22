@@ -24,46 +24,45 @@ import sounddevice
 
 class MusicPlayer:
     def __init__(self):
+        # sounddevice is not used in any logics, just print something here
+        # See: https://stackoverflow.com/a/76305661/663645
+        print(sounddevice.query_devices())
+
         self.audio = pyaudio.PyAudio()
-        self.lock = threading.Lock()
         self.playing = False
         self.play_thread = None
 
     def _play_music(self, file_path, start_second, duration):
-        with self.lock:
-            file_extension = file_path.split(".")[-1]
-            if duration == 0.0:
-                duration = None
+        file_extension = file_path.split(".")[-1]
+        if duration == 0.0:
+            duration = None
 
-            self.stop_music()  # Stop any ongoing playback
+        self.playing = True
 
-            self.playing = True
+        audio_seg = AudioSegment.from_file(
+            file=file_path,
+            format=file_extension,
+            start_second=start_second,
+            duration=duration
+        )
 
-            audio_seg = AudioSegment.from_file(
-                file=file_path,
-                format=file_extension,
-                start_second=start_second,
-                duration=duration
-            )
+        stream = self.audio.open(
+            format=self.audio.get_format_from_width(audio_seg.sample_width),
+            channels=audio_seg.channels,
+            rate=audio_seg.frame_rate,
+            output=True
+        )
 
-            stream = self.audio.open(
-                format=self.audio.get_format_from_width(audio_seg.sample_width),
-                channels=audio_seg.channels,
-                rate=audio_seg.frame_rate,
-                output=True
-            )
-
-            try:
-                for chunk in make_chunks(audio_seg, 500):
-                    with self.lock:
-                        if self.playing:
-                            stream.write(chunk._data)
-                        else:
-                            break
-            finally:
-                stream.stop_stream()
-                stream.close()
-                self.playing = False
+        try:
+            for chunk in make_chunks(audio_seg, 500):
+                if self.playing:
+                    stream.write(chunk._data)
+                else:
+                    break
+        finally:
+            stream.stop_stream()
+            stream.close()
+            self.playing = False
 
     def start_music(self, file_path, start_second=0, duration=0.0):
         self.play_thread = threading.Thread(
@@ -74,8 +73,7 @@ class MusicPlayer:
         self.play_thread.start()
 
     def stop_music(self):
-       with self.lock:
-            self.playing = False
+        self.playing = False
 
     def destroy(self):
         self.stop_music()
