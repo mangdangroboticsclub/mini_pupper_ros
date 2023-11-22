@@ -19,6 +19,7 @@ import threading
 import pyaudio
 from pydub import AudioSegment
 from pydub.utils import make_chunks
+import sounddevice
 
 
 class MusicPlayer:
@@ -26,12 +27,15 @@ class MusicPlayer:
         self.audio = pyaudio.PyAudio()
         self.lock = threading.Lock()
         self.playing = False
+        self.play_thread = None
 
-    def play_music(self, file_path, start_second, duration):
+    def _play_music(self, file_path, start_second, duration):
         with self.lock:
             file_extension = file_path.split(".")[-1]
             if duration == 0.0:
                 duration = None
+
+            self.stop_music()  # Stop any ongoing playback
 
             self.playing = True
 
@@ -51,18 +55,29 @@ class MusicPlayer:
 
             try:
                 for chunk in make_chunks(audio_seg, 500):
-                    if self.playing:
-                        stream.write(chunk._data)
-                    else:
-                        break
+                    with self.lock:
+                        if self.playing:
+                            stream.write(chunk._data)
+                        else:
+                            break
             finally:
                 stream.stop_stream()
                 stream.close()
                 self.playing = False
 
+    def start_music(self, file_path, start_second=0, duration=0.0):
+        self.play_thread = threading.Thread(
+            target=self._play_music,
+            args=(file_path, start_second, duration),
+            daemon=True
+        )
+        self.play_thread.start()
+
     def stop_music(self):
-        self.playing = False
+       with self.lock:
+            self.playing = False
 
     def destroy(self):
         self.stop_music()
         self.audio.terminate()
+        self.play_thread.join()

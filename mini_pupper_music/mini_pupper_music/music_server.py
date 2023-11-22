@@ -22,7 +22,6 @@ from .music_player import MusicPlayer
 import os
 from ament_index_python.packages import get_package_share_directory
 
-
 class MusicServiceNode(Node):
     def __init__(self):
         super().__init__('mini_pupper_music_service')
@@ -51,13 +50,10 @@ class MusicServiceNode(Node):
     def play_music_callback(self, request, response):
         file_path = self.get_valid_file_path(request.file_name)
         if file_path is not None:
-            if self.music_player.playing:
-                response.success = False
-                response.message = 'Another music is being played.'
-            else:
-                self.music_player.play_music(file_path, request.start_second, request.duration)
-                response.success = True
-                response.message = 'Music started playing.'
+            self.music_player.start_music(file_path, request.start_second, request.duration)
+            response.success = True
+            response.message = 'Music started playing.'
+            self.get_logger().info(f"playing music at {file_path}")
         else:
             response.success = False
             response.message = f'File {request.file_name} is not found.'
