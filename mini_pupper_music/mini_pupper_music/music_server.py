@@ -17,7 +17,7 @@
 
 import rclpy
 from rclpy.node import Node
-from mini_pupper_interfaces.srv import MusicCommand
+from mini_pupper_interfaces.srv import PlayMusic, StopMusic
 from .music_player import MusicPlayer
 import os
 from ament_index_python.packages import get_package_share_directory
@@ -26,22 +26,17 @@ from ament_index_python.packages import get_package_share_directory
 class MusicServiceNode(Node):
     def __init__(self):
         super().__init__('mini_pupper_music_service')
-        self.service = self.create_service(
-            MusicCommand,
-            'music_command',
-            self.music_callback
-        )
         self.music_player = MusicPlayer()
-
-    def music_callback(self, request, response):
-        if request.command == 'play':
-            self.play_music_callback(request, response)
-        elif request.command == 'stop':
-            self.stop_music_callback(request, response)
-        else:
-            response.success = False
-            response.message = f'Command {request.command} is not supported.'
-        return response
+        self.play_service = self.create_service(
+            PlayMusic,
+            'play_music',
+            self.play_music_callback
+        )
+        self.stop_service = self.create_service(
+            StopMusic,
+            'stop_music',
+            self.stop_music_callback
+        )
 
     def play_music_callback(self, request, response):
         file_path = self.get_valid_file_path(request.file_name)
