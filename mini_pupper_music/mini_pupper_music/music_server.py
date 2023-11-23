@@ -17,98 +17,74 @@
 
 import rclpy
 from rclpy.node import Node
-from std_srvs.srv import SetBool
-import sounddevice as sd
-import soundfile as sf
-import threading
+from mini_pupper_interfaces.srv import PlayMusic, StopMusic
+from .music_player import MusicPlayer
 import os
 from ament_index_python.packages import get_package_share_directory
-import ctypes
 
 
-class SoundPlayerNode(Node):
+class MusicServiceNode(Node):
     def __init__(self):
         super().__init__('mini_pupper_music_service')
-        self.service = self.create_service(
-            SetBool,
-            'music_command',
-            self.play_sound_callback
+        self.music_player = MusicPlayer()
+        self.play_service = self.create_service(
+            PlayMusic,
+            'play_music',
+            self.play_music_callback
         )
-        self.is_playing = False
-        self.playback_thread = None
-        self.lock = threading.Lock()
-        self.load_sound_data()
+        self.stop_service = self.create_service(
+            StopMusic,
+            'stop_music',
+            self.stop_music_callback
+        )
 
-    def load_sound_data(self):
-        package_name = 'mini_pupper_music'
-        file_name = 'resource/robot1.wav'
-        package_path = get_package_share_directory(package_name)
-        sound_file = os.path.join(package_path, file_name)
-        try:
-            self.sound_data, self.sound_fs = sf.read(sound_file, dtype='float32')
-        except Exception as e:
-            self.get_logger().error('Failed to load sound data: {}'.format(str(e)))
+    def play_music_callback(self, request, response):
+        file_path = self.get_valid_file_path(request.file_name)
+        if file_path is not None:
+            if self.music_player.playing:
+                response.success = False
+                response.message = 'Another music is being played.'
+            else:
+                self.music_player.start_music(file_path,
+                                              request.start_second,
+                                              request.duration)
+                response.success = True
+                response.message = 'Music started playing.'
+                self.get_logger().info(f"playing music at {file_path}")
 
-    def play_sound_callback(self, request, response):
-        if request.data:
-            with self.lock:
-                if not self.is_playing:
-                    self.play_sound()
-                    response.success = True
-                    response.message = 'Sound playback started.'
-                else:
-                    response.success = False
-                    response.message = 'Sound is already playing.'
         else:
-            with self.lock:
-                if self.is_playing:
-                    self.stop_sound()
-                    response.success = True
-                    response.message = 'Sound playback stopped.'
-                else:
-                    response.success = False
-                    response.message = 'No sound is currently playing.'
+            response.success = False
+            response.message = f'File {request.file_name} is not found.'
         return response
 
-    def play_sound(self):
-        self.is_playing = True
-        self.playback_thread = threading.Thread(target=self.play_sound_thread)
-        self.playback_thread.start()
+    def stop_music_callback(self, request, response):
+        if self.music_player.playing:
+            self.music_player.stop_music()
+            response.success = True
+            response.message = 'Music playback stopped.'
+        else:
+            response.success = False
+            response.message = 'No music is being played.'
+        return response
 
-    def play_sound_thread(self):
-        while self.is_playing:
-            self.get_logger().info('Playing the song from the beginning')
-            sd.play(self.sound_data, self.sound_fs)
-            sd.wait()
+    def get_valid_file_path(self, file_name):
+        package_name = 'mini_pupper_music'
+        package_path = get_package_share_directory(package_name)
+        file_path = os.path.join(package_path, 'resource', file_name)
+        if os.path.isfile(file_path):
+            return file_path
+        else:
+            return None
 
-    def stop_sound(self):
-        self.is_playing = False
-        if self.playback_thread is not None:
-            self.playback_thread.join(timeout=1.0)  # Wait for 1 second for the thread to finish
-            if self.playback_thread.is_alive():
-                # If the thread is still running, terminate it forcefully
-                self.get_logger().warning('Playback thread did not terminate gracefully.')
-                self.get_logger().warning('Terminating forcefully.')
-                self.terminate_thread(self.playback_thread)
-
-    def terminate_thread(self, thread):
-        if not thread.is_alive():
-            return
-
-        thread_id = thread.ident
-        # Terminate the thread using ctypes
-        ctypes.pythonapi.PyThreadState_SetAsyncExc(
-            ctypes.c_long(thread_id),
-            ctypes.py_object(SystemExit)
-        )
-        self.get_logger().warning('Playback thread terminated forcefully.')
+    def destroy_node(self):
+        self.music_player.destroy()
+        super().destroy_node()
 
 
 def main(args=None):
     rclpy.init(args=args)
-    sound_player_node = SoundPlayerNode()
-    rclpy.spin(sound_player_node)
-    sound_player_node.destroy_node()
+    music_service_node = MusicServiceNode()
+    rclpy.spin(music_service_node)
     rclpy.shutdown()
 
 

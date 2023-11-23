@@ -12,6 +12,9 @@
 # look_middle: the robot will return to the default standing posture
 # stay: the robot will keep the last command
 
+dance_song_file_name = 'robot1.mp3'
+dance_song_start_second = 5.0
+
 dance_commands = [
     'move_forward',
     'look_middle',
