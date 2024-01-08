@@ -8,12 +8,15 @@
 
 # Mini Pupper ROS 2 Humble
 
-This branch is only to show how to use a script to make Mini Pupper 2 dance, just like the workshop on AWS re:Invent 2022.
 Supported versions
 
 * Ubuntu 22.04 + ROS 2 Humble
 
 ## 1. Installation
+
+* To use Gazebo simulator, "1.1 PC Setup" is required.
+* To control Mini Pupper, "1.2 Mini Pupper Setup" is required.
+* To control Mini Pupper using visualize tools, "1.1 PC Setup" and "1.2 Mini Pupper Setup" is required.
 
 ### 1.1 PC Setup
 
@@ -37,9 +40,6 @@ After ROS 2 installation, download the Mini Pupper ROS package in the workspace.
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
-
-# Move mini_pupper_dance and mini_pupper_interfaces folders into ~/ros2_ws/src
-
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 ```
 
@@ -71,45 +71,237 @@ cd mini_pupper_ros
 ./install.sh
 ```
 
-Install packages for playing music
-```sh
-sudo apt-get install ffmpeg portaudio19-dev -y
-pip install pydub
-pip install pyaudio
-
-```
-
 ## 2. Quick Start
 
-## 2.1 Mini Pupper
+## 2.1 PC
+### 2.1.1 Test in RViz
+
+Note: This step is only for PC
+
+```sh
+# Terminal 1
+. ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
+ros2 launch mini_pupper_bringup bringup.launch.py joint_hardware_connected:=false rviz:=true
+
+# Terminal 2
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# Then control robot dog with the keyboard
+```
+
+### 2.1.2 Test in Gazebo
+
+Note: This step is only for PC
+
+```sh
+# Terminal 1
+. ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
+ros2 launch mini_pupper_gazebo gazebo.launch.py rviz:=true
+
+# Terminal 2
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# Then control robot dog with the keyboard
+```
+
+### 2.1.3 Test SLAM (Mapping) in Gazebo
+
+Note: This step is only for PC
+
+- Bring up Gazebo
+```sh
+# Terminal 1
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_gazebo gazebo.launch.py
+```
+
+- Mapping on PC
+```sh
+# Terminal 2
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation slam.launch.py use_sim_time:=true
+```
+
+- Keyboard control  
+Use the keyboard to remotely control the Mini Pupper to complete the mapping.
+```sh
+# Terminal 3
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+
+- Save the map  
+The map will be saved at $HOME.
+```sh
+# Terminal 4 (on PC)
+ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/cartographer_map.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
+```
+
+#### 2.1.4 Test Navigation in Gazebo
+
+- Replace the map files  
+Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
+```sh
+# Terminal 2 (on PC)
+cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
+cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
+cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
+```
+
+- Bring up Gazebo
+```sh
+# Terminal 1
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_gazebo gazebo.launch.py
+```
+
+- Localization & Navigation
+```sh
+# Terminal 3
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation bringup.launch.py use_sim_time:=true
+```
+
+- Localization only  
+(This step is not necessary if you run `bringup.launch.py`.)
+```sh
+# Terminal 4
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation localization.launch.py use_sim_time:=true
+```
+
+- Navigation only  
+(This step is not necessary if you run `bringup.launch.py`.)
+```sh
+# Terminal 4
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation navigation.launch.py use_sim_time:=true
+```
+
+## 2.2 Mini Pupper
+
+### 2.2.1 Test walk
+
+Note: This step is only for Mini Pupper
+
+Open 2 terminals and ssh login to Mini Pupper on both.
 
 ```sh
 # Terminal 1 (ssh)
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
 ros2 launch mini_pupper_bringup bringup.launch.py
-```
 
-```sh
 # Terminal 2 (ssh)
-. ~/ros2_ws/install/setup.bash 
-ros2 launch mini_pupper_music music.launch.py
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# Then control Mini Pupper with the keyboard
 ```
+### 2.2.2 Test SLAM (Mapping)
 
-## 2.2 PC (Or Mini Pupper)
+Note: This step requires both PC and Mini Pupper
+
+- Bring up real mini pupper
 ```sh
-# Terminal 3 (ssh)
-source ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_dance dance.launch.py
+# Terminal 1 (ssh to real mini pupper)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
-## 2.3 How to modify
+- Mapping on PC
+```sh
+# Terminal 2 (on PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation slam.launch.py
+```
 
-### mini_pupper_dance
-Includes two Python scripts in mini_pupper_dance/mini_pupper/dance folder. </br>
-dance_client.py is the client reading and sending dance commands. </br>
-dance_server.py is the server receiving dance commands and executing them. You can add more dance functions in dance_server.py </br>
-pose_controller.py is a pose controller for mini pupper. You don't need to modify this. </br>
-episode.py is the dancing episode. You should edit your dancing episode here.
+- Keyboard control  
+Use the keyboard to remotely control the Mini Pupper to complete the mapping.
+```sh
+# Terminal 3 (on PC)
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
 
-### mini pupper_interfaces
-This package includes the customized dance command service message.
+- Save the map  
+The map will be saved at $HOME.
+```sh
+# Terminal 4 (on PC)
+ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
+ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/cartographer_map.pbstream'}"
+ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
+```
+
+#### 2.2.3 Test Navigation
+
+- Bring up real mini pupper
+```sh
+# Terminal 1 (ssh to real mini pupper)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_bringup bringup.launch.py
+
+```
+
+- Replace the map files  
+Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
+```sh
+# Terminal 2 (on PC)
+cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
+cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
+cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
+```
+
+- Localization
+```sh
+# Terminal 3 (on PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation localization.launch.py
+```
+
+- Navigation
+```sh
+# Terminal 4 (on PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_navigation navigation.launch.py
+```
+
+### 2.2.1 Test dance
+Please refer to the README.md inside package "mini_pupper_dance".
+
+
+## License
+
+```
+Copyright 2022-2023 MangDang
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+## FAQ
+
+* Q. Is Ubuntu 20.04 supported?
+  * A. No. Ubuntu 22.04 only for now.
+* Q. Is ROS 2 Foxy/Galactic supported?
+  * A. No. ROS 2 Humble only for now.
+* Q. `colcon build` shows `1 package had stderr output: mini_pupper_driver`.
+  * A. The following warnings can be safely ignored. See [mini_pupper_ros#45](https://github.com/mangdangroboticsclub/mini_pupper_ros/pull/45#discussion_r1104759104) for details.
+  ```
+  Starting >>> mini_pupper_description
+  --- stderr: mini_pupper_driver
+  /usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+    warnings.warn(
+  /usr/lib/python3/dist-packages/setuptools/command/install.py:34: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+    warnings.warn(
+  /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 1.1build1 is an invalid version and will not be supported in a future release
+    warnings.warn(
+  /usr/lib/python3/dist-packages/pkg_resources/__init__.py:116: PkgResourcesDeprecationWarning: 0.1.43ubuntu1 is an invalid version and will not be supported in a future release
+    warnings.warn(
+  ---
+  Finished <<< mini_pupper_driver [7.37s]
+  ```
