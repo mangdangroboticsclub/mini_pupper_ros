@@ -1,0 +1,22 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/cullensun/ros2_ws/install/mini_pupper_music/lib/python3.10/site-packages",
+        "/home/cullensun/ros2_ws/install/mini_pupper_dance/lib/python3.10/site-packages",
+        "/home/cullensun/ros2_ws/install/mini_pupper_interfaces/local/lib/python3.10/dist-packages",
+        "/home/cullensun/ros2_ws/install/mini_pupper_driver/lib/python3.10/site-packages",
+        "/home/cullensun/ros2_ws/install/champ_bringup/local/lib/python3.10/dist-packages",
+        "/home/cullensun/ros2_ws/install/champ_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/cullensun/ros2_ws/install/mini_pupper_music/lib/python3.10/site-packages",
+        "/home/cullensun/ros2_ws/install/mini_pupper_dance/lib/python3.10/site-packages",
+        "/home/cullensun/ros2_ws/install/mini_pupper_interfaces/local/lib/python3.10/dist-packages",
+        "/home/cullensun/ros2_ws/install/mini_pupper_driver/lib/python3.10/site-packages",
+        "/home/cullensun/ros2_ws/install/champ_bringup/local/lib/python3.10/dist-packages",
+        "/home/cullensun/ros2_ws/install/champ_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}
