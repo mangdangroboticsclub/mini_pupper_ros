@@ -41,7 +41,7 @@ def generate_launch_description():
         description="Use simulation (Gazebo) clock if true")
 
     default_model_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_description'), 'urdf', 'mini_pupper_description.urdf.xacro']
+        [FindPackageShare('mini_pupper_2_description'), 'urdf', 'mini_pupper_2_description.urdf.xacro']
     )
 
     declare_description_path = DeclareLaunchArgument(
