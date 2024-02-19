@@ -32,6 +32,7 @@ from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 from launch.conditions import IfCondition
 
+
 def launch_bring_up(context, *args, **kwargs):
     robot_name = LaunchConfiguration("robot_name")
     sim = LaunchConfiguration("sim")
