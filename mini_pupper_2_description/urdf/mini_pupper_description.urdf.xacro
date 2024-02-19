@@ -2,7 +2,7 @@
 <robot name="mini_pupper" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find mini_pupper_2_description)/urdf/materials.xacro" />
-  <!-- <xacro:include filename="$(find mini_pupper_2_description)/urdf/mini_pupper_2_description.trans" /> -->
+  <xacro:include filename="$(find mini_pupper_2_description)/urdf/mini_pupper_description.trans" />
   <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -21,9 +21,9 @@
 
   <link name="base_inertia">
     <inertial>
-      <origin xyz="-0.008866664732250966 0.0006462612742260995 -0.007154314406453802" rpy="0 0 0"/>
+      <origin xyz="-0.008867 0.000646 -0.007154" rpy="0 0 0"/>
       <mass value="0.09818420433466489"/>
-      <inertia ixx="5.2e-05" iyy="0.000244" izz="0.000252" ixy="1e-06" iyz="1e-06" ixz="-1e-05"/>
+      <inertia ixx="5.2003168e-05" iyy="2.437e-4" izz="2.523e-4" ixy="7.28047e-07" iyz="6.0331e-07" ixz="-9.716561e-06"/>
     </inertial>
   </link>
 
@@ -31,7 +31,7 @@
     <inertial>
       <origin xyz="0.020109281613098752 0.002331771723067172 0.0064994497731911665" rpy="0 0 0"/>
       <mass value="0.020769030109708524"/>
-      <inertia ixx="2e-06" iyy="4e-06" izz="3e-06" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="-7.659e-9" iyz="0.072e-9" ixz="-33.608e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.037299 -0.023745 -5.7e-05" rpy="0 0 0"/>
@@ -50,9 +50,9 @@
 
   <link name="lf2">
     <inertial>
-      <origin xyz="-2.5728896106275156e-06 0.0009860558893138652 -0.018261345499916863" rpy="0 0 0"/>
+      <origin xyz="-0.0031735030993243693 0.000986055889313886 -0.01798354657247523" rpy="0 0 0"/>
       <mass value="0.0019057729925096327"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="3.117e-9" iyz="17.662e-9" ixz="-79.269e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.052165 -0.041445 -5.7e-05" rpy="0 0 0"/>
@@ -71,19 +71,19 @@
 
   <link name="lf3">
     <inertial>
-      <origin xyz="0.0007046107744873437 0.0034550275861905885 -0.016225601428628958" rpy="0 0 0"/>
+      <origin xyz="0.006210627225594921 0.003455723027058405 -0.015013638057132746" rpy="0 0 0"/>
       <mass value="0.0011438144457690698"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+      <inertia ixx="0.484118e-6" iyy="0.567346e-06" izz="91.82e-9" ixy="-2.157e-9" iyz="4.945e-9" ixz="0.200546e-6"/>
     </inertial>
     <visual>
-      <origin xyz="-0.052159 -0.044445 0.049943" rpy="0 0 0"/>
+      <origin xyz="-0.043476 -0.044445 0.049183" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lf3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="-0.052159 -0.044445 0.049943" rpy="0 0 0"/>
+      <origin xyz="-0.043476 -0.044445 0.049183" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lf3.stl" scale="1 1 1"/>
       </geometry>
@@ -91,10 +91,10 @@
   </link>
 
   <link name="rf1">
-      <inertial>
+    <inertial>
       <origin xyz="0.020106742599110078 -0.00233237781568562 0.006497900858401761" rpy="0 0 0"/>
       <mass value="0.020769549324466178"/>
-      <inertia ixx="2e-06" iyy="4e-06" izz="3e-06" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="7.618e-9" iyz="0.098e-9" ixz="-37.629e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.037299 0.023255 -5.7e-05" rpy="0 0 0"/>
@@ -113,9 +113,9 @@
 
   <link name="rf2">
     <inertial>
-      <origin xyz="-4.1025190424676117e-07 -0.0009866275794596438 -0.018261345629717353" rpy="0 0 0"/>
+      <origin xyz="-0.00317137334512671 -0.000986627579459616 -0.01798392230653304" rpy="0 0 0"/>
       <mass value="0.0019057729924780605"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="0.462172e-6" iyy="0.481174e-6" izz="26.874e-9" ixy="-3.114e-9" iyz="-17.663e-9" ixz="-79.218e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.052165 0.040955 -5.7e-05" rpy="0 0 0"/>
@@ -134,19 +134,19 @@
 
   <link name="rf3">
     <inertial>
-      <origin xyz="0.0007030898236521158 -0.003457422744677939 -0.016230262912113935" rpy="0 0 0"/>
+      <origin xyz="0.006211719758792998 -0.0034574884973188197 -0.01500899883342268" rpy="0 0 0"/>
       <mass value="0.001143490701517533"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+      <inertia ixx="0.484726e-6" iyy="0.567959e-06" izz="91.882e-9" ixy="2.056e-9" iyz="-4.954e-9" ixz="0.200706e-6"/>
     </inertial>
     <visual>
-      <origin xyz="-0.052165 0.043955 0.049943" rpy="0 0 0"/>
+      <origin xyz="-0.043482 0.043955 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rf3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="-0.052165 0.043955 0.049943" rpy="0 0 0"/>
+      <origin xyz="-0.043482 0.043955 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rf3.stl" scale="1 1 1"/>
       </geometry>
@@ -157,7 +157,7 @@
     <inertial>
       <origin xyz="-0.020107177922528044 -0.0023288309787250286 0.006502376356642127" rpy="0 0 0"/>
       <mass value="0.020769549324363486"/>
-      <inertia ixx="2e-06" iyy="4e-06" izz="3e-06" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="-7.639e-9" iyz="-0.378e-9" ixz="-37.624e-9"/>
     </inertial>
     <visual>
       <origin xyz="0.042701 0.023255 -5.7e-05" rpy="0 0 0"/>
@@ -176,9 +176,9 @@
 
   <link name="rb2">
     <inertial>
-      <origin xyz="-2.5070667000748337e-08 -0.000996585764066693 -0.018260149861185754" rpy="0 0 0"/>
+      <origin xyz="-0.0031709881638501275 -0.0009964344348111775 -0.017982726579309202" rpy="0 0 0"/>
       <mass value="0.0019057729926311429"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="0.462172e-6" iyy="0.481155e-6" izz="26.893e-9" ixy="-3.158e-9" iyz="-17.911e-9" ixz="-79.911e-9"/>
     </inertial>
     <visual>
       <origin xyz="0.068367 0.040955 -6.6e-05" rpy="0 0 0"/>
@@ -197,19 +197,19 @@
 
   <link name="rb3">
     <inertial>
-      <origin xyz="0.0007031309185970697 -0.0034624258831375196 -0.016220094399306113" rpy="0 0 0"/>
+      <origin xyz="0.006208573190273861 -0.0034623583329196975 -0.015001217060300935" rpy="0 0 0"/>
       <mass value="0.0011440535724654094"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+      <inertia ixx="0.484539e-6" iyy="0.567687e-06" izz="91.857e-9" ixy="2.182e-9" iyz="-5.285e-9" ixz="0.200597e-6"/>
     </inertial>
     <visual>
-      <origin xyz="0.068367 0.043983 0.049932" rpy="0 0 0"/>
+      <origin xyz="0.077049 0.043982 0.049173" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rb3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="0.068367 0.043983 0.049932" rpy="0 0 0"/>
+      <origin xyz="0.077049 0.043982 0.049173" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rb3.stl" scale="1 1 1"/>
       </geometry>
@@ -220,7 +220,7 @@
     <inertial>
       <origin xyz="-0.020109716415830967 0.0023317718989125207 0.006499556305653081" rpy="0 0 0"/>
       <mass value="0.020769030189864354"/>
-      <inertia ixx="2e-06" iyy="4e-06" izz="3e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="7.659e-9" iyz="-0.072e-9" ixz="-33.608e-9"/>
     </inertial>
     <visual>
       <origin xyz="0.042701 -0.023745 -5.7e-05" rpy="0 0 0"/>
@@ -239,9 +239,9 @@
 
   <link name="lb2">
     <inertial>
-      <origin xyz="-2.486178994620669e-08 0.0009860564153100007 -0.01826134562993383" rpy="0 0 0"/>
+      <origin xyz="-0.0031709879518865836 0.0009860564153100285 -0.01798392227051571" rpy="0 0 0"/>
       <mass value="0.0019057729925095609"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+      <inertia ixx="0.462172e-6" iyy="0.481174e-6" izz="26.874e-9" ixy="3.114e-9" iyz="17.663e-9" ixz="-79.218e-9"/>
     </inertial>
     <visual>
       <origin xyz="0.068367 -0.041445 -5.7e-05" rpy="0 0 0"/>
@@ -260,19 +260,19 @@
 
   <link name="lb3">
     <inertial>
-      <origin xyz="0.0007030123702261443 0.0034519487133846394 -0.016218113385159758" rpy="0 0 0"/>
+      <origin xyz="0.006208905683926957 0.0034523757482988054 -0.015005654191541921" rpy="0 0 0"/>
       <mass value="0.001144346207072784"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+      <inertia ixx="0.484492e-6" iyy="0.567176e-06" izz="91.41e-9" ixy="-2.023e-9" iyz="4.977e-9" ixz="0.200063e-6"/>
     </inertial>
     <visual>
-      <origin xyz="0.068367 -0.044445 0.049943" rpy="0 0 0"/>
+      <origin xyz="0.077049 -0.044445 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lb3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="0.068367 -0.044445 0.049943" rpy="0 0 0"/>
+      <origin xyz="0.077049 -0.044445 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lb3.stl" scale="1 1 1"/>
       </geometry>
@@ -283,7 +283,7 @@
     <inertial>
       <origin xyz="-0.005538678480206852 -0.00020424196520824284 0.020222593513387798" rpy="0 0 0"/>
       <mass value="0.00785515871148119"/>
-      <inertia ixx="5e-06" iyy="2e-06" izz="4e-06" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="5e-06" iyy="2e-06" izz="4e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="-0.089299 -0.000245 0.015543" rpy="0 0 0"/>
@@ -325,7 +325,7 @@
     <inertial>
       <origin xyz="-0.07276303117117414 -0.002323344081837563 -0.0010631239213060653" rpy="0 0 0"/>
       <mass value="0.004688613655947816"/>
-      <inertia ixx="0.0" iyy="1.5e-05" izz="1.6e-05" ixy="-1e-06" iyz="0.0" ixz="0.0"/>
+      <inertia ixx="0.203205e-6" iyy="1.5404404e-05" izz="1.5546403e-05" ixy="-0.625328e-06" iyz="42.901e-9" ixz="0.186346e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.061334 -0.000217 -0.026457" rpy="0 0 0"/>
@@ -346,7 +346,7 @@
     <inertial>
       <origin xyz="0.008233541174180986 -0.002138369786547657 -0.00030110978110910874" rpy="0 0 0"/>
       <mass value="0.0019746031301169403"/>
-      <inertia ixx="0.0" iyy="3e-06" izz="4e-06" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+      <inertia ixx="0.458176e-6" iyy="3.284711e-06" izz="3.720353e-06" ixy="-79.81e-9" iyz="4.793e-9" ixz="0.123862e-9"/>
     </inertial>
     <visual>
       <origin xyz="0.045346 -0.000245 -0.026457" rpy="0 0 0"/>
@@ -365,19 +365,19 @@
 
   <link name="rffoot">
     <inertial>
-      <origin xyz="-0.0024634044240561814 -2.8557999392359035e-07 0.007801816226636768" rpy="0 0 0"/>
+      <origin xyz="-0.004983173489839052 -2.855799938611403e-07 0.006488367917121082" rpy="0 0 0"/>
       <mass value="0.0014053107976262874"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="41.992e-9" iyy="62.399e-9" izz="29.801e-9" ixy="0.0" iyz="0.0" ixz="1.625e-9"/>
     </inertial>
     <visual>
-      <origin xyz="-0.056689 0.047705 0.109514" rpy="0 0 0"/>
+      <origin xyz="-0.068108 0.047705 0.103614" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rffoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="-0.056689 0.047705 0.109514" rpy="0 0 0"/>
+      <origin xyz="-0.068108 0.047705 0.103614" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rffoot.stl" scale="1 1 1"/>
       </geometry>
@@ -386,19 +386,19 @@
 
   <link name="rbfoot">
     <inertial>
-      <origin xyz="-0.0024630192318816357 4.2051173794327434e-06 0.0078011683948505245" rpy="0 0 0"/>
+      <origin xyz="-0.004982788301465979 3.706995898918042e-06 0.006488719406103974" rpy="0 0 0"/>
       <mass value="0.0014053107976262874"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="41.992e-9" iyy="62.399e-9" izz="29.801e-9" ixy="0.001e-9" iyz="-0.018e-9" ixz="1.625e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.063843 0.047765 0.1095" rpy="0 0 0"/>
+      <origin xyz="0.052424 0.047762 0.103601" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rbfoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="0.063843 0.047765 0.1095" rpy="0 0 0"/>
+      <origin xyz="0.052424 0.047762 0.103601" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/rbfoot.stl" scale="1 1 1"/>
       </geometry>
@@ -407,19 +407,19 @@
 
   <link name="lbfoot">
     <inertial>
-      <origin xyz="-0.0024630193952935586 -2.855826621572799e-07 0.00780181622349041" rpy="0 0 0"/>
+      <origin xyz="-0.004982788451759437 -2.855826620323798e-07 0.0064883680140642025" rpy="0 0 0"/>
       <mass value="0.0014053107976262874"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="41.992e-9" iyy="62.399e-9" izz="29.801e-9" ixy="0.0" iyz="0.0" ixz="1.625e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.063843 -0.048195 0.109514" rpy="0 0 0"/>
+      <origin xyz="0.052424 -0.048195 0.103614" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lbfoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="0.063843 -0.048195 0.109514" rpy="0 0 0"/>
+      <origin xyz="0.052424 -0.048195 0.103614" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lbfoot.stl" scale="1 1 1"/>
       </geometry>
@@ -428,189 +428,189 @@
 
   <link name="lffoot">
     <inertial>
-      <origin xyz="-0.002463300234335934 -2.8611328430766525e-07 0.00780127458383767" rpy="0 0 0"/>
+      <origin xyz="-0.004983499344395154 -2.861132842799097e-07 0.006488888240325896" rpy="0 0 0"/>
       <mass value="0.0014053107976262874"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+      <inertia ixx="41.992e-9" iyy="62.399e-9" izz="29.801e-9" ixy="0.0" iyz="0.0" ixz="1.625e-9"/>
     </inertial>
     <visual>
-      <origin xyz="-0.056689 -0.048195 0.109513" rpy="0 0 0"/>
+      <origin xyz="-0.068108 -0.048195 0.103611" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lffoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="-0.056689 -0.048195 0.109513" rpy="0 0 0"/>
+      <origin xyz="-0.068108 -0.048195 0.103611" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://mini_pupper_2_description/meshes/lffoot.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Hip_Left_1">
+  <link name="lpf1">
     <inertial>
       <origin xyz="0.002258882765982295 0.008667473212030541 -0.002747896746317195" rpy="0 0 0"/>
       <mass value="0.002573897544461238"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
+      <inertia ixx="0.390582e-6" iyy="0.412423e-6" izz="0.246322e-6" ixy="24.632e-9" iyz="3.861e-9" ixz="54.103e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.071565 -0.038245 -0.013057" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Left_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="-0.071565 -0.038245 -0.013057" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Left_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpf1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Hip_Left_2">
+  <link name="lpb1">
     <inertial>
       <origin xyz="0.0022592683660053597 0.008667473212031727 -0.0027478967463174797" rpy="0 0 0"/>
       <mass value="0.002573897544461238"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
+      <inertia ixx="0.390582e-6" iyy="0.412423e-6" izz="0.246322e-6" ixy="24.632e-9" iyz="3.861e-9" ixz="54.103e-9"/>
     </inertial>
     <visual>
       <origin xyz="0.048967 -0.038245 -0.013057" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Left_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0.048967 -0.038245 -0.013057" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Left_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpb1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Hip_Right_1">
+  <link name="rpf1">
     <inertial>
       <origin xyz="0.002219644336096324 -0.008605630927951344 -0.002709000699399786" rpy="0 0 0"/>
       <mass value="0.002396251664132183"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+      <inertia ixx="0.364377e-6" iyy="0.38866e-6" izz="0.234177e-6" ixy="-23.674e-9" iyz="-3.338e-9" ixz="52.098e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.071565 0.037755 -0.013057" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Right_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="-0.071565 0.037755 -0.013057" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Right_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpf1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Hip_Right_2">
+  <link name="rpb1">
     <inertial>
       <origin xyz="0.0022200295152449145 -0.008607013686777375 -0.0027033986949916797" rpy="0 0 0"/>
       <mass value="0.002396251664132183"/>
-      <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+      <inertia ixx="0.364377e-6" iyy="0.388657e-6" izz="0.23418e-6" ixy="-23.645e-9" iyz="-3.422e-9" ixz="52.111e-9"/>
     </inertial>
     <visual>
       <origin xyz="0.048967 0.037748 -0.013064" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Right_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0.048967 0.037748 -0.013064" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Hip_Right_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpb1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Leg_Upper_LeftSide_1">
+  <link name="lpf2">
     <inertial>
-      <origin xyz="-0.0026521199361419917 0.00790352811362325 0.004979527414372081" rpy="0 0 0"/>
-      <mass value="0.00223142111318912"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+      <origin xyz="-0.001747332142694763 0.00790352811362327 0.005364507913861985" rpy="0 0 0"/>
+      <mass value="0.0022314211131891203"/>
+      <inertia ixx="0.862549e-06" iyy="0.991391e-06" izz="0.139046e-6" ixy="1.254e-9" iyz="-13.212e-9" ixz="-0.112903e-9"/>
     </inertial>
     <visual>
-      <origin xyz="-0.052162 -0.044445 0.018943" rpy="0 0 0"/>
+      <origin xyz="-0.048863 -0.044445 0.018654" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_LeftSide_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpf2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
-      <origin xyz="-0.052162 -0.044445 0.018943" rpy="0 0 0"/>
+      <origin xyz="-0.048863 -0.044445 0.018654" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_LeftSide_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpf2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Leg_Upper_LeftSide_2">
+  <link name="lpb2">
     <inertial>
-      <origin xyz="-0.002652484362897875 0.007903528639619295 0.004979527279084269" rpy="0 0 0"/>
-      <mass value="0.00223142111318912"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+      <origin xyz="-0.001747730780760487 0.007903528639619323 0.005365117008527457" rpy="0 0 0"/>
+      <mass value="0.0022314211131891203"/>
+      <inertia ixx="0.862549e-06" iyy="0.991391e-06" izz="0.139046e-6" ixy="1.254e-9" iyz="-13.212e-9" ixz="-0.112903e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.068367 -0.044445 0.018943" rpy="0 0 0"/>
+      <origin xyz="0.071666 -0.044445 0.018655" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_LeftSide_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
-      <origin xyz="0.068367 -0.044445 0.018943" rpy="0 0 0"/>
+      <origin xyz="0.071666 -0.044445 0.018655" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_LeftSide_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/lpb2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Leg_Upper_RightSide_1">
+  <link name="rpf2">
     <inertial>
-      <origin xyz="-0.0027172440375204526 -0.007907075713007534 0.004991745926148535" rpy="0 0 0"/>
-      <mass value="0.0022016115622538724"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+      <origin xyz="-0.0018083907227202795 -0.007907075713007514 0.005388328467850496" rpy="0 0 0"/>
+      <mass value="0.002201611562253873"/>
+      <inertia ixx="0.859857e-06" iyy="0.986828e-06" izz="0.137126e-6" ixy="-1.292e-9" iyz="13.109e-9" ixz="-0.111508e-9"/>
     </inertial>
     <visual>
-      <origin xyz="-0.052165 0.043955 0.018943" rpy="0 0 0"/>
+      <origin xyz="-0.048865 0.043955 0.018655" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_RightSide_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpf2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
-      <origin xyz="-0.052165 0.043955 0.018943" rpy="0 0 0"/>
+      <origin xyz="-0.048865 0.043955 0.018655" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_RightSide_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpf2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
-  <link name="Shell_Leg_Upper_RightSide_2">
+  <link name="rpb2">
     <inertial>
-      <origin xyz="-0.002716858856166446 -0.007903712439730225 0.004996352480544097" rpy="0 0 0"/>
-      <mass value="0.0022016115622538724"/>
-      <inertia ixx="1e-06" iyy="1e-06" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+      <origin xyz="-0.0018090055415128231 -0.007904339012704771 0.005392934920359041" rpy="0 0 0"/>
+      <mass value="0.002201611562253873"/>
+      <inertia ixx="0.859857e-06" iyy="0.986842e-06" izz="0.137112e-6" ixy="-1.352e-9" iyz="12.645e-9" ixz="-0.111508e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.068367 0.043966 0.018932" rpy="0 0 0"/>
+      <origin xyz="0.071666 0.043965 0.018644" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_RightSide_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
-      <origin xyz="0.068367 0.043966 0.018932" rpy="0 0 0"/>
+      <origin xyz="0.071666 0.043965 0.018644" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_2_description/meshes/Shell_Leg_Upper_RightSide_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_2_description/meshes/rpb2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -636,10 +636,10 @@
     </collision>
   </link>
   
-  <joint name="base_link_to_base_inertia" type="fixed">    
-    <parent link="base_link"/>    
-    <child link="base_inertia"/>    
-    <origin rpy="0 0 0" xyz="0 0 0"/>  
+  <joint name="base_link_to_base_inertia" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_inertia"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
 
   <joint name="base_lf1" type="revolute">
@@ -654,15 +654,15 @@
     <origin xyz="0.014866 0.0177 0.0" rpy="0 0 0"/>
     <parent link="lf1"/>
     <child link="lf2"/>
-    <axis xyz="0.0 1.0 -0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
     <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
   </joint>
 
   <joint name="lf2_lf3" type="revolute">
-    <origin xyz="-6e-06 0.003 -0.05" rpy="0 0 0"/>
+    <origin xyz="-0.008689 0.003 -0.04924" rpy="0 0 0"/>
     <parent link="lf2"/>
     <child link="lf3"/>
-    <axis xyz="0.0 1.0 -0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
     <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
   </joint>
 
@@ -683,7 +683,7 @@
   </joint>
 
   <joint name="rf2_rf3" type="revolute">
-    <origin xyz="0.0 -0.003 -0.05" rpy="0 0 0"/>
+    <origin xyz="-0.008683 -0.003 -0.049241" rpy="0 0 0"/>
     <parent link="rf2"/>
     <child link="rf3"/>
     <axis xyz="0.0 1.0 0.0"/>
@@ -707,7 +707,7 @@
   </joint>
 
   <joint name="rb2_rb3" type="revolute">
-    <origin xyz="0.0 -0.003028 -0.049998" rpy="0 0 0"/>
+    <origin xyz="-0.008682 -0.003027 -0.049239" rpy="0 0 0"/>
     <parent link="rb2"/>
     <child link="rb3"/>
     <axis xyz="0.0 1.0 0.0"/>
@@ -726,15 +726,15 @@
     <origin xyz="-0.025666 0.0177 0.0" rpy="0 0 0"/>
     <parent link="lb1"/>
     <child link="lb2"/>
-    <axis xyz="0.0 1.0 -0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
     <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
   </joint>
 
   <joint name="lb2_lb3" type="revolute">
-    <origin xyz="0.0 0.003 -0.05" rpy="0 0 0"/>
+    <origin xyz="-0.008682 0.003 -0.049241" rpy="0 0 0"/>
     <parent link="lb2"/>
     <child link="lb3"/>
-    <axis xyz="0.0 1.0 -0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
     <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
   </joint>
 
@@ -763,25 +763,25 @@
   </joint>
 
   <joint name="rf3_foot" type="fixed">
-    <origin xyz="0.004524 -0.00375 -0.059571" rpy="0 0 0"/>
+    <origin xyz="0.024626 -0.00375 -0.05443" rpy="0 0 0"/>
     <parent link="rf3"/>
     <child link="rffoot"/>
   </joint>
 
   <joint name="rb3_foot" type="fixed">
-    <origin xyz="0.004524 -0.003782 -0.059568" rpy="0 0 0"/>
+    <origin xyz="0.024625 -0.00378 -0.054428" rpy="0 0 0"/>
     <parent link="rb3"/>
     <child link="rbfoot"/>
   </joint>
 
   <joint name="lb3_foot" type="fixed">
-    <origin xyz="0.004524 0.00375 -0.059571" rpy="0 0 0"/>
+    <origin xyz="0.024625 0.00375 -0.05443" rpy="0 0 0"/>
     <parent link="lb3"/>
     <child link="lbfoot"/>
   </joint>
 
   <joint name="lf3_foot" type="fixed">
-    <origin xyz="0.00453 0.00375 -0.05957" rpy="0 0 0"/>
+    <origin xyz="0.024632 0.00375 -0.054428" rpy="0 0 0"/>
     <parent link="lf3"/>
     <child link="lffoot"/>
   </joint>
@@ -789,49 +789,49 @@
   <joint name="lf1_hip" type="fixed">
     <origin xyz="0.034266 0.0145 0.013" rpy="0 0 0"/>
     <parent link="lf1"/>
-    <child link="Shell_Hip_Left_1"/>
+    <child link="lpf1"/>
   </joint>
 
   <joint name="lb1_hip" type="fixed">
     <origin xyz="-0.006266 0.0145 0.013" rpy="0 0 0"/>
     <parent link="lb1"/>
-    <child link="Shell_Hip_Left_2"/>
+    <child link="lpb1"/>
   </joint>
 
   <joint name="rf1_hip" type="fixed">
     <origin xyz="0.034266 -0.0145 0.013" rpy="0 0 0"/>
     <parent link="rf1"/>
-    <child link="Shell_Hip_Right_1"/>
+    <child link="rpf1"/>
   </joint>
 
   <joint name="rb2_hip" type="fixed">
     <origin xyz="-0.006266 -0.014493 0.013007" rpy="0 0 0"/>
     <parent link="rb1"/>
-    <child link="Shell_Hip_Right_2"/>
+    <child link="rpb1"/>
   </joint>
 
   <joint name="lf2_shell" type="fixed">
-    <origin xyz="-3e-06 0.003 -0.019" rpy="0 0 0"/>
+    <origin xyz="-0.003302 0.003 -0.018711" rpy="0 0 0"/>
     <parent link="lf2"/>
-    <child link="Shell_Leg_Upper_LeftSide_1"/>
+    <child link="lpf2"/>
   </joint>
 
   <joint name="lb2_shell" type="fixed">
-    <origin xyz="0.0 0.003 -0.019" rpy="0 0 0"/>
+    <origin xyz="-0.003299 0.003 -0.018712" rpy="0 0 0"/>
     <parent link="lb2"/>
-    <child link="Shell_Leg_Upper_LeftSide_2"/>
+    <child link="lpb2"/>
   </joint>
 
   <joint name="rf2_shell" type="fixed">
-    <origin xyz="0.0 -0.003 -0.019" rpy="0 0 0"/>
+    <origin xyz="-0.0033 -0.003 -0.018712" rpy="0 0 0"/>
     <parent link="rf2"/>
-    <child link="Shell_Leg_Upper_RightSide_1"/>
+    <child link="rpf2"/>
   </joint>
 
   <joint name="rb2_shell" type="fixed">
-    <origin xyz="0.0 -0.003011 -0.018998" rpy="0 0 0"/>
+    <origin xyz="-0.003299 -0.00301 -0.01871" rpy="0 0 0"/>
     <parent link="rb2"/>
-    <child link="Shell_Leg_Upper_RightSide_2"/>
+    <child link="rpb2"/>
   </joint>
 
   <joint name="base_sides" type="fixed">
@@ -921,7 +921,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Hip_Left_1">
+  <gazebo reference="lpf1">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="lf2">
@@ -933,7 +933,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Leg_Upper_LeftSide_1">
+  <gazebo reference="lpf2">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="lf3">
@@ -963,7 +963,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Hip_Right_1">
+  <gazebo reference="rpf1">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="rf2">
@@ -975,7 +975,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Leg_Upper_RightSide_1">
+  <gazebo reference="rpf2">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="rf3">
@@ -1005,7 +1005,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Hip_Left_2">
+  <gazebo reference="lpb1">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="lb2">
@@ -1017,7 +1017,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Leg_Upper_LeftSide_2">
+  <gazebo reference="lpb2">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="lb3">
@@ -1047,7 +1047,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Hip_Right_2">
+  <gazebo reference="rpb1">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="rb2">
@@ -1059,7 +1059,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="Shell_Leg_Upper_RightSide_2">
+  <gazebo reference="rpb2">
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="rb3">
@@ -1080,7 +1080,7 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  
+
   <!-- <gazebo reference="lidar_link">
     <material>Gazebo/FlatBlack</material>
     <sensor type="ray" name="lidar">
@@ -1118,7 +1118,7 @@
       <!-- </plugin>
     </sensor>
   </gazebo> -->
-  
+
   <gazebo>
     <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
       <ros>
@@ -1132,7 +1132,7 @@
       <gaussian_noise>0.01</gaussian_noise>
     </plugin>
   </gazebo>
-  
+
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
       <parameters>$(find mini_pupper_2_description)/config/ros_control/mini_pupper_controller.yaml</parameters>

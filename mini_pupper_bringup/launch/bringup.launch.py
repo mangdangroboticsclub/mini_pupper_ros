@@ -44,7 +44,7 @@ def launch_bring_up(context, *args, **kwargs):
     description_path = PathJoinSubstitution(
         [description_package, 'urdf', 'mini_pupper_description.urdf.xacro']
     )
-    
+
     joints_config_path = PathJoinSubstitution(
         [description_package, 'config', 'champ', 'joints.yaml']
     )
@@ -90,7 +90,7 @@ def launch_bring_up(context, *args, **kwargs):
         condition=IfCondition(rviz)
     )
 
-    return [rviz2_node, 
+    return [rviz2_node,
             bringup_launch]
 
 
