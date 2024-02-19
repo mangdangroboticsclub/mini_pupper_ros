@@ -81,7 +81,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_bringup bringup.launch.py joint_hardware_connected:=false rviz:=true
+ros2 launch mini_pupper_bringup bringup.launch.py joint_hardware_connected:=false rviz:=true robot_name:=mini_pupper_2
 
 # Terminal 2
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -95,7 +95,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py rviz:=true
+ros2 launch mini_pupper_gazebo gazebo.launch.py rviz:=true robot_name:=mini_pupper_2
 
 # Terminal 2
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
