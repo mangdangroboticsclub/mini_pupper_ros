@@ -1110,7 +1110,7 @@
       </ray>
       <plugin name="gazebo_ros_lidar_controller" filename="libgazebo_ros_ray_sensor.so">
         <ros>
-          <argument>~/out:=/scan</argument>
+          <remapping>~/out:=/scan</remapping>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
         <frame_name>lidar_link</frame_name> -->
@@ -1122,7 +1122,7 @@
   <gazebo>
     <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
       <ros>
-          <argument>odom:=odom/ground_truth</argument>
+        <remapping>odom:=odom/ground_truth</remapping>
       </ros>
       <body_name>base_link</body_name>
       <frame_name>world</frame_name>
@@ -1164,6 +1164,5 @@
       </plugin>
     </sensor>
   </gazebo>
-
 
 </robot>
