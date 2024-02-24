@@ -35,18 +35,7 @@ from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
     gazebo_package = get_package_share_directory('mini_pupper_gazebo')
     bringup_package = get_package_share_directory('mini_pupper_bringup')
-    description_package = get_package_share_directory('mini_pupper_description')
 
-    joints_config_path = os.path.join(
-        description_package, 'config', 'champ', 'joints.yaml')
-    links_config_path = os.path.join(
-        description_package, 'config', 'champ', 'links.yaml')
-    gait_config_path = os.path.join(
-        description_package, 'config', 'champ', 'gait.yaml')
-    ros_control_config_path = os.path.join(
-        description_package, 'config', 'ros_control', 'mini_pupper_controller.yaml')
-    description_path = os.path.join(
-        description_package, 'urdf', 'mini_pupper_description.urdf.xacro')
     default_world_path = os.path.join(
         gazebo_package, 'worlds', 'playground.world')
 
@@ -79,11 +68,7 @@ def generate_launch_description():
         default_value="false",
         description="Lite"
     )
-    declare_ros_control_file = DeclareLaunchArgument(
-        name="ros_control_file",
-        default_value=ros_control_config_path,
-        description="ROS control config path",
-    )
+
     declare_world = DeclareLaunchArgument(
         name="world",
         default_value=default_world_path,
@@ -126,13 +111,7 @@ def generate_launch_description():
             "rviz": rviz,
             "joint_hardware_connected": joint_hardware_connected,
             "publish_foot_contacts": "true",
-            "close_loop_odom": "true",
-            "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
-            "joints_map_path": joints_config_path,
-            "links_map_path": links_config_path,
-            "gait_config_path": gait_config_path,
-            "description_path": description_path,
-            "ros_control_file": ros_control_config_path
+            "close_loop_odom": "true"
         }.items(),
     )
     champ_gazebo_launch = IncludeLaunchDescription(
@@ -155,7 +134,6 @@ def generate_launch_description():
         declare_rviz,
         declare_robot_name,
         declare_lite,
-        declare_ros_control_file,
         declare_world,
         declare_gui,
         declare_world_init_x,
