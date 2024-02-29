@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<robot name="mini_pupper" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="mini_pupper_2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find mini_pupper_2_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find mini_pupper_2_description)/urdf/mini_pupper_description.trans" />
@@ -647,7 +647,7 @@
     <parent link="base_link"/>
     <child link="lf1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="0.425" lower="-0.550" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="lf1_lf2" type="revolute">
@@ -655,7 +655,7 @@
     <parent link="lf1"/>
     <child link="lf2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="2.40" lower="0.55" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="lf2_lf3" type="revolute">
@@ -663,7 +663,7 @@
     <parent link="lf2"/>
     <child link="lf3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="-0.22" lower="-2.18" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="base_rf1" type="revolute">
@@ -671,7 +671,7 @@
     <parent link="base_link"/>
     <child link="rf1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="0.550" lower="-0.425" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="rf1_rf2" type="revolute">
@@ -679,7 +679,7 @@
     <parent link="rf1"/>
     <child link="rf2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="2.40" lower="0.55" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="rf2_rf3" type="revolute">
@@ -687,7 +687,7 @@
     <parent link="rf2"/>
     <child link="rf3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="-0.22" lower="-2.18" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="base_rb1" type="revolute">
@@ -695,7 +695,7 @@
     <parent link="base_link"/>
     <child link="rb1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="0.550" lower="-0.425" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="rb1_rb2" type="revolute">
@@ -703,7 +703,7 @@
     <parent link="rb1"/>
     <child link="rb2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="2.40" lower="0.55" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="rb2_rb3" type="revolute">
@@ -711,7 +711,7 @@
     <parent link="rb2"/>
     <child link="rb3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="-0.22" lower="-2.18" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="base_lb1" type="revolute">
@@ -719,7 +719,7 @@
     <parent link="base_link"/>
     <child link="lb1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="0.425" lower="-0.550" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="lb1_lb2" type="revolute">
@@ -727,7 +727,7 @@
     <parent link="lb1"/>
     <child link="lb2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="2.40" lower="0.55" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="lb2_lb3" type="revolute">
@@ -735,7 +735,7 @@
     <parent link="lb2"/>
     <child link="lb3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="3.141593" lower="-3.141593" effort="5" velocity="1.5"/>
+    <limit upper="-0.22" lower="-2.18" effort="10" velocity="1.5"/>
   </joint>
 
   <joint name="base_front" type="fixed">
