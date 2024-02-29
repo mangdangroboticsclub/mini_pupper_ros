@@ -3,6 +3,17 @@
 
   <xacro:include filename="$(find mini_pupper_2_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find mini_pupper_2_description)/urdf/mini_pupper_description.trans" />
+  
+  <!-- CONSTANTS -->
+  <!-- Link group 1 - lf1, rf1, lb1, rb1 -->
+  <xacro:property name="lnkgrp1_weight" value="0.020769" />
+  
+  <!-- Link group 2 - lf2, rf2, lb2, rb2 -->
+  <xacro:property name="lnkgrp2_weight" value="0.001906" />
+  
+  <!-- Link group 3 - lf3, rf3, lb3, rb3 -->
+  <xacro:property name="lnkgrp3_weight" value="0.001144" />
+  
   <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -29,19 +40,19 @@
 
   <link name="lf1">
     <inertial>
-      <origin xyz="0.020109281613098752 0.002331771723067172 0.0064994497731911665" rpy="0 0 0"/>
-      <mass value="0.020769030109708524"/>
-      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="-7.659e-9" iyz="0.072e-9" ixz="-33.608e-9"/>
+      <origin xyz="0.020109 0.002332 0.006500" rpy="0 0 0"/>
+      <mass value="${lnkgrp1_weight}"/>
+      <inertia ixx="2.494061e-6" iyy="3.735906e-6" izz="3.222909e-6" ixy="-7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
     </inertial>
     <visual>
-      <origin xyz="-0.037299 -0.023745 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="-0.037299 -0.023495 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="-0.037299 -0.023745 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="-0.037299 -0.023495 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lf1.stl" scale="1 1 1"/>
       </geometry>
@@ -50,19 +61,19 @@
 
   <link name="lf2">
     <inertial>
-      <origin xyz="-0.0031735030993243693 0.000986055889313886 -0.01798354657247523" rpy="0 0 0"/>
-      <mass value="0.0019057729925096327"/>
+      <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
+      <mass value="${lnkgrp2_weight}"/>
       <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="3.117e-9" iyz="17.662e-9" ixz="-79.269e-9"/>
     </inertial>
     <visual>
-      <origin xyz="-0.052165 -0.041445 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="-0.052165 -0.041195 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lf2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque636363"/>
     </visual>
     <collision>
-      <origin xyz="-0.052165 -0.041445 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="-0.052165 -0.041195 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lf2.stl" scale="1 1 1"/>
       </geometry>
@@ -71,19 +82,19 @@
 
   <link name="lf3">
     <inertial>
-      <origin xyz="0.006210627225594921 0.003455723027058405 -0.015013638057132746" rpy="0 0 0"/>
-      <mass value="0.0011438144457690698"/>
-      <inertia ixx="0.484118e-6" iyy="0.567346e-06" izz="91.82e-9" ixy="-2.157e-9" iyz="4.945e-9" ixz="0.200546e-6"/>
+      <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
+      <mass value="${lnkgrp3_weight}"/>
+      <inertia ixx="0.484471e-6" iyy="0.567615e-6" izz="91.813e-9" ixy="-2.101e-9" iyz="5.008e-9" ixz="0.20057e-6"/>
     </inertial>
     <visual>
-      <origin xyz="-0.043476 -0.044445 0.049183" rpy="0 0 0"/>
+      <origin xyz="-0.043476 -0.044195 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lf3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="-0.043476 -0.044445 0.049183" rpy="0 0 0"/>
+      <origin xyz="-0.043476 -0.044195 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lf3.stl" scale="1 1 1"/>
       </geometry>
@@ -92,19 +103,19 @@
 
   <link name="rf1">
     <inertial>
-      <origin xyz="0.020106742599110078 -0.00233237781568562 0.006497900858401761" rpy="0 0 0"/>
-      <mass value="0.020769549324466178"/>
-      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="7.618e-9" iyz="0.098e-9" ixz="-37.629e-9"/>
+      <origin xyz="0.020109 -0.002332 0.006500" rpy="0 0 0"/>
+      <mass value="${lnkgrp1_weight}"/>
+      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
     </inertial>
     <visual>
-      <origin xyz="-0.037299 0.023255 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="-0.037299 0.023505 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="-0.037299 0.023255 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="-0.037299 0.023505 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rf1.stl" scale="1 1 1"/>
       </geometry>
@@ -113,9 +124,9 @@
 
   <link name="rf2">
     <inertial>
-      <origin xyz="-0.00317137334512671 -0.000986627579459616 -0.01798392230653304" rpy="0 0 0"/>
-      <mass value="0.0019057729924780605"/>
-      <inertia ixx="0.462172e-6" iyy="0.481174e-6" izz="26.874e-9" ixy="-3.114e-9" iyz="-17.663e-9" ixz="-79.218e-9"/>
+      <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
+      <mass value="${lnkgrp2_weight}"/>
+      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="-3.117e-9" iyz="-17.662e-9" ixz="-79.269e-9"/>
     </inertial>
     <visual>
       <origin xyz="-0.052165 0.040955 -5.7e-05" rpy="0 0 0"/>
@@ -134,19 +145,19 @@
 
   <link name="rf3">
     <inertial>
-      <origin xyz="0.006211719758792998 -0.0034574884973188197 -0.01500899883342268" rpy="0 0 0"/>
-      <mass value="0.001143490701517533"/>
-      <inertia ixx="0.484726e-6" iyy="0.567959e-06" izz="91.882e-9" ixy="2.056e-9" iyz="-4.954e-9" ixz="0.200706e-6"/>
+      <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
+      <mass value="${lnkgrp3_weight}"/>
+      <inertia ixx="0.484471e-6" iyy="0.567615e-06" izz="91.813e-9" ixy="2.101e-9" iyz="-5.008e-9" ixz="0.20057e-6"/>
     </inertial>
     <visual>
-      <origin xyz="-0.043482 0.043955 0.049184" rpy="0 0 0"/>
+      <origin xyz="-0.043482 0.044205 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rf3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="-0.043482 0.043955 0.049184" rpy="0 0 0"/>
+      <origin xyz="-0.043482 0.044205 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rf3.stl" scale="1 1 1"/>
       </geometry>
@@ -155,19 +166,19 @@
 
   <link name="rb1">
     <inertial>
-      <origin xyz="-0.020107177922528044 -0.0023288309787250286 0.006502376356642127" rpy="0 0 0"/>
-      <mass value="0.020769549324363486"/>
-      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="-7.639e-9" iyz="-0.378e-9" ixz="-37.624e-9"/>
+      <origin xyz="-0.020109 -0.002332 0.006500" rpy="0 0 0"/>
+      <mass value="${lnkgrp1_weight}"/>
+      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="-7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.042701 0.023255 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="0.042701 0.023505 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="0.042701 0.023255 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="0.042701 0.023505 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rb1.stl" scale="1 1 1"/>
       </geometry>
@@ -176,19 +187,19 @@
 
   <link name="rb2">
     <inertial>
-      <origin xyz="-0.0031709881638501275 -0.0009964344348111775 -0.017982726579309202" rpy="0 0 0"/>
-      <mass value="0.0019057729926311429"/>
-      <inertia ixx="0.462172e-6" iyy="0.481155e-6" izz="26.893e-9" ixy="-3.158e-9" iyz="-17.911e-9" ixz="-79.911e-9"/>
+      <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
+      <mass value="${lnkgrp2_weight}"/>
+      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="-3.117e-9" iyz="-17.662e-9" ixz="-79.269e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.068367 0.040955 -6.6e-05" rpy="0 0 0"/>
+      <origin xyz="0.068367 0.040955 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque636363"/>
     </visual>
     <collision>
-      <origin xyz="0.068367 0.040955 -6.6e-05" rpy="0 0 0"/>
+      <origin xyz="0.068367 0.040955 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rb2.stl" scale="1 1 1"/>
       </geometry>
@@ -197,19 +208,19 @@
 
   <link name="rb3">
     <inertial>
-      <origin xyz="0.006208573190273861 -0.0034623583329196975 -0.015001217060300935" rpy="0 0 0"/>
-      <mass value="0.0011440535724654094"/>
-      <inertia ixx="0.484539e-6" iyy="0.567687e-06" izz="91.857e-9" ixy="2.182e-9" iyz="-5.285e-9" ixz="0.200597e-6"/>
+      <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
+      <mass value="${lnkgrp3_weight}"/>
+      <inertia ixx="0.484471e-6" iyy="0.567615e-06" izz="91.813e-9" ixy="2.101e-9" iyz="-5.008e-9" ixz="0.20057e-6"/>
     </inertial>
     <visual>
-      <origin xyz="0.077049 0.043982 0.049173" rpy="0 0 0"/>
+      <origin xyz="0.077049 0.044205 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rb3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="0.077049 0.043982 0.049173" rpy="0 0 0"/>
+      <origin xyz="0.077049 0.044205 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/rb3.stl" scale="1 1 1"/>
       </geometry>
@@ -218,19 +229,19 @@
 
   <link name="lb1">
     <inertial>
-      <origin xyz="-0.020109716415830967 0.0023317718989125207 0.006499556305653081" rpy="0 0 0"/>
-      <mass value="0.020769030189864354"/>
-      <inertia ixx="2.494e-06" iyy="3.736e-06" izz="3.223e-06" ixy="7.659e-9" iyz="-0.072e-9" ixz="-33.608e-9"/>
+      <origin xyz="-0.020109 0.002332 0.006500" rpy="0 0 0"/>
+      <mass value="${lnkgrp1_weight}"/>
+      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.042701 -0.023745 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="0.042701 -0.023495 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
-      <origin xyz="0.042701 -0.023745 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="0.042701 -0.023495 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lb1.stl" scale="1 1 1"/>
       </geometry>
@@ -239,19 +250,19 @@
 
   <link name="lb2">
     <inertial>
-      <origin xyz="-0.0031709879518865836 0.0009860564153100285 -0.01798392227051571" rpy="0 0 0"/>
-      <mass value="0.0019057729925095609"/>
-      <inertia ixx="0.462172e-6" iyy="0.481174e-6" izz="26.874e-9" ixy="3.114e-9" iyz="17.663e-9" ixz="-79.218e-9"/>
+      <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
+      <mass value="${lnkgrp2_weight}"/>
+      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="3.117e-9" iyz="17.662e-9" ixz="-79.269e-9"/>
     </inertial>
     <visual>
-      <origin xyz="0.068367 -0.041445 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="0.068367 -0.041195 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque636363"/>
     </visual>
     <collision>
-      <origin xyz="0.068367 -0.041445 -5.7e-05" rpy="0 0 0"/>
+      <origin xyz="0.068367 -0.041195 -5.7e-05" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lb2.stl" scale="1 1 1"/>
       </geometry>
@@ -260,19 +271,19 @@
 
   <link name="lb3">
     <inertial>
-      <origin xyz="0.006208905683926957 0.0034523757482988054 -0.015005654191541921" rpy="0 0 0"/>
-      <mass value="0.001144346207072784"/>
-      <inertia ixx="0.484492e-6" iyy="0.567176e-06" izz="91.41e-9" ixy="-2.023e-9" iyz="4.977e-9" ixz="0.200063e-6"/>
+      <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
+      <mass value="${lnkgrp3_weight}"/>
+      <inertia ixx="0.484471e-6" iyy="0.567615e-06" izz="91.813e-9" ixy="-2.101e-9" iyz="5.008e-9" ixz="0.20057e-6"/>
     </inertial>
     <visual>
-      <origin xyz="0.077049 -0.044445 0.049184" rpy="0 0 0"/>
+      <origin xyz="0.077049 -0.044195 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lb3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
-      <origin xyz="0.077049 -0.044445 0.049184" rpy="0 0 0"/>
+      <origin xyz="0.077049 -0.044195 0.049184" rpy="0 0 0"/>
       <geometry>
         <mesh filename="file://$(find mini_pupper_2_description)/meshes/lb3.stl" scale="1 1 1"/>
       </geometry>
