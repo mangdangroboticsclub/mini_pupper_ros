@@ -50,6 +50,8 @@ def generate_launch_description():
     world = LaunchConfiguration("world"),
     world_init_x = LaunchConfiguration("world_init_x"),
     world_init_y = LaunchConfiguration("world_init_y"),
+    world_init_z = LaunchConfiguration("world_init_z"),
+
     world_init_heading = LaunchConfiguration("world_init_heading"),
     gui = LaunchConfiguration("gui"),
 
@@ -86,6 +88,10 @@ def generate_launch_description():
     declare_world_init_y = DeclareLaunchArgument(
         name="world_init_y",
         default_value="0.0"
+    )
+    declare_world_init_z = DeclareLaunchArgument(
+        name="world_init_z",
+        default_value="0.1"
     )
     declare_world_init_heading = DeclareLaunchArgument(
         name="world_init_heading",
@@ -124,6 +130,7 @@ def generate_launch_description():
             "lite": lite,
             "world_init_x": world_init_x,
             "world_init_y": world_init_y,
+            "world_init_z": world_init_z,
             "world_init_heading": world_init_heading,
             "gui": gui,
             "close_loop_odom": "true",
@@ -138,6 +145,7 @@ def generate_launch_description():
         declare_gui,
         declare_world_init_x,
         declare_world_init_y,
+        declare_world_init_z,
         declare_world_init_heading,
         declare_sim,
         declare_joint_hardware_connected,
