@@ -933,8 +933,20 @@
   <gazebo reference="base_link">
     <material>Gazebo/FlatBlack</material>
   </gazebo>
+  <gazebo reference="Board_PCB">
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="Body_front">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
   <gazebo reference="Shell_Side">
     <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="Board_connectors_1">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="Board_connectors_2">
+    <material>Gazebo/White</material>
   </gazebo>
   
   <gazebo reference="lf1">
