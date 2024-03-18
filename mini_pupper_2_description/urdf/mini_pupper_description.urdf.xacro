@@ -386,7 +386,39 @@
       </geometry>
     </collision>
   </link>
-
+  <link
+    name="lidar_link">
+    <inertial>
+      <origin
+        xyz="1.56706411611127E-05 -5.16565672073303E-13 -0.0191835739440227"
+        rpy="0 0 -1.57" />
+      <mass value="0.0001" />
+      <inertia
+        ixx="8.74731426973985E-06"
+        ixy="-6.66781590704156E-08"
+        ixz="1.89196685410159E-11"
+        iyy="8.70097486591694E-06"
+        iyz="-1.13397577799603E-17"
+        izz="9.98821295317784E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 -1.57"/>
+      <geometry>
+        <mesh
+          filename="file://$(find mini_pupper_2_description)/meshes/lidar.stl" />
+      </geometry>
+      <material name="">
+        <color rgba="0.2 0.2 0.2 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 -1.57" />
+      <geometry>
+        <mesh
+          filename="file://$(find mini_pupper_2_description)/meshes/lidar.stl" />
+      </geometry>
+    </collision>
+  </link>
   <link name="rffoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
@@ -787,6 +819,12 @@
     <child link="Board_connectors_2"/>
   </joint>
 
+  <joint name="pcb_lidar" type="fixed">
+    <origin xyz="0.009 0.024 0.042" rpy="0 0 1.57" />
+    <parent link="Board_PCB" />
+    <child link="lidar_link" />
+  </joint>
+
   <joint name="rf3_foot" type="fixed">
     <origin xyz="0 0 -0.056" rpy="0 0 0"/>
     <parent link="rf3"/>
@@ -1118,7 +1156,7 @@
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
-  <!-- <gazebo reference="lidar_link">
+  <gazebo reference="lidar_link">
     <material>Gazebo/FlatBlack</material>
     <sensor type="ray" name="lidar">
       <always_on>true</always_on>
@@ -1150,11 +1188,10 @@
           <remapping>~/out:=/scan</remapping>
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>lidar_link</frame_name> -->
-        <!--min_intensity>100.0</min_intensity-->
-      <!-- </plugin>
+        <frame_name>lidar_link</frame_name> 
+      </plugin>
     </sensor>
-  </gazebo> -->
+  </gazebo> 
 
   <gazebo>
     <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
