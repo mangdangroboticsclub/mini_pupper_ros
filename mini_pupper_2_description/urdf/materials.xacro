@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<robot name="mini_pupper" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<material name="silver_default">
+  <color rgba="0.700 0.700 0.700 1.000"/>
+</material>
+<material name="opaque666666">
+  <color rgba="0.25882352941176473 0.25882352941176473 0.25882352941176473 1.0"/>
+</material>
+<material name="opaque252525">
+  <color rgba="0.09803921568627451 0.09803921568627451 0.09803921568627451 1.0"/>
+</material>
+<material name="opaque636363">
+  <color rgba="0.25098039215686274 0.25098039215686274 0.25098039215686274 1.0"/>
+</material>
+<material name="opaque2552210">
+  <color rgba="1.0 0.8666666666666667 0.0 1.0"/>
+</material>
+<material name="opaque646464">
+  <color rgba="0.25098039215686274 0.25098039215686274 0.25098039215686274 1.0"/>
+</material>
+<material name="opaque25524395">
+  <color rgba="1.0 0.9529411764705882 0.37254901960784315 1.0"/>
+</material>
+<material name="opaque2491590">
+  <color rgba="0.9764705882352941 0.6235294117647059 0.0 1.0"/>
+</material>
+<material name="opaque255255255">
+  <color rgba="1.0 1.0 1.0 1.0"/>
+</material>
+
+</robot>
