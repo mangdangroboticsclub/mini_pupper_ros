@@ -70,6 +70,7 @@ git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-de
 cd mini_pupper_ros
 ./install.sh
 ```
+if this fails add --depth 1 to the command, this will not clone the commit history and make the clone easier on the network card
 
 ## 2. Quick Start
 
