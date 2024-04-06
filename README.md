@@ -24,7 +24,6 @@ PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupp
 __Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
 
 Ubuntu 22.04 + ROS 2 Humble is required.  
-Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the below [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
 
 ```sh
 cd ~
@@ -52,6 +51,13 @@ sudo apt install ros-humble-teleop-twist-keyboard
 colcon build --symlink-install
 ```
 
+Reference(Just for reference, don't need to do it again.): 
+
+[installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or
+
+[unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
+
+
 ### 1.2 Mini Pupper Setup
 
 Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.  
@@ -59,10 +65,7 @@ Ubuntu 22.04 is required.
 
 Before installation, you need to install the BSP(board support package) repo for your [Mini Pupper 2](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) or [Mini Pupper](https://github.com/mangdangroboticsclub/mini_pupper_bsp.git).
 
-After installing the driver software, install ROS 2. ROS 2 Humble is required.  
-Please follow the [installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or use the [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu).
-
-After that, please follow the below steps to install this repo.
+After installing the driver software, install ROS 2 Humble is required.  
 
 ```sh
 cd ~
@@ -70,6 +73,13 @@ git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-de
 cd mini_pupper_ros
 ./install.sh
 ```
+
+Reference(Just for reference, don't need to do it again.): 
+
+[installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or
+
+[unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
+
 
 ## 2. Quick Start
 
@@ -268,7 +278,7 @@ Please refer to the README.md inside package "mini_pupper_dance".
 ## License
 
 ```
-Copyright 2022-2023 MangDang
+Copyright 2022-2024 MangDang
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
