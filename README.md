@@ -120,7 +120,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py
+ros2 launch mini_pupper_gazebo gazebo.launch.py robot_name:=mini_pupper_2
 ```
 
 - Mapping on PC
@@ -161,7 +161,7 @@ cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigati
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py
+ros2 launch mini_pupper_gazebo gazebo.launch.py robot_name:=mini_pupper_2
 ```
 
 - Localization & Navigation
@@ -257,18 +257,11 @@ cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navi
 cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
 ```
 
-- Localization
+- Navigation
 ```sh
 # Terminal 3 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation localization.launch.py
-```
-
-- Navigation
-```sh
-# Terminal 4 (on PC)
-. ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation navigation.launch.py
+ros2 launch mini_pupper_navigation bringup.launch.py
 ```
 
 ### 2.2.1 Test dance
