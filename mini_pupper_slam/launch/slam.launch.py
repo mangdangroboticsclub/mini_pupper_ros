@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (c) 2023 MangDang
+# Copyright (c) 2022-2023 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,19 +17,17 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, LogInfo
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
-    this_package = FindPackageShare('mini_pupper_navigation')
+    slam_package = FindPackageShare('mini_pupper_slam')
 
-    default_map_path = PathJoinSubstitution([this_package, 'maps', 'map.yaml'])
-    nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'mini_pupper.yaml'])
-    nav2_launch_path = PathJoinSubstitution([FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py'])
-    rviz_config_file_path = PathJoinSubstitution([this_package, 'rviz', 'navigation.rviz'])
+    cartographer_config_dir = PathJoinSubstitution([slam_package, 'config'])
+    cartographer_config_basename = TextSubstitution(text='slam.lua')
+    rviz_config_file_path = PathJoinSubstitution([slam_package, 'rviz', 'slam.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(
@@ -37,24 +35,31 @@ def generate_launch_description():
         default_value='False',
         description='Use simulation (Gazebo) clock if true'
     )
-    
-    map = LaunchConfiguration('map')
-    map_launch_arg = DeclareLaunchArgument(
-        'map',
-        default_value=default_map_path,
-        description='Full path to map file to load'
-    )
 
-    return LaunchDescription([
+    return LaunchDescription([  
         use_sim_time_launch_arg,
-        map_launch_arg,
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(nav2_launch_path),
-            launch_arguments={
-                'map': map,
-                'params_file': nav2_param_file_path,
-                'use_sim_time': use_sim_time
-            }.items()
+        Node(
+            package='cartographer_ros',
+            executable='cartographer_node',
+            name='cartographer_node',
+            output='screen',
+            parameters=[
+                {'use_sim_time': use_sim_time}
+            ],
+            arguments=[
+                '-configuration_directory', cartographer_config_dir,
+                '-configuration_basename', cartographer_config_basename
+            ],
+            remappings=[('/imu/data', 'imu')]
+        ),
+        Node(
+            package='cartographer_ros',
+            executable='cartographer_occupancy_grid_node',
+            parameters=[
+                {'use_sim_time': use_sim_time},
+                {'-resolution': '0.05'},
+                {'-publish_period_sec': '1.0'}
+            ]
         ),
         Node(
             package='rviz2',
@@ -67,7 +72,5 @@ def generate_launch_description():
                 {'use_sim_time': use_sim_time}
             ],
             output='screen'
-        ), 
-       # Uncomment the following to Log map path for debugging
-       # LogInfo(msg=map),
+        ),
     ])

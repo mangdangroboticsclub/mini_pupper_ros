@@ -4,7 +4,7 @@ project(mini_pupper_navigation)
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY launch config maps rviz
+  DIRECTORY launch maps param rviz
   DESTINATION share/${PROJECT_NAME}
 )
 
