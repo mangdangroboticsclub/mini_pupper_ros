@@ -42,7 +42,7 @@ amcl:
     initial_pose: 
       x: 0.0
       y: 0.0
-      yaw: 0.6
+      yaw: 0.0
 
 
 amcl_map_client:
