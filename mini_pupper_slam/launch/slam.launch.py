@@ -22,6 +22,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Text
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
+
 def generate_launch_description():
     slam_package = FindPackageShare('mini_pupper_slam')
 
@@ -36,7 +37,7 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
     )
 
-    return LaunchDescription([  
+    return LaunchDescription([
         use_sim_time_launch_arg,
         Node(
             package='cartographer_ros',

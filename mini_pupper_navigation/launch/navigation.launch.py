@@ -17,18 +17,22 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, LogInfo
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+# from launch.actions import LogInfo
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
 
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_navigation')
 
     default_map_path = PathJoinSubstitution([this_package, 'maps', 'map.yaml'])
     nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'mini_pupper.yaml'])
-    nav2_launch_path = PathJoinSubstitution([FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py'])
+    nav2_launch_path = PathJoinSubstitution(
+        [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
+    )
     rviz_config_file_path = PathJoinSubstitution([this_package, 'rviz', 'navigation.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -37,7 +41,7 @@ def generate_launch_description():
         default_value='False',
         description='Use simulation (Gazebo) clock if true'
     )
-    
+
     map = LaunchConfiguration('map')
     map_launch_arg = DeclareLaunchArgument(
         'map',
@@ -67,7 +71,7 @@ def generate_launch_description():
                 {'use_sim_time': use_sim_time}
             ],
             output='screen'
-        ), 
-       # Uncomment the following to Log map path for debugging
-       # LogInfo(msg=map),
+        ),
+        # Uncomment the following to Log map path for debugging
+        # LogInfo(msg=map),
     ])
