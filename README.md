@@ -153,7 +153,7 @@ The map will be saved under home directory. Two files will be generated, namely 
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_slam slam.launch.py use_sim_time:=true
+ros2 launch mini_pupper_gazebo gazebo.launch.py robot_name:=mini_pupper_2
 ```
 
 - Navigation   
