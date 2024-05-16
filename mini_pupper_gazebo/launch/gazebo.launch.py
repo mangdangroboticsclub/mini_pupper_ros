@@ -91,7 +91,7 @@ def generate_launch_description():
     )
     declare_world_init_z = DeclareLaunchArgument(
         name="world_init_z",
-        default_value="0.06"
+        default_value="0.066"
     )
     declare_world_init_heading = DeclareLaunchArgument(
         name="world_init_heading",
