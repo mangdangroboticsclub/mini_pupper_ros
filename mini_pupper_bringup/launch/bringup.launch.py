@@ -72,6 +72,7 @@ def launch_bring_up(context, *args, **kwargs):
             "gazebo": sim,
             "rviz": "false",  # set always false to launch RViz2 with costom .rviz file
             "joint_hardware_connected": joint_hardware_connected,
+            "orientation_from_imu": "true",
             "publish_foot_contacts": "true",
             "close_loop_odom": "true",
             "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
@@ -137,7 +138,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(servo_interface_launch_path),
         condition=IfCondition(joint_hardware_connected),
     )
-    
+
     imu_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(imu_launch_path),
         condition=IfCondition(joint_hardware_connected),
