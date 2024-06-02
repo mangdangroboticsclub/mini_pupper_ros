@@ -72,6 +72,7 @@ def launch_bring_up(context, *args, **kwargs):
             "gazebo": sim,
             "rviz": "false",  # set always false to launch RViz2 with costom .rviz file
             "joint_hardware_connected": joint_hardware_connected,
+            "orientation_from_imu": "true",
             "publish_foot_contacts": "true",
             "close_loop_odom": "true",
             "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
@@ -99,6 +100,10 @@ def generate_launch_description():
     servo_interface_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_driver'), 'launch', 'servo_interface.launch.py']
     )
+    imu_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_driver'), 'launch', 'imu_interface.launch.py']
+    )
+
     lidar_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']
     )
@@ -134,6 +139,11 @@ def generate_launch_description():
         condition=IfCondition(joint_hardware_connected),
     )
 
+    imu_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(imu_launch_path),
+        condition=IfCondition(joint_hardware_connected),
+    )
+
     lidar_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(lidar_launch_path),
         condition=IfCondition(joint_hardware_connected),
@@ -146,5 +156,6 @@ def generate_launch_description():
         declare_hardware_connected,
         OpaqueFunction(function=launch_bring_up),
         servo_interface_launch,
+        imu_launch,
         lidar_launch,
     ])

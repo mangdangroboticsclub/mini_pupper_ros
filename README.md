@@ -127,35 +127,27 @@ ros2 launch mini_pupper_gazebo gazebo.launch.py robot_name:=mini_pupper_2
 ```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation slam.launch.py use_sim_time:=true
+ros2 launch mini_pupper_slam slam.launch.py use_sim_time:=true
 ```
 
 - Keyboard control  
 Use the keyboard to remotely control the Mini Pupper to complete the mapping.
 ```sh
 # Terminal 3
+. ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
 - Save the map  
-The map will be saved at $HOME.
 ```sh
 # Terminal 4 (on PC)
-ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
-ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/cartographer_map.pbstream'}"
-ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
+. ~/ros2_ws/install/setup.bash
+ros2 run nav2_map_server map_saver_cli -f ~/map
 ```
+The map will be saved under home directory. Two files will be generated, namely map.pgm and map.yaml.
+
 
 #### 2.1.4 Test Navigation in Gazebo
-
-- Replace the map files  
-Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
-```sh
-# Terminal 2 (on PC)
-cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
-cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
-cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
-```
 
 - Bring up Gazebo
 ```sh
@@ -164,28 +156,18 @@ cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigati
 ros2 launch mini_pupper_gazebo gazebo.launch.py robot_name:=mini_pupper_2
 ```
 
-- Localization & Navigation
+- Navigation   
 ```sh
-# Terminal 3
-. ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation bringup.launch.py use_sim_time:=true
-```
-
-- Localization only  
-(This step is not necessary if you run `bringup.launch.py`.)
-```sh
-# Terminal 4
-. ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation localization.launch.py use_sim_time:=true
-```
-
-- Navigation only  
-(This step is not necessary if you run `bringup.launch.py`.)
-```sh
-# Terminal 4
+# Terminal 2
 . ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_navigation navigation.launch.py use_sim_time:=true
 ```
+Alternatively, if you wish to use the map you generated in previous step, you can specify the map path with the following command.
+```sh
+ros2 launch mini_pupper_navigation navigation.launch.py use_sim_time:=true map:=$HOME/map.yaml
+```
+After executing this command, the rviz window will be displayed. You can utilize the "2D Post Estimate" feature to establish an appropriate initial pose for the robot. Subsequently, you can set a goal for the robot by clicking on "Nav2 Goal", hence Nav2 will plan the path and guide the robot towards reaching the goal.
+
 
 ## 2.2 Mini Pupper
 
@@ -215,28 +197,29 @@ Note: This step requires both PC and Mini Pupper
 ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
-- Mapping on PC
+- SLAM on PC
 ```sh
 # Terminal 2 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation slam.launch.py
+ros2 launch mini_pupper_slam slam.launch.py
 ```
 
 - Keyboard control  
 Use the keyboard to remotely control the Mini Pupper to complete the mapping.
 ```sh
 # Terminal 3 (on PC)
+. ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
 - Save the map  
-The map will be saved at $HOME.
+Run the following command from a new terminal.
 ```sh
 # Terminal 4 (on PC)
-ros2 service call /finish_trajectory cartographer_ros_msgs/srv/FinishTrajectory "{trajectory_id: 0}"
-ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: '${HOME}/cartographer_map.pbstream'}"
-ros2 run nav2_map_server map_saver_cli -f ${HOME}/cartographer_map
+. ~/ros2_ws/install/setup.bash
+ros2 run nav2_map_server map_saver_cli -f ~/map
 ```
+The map will be saved under home directory. Two files will be generated, namely map.pgm and map.yaml.
 
 #### 2.2.3 Test Navigation
 
@@ -248,20 +231,11 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 
 ```
 
-- Replace the map files  
-Remember to replace the cartographer_map.pbstream in the maps folder with your new cartographer_map.pbstream first.
+- Navigation with previously saved map from step 2.2.2
 ```sh
-# Terminal 2 (on PC)
-cp -f ~/cartographer_map.pgm ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pgm
-cp -f ~/cartographer_map.pbstream ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.pbstream
-cp -f ~/cartographer_map.yaml ~/ros2_ws/src/mini_pupper_ros/mini_pupper_navigation/maps/cartographer_map.yaml
-```
-
-- Navigation
-```sh
-# Terminal 3 (on PC)
+# Terminal 4 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation bringup.launch.py
+ros2 launch mini_pupper_navigation navigation.launch.py map:=$HOME/map.yaml
 ```
 
 ### 2.2.1 Test dance

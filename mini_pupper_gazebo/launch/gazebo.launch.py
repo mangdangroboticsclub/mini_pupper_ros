@@ -37,7 +37,7 @@ def generate_launch_description():
     bringup_package = get_package_share_directory('mini_pupper_bringup')
 
     default_world_path = os.path.join(
-        gazebo_package, 'worlds', 'playground.world')
+        gazebo_package, 'worlds', 'mini_pupper_home.world')
 
     bringup_launch_path = os.path.join(
         bringup_package, 'launch', 'bringup.launch.py')
@@ -91,11 +91,11 @@ def generate_launch_description():
     )
     declare_world_init_z = DeclareLaunchArgument(
         name="world_init_z",
-        default_value="0.1"
+        default_value="0.066"
     )
     declare_world_init_heading = DeclareLaunchArgument(
         name="world_init_heading",
-        default_value="0.6"
+        default_value="0.0"
     )
     declare_sim = DeclareLaunchArgument(
         name='sim',

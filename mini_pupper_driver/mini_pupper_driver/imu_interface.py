@@ -45,7 +45,7 @@ class IMUNode(Node):
         self.calibration_count = 200
 
         self.get_logger().info("Creating IMU publisher")
-        self.pub = self.create_publisher(Imu, 'imu/data_raw', 10)
+        self.pub = self.create_publisher(Imu, 'imu/data', 10)
         self.timer = self.create_timer(1.0 / self.freq, self.timer_callback)
 
     def read_imu(self):
