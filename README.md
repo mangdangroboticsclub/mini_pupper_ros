@@ -126,6 +126,12 @@ export ROS_DOMAIN_ID=42
 use the following command in both terminals to confirm that the PC and the mini pupper are connected:
 
 ```sh
+# Terminal 1 (ssh to real mini pupper)
+ros2 node list
+```
+
+```sh
+# Terminal 2 (on PC)
 ros2 node list
 ```
 
