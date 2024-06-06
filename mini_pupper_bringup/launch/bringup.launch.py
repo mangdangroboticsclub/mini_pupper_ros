@@ -148,24 +148,24 @@ def generate_launch_description():
         condition=IfCondition(joint_hardware_connected),
     )
 
-if MINI_PUPPER_VERSION != "v1":
-    return LaunchDescription([
-        declare_robot_name,
-        declare_sim,
-        declare_rviz,
-        declare_hardware_connected,
-        OpaqueFunction(function=launch_bring_up),
-        servo_interface_launch,
-        imu_launch,
-        lidar_launch,
-    ])
-else:
-    return LaunchDescription([
-        declare_robot_name,
-        declare_sim,
-        declare_rviz,
-        declare_hardware_connected,
-        OpaqueFunction(function=launch_bring_up),
-        servo_interface_launch,
-        lidar_launch,
-    ])
+    if MINI_PUPPER_VERSION != "v1":
+        return LaunchDescription([
+            declare_robot_name,
+            declare_sim,
+            declare_rviz,
+            declare_hardware_connected,
+            OpaqueFunction(function=launch_bring_up),
+            servo_interface_launch,
+            imu_launch,
+            lidar_launch,
+        ])
+    else:
+        return LaunchDescription([
+            declare_robot_name,
+            declare_sim,
+            declare_rviz,
+            declare_hardware_connected,
+            OpaqueFunction(function=launch_bring_up),
+            servo_interface_launch,
+            lidar_launch,
+        ])
