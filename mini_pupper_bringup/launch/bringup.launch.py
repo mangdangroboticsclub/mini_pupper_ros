@@ -59,7 +59,7 @@ def launch_bring_up(context, *args, **kwargs):
     )
 
     bringup_launch_path = PathJoinSubstitution(
-        [FindPackageShare('champ_bringup'), 'launch', MINI_PUPPER_VERSION + '_bringup.launch.py']
+        ['champ_bringup', 'launch', MINI_PUPPER_VERSION + '_bringup.launch.py']
     )
 
     rviz_config_path = PathJoinSubstitution(
