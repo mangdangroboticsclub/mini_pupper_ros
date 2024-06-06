@@ -138,21 +138,17 @@ def generate_launch_description():
         condition=IfCondition(joint_hardware_connected),
     )
 
-    imu_launch = None
-    if MINI_PUPPER_VERSION == "v2":
-        imu_launch_path = PathJoinSubstitution(
-            [FindPackageShare('mini_pupper_driver'), 'launch', 'imu_interface.launch.py']
-        )
-        imu_launch = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(imu_launch_path),
-            condition=IfCondition(joint_hardware_connected),
-        )
+    imu_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(imu_launch_path),
+        condition=IfCondition(joint_hardware_connected),
+    )
 
     lidar_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(lidar_launch_path),
         condition=IfCondition(joint_hardware_connected),
     )
 
+if MINI_PUPPER_VERSION != "v1":
     return LaunchDescription([
         declare_robot_name,
         declare_sim,
@@ -161,5 +157,15 @@ def generate_launch_description():
         OpaqueFunction(function=launch_bring_up),
         servo_interface_launch,
         imu_launch,
+        lidar_launch,
+    ])
+else:
+    return LaunchDescription([
+        declare_robot_name,
+        declare_sim,
+        declare_rviz,
+        declare_hardware_connected,
+        OpaqueFunction(function=launch_bring_up),
+        servo_interface_launch,
         lidar_launch,
     ])
