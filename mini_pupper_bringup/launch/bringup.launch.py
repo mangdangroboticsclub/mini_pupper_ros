@@ -34,6 +34,7 @@ from launch.conditions import IfCondition
 
 
 def launch_bring_up(context, *args, **kwargs):
+    MINI_PUPPER_VERSION = os.environ['MINI_PUPPER_VERSION']
     robot_name = LaunchConfiguration("robot_name")
     sim = LaunchConfiguration("sim")
     rviz = LaunchConfiguration("rviz")
@@ -57,7 +58,7 @@ def launch_bring_up(context, *args, **kwargs):
     )
 
     bringup_launch_path = PathJoinSubstitution(
-        [FindPackageShare('champ_bringup'), 'launch', 'bringup.launch.py']
+        [FindPackageShare('champ_bringup'), 'launch', MINI_PUPPER_VERSION + 'bringup.launch.py']
     )
 
     rviz_config_path = PathJoinSubstitution(
