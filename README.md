@@ -87,23 +87,35 @@ The mini pupper is assumed to be automatically connected to the PC under same in
 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
-export
+export | grep "ROS_DOMAIN_ID"
 ```
 
 ```sh
 # Terminal 2 (on PC)
-export
+export | grep "ROS_DOMAIN_ID"
 ```
 
-search for a line of output as the following in both terminals:
+Compare the output and check if they are the same in both terminals:
+
+Example output:
 
 ```
+# Terminal 1 (ssh to real mini pupper)
 declare -x ROS_DOMAIN_ID="42"
 ```
 
-check if the ROS domain ID (in this case it is 42) in both terminal are the same, if the ID are not different or ROS_DOMAIN_ID is not found in the exported list of both terminal, you will have to set the ROS_DOMAIN_ID to the same number using the following command (it does not matter what the number is, as long as they are the same number the PC and the robot can connect): using this command in the PC terminal set the id for pc and same logic in the pupper terminal
+```
+# Terminal 2 (on PC)
+declare -x ROS_DOMAIN_ID="30"
+```
+
+If the ID are not different in both terminal or there is no output of the above commnand, you will have to set the ROS_DOMAIN_ID to the same number using the following command (which number is used does not matter):
+
+To tackle the example output, we can use the following command to set the same id on both terminal:
+__This command can be use on both PC and Mini Pupper__
 
 ```sh
+# Terminal 2 (on PC)
 export ROS_DOMAIN_ID=42
 ```
 
@@ -113,7 +125,9 @@ use the following command in both terminals to confirm that the PC and the mini 
 ros2 node list
 ```
 
-if the output in both terminals are the same, your PC and the mini pupper is connected, and we can proceed to the following steps.
+Compare the output in both terminals:
+
+If the output in both terminals are the same, your PC and the mini pupper is connected. The following steps can be proceeded.
 
 ## 2. Quick Start
 
