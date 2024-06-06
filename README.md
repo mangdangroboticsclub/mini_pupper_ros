@@ -99,7 +99,7 @@ Compare the output and check if they are the same in both terminals:
 
 Example output:
 
-https://github.com/mangdangroboticsclub/mini_pupper_ros/blob/ab89763e788d413c3aafd302cad849a417732fe6/imgs/check_ROS_DOMAIN_ID.png
+!(https://github.com/mangdangroboticsclub/mini_pupper_ros/blob/ab89763e788d413c3aafd302cad849a417732fe6/imgs/check_ROS_DOMAIN_ID.png)
 
 If the __ID are different in both terminal or there is no output__ of the above commnand, you will have to set the ROS_DOMAIN_ID to the same number using the following command (which number is used does not matter):
 
@@ -131,7 +131,7 @@ ros2 node list
 
 Compare the output in both terminals:
 
-https://github.com/mangdangroboticsclub/mini_pupper_ros/blob/ab89763e788d413c3aafd302cad849a417732fe6/imgs/nodeList.png
+!(https://github.com/mangdangroboticsclub/mini_pupper_ros/blob/ab89763e788d413c3aafd302cad849a417732fe6/imgs/nodeList.png)
 
 If the output in __both terminals shows the same list of node__ which is similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
 __Note that the node list depends on the nodes in progress, which may not be exactly the same from the image.__
