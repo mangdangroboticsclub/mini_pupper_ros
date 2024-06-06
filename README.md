@@ -99,12 +99,12 @@ Compare the output and check if they are the same in both terminals:
 
 Example output:
 
-```
+```sh
 # Terminal 1 (ssh to real mini pupper)
 declare -x ROS_DOMAIN_ID="42"
 ```
 
-```
+```sh
 # Terminal 2 (on PC)
 declare -x ROS_DOMAIN_ID="30"
 ```
@@ -126,8 +126,9 @@ ros2 node list
 ```
 
 Compare the output in both terminals:
+![image](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/15a17e3b-c347-4060-bc51-e04b969498d6)
 
-If the output in both terminals are the same, your PC and the mini pupper is connected. The following steps can be proceeded.
+If the output in both terminals shows the same output similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
 
 ## 2. Quick Start
 
