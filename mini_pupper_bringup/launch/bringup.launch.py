@@ -115,7 +115,23 @@ def generate_launch_description():
             description='Set robot name for multi robot'
         )
 
-    # ... (other launch argument declarations)
+    declare_sim = DeclareLaunchArgument(
+            name='sim',
+            default_value='false',
+            description='Enable use_sime_time to true'
+        )
+
+    declare_rviz = DeclareLaunchArgument(
+            name='rviz',
+            default_value='false',
+            description='Run rviz'
+        )
+
+    declare_hardware_connected = DeclareLaunchArgument(
+            name='joint_hardware_connected',
+            default_value='true',
+            description='Set to true if connected to a physical robot'
+        )
 
     servo_interface_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(servo_interface_launch_path),
