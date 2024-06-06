@@ -142,7 +142,8 @@ def generate_launch_description():
         condition=IfCondition(joint_hardware_connected),
     )
 
-    if (MINI_PUPPER_VERSION == "v2") :
+    imu_launch = None
+    if MINI_PUPPER_VERSION == "v2":
         imu_launch = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(imu_launch_path),
             condition=IfCondition(joint_hardware_connected),
@@ -160,6 +161,6 @@ def generate_launch_description():
         declare_hardware_connected,
         OpaqueFunction(function=launch_bring_up),
         servo_interface_launch,
-        imu_launch,
+        imu_launch if MINI_PUPPER_VERSION == "v2" else None,
         lidar_launch,
     ])
