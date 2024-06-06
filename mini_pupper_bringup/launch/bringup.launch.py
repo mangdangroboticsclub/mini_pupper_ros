@@ -103,6 +103,9 @@ def generate_launch_description():
     servo_interface_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_driver'), 'launch', 'servo_interface.launch.py']
     )
+    imu_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_driver'), 'launch', 'imu_interface.launch.py']
+    )
     lidar_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']
     )
