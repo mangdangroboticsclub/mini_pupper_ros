@@ -99,19 +99,13 @@ Compare the output and check if they are the same in both terminals:
 
 Example output:
 
-Terminal 1 (ssh to real mini pupper)
-
-![Screenshot 2024-06-06 150656](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/0376fcce-97d3-4a0d-bbe7-165ba3abd43e)
-
-Terminal 2 (on PC)
-
-![Screenshot 2024-06-06 150715](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/993d53ca-e913-4e96-8c20-25c2c20ebd9a)
+https://github.com/mangdangroboticsclub/mini_pupper_ros/blob/ab89763e788d413c3aafd302cad849a417732fe6/imgs/check_ROS_DOMAIN_ID.png
 
 If the __ID are different in both terminal or there is no output__ of the above commnand, you will have to set the ROS_DOMAIN_ID to the same number using the following command (which number is used does not matter):
 
 To tackle the example output, we can use the following command to set the same id on both terminal:
 
-__This command can be use on both PC and Mini Pupper__
+__This command can be used on both PC and Mini Pupper__
 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
@@ -123,7 +117,7 @@ export ROS_DOMAIN_ID=42
 export ROS_DOMAIN_ID=42
 ```
 
-use the following command in both terminals to confirm that the PC and the mini pupper are connected:
+Use the following command in both terminals to confirm that the PC and the mini pupper are connected:
 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
@@ -137,13 +131,7 @@ ros2 node list
 
 Compare the output in both terminals:
 
-Terminal 1 (ssh to real mini pupper)
-
-![image](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/15a17e3b-c347-4060-bc51-e04b969498d6)
-
-Terminal 2 (on PC)
-
-![image](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/15a17e3b-c347-4060-bc51-e04b969498d6)
+https://github.com/mangdangroboticsclub/mini_pupper_ros/blob/ab89763e788d413c3aafd302cad849a417732fe6/imgs/nodeList.png
 
 If the output in __both terminals shows the same list of node__ which is similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
 __Note that the node list depends on the nodes in progress, which may not be exactly the same from the image.__
