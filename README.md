@@ -99,19 +99,16 @@ Compare the output and check if they are the same in both terminals:
 
 Example output:
 
-```sh
-# Terminal 1 (ssh to real mini pupper)
-declare -x ROS_DOMAIN_ID="42"
-```
+Terminal 1 (ssh to real mini pupper)
+![Screenshot 2024-06-06 150656](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/0376fcce-97d3-4a0d-bbe7-165ba3abd43e)
 
-```sh
-# Terminal 2 (on PC)
-declare -x ROS_DOMAIN_ID="30"
-```
+Terminal 2 (on PC)
+![Screenshot 2024-06-06 150715](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/993d53ca-e913-4e96-8c20-25c2c20ebd9a)
 
-If the ID are not different in both terminal or there is no output of the above commnand, you will have to set the ROS_DOMAIN_ID to the same number using the following command (which number is used does not matter):
+If the __ID are different in both terminal or there is no output__ of the above commnand, you will have to set the ROS_DOMAIN_ID to the same number using the following command (which number is used does not matter):
 
 To tackle the example output, we can use the following command to set the same id on both terminal:
+
 __This command can be use on both PC and Mini Pupper__
 
 ```sh
