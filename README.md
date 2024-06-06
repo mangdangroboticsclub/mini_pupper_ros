@@ -100,6 +100,7 @@ Compare the output and check if they are the same in both terminals:
 Example output:
 
 Terminal 1 (ssh to real mini pupper)
+
 ![Screenshot 2024-06-06 150656](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/0376fcce-97d3-4a0d-bbe7-165ba3abd43e)
 
 Terminal 2 (on PC)
@@ -113,6 +114,11 @@ To tackle the example output, we can use the following command to set the same i
 __This command can be use on both PC and Mini Pupper__
 
 ```sh
+# Terminal 1 (ssh to real mini pupper)
+export ROS_DOMAIN_ID=42
+```
+
+```sh
 # Terminal 2 (on PC)
 export ROS_DOMAIN_ID=42
 ```
@@ -124,6 +130,12 @@ ros2 node list
 ```
 
 Compare the output in both terminals:
+
+Terminal 1 (ssh to real mini pupper)
+
+![image](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/15a17e3b-c347-4060-bc51-e04b969498d6)
+
+Terminal 2 (on PC)
 
 ![image](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/15a17e3b-c347-4060-bc51-e04b969498d6)
 
