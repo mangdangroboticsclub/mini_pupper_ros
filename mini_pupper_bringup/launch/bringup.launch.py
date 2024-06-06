@@ -143,7 +143,7 @@ def generate_launch_description():
 
     imu_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(imu_launch_path),
-        condition=IfCondition(joint_hardware_connected and MINI_PUPPER_VERSION == "v1" ),
+        condition=IfCondition(joint_hardware_connected and MINI_PUPPER_VERSION == "v2" ),
     )
 
     lidar_launch = IncludeLaunchDescription(
