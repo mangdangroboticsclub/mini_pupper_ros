@@ -103,6 +103,7 @@ Terminal 1 (ssh to real mini pupper)
 ![Screenshot 2024-06-06 150656](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/0376fcce-97d3-4a0d-bbe7-165ba3abd43e)
 
 Terminal 2 (on PC)
+
 ![Screenshot 2024-06-06 150715](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/993d53ca-e913-4e96-8c20-25c2c20ebd9a)
 
 If the __ID are different in both terminal or there is no output__ of the above commnand, you will have to set the ROS_DOMAIN_ID to the same number using the following command (which number is used does not matter):
