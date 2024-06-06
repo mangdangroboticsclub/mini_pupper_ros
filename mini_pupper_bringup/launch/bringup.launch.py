@@ -98,6 +98,7 @@ def launch_bring_up(context, *args, **kwargs):
 
 
 def generate_launch_description():
+    MINI_PUPPER_VERSION = os.environ['MINI_PUPPER_VERSION']
     servo_interface_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_driver'), 'launch', 'servo_interface.launch.py']
     )
@@ -142,7 +143,7 @@ def generate_launch_description():
 
     imu_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(imu_launch_path),
-        condition=IfCondition(joint_hardware_connected),
+        condition=IfCondition(joint_hardware_connected and MINI_PUPPER_VERSION == "v1" ),
     )
 
     lidar_launch = IncludeLaunchDescription(
