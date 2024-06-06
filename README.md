@@ -145,7 +145,7 @@ Terminal 2 (on PC)
 
 ![image](https://github.com/JoeyLai1234/mini_pupper_ros/assets/158265181/15a17e3b-c347-4060-bc51-e04b969498d6)
 
-If the output in both terminals shows the same output of list which is similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
+If the output in __both terminals shows the same list of node__ which is similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
 __Note that the node list depends on the nodes in progress, which may not be exactly the same from the image.__
 
 ## 2. Quick Start
