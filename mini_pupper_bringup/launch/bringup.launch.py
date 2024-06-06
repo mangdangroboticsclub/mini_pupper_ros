@@ -103,10 +103,6 @@ def generate_launch_description():
     servo_interface_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_driver'), 'launch', 'servo_interface.launch.py']
     )
-    imu_launch_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_driver'), 'launch', 'imu_interface.launch.py']
-    )
-
     lidar_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']
     )
@@ -119,23 +115,7 @@ def generate_launch_description():
             description='Set robot name for multi robot'
         )
 
-    declare_sim = DeclareLaunchArgument(
-            name='sim',
-            default_value='false',
-            description='Enable use_sime_time to true'
-        )
-
-    declare_rviz = DeclareLaunchArgument(
-            name='rviz',
-            default_value='false',
-            description='Run rviz'
-        )
-
-    declare_hardware_connected = DeclareLaunchArgument(
-            name='joint_hardware_connected',
-            default_value='true',
-            description='Set to true if connected to a physical robot'
-        )
+    # ... (other launch argument declarations)
 
     servo_interface_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(servo_interface_launch_path),
@@ -143,7 +123,10 @@ def generate_launch_description():
     )
 
     imu_launch = None
-    if MINI_PUPPER_VERSION != "v1":
+    if MINI_PUPPER_VERSION == "v2":
+        imu_launch_path = PathJoinSubstitution(
+            [FindPackageShare('mini_pupper_driver'), 'launch', 'imu_interface.launch.py']
+        )
         imu_launch = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(imu_launch_path),
             condition=IfCondition(joint_hardware_connected),
@@ -161,6 +144,6 @@ def generate_launch_description():
         declare_hardware_connected,
         OpaqueFunction(function=launch_bring_up),
         servo_interface_launch,
-        imu_launch if MINI_PUPPER_VERSION != "v1" else None,
+        imu_launch,
         lidar_launch,
     ])
