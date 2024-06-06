@@ -81,6 +81,40 @@ Reference(Just for reference, don't need to do it again.):
 [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
 
 
+### 1.3 Connecting Mini Pupper to PC
+
+The mini pupper is assumed to be automatically connected to the PC under same internet environment, but to make sure the mini pupper is connected to the PC, we can check their ROS domain ID according to the following steps:
+
+```sh
+# Terminal 1 (ssh to real mini pupper)
+export
+```
+
+```sh
+# Terminal 2 (on PC)
+export
+```
+
+search for a line of output as the following in both terminals:
+
+```
+declare -x ROS_DOMAIN_ID="42"
+```
+
+check if the ROS domain ID (in this case it is 42) in both terminal are the same, if the ID are not different or ROS_DOMAIN_ID is not found in the exported list of both terminal, you will have to set the ROS_DOMAIN_ID to the same number using the following command (it does not matter what the number is, as long as they are the same number the PC and the robot can connect): using this command in the PC terminal set the id for pc and same logic in the pupper terminal
+
+```sh
+export ROS_DOMAIN_ID=42
+```
+
+use the following command in both terminals to confirm that the PC and the mini pupper are connected:
+
+```sh
+ros2 node list
+```
+
+if the output in both terminals are the same, your PC and the mini pupper is connected, and we can proceed to the following steps.
+
 ## 2. Quick Start
 
 ## 2.1 PC
