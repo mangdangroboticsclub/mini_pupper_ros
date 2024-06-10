@@ -17,7 +17,7 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.substitutions import PathJoinSubstitution, ThisLaunchFileDir
+from launch.substitutions import PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 

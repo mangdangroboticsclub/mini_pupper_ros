@@ -16,13 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This program is based on https://github.com/champ/champ.
-# which is released under the BSD-3-Clause License.
-# https://spdx.org/licenses/BSD-3-Clause.html
-#
-# Copyright (c) 2019-2020 Juan Miguel Jimeno
-#
-# https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_gazebo/launch/gazebo.launch.py
 
 import os
 from ament_index_python.packages import get_package_share_directory
