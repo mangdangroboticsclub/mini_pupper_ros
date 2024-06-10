@@ -29,126 +29,87 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
+
+ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
 
 
 def generate_launch_description():
-    gazebo_package = get_package_share_directory('mini_pupper_gazebo')
-    bringup_package = get_package_share_directory('mini_pupper_bringup')
+    if ROBOT_MODEL == "mini_pupper_2":
+        description_package = FindPackageShare('mini_pupper_2_description')
+    else:
+        description_package = FindPackageShare('mini_pupper_description')
 
-    default_world_path = os.path.join(
-        gazebo_package, 'worlds', 'mini_pupper_home.world')
-
-    bringup_launch_path = os.path.join(
-        bringup_package, 'launch', 'bringup.launch.py')
-
-    robot_name = LaunchConfiguration("robot_name")
-    sim = LaunchConfiguration("sim")
-    joint_hardware_connected = LaunchConfiguration("joint_hardware_connected")
-    rviz = LaunchConfiguration("rviz")
-    lite = LaunchConfiguration("lite")
-    world = LaunchConfiguration("world"),
-    world_init_x = LaunchConfiguration("world_init_x"),
-    world_init_y = LaunchConfiguration("world_init_y"),
-    world_init_z = LaunchConfiguration("world_init_z"),
-
-    world_init_heading = LaunchConfiguration("world_init_heading"),
-    gui = LaunchConfiguration("gui"),
-
-    declare_rviz = DeclareLaunchArgument(
-        name="rviz",
-        default_value="false",
-        description="Launch rviz"
-    )
-    declare_robot_name = DeclareLaunchArgument(
-        name="robot_name",
-        default_value="mini_pupper",
-        description="Robot name"
-    )
-    declare_lite = DeclareLaunchArgument(
-        name="lite",
-        default_value="false",
-        description="Lite"
+    links_map_path = PathJoinSubstitution(
+        [description_package, 'config', 'champ', 'links.yaml']
     )
 
-    declare_world = DeclareLaunchArgument(
+    this_package = FindPackageShare('mini_pupper_gazebo')
+    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.world'])
+
+    bringup_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_bringup'), 'launch', 'bringup.launch.py']
+    )
+
+    champ_gazebo_launch_path = PathJoinSubstitution(
+        [FindPackageShare('champ_gazebo'), 'launch', 'gazebo.launch.py']
+    )
+
+    world = LaunchConfiguration("world")
+    world_launch_arg = DeclareLaunchArgument(
         name="world",
         default_value=default_world_path,
         description="Gazebo world path"
     )
-    declare_gui = DeclareLaunchArgument(
-        name="gui",
-        default_value="true",
-        description="Use gui"
-    )
-    declare_world_init_x = DeclareLaunchArgument(
+
+    world_init_x = LaunchConfiguration("world_init_x")
+    world_init_x_launch_arg = DeclareLaunchArgument(
         name="world_init_x",
         default_value="0.0"
     )
-    declare_world_init_y = DeclareLaunchArgument(
+
+    world_init_y = LaunchConfiguration("world_init_y")
+    world_init_y_launch_arg = DeclareLaunchArgument(
         name="world_init_y",
         default_value="0.0"
     )
-    declare_world_init_z = DeclareLaunchArgument(
+
+    world_init_z = LaunchConfiguration("world_init_z")
+    world_init_z_launch_arg = DeclareLaunchArgument(
         name="world_init_z",
         default_value="0.066"
     )
-    declare_world_init_heading = DeclareLaunchArgument(
+
+    world_init_heading = LaunchConfiguration("world_init_heading")
+    world_init_heading_launch_arg = DeclareLaunchArgument(
         name="world_init_heading",
         default_value="0.0"
-    )
-    declare_sim = DeclareLaunchArgument(
-        name='sim',
-        default_value='true',
-        description='Enable use_sime_time to true'
-    )
-    declare_joint_hardware_connected = DeclareLaunchArgument(
-        name='joint_hardware_connected',
-        default_value='false',
-        description='Set to true if connected to a physical robot'
     )
 
     mini_pupper_bringup_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(bringup_launch_path),
-        launch_arguments={
-            "use_sim_time": sim,
-            "robot_name": robot_name,
-            "gazebo": sim,
-            "rviz": rviz,
-            "joint_hardware_connected": joint_hardware_connected,
-            "publish_foot_contacts": "true",
-            "close_loop_odom": "true"
-        }.items(),
+        launch_arguments={"simulation": "True"}.items(),
     )
     champ_gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(
-            get_package_share_directory("champ_gazebo"), "launch", "gazebo.launch.py")),
+        PythonLaunchDescriptionSource(champ_gazebo_launch_path),
         launch_arguments={
-            "use_sim_time": sim,
-            "robot_name": robot_name,
+            "robot_name": ROBOT_MODEL,
             "world": world,
-            "lite": lite,
+            "links_map_path": links_map_path,
             "world_init_x": world_init_x,
             "world_init_y": world_init_y,
             "world_init_z": world_init_z,
-            "world_init_heading": world_init_heading,
-            "gui": gui,
-            "close_loop_odom": "true",
+            "world_init_heading": world_init_heading
         }.items(),
     )
 
     return LaunchDescription([
-        declare_rviz,
-        declare_robot_name,
-        declare_lite,
-        declare_world,
-        declare_gui,
-        declare_world_init_x,
-        declare_world_init_y,
-        declare_world_init_z,
-        declare_world_init_heading,
-        declare_sim,
-        declare_joint_hardware_connected,
+        world_launch_arg,
+        world_init_x_launch_arg,
+        world_init_y_launch_arg,
+        world_init_z_launch_arg,
+        world_init_heading_launch_arg,
         mini_pupper_bringup_launch,
         champ_gazebo_launch
     ])

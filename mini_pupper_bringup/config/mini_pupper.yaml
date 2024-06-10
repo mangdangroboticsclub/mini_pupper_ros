@@ -1,0 +1,3 @@
+sensors:
+  lidar: true
+  imu: false
