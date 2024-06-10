@@ -66,6 +66,14 @@ def generate_launch_description():
         [FindPackageShare('mini_pupper_bringup'), 'launch', 'hardware_interface.launch.py']
     )
 
+    is_real_robot = PythonExpression(['not ', LaunchConfiguration('simulation')])
+    
+    sensors_config = get_sensors_config()
+    # This is the confusing part to wrap so much around a bool value.
+    # In ROS2 launch file, we cannot pass bool value directly to launch_arguments.
+    has_lidar = PythonExpression([str(sensors_config['lidar'])])
+    has_imu = PythonExpression([str(sensors_config['imu'])])
+
     simulation = LaunchConfiguration("simulation")
     simulation_launch_arg = DeclareLaunchArgument(
         name='simulation',
@@ -73,37 +81,36 @@ def generate_launch_description():
         description='In Gazebo simulation, no need to launch hardware sensors'
     )
 
-    is_real_robot = PythonExpression(['not ', LaunchConfiguration('simulation')])
-    sensors_config = get_sensors_config()
-    has_lidar = TextSubstitution(text=str(sensors_config['lidar']))
-    has_imu = TextSubstitution(text=str(sensors_config['imu']))
-    print(sensors_config)
+    champ_bringup_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(champ_bringup_launch_path),
+        launch_arguments={
+            "use_sim_time": simulation,
+            "robot_name": ROBOT_MODEL,
+            "gazebo": simulation,
+            "rviz": "False",  # set always false to launch RViz2 with costom .rviz file
+            "joint_hardware_connected": is_real_robot,
+            "orientation_from_imu": has_imu,
+            "publish_foot_contacts": "True",
+            "close_loop_odom": "True",
+            "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
+            "joints_map_path": joints_config_path,
+            "links_map_path": links_config_path,
+            "gait_config_path": gait_config_path,
+            "description_path": description_path
+        }.items()
+    )
+    
+    hardware_interface_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(hardware_interface_launch_path),
+        condition=IfCondition(is_real_robot),
+        launch_arguments={
+            "has_lidar": has_lidar,
+            "has_imu":has_imu,
+        }.items()
+    )
+
     return LaunchDescription([
         simulation_launch_arg,
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(champ_bringup_launch_path),
-            launch_arguments={
-                "use_sim_time": simulation,
-                "robot_name": ROBOT_MODEL,
-                "gazebo": simulation,
-                "rviz": "False",  # set always false to launch RViz2 with costom .rviz file
-                "joint_hardware_connected": is_real_robot,
-                "orientation_from_imu": has_imu,
-                "publish_foot_contacts": "True",
-                "close_loop_odom": "True",
-                "joint_controller_topic": "joint_group_effort_controller/joint_trajectory",
-                "joints_map_path": joints_config_path,
-                "links_map_path": links_config_path,
-                "gait_config_path": gait_config_path,
-                "description_path": description_path
-            }.items()
-        ),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(hardware_interface_launch_path),
-            condition=IfCondition(is_real_robot),
-            launch_arguments={
-                "has_lidar": has_lidar,
-                "has_imu": has_imu
-            }.items()
-        )
+        champ_bringup_launch,
+        hardware_interface_launch
     ])

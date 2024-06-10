@@ -57,10 +57,10 @@ def generate_launch_description():
         ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(lidar_launch_path),
-            IfCondition(has_lidar)
+            condition=IfCondition(has_lidar)
         ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(imu_launch_path),
-            IfCondition(has_imu)
+            condition=IfCondition(has_imu)
         )
     ])
