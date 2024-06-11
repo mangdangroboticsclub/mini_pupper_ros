@@ -38,6 +38,11 @@ cd ~
 sudo apt-get update
 sudo apt -y install python3-pip python3-venv python3-virtualenv
 
+#Auto install ROS2 Humble
+git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
+~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
+source /opt/ros/humble/setup.bash
+
 #clone mini pupper 2 ros2 repo
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
