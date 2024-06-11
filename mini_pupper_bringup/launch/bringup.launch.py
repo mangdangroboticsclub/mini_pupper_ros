@@ -24,6 +24,7 @@
 #
 # https://github.com/chvmp/champ/blob/f76d066d8964c8286afbcd9d5d2c08d781e85f54/champ_config/launch/bringup.launch.py
 
+import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -34,6 +35,7 @@ from launch.conditions import IfCondition
 
 
 def launch_bring_up(context, *args, **kwargs):
+    MINI_PUPPER_VERSION = os.environ['MINI_PUPPER_VERSION']
     robot_name = LaunchConfiguration("robot_name")
     sim = LaunchConfiguration("sim")
     rviz = LaunchConfiguration("rviz")
@@ -57,7 +59,7 @@ def launch_bring_up(context, *args, **kwargs):
     )
 
     bringup_launch_path = PathJoinSubstitution(
-        [FindPackageShare('champ_bringup'), 'launch', 'bringup.launch.py']
+        [FindPackageShare('champ_bringup'), 'launch', MINI_PUPPER_VERSION + '_bringup.launch.py']
     )
 
     rviz_config_path = PathJoinSubstitution(
@@ -97,15 +99,15 @@ def launch_bring_up(context, *args, **kwargs):
 
 
 def generate_launch_description():
+    MINI_PUPPER_VERSION = os.environ['MINI_PUPPER_VERSION']
     servo_interface_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_driver'), 'launch', 'servo_interface.launch.py']
     )
     imu_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_driver'), 'launch', 'imu_interface.launch.py']
     )
-
     lidar_launch_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']
+        [FindPackageShare('mini_pupper_bringup'), 'launch', MINI_PUPPER_VERSION + '_lidar.launch.py']
     )
 
     joint_hardware_connected = LaunchConfiguration("joint_hardware_connected")
@@ -149,13 +151,24 @@ def generate_launch_description():
         condition=IfCondition(joint_hardware_connected),
     )
 
-    return LaunchDescription([
-        declare_robot_name,
-        declare_sim,
-        declare_rviz,
-        declare_hardware_connected,
-        OpaqueFunction(function=launch_bring_up),
-        servo_interface_launch,
-        imu_launch,
-        lidar_launch,
-    ])
+    if MINI_PUPPER_VERSION != "v1":
+        return LaunchDescription([
+            declare_robot_name,
+            declare_sim,
+            declare_rviz,
+            declare_hardware_connected,
+            OpaqueFunction(function=launch_bring_up),
+            servo_interface_launch,
+            imu_launch,
+            lidar_launch,
+        ])
+    else:
+        return LaunchDescription([
+            declare_robot_name,
+            declare_sim,
+            declare_rviz,
+            declare_hardware_connected,
+            OpaqueFunction(function=launch_bring_up),
+            servo_interface_launch,
+            lidar_launch,
+        ])
