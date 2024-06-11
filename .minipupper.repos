@@ -1,7 +1,7 @@
 repositories:
   champ/champ:
     type: git
-    url: https://github.com/mangdangroboticsclub/champ.git
+    url: https://github.com/JoeyLai1234/champ.git
     version: ros2
   champ/champ_teleop:
     type: git
