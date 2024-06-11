@@ -107,7 +107,7 @@ def generate_launch_description():
         [FindPackageShare('mini_pupper_driver'), 'launch', 'imu_interface.launch.py']
     )
     lidar_launch_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_bringup'), 'launch', 'lidar.launch.py']
+        [FindPackageShare('mini_pupper_bringup'), 'launch', MINI_PUPPER_VERSION + '_lidar.launch.py']
     )
 
     joint_hardware_connected = LaunchConfiguration("joint_hardware_connected")
