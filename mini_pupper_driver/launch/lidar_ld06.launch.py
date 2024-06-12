@@ -16,11 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
-
 def generate_launch_description():
+    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
+    if (ROBOT_MODEL == mini_pupper) :
+        port = '/dev/ttyUSB0'
+    else :
+        port = '/dev/ttyAMA1'
     return LaunchDescription([
         Node(
             package='ldlidar_stl_ros2',
@@ -31,7 +36,7 @@ def generate_launch_description():
                 {'product_name': 'LDLiDAR_LD06'},
                 {'topic_name': 'scan'},
                 {'frame_id': 'lidar_link'},
-                {'port_name': '/dev/ttyAMA1'},
+                {'port_name': port},
                 {'port_baudrate': 230400},
                 {'laser_scan_dir': True},
                 {'enable_angle_crop_func': False},
