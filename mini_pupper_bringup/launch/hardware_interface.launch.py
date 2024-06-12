@@ -24,6 +24,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.conditions import IfCondition
 
+
 def generate_launch_description():
     has_lidar = LaunchConfiguration("has_lidar")
     has_lidar_launch_arg = DeclareLaunchArgument(
@@ -48,7 +49,7 @@ def generate_launch_description():
     imu_launch_path = PathJoinSubstitution(
         [driver_package, 'launch', 'imu_interface.launch.py']
     )
-   
+
     return LaunchDescription([
         has_lidar_launch_arg,
         has_imu_launch_arg,

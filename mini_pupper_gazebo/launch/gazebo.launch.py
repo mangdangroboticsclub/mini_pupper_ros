@@ -18,7 +18,6 @@
 
 
 import os
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -82,8 +81,12 @@ def generate_launch_description():
 
     mini_pupper_bringup_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(bringup_launch_path),
-        launch_arguments={"simulation": "True"}.items(),
+        launch_arguments={
+            "use_sim_time": "True",
+            "hardware_connected": "False"
+        }.items()
     )
+
     champ_gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(champ_gazebo_launch_path),
         launch_arguments={
@@ -94,7 +97,7 @@ def generate_launch_description():
             "world_init_y": world_init_y,
             "world_init_z": world_init_z,
             "world_init_heading": world_init_heading
-        }.items(),
+        }.items()
     )
 
     return LaunchDescription([
