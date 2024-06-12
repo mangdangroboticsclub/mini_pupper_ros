@@ -22,7 +22,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
-    if (ROBOT_MODEL == mini_pupper) :
+    if (ROBOT_MODEL == "mini_pupper") :
         port = '/dev/ttyUSB0'
     else :
         port = '/dev/ttyAMA1'
