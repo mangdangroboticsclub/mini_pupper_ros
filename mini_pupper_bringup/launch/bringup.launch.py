@@ -40,13 +40,11 @@ def get_sensors_config():
 
 
 def generate_launch_description():
-    if ROBOT_MODEL == "mini_pupper_2":
-        description_package = FindPackageShare('mini_pupper_2_description')
-    else:
-        description_package = FindPackageShare('mini_pupper_description')
+
+    description_package = FindPackageShare('mini_pupper_description')
 
     description_path = PathJoinSubstitution(
-        [description_package, 'urdf', 'mini_pupper_description.urdf.xacro']
+        [description_package, 'urdf', ROBOT_MODEL + '_description.urdf']
     )
 
     joints_config_path = PathJoinSubstitution(

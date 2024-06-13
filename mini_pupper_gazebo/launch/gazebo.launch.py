@@ -28,10 +28,8 @@ ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
 
 
 def generate_launch_description():
-    if ROBOT_MODEL == "mini_pupper_2":
-        description_package = FindPackageShare('mini_pupper_2_description')
-    else:
-        description_package = FindPackageShare('mini_pupper_description')
+    
+    description_package = FindPackageShare('mini_pupper_description')
 
     links_map_path = PathJoinSubstitution(
         [description_package, 'config', 'champ', 'links.yaml']
