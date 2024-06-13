@@ -146,9 +146,13 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_bringup bringup.launch.py joint_hardware_connected:=false rviz:=true robot_name:=mini_pupper_2
+ros2 launch mini_pupper_bringup bringup.launch.py hardware_connected:=False
 
 # Terminal 2
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_bringup rviz.launch.py
+
+# Terminal 3
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Then control robot dog with the keyboard
 ```
@@ -160,7 +164,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py rviz:=true robot_name:=mini_pupper_2
+ros2 launch mini_pupper_gazebo gazebo.launch.py
 
 # Terminal 2
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -175,7 +179,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py robot_name:=mini_pupper_2
+ros2 launch mini_pupper_gazebo gazebo.launch.py
 ```
 
 - Mapping on PC
@@ -208,7 +212,7 @@ The map will be saved under home directory. Two files will be generated, namely 
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py robot_name:=mini_pupper_2
+ros2 launch mini_pupper_gazebo gazebo.launch.py
 ```
 
 - Navigation   
