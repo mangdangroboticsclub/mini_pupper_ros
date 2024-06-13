@@ -16,11 +16,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
+    if (ROBOT_MODEL == mini_pupper) :
+        port = '/dev/ttyUSB0'
+    else :
+        port = '/dev/ttyAMA1'
     return LaunchDescription([
         Node(
             package='ldlidar_stl_ros2',
