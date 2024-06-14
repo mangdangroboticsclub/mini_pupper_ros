@@ -116,7 +116,7 @@ def generate_launch_description():
         launch_arguments={
             "has_lidar": has_lidar,
             "has_imu": has_imu,
-            "lidar_port" : lidar port
+            "lidar_port" : lidar_port
         }.items()
     )
 
