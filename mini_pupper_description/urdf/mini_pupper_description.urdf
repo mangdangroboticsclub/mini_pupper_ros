@@ -1071,7 +1071,7 @@
   </gazebo>
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>/home/ubuntu/ros2_ws/install/mini_pupper_description/share/mini_pupper_description/config/ros_control/mini_pupper_controller.yaml</parameters>
+      <parameters>package://mini_pupper_description/config/ros_control/mini_pupper_controller.yaml</parameters>
     </plugin>
   </gazebo>
   <link name="imu_link">

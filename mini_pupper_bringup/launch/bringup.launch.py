@@ -53,13 +53,13 @@ def generate_launch_description():
     )
 
     joints_config_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', ROBOT_MODEL + '_joints.yaml']
+        [description_package, 'config', 'champ', 'joints.yaml']
     )
     links_config_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', ROBOT_MODEL + '_links.yaml']
+        [description_package, 'config', 'champ', 'links.yaml']
     )
     gait_config_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', ROBOT_MODEL + '_gait.yaml']
+        [description_package, 'config', 'champ', 'gait.yaml']
     )
 
     champ_bringup_launch_path = PathJoinSubstitution(

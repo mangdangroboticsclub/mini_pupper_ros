@@ -67,7 +67,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(lidar_launch_path),
             condition=IfCondition(has_lidar),
-            launch_arguments={'port': lidar_port}.items(),
+            launch_arguments={'lidar_port': lidar_port}.items(),
         ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(imu_launch_path),
