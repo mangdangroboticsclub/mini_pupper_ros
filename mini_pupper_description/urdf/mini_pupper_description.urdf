@@ -14,7 +14,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_base_link.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/base_link.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -23,7 +23,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_base_link.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/base_link.STL"/>
       </geometry>
     </collision>
   </link>
@@ -48,7 +48,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_yellow_plate.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/yellow_plate.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -57,7 +57,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_yellow_plate.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/yellow_plate.STL"/>
       </geometry>
     </collision>
   </link>
@@ -76,7 +76,7 @@
     <visual>
       <origin rpy="0 0 -1.57" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lidar.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lidar.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -85,7 +85,7 @@
     <collision>
       <origin rpy="0 0 -1.57" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lidar.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lidar.STL"/>
       </geometry>
     </collision>
   </link>
@@ -104,7 +104,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lf1.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -113,7 +113,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lf1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -133,7 +133,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpf1.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -142,7 +142,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpf1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -161,7 +161,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lf2.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -170,7 +170,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lf2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -190,7 +190,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpf2.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -199,7 +199,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpf2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -218,7 +218,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lf3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lf3.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -227,7 +227,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lf3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lf3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -247,7 +247,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lffoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lffoot.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -256,7 +256,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lffoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lffoot.STL"/>
       </geometry>
     </collision>
   </link>
@@ -275,7 +275,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rf1.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -284,7 +284,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rf1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -304,7 +304,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpf1.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -313,7 +313,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpf1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpf1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -332,7 +332,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rf2.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -341,7 +341,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rf2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -361,7 +361,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpf2.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -370,7 +370,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpf2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpf2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -389,7 +389,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rf3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rf3.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -398,7 +398,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rf3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rf3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -418,7 +418,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rffoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rffoot.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -427,7 +427,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rffoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rffoot.STL"/>
       </geometry>
     </collision>
   </link>
@@ -446,7 +446,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lb1.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -455,7 +455,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lb1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -475,7 +475,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpb1.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -484,7 +484,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpb1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -503,7 +503,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lb2.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -512,7 +512,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lb2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -532,7 +532,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpb2.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -541,7 +541,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lpb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lpb2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -560,7 +560,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lb3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lb3.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -569,7 +569,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lb3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lb3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -589,7 +589,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lbfoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lbfoot.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -598,7 +598,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_lbfoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/lbfoot.STL"/>
       </geometry>
     </collision>
   </link>
@@ -617,7 +617,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rb1.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -626,7 +626,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rb1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -646,7 +646,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpb1.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -655,7 +655,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpb1.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpb1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -674,7 +674,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rb2.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -683,7 +683,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rb2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -703,7 +703,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpb2.STL"/>
       </geometry>
       <material name="">
         <color rgba="1 1 0 1"/>
@@ -712,7 +712,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rpb2.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rpb2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -731,7 +731,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rb3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rb3.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -740,7 +740,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rb3.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rb3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -760,7 +760,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rbfoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rbfoot.STL"/>
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1"/>
@@ -769,7 +769,7 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_rbfoot.STL"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper/rbfoot.STL"/>
       </geometry>
     </collision>
   </link>

@@ -16,13 +16,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+
+    lidar_port = LaunchConfiguration("lidar_port")
+    lidar_port_launch_arg = DeclareLaunchArgument(
+        name='lidar_port',
+        description='The serial port for the lidar sensor'
+    )
+
     return LaunchDescription([
         Node(
             package='ldlidar_stl_ros2',
