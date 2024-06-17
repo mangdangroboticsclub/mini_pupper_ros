@@ -32,7 +32,7 @@ def generate_launch_description():
     description_package = FindPackageShare('mini_pupper_description')
 
     links_map_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', 'links.yaml']
+        [description_package, 'config', 'champ', ROBOT_MODEL, 'links.yaml']
     )
 
     this_package = FindPackageShare('mini_pupper_gazebo')
