@@ -29,6 +29,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        lidar_port_launch_arg,
         Node(
             package='ldlidar_stl_ros2',
             executable='ldlidar_stl_ros2_node',

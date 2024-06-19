@@ -61,6 +61,7 @@ def generate_launch_description():
     return LaunchDescription([
         has_lidar_launch_arg,
         has_imu_launch_arg,
+        lidar_port_launch_arg,
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(servos_launch_path)
         ),
