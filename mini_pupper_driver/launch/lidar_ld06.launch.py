@@ -16,9 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
 from launch import LaunchDescription
 from launch_ros.actions import Node
-
 
 def generate_launch_description():
 
@@ -39,7 +40,7 @@ def generate_launch_description():
                 {'product_name': 'LDLiDAR_LD06'},
                 {'topic_name': 'scan'},
                 {'frame_id': 'lidar_link'},
-                {'port_name': lidar_port}
+                {'port_name': lidar_port},
                 {'port_baudrate': 230400},
                 {'laser_scan_dir': True},
                 {'enable_angle_crop_func': False},
