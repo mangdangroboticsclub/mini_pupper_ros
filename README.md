@@ -137,6 +137,13 @@ Compare the output in both terminals:
 If the output in __both terminals shows the same list of node__ which is similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
 __Note that the node list depends on the nodes in progress, which may not be exactly the same from the image.__
 
+### 1.4 Ensure joystick is connected
+
+```sh
+sudo apt install joystick
+jstest /dev/input/js0 # there will be output once the joystick is connected
+```
+
 ## 2. Quick Start
 
 ## 2.1 PC
@@ -165,7 +172,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3
 . ~/ros2_ws/install/setup.bash
-ros2 run teleop_twist_joy teleop_twist_joy
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
 ```
 
 ### 2.1.2 Test in Gazebo
@@ -188,7 +195,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
-ros2 run teleop_twist_joy teleop_twist_joy
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
 ```
 
 ### 2.1.3 Test SLAM (Mapping) in Gazebo
@@ -219,7 +226,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3
 . ~/ros2_ws/install/setup.bash
-ros2 run teleop_twist_joy teleop_twist_joy
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
 ```
 
 - Save the map  
@@ -275,7 +282,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 - If using joystick control
 ```sh
 # Terminal 2 (ssh)
-ros2 run teleop_twist_joy teleop_twist_joy
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
 ```
 
 ### 2.2.2 Test SLAM (Mapping)
@@ -307,7 +314,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 run teleop_twist_joy teleop_twist_joy
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
 ```
 
 - Save the map  
