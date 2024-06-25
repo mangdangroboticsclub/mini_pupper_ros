@@ -49,7 +49,7 @@ def generate_launch_description():
     description_package = FindPackageShare('mini_pupper_description')
 
     description_path = PathJoinSubstitution(
-        [description_package, 'urdf', ROBOT_MODEL , + 'mini_pupper_description.urdf.xacro']
+        [description_package, 'urdf', ROBOT_MODEL , 'mini_pupper_description.urdf.xacro']
     )
 
     joints_config_path = PathJoinSubstitution(

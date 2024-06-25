@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <robot name="mini_pupper_2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:include filename="package://mini_pupper_description/meshes/mini_pupper_2/materials.xacro" />
-  <xacro:include filename="package://mini_pupper_description/meshes/mini_pupper_2/mini_pupper_description.trans" />
+  <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper_2/materials.xacro" />
+  <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper_2/mini_pupper_description.trans" />
   
   <!-- CONSTANTS -->
   <!-- Link group 1 - lf1, rf1, lb1, rb1 -->
