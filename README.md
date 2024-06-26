@@ -146,7 +146,10 @@ __The following steps are implemented on the device to be connected to the contr
 - Connection to PC
 Press the HOME button on the controller. Then search for available bluetooth devices on your PC.
 
-- Connection to Mini Pupper
+- Connection to Mini Pupper using USB port
+Plug the controller to the robot through a USB Type A to USB Micro wire.
+
+- Connection to Mini Pupper using Bluetooth
 Press the HOME button on the controller.
 ```sh
 #Terminal 1 (ssh)
@@ -297,13 +300,13 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 
 - If using keyboard control
 ```sh
-# Terminal 2 (ssh)
+# Terminal 2 (ssh or PC)
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
-# Terminal 2 (ssh)
-ros2 launch teleop_twist_joy teleop-launch.py
+# Terminal 2 (ssh or PC)
+ros2 launch teleop_twist_joy teleop-launch.py joy_dev=<device file path (usually start with /dev/input/...), can be omitted when using PC>
 ```
 
 ### 2.2.2 Test SLAM (Mapping)
