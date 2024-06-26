@@ -17,6 +17,7 @@ Supported versions
 * To use Gazebo simulator, "1.1 PC Setup" is required.
 * To control Mini Pupper, "1.2 Mini Pupper Setup" is required.
 * To control Mini Pupper using visualize tools, "1.1 PC Setup" and "1.2 Mini Pupper Setup" is required.
+* To use Gazebo simulator or control Mini Pupper using joystick,  "1.4 Joystick Setup" is required.
 
 ### 1.1 PC Setup
 
@@ -137,10 +138,30 @@ Compare the output in both terminals:
 If the output in __both terminals shows the same list of node__ which is similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
 __Note that the node list depends on the nodes in progress, which may not be exactly the same from the image.__
 
-### 1.4 Ensure joystick is connected
+### 1.4 Joystick Setup
 
+__The controller can be either connected to PC or Mini Pupper__
+__The following steps are implemented on the device to be connected to the controller (The stability of connecting to PC is higher)__
+
+- Connection to PC
+Press the HOME button on the controller. Then search for available bluetooth devices on your PC.
+
+- Connection to Mini Pupper
+Press the HOME button on the controller.
 ```sh
-sudo apt install joystick
+#Terminal 1 (ssh)
+bluetoothctl scan on #then look for your sevice address
+```
+```sh
+#Terminal 2 (ssh)
+bluetoothctl trust <address of your controller>
+bluetoothctl connect <address of your controller>
+```
+
+- To check whether the joystick is connected
+```sh
+#(ssh or PC)
+sudo apt install joystick 
 jstest /dev/input/js0 # there will be output once the joystick is connected
 ```
 
@@ -172,7 +193,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 ### 2.1.2 Test in Gazebo
@@ -195,7 +216,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 ### 2.1.3 Test SLAM (Mapping) in Gazebo
@@ -226,7 +247,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 - Save the map  
@@ -282,7 +303,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 - If using joystick control
 ```sh
 # Terminal 2 (ssh)
-ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 ### 2.2.2 Test SLAM (Mapping)
@@ -314,7 +335,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py joy_config:='js0'
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 - Save the map  
