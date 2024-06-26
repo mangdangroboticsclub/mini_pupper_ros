@@ -10,8 +10,8 @@ aluminum peripherial evaluation case.
 
 <robot name="sensor_d435" xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Includes -->
-  <xacro:include filename="package://mini_pupper_description/urdf/mini_pupper/materials.urdf.xacro" />
-  <xacro:include filename="package://mini_pupper_description/urdf/mini_pupper/usb_plug.urdf.xacro" />
+  <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper/materials.urdf.xacro" />
+  <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper/usb_plug.urdf.xacro" />
 
   <xacro:macro name="sensor_d435" params="parent *origin name:=camera use_nominal_extrinsics:=true add_plug:=false use_mesh:=true">
     <xacro:property name="M_PI" value="3.1415926535897931" />
@@ -62,7 +62,7 @@ aluminum peripherial evaluation case.
           <!-- the mesh origin is at front plate in between the two infrared camera axes -->
           <origin xyz="${d435_zero_depth_to_glass + d435_glass_to_front} ${-d435_cam_depth_py} 0" rpy="${M_PI/2} 0 ${M_PI/2}"/>
           <geometry>
-            <mesh filename="package://mini_pupper_description/meshes/mini_pupper/d435.dae" />
+            <mesh filename="$(find mini_pupper_description)/meshes/mini_pupper/d435.dae" />
           </geometry>
         </xacro:if>
         <xacro:unless value="${use_mesh}">
