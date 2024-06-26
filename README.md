@@ -140,9 +140,6 @@ __Note that the node list depends on the nodes in progress, which may not be exa
 
 ### 1.4 Joystick Setup
 
-__The controller can be either connected to PC or Mini Pupper__
-__The following steps are implemented on the device to be connected to the controller (The stability of connecting to PC is higher)__
-
 - Connection to PC
 Press the HOME button on the controller. Then search for available bluetooth devices on your PC.
 
@@ -301,12 +298,14 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 - If using keyboard control
 ```sh
 # Terminal 2 (ssh or PC)
+. ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
 # Terminal 2 (ssh or PC)
-ros2 launch teleop_twist_joy teleop-launch.py joy_dev=<device file path (usually start with /dev/input/...), can be omitted when using PC>
+. ~/ros2_ws/install/setup.bash
+ros2 launch teleop_twist_joy teleop-launch.py joy_dev:=<device file path (usually start with /dev/input/...)>
 ```
 
 ### 2.2.2 Test SLAM (Mapping)
