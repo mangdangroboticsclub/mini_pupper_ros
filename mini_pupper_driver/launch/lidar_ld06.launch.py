@@ -21,6 +21,7 @@ from launch.actions import DeclareLaunchArgument
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
+
 def generate_launch_description():
 
     lidar_port = LaunchConfiguration("lidar_port")
