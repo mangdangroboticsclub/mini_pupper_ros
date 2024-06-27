@@ -26,7 +26,7 @@ from launch.conditions import IfCondition
 
 
 def generate_launch_description():
-    
+
     has_lidar = LaunchConfiguration("has_lidar")
     has_lidar_launch_arg = DeclareLaunchArgument(
         name='has_lidar',

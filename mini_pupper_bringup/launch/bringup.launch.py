@@ -28,6 +28,7 @@ from ament_index_python.packages import get_package_share_directory
 
 ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
 
+
 def get_config():
     bringup_package = get_package_share_directory('mini_pupper_bringup')
     config_file_name = ROBOT_MODEL + '.yaml'
@@ -44,12 +45,13 @@ def get_config():
 
     return sensors_config, ports_config
 
+
 def generate_launch_description():
 
     description_package = FindPackageShare('mini_pupper_description')
 
     description_path = PathJoinSubstitution(
-        [description_package, 'urdf', ROBOT_MODEL , 'mini_pupper_description.urdf.xacro']
+        [description_package, 'urdf', ROBOT_MODEL, 'mini_pupper_description.urdf.xacro']
     )
 
     joints_config_path = PathJoinSubstitution(
@@ -116,7 +118,7 @@ def generate_launch_description():
         launch_arguments={
             "has_lidar": has_lidar,
             "has_imu": has_imu,
-            "lidar_port" : lidar_port
+            "lidar_port": lidar_port
         }.items()
     )
 

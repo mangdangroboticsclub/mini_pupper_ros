@@ -28,7 +28,7 @@ ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
 
 
 def generate_launch_description():
-    
+
     description_package = FindPackageShare('mini_pupper_description')
 
     links_map_path = PathJoinSubstitution(
