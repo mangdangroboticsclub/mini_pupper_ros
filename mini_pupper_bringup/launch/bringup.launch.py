@@ -29,34 +29,39 @@ from ament_index_python.packages import get_package_share_directory
 ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
 
 
-def get_sensors_config():
+def get_config():
     bringup_package = get_package_share_directory('mini_pupper_bringup')
     config_file_name = ROBOT_MODEL + '.yaml'
     config_file_path = os.path.join(bringup_package, 'config', config_file_name)
 
     with open(config_file_path, 'r') as f:
         configuration = yaml.safe_load(f)
-        return configuration['sensors']
+
+    sensors_config = configuration.get('sensors', {})
+    sensors_config.setdefault('lidar', False)
+    sensors_config.setdefault('imu', False)
+
+    ports_config = configuration.get('ports', {})
+
+    return sensors_config, ports_config
 
 
 def generate_launch_description():
-    if ROBOT_MODEL == "mini_pupper_2":
-        description_package = FindPackageShare('mini_pupper_2_description')
-    else:
-        description_package = FindPackageShare('mini_pupper_description')
+
+    description_package = FindPackageShare('mini_pupper_description')
 
     description_path = PathJoinSubstitution(
-        [description_package, 'urdf', 'mini_pupper_description.urdf.xacro']
+        [description_package, 'urdf', ROBOT_MODEL, 'mini_pupper_description.urdf.xacro']
     )
 
     joints_config_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', 'joints.yaml']
+        [description_package, 'config', 'champ', ROBOT_MODEL, 'joints.yaml']
     )
     links_config_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', 'links.yaml']
+        [description_package, 'config', 'champ', ROBOT_MODEL, 'links.yaml']
     )
     gait_config_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', 'gait.yaml']
+        [description_package, 'config', 'champ', ROBOT_MODEL, 'gait.yaml']
     )
 
     champ_bringup_launch_path = PathJoinSubstitution(
@@ -66,11 +71,13 @@ def generate_launch_description():
         [FindPackageShare('mini_pupper_bringup'), 'launch', 'hardware_interface.launch.py']
     )
 
-    sensors_config = get_sensors_config()
+    sensors_config, ports_config = get_config()
+
     # This is the confusing part to wrap so much around a bool value.
     # In ROS2 launch file, we cannot pass bool value directly to launch_arguments.
     has_lidar = PythonExpression([str(sensors_config['lidar'])])
     has_imu = PythonExpression([str(sensors_config['imu'])])
+    lidar_port = PythonExpression([str(ports_config['lidar'])])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(
@@ -110,7 +117,8 @@ def generate_launch_description():
         condition=IfCondition(hardware_connected),
         launch_arguments={
             "has_lidar": has_lidar,
-            "has_imu": has_imu
+            "has_imu": has_imu,
+            "lidar_port": lidar_port
         }.items()
     )
 

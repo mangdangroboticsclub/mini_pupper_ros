@@ -26,6 +26,7 @@ from launch.conditions import IfCondition
 
 
 def generate_launch_description():
+
     has_lidar = LaunchConfiguration("has_lidar")
     has_lidar_launch_arg = DeclareLaunchArgument(
         name='has_lidar',
@@ -36,6 +37,13 @@ def generate_launch_description():
     has_imu_launch_arg = DeclareLaunchArgument(
         name='has_imu',
         description='if the robot has imu sensor'
+    )
+
+    lidar_port = LaunchConfiguration("lidar_port")
+    lidar_port_launch_arg = DeclareLaunchArgument(
+        name='lidar_port',
+        default_value='/dev/ttyAMA1',
+        description='The serial port for the lidar sensor'
     )
 
     driver_package = FindPackageShare('mini_pupper_driver')
@@ -53,12 +61,14 @@ def generate_launch_description():
     return LaunchDescription([
         has_lidar_launch_arg,
         has_imu_launch_arg,
+        lidar_port_launch_arg,
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(servos_launch_path)
         ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(lidar_launch_path),
-            condition=IfCondition(has_lidar)
+            condition=IfCondition(has_lidar),
+            launch_arguments={'lidar_port': lidar_port}.items(),
         ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(imu_launch_path),
