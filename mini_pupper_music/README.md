@@ -2,7 +2,7 @@
 
 This package provides a music audio file playback service. The main interface is described in the "mini_pupper_interfaces" package. For more details, please refer to the "PlayMusic.srv" and "StopMusic.srv" files. This package is used by "mini_pupper_dance" to play a song during a dance.
 
-Please note that the audio files should be placed in the "resource" folder of the package, alongside files like "robot1.mp3" and "robot1.wav". If you add a new file, you will need to rebuild the package for it to work properly.
+Please note that the audio files should be placed in the "audio" folder of the package, alongside files like "robot1.mp3" and "robot1.wav". If you add a new file, you will need to rebuild the package for it to work properly.
 
 ## Quick Guide
 
