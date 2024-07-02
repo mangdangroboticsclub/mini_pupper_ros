@@ -17,6 +17,7 @@ Supported versions
 * To use Gazebo simulator, "1.1 PC Setup" is required.
 * To control Mini Pupper, "1.2 Mini Pupper Setup" is required.
 * To control Mini Pupper using visualize tools, "1.1 PC Setup" and "1.2 Mini Pupper Setup" is required.
+* To use Gazebo simulator or control Mini Pupper using joystick,  "1.4 Joystick Setup" is required.
 
 ### 1.1 PC Setup
 
@@ -48,6 +49,7 @@ Build and install all ROS packages.
 cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y
 sudo apt install ros-humble-teleop-twist-keyboard
+sudo apt install ros-humble-teleop-twist-joy
 colcon build --symlink-install
 ```
 
@@ -136,6 +138,33 @@ Compare the output in both terminals:
 If the output in __both terminals shows the same list of node__ which is similar to the picture, your PC and the mini pupper is connected. The following steps can be proceeded.
 __Note that the node list depends on the nodes in progress, which may not be exactly the same from the image.__
 
+### 1.4 Joystick Setup
+
+- Connection to PC
+Press the HOME button on the controller. Then search for available bluetooth devices on your PC.
+
+- Connection to Mini Pupper using USB port
+Plug the controller to the robot through a USB Type A to USB Micro wire.
+
+- Connection to Mini Pupper using Bluetooth
+Press the HOME button on the controller.
+```sh
+#Terminal 1 (ssh)
+bluetoothctl scan on #then look for your sevice address
+```
+```sh
+#Terminal 2 (ssh)
+bluetoothctl trust <address of your controller>
+bluetoothctl connect <address of your controller>
+```
+
+- To check whether the joystick is connected
+```sh
+#(ssh or PC)
+sudo apt install joystick 
+jstest /dev/input/js0 # there will be output once the joystick is connected
+```
+
 ## 2. Quick Start
 
 ## 2.1 PC
@@ -147,14 +176,24 @@ Note: This step is only for PC
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
 ros2 launch mini_pupper_bringup bringup.launch.py hardware_connected:=False
-
+```
+```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_bringup rviz.launch.py
+```
 
+- If using keyboard control
+```sh
 # Terminal 3
+. ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
-# Then control robot dog with the keyboard
+```
+- If using joystick control
+```sh
+# Terminal 3
+. ~/ros2_ws/install/setup.bash
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 ### 2.1.2 Test in Gazebo
@@ -165,10 +204,19 @@ Note: This step is only for PC
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
 ros2 launch mini_pupper_gazebo gazebo.launch.py
+```
 
+- If using keyboard control
+```sh
 # Terminal 2
+. ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
-# Then control robot dog with the keyboard
+```
+- If using joystick control
+```sh
+# Terminal 2
+. ~/ros2_ws/install/setup.bash
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 ### 2.1.3 Test SLAM (Mapping) in Gazebo
@@ -189,12 +237,17 @@ ros2 launch mini_pupper_gazebo gazebo.launch.py
 ros2 launch mini_pupper_slam slam.launch.py use_sim_time:=true
 ```
 
-- Keyboard control  
-Use the keyboard to remotely control the Mini Pupper to complete the mapping.
+- If using keyboard control
 ```sh
 # Terminal 3
 . ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+- If using joystick control
+```sh
+# Terminal 3
+. ~/ros2_ws/install/setup.bash
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 - Save the map  
@@ -240,11 +293,21 @@ Open 2 terminals and ssh login to Mini Pupper on both.
 # Terminal 1 (ssh)
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
 ros2 launch mini_pupper_bringup bringup.launch.py
-
-# Terminal 2 (ssh)
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
-# Then control Mini Pupper with the keyboard
 ```
+
+- If using keyboard control
+```sh
+# Terminal 2 (ssh or PC)
+. ~/ros2_ws/install/setup.bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+- If using joystick control
+```sh
+# Terminal 2 (ssh or PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch teleop_twist_joy teleop-launch.py joy_dev:=<device file path (usually start with /dev/input/...)>
+```
+
 ### 2.2.2 Test SLAM (Mapping)
 
 Note: This step requires both PC and Mini Pupper
@@ -263,12 +326,18 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ros2 launch mini_pupper_slam slam.launch.py
 ```
 
-- Keyboard control  
-Use the keyboard to remotely control the Mini Pupper to complete the mapping.
+Remotely control the Mini Pupper to complete the mapping.
+- If using keyboard control
 ```sh
 # Terminal 3 (on PC)
 . ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+- If using joystick control
+```sh
+# Terminal 3 (on PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 - Save the map  
