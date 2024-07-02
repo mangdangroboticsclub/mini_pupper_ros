@@ -70,7 +70,7 @@ class MusicServiceNode(Node):
     def get_valid_file_path(self, file_name):
         package_name = 'mini_pupper_music'
         package_path = get_package_share_directory(package_name)
-        file_path = os.path.join(package_path, 'resource', file_name)
+        file_path = os.path.join(package_path, 'audio', file_name)
         if os.path.isfile(file_path):
             return file_path
         else:
