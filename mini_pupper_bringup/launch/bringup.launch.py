@@ -73,8 +73,7 @@ def generate_launch_description():
 
     sensors_config, ports_config = get_config()
 
-    # This is the confusing part to wrap so much around a bool value.
-    # In ROS2 launch file, we cannot pass bool value directly to launch_arguments.
+    # Convert bool to str because cannot pass bool directly to launch_arguments.
     has_lidar = str(sensors_config['lidar'])
     has_imu = str(sensors_config['imu'])
     lidar_port = ports_config['lidar']
