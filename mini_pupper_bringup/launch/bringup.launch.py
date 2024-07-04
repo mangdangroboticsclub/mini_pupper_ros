@@ -75,9 +75,9 @@ def generate_launch_description():
 
     # This is the confusing part to wrap so much around a bool value.
     # In ROS2 launch file, we cannot pass bool value directly to launch_arguments.
-    has_lidar = PythonExpression([str(sensors_config['lidar'])])
-    has_imu = PythonExpression([str(sensors_config['imu'])])
-    lidar_port = PythonExpression([str(ports_config['lidar'])])
+    has_lidar = str(sensors_config['lidar'])
+    has_imu = str(sensors_config['imu'])
+    lidar_port = ports_config['lidar']
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(

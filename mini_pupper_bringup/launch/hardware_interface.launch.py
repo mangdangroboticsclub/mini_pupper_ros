@@ -42,7 +42,6 @@ def generate_launch_description():
     lidar_port = LaunchConfiguration("lidar_port")
     lidar_port_launch_arg = DeclareLaunchArgument(
         name='lidar_port',
-        default_value='/dev/ttyAMA1',
         description='The serial port for the lidar sensor'
     )
 
