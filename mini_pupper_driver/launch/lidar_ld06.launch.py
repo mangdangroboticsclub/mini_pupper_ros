@@ -20,6 +20,7 @@ from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import LogInfo
 
 
 def generate_launch_description():
@@ -48,4 +49,6 @@ def generate_launch_description():
                 {'angle_crop_min': 135.0},
                 {'angle_crop_max': 225.0}],
         ),
+        LogInfo(msg='lidar_port is:'),
+        LogInfo(msg=lidar_port)
     ])

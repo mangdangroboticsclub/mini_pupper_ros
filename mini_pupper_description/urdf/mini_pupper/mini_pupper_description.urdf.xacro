@@ -8,7 +8,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/base_link.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -22,7 +22,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/base_link.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -69,7 +69,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/yellow_plate.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/yellow_plate.STL" />
       </geometry>
       <material
         name="">
@@ -83,7 +83,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/yellow_plate.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/yellow_plate.STL" />
       </geometry>
     </collision>
   </link>
@@ -122,7 +122,7 @@
         rpy="0 0 -1.57" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lidar.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lidar.STL" />
       </geometry>
       <material
         name="">
@@ -136,7 +136,7 @@
         rpy="0 0 -1.57" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lidar.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lidar.STL" />
       </geometry>
     </collision>
   </link>
@@ -175,7 +175,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lf1.STL" />
       </geometry>
       <material
         name="">
@@ -189,7 +189,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lf1.STL" />
       </geometry>
     </collision>
   </link>
@@ -233,7 +233,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpf1.STL" />
       </geometry>
       <material
         name="">
@@ -247,7 +247,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpf1.STL" />
       </geometry>
     </collision>
   </link>
@@ -286,7 +286,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lf2.STL" />
       </geometry>
       <material
         name="">
@@ -300,7 +300,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lf2.STL" />
       </geometry>
     </collision>
   </link>
@@ -344,7 +344,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpf2.STL" />
       </geometry>
       <material
         name="">
@@ -358,7 +358,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpf2.STL" />
       </geometry>
     </collision>
   </link>
@@ -397,7 +397,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lf3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lf3.STL" />
       </geometry>
       <material
         name="">
@@ -411,7 +411,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lf3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lf3.STL" />
       </geometry>
     </collision>
   </link>
@@ -455,7 +455,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lffoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lffoot.STL" />
       </geometry>
       <material
         name="">
@@ -469,7 +469,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lffoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lffoot.STL" />
       </geometry>
     </collision>
   </link>
@@ -508,7 +508,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rf1.STL" />
       </geometry>
       <material
         name="">
@@ -522,7 +522,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rf1.STL" />
       </geometry>
     </collision>
   </link>
@@ -566,7 +566,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpf1.STL" />
       </geometry>
       <material
         name="">
@@ -580,7 +580,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpf1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpf1.STL" />
       </geometry>
     </collision>
   </link>
@@ -619,7 +619,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rf2.STL" />
       </geometry>
       <material
         name="">
@@ -633,7 +633,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rf2.STL" />
       </geometry>
     </collision>
   </link>
@@ -677,7 +677,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpf2.STL" />
       </geometry>
       <material
         name="">
@@ -691,7 +691,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpf2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpf2.STL" />
       </geometry>
     </collision>
   </link>
@@ -730,7 +730,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rf3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rf3.STL" />
       </geometry>
       <material
         name="">
@@ -744,7 +744,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rf3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rf3.STL" />
       </geometry>
     </collision>
   </link>
@@ -788,7 +788,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rffoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rffoot.STL" />
       </geometry>
       <material
         name="">
@@ -802,7 +802,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rffoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rffoot.STL" />
       </geometry>
     </collision>
   </link>
@@ -841,7 +841,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lb1.STL" />
       </geometry>
       <material
         name="">
@@ -855,7 +855,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lb1.STL" />
       </geometry>
     </collision>
   </link>
@@ -899,7 +899,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpb1.STL" />
       </geometry>
       <material
         name="">
@@ -913,7 +913,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpb1.STL" />
       </geometry>
     </collision>
   </link>
@@ -952,7 +952,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lb2.STL" />
       </geometry>
       <material
         name="">
@@ -966,7 +966,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lb2.STL" />
       </geometry>
     </collision>
   </link>
@@ -1010,7 +1010,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpb2.STL" />
       </geometry>
       <material
         name="">
@@ -1024,7 +1024,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lpb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lpb2.STL" />
       </geometry>
     </collision>
   </link>
@@ -1063,7 +1063,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lb3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lb3.STL" />
       </geometry>
       <material
         name="">
@@ -1077,7 +1077,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lb3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lb3.STL" />
       </geometry>
     </collision>
   </link>
@@ -1121,7 +1121,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lbfoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lbfoot.STL" />
       </geometry>
       <material
         name="">
@@ -1135,7 +1135,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/lbfoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/lbfoot.STL" />
       </geometry>
     </collision>
   </link>
@@ -1174,7 +1174,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rb1.STL" />
       </geometry>
       <material
         name="">
@@ -1188,7 +1188,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rb1.STL" />
       </geometry>
     </collision>
   </link>
@@ -1232,7 +1232,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpb1.STL" />
       </geometry>
       <material
         name="">
@@ -1246,7 +1246,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpb1.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpb1.STL" />
       </geometry>
     </collision>
   </link>
@@ -1285,7 +1285,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rb2.STL" />
       </geometry>
       <material
         name="">
@@ -1299,7 +1299,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rb2.STL" />
       </geometry>
     </collision>
   </link>
@@ -1343,7 +1343,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpb2.STL" />
       </geometry>
       <material
         name="">
@@ -1357,7 +1357,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rpb2.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rpb2.STL" />
       </geometry>
     </collision>
   </link>
@@ -1396,7 +1396,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rb3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rb3.STL" />
       </geometry>
       <material
         name="">
@@ -1410,7 +1410,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rb3.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rb3.STL" />
       </geometry>
     </collision>
   </link>
@@ -1454,7 +1454,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rbfoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rbfoot.STL" />
       </geometry>
       <material
         name="">
@@ -1468,7 +1468,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="$(find mini_pupper_description)/meshes/mini_pupper/rbfoot.STL" />
+          filename="file://$(find mini_pupper_description)/meshes/mini_pupper/rbfoot.STL" />
       </geometry>
     </collision>
   </link>

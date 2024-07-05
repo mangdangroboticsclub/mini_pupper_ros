@@ -20,7 +20,7 @@ import os
 import yaml
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.conditions import IfCondition
@@ -73,11 +73,10 @@ def generate_launch_description():
 
     sensors_config, ports_config = get_config()
 
-    # This is the confusing part to wrap so much around a bool value.
-    # In ROS2 launch file, we cannot pass bool value directly to launch_arguments.
-    has_lidar = PythonExpression([str(sensors_config['lidar'])])
-    has_imu = PythonExpression([str(sensors_config['imu'])])
-    lidar_port = PythonExpression([str(ports_config['lidar'])])
+    # Convert bool to str because cannot pass bool directly to launch_arguments.
+    has_lidar = str(sensors_config['lidar'])
+    has_imu = str(sensors_config['imu'])
+    lidar_port = ports_config['lidar']
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(
