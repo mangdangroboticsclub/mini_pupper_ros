@@ -39,6 +39,12 @@ def generate_launch_description():
         description='if the robot has imu sensor'
     )
 
+    has_camera = LaunchConfiguration("has_imu")
+    has_imu_launch_arg = DeclareLaunchArgument(
+        name='has_camera',
+        description='if the robot has camera module'
+    )
+
     lidar_port = LaunchConfiguration("lidar_port")
     lidar_port_launch_arg = DeclareLaunchArgument(
         name='lidar_port',
@@ -57,6 +63,10 @@ def generate_launch_description():
         [driver_package, 'launch', 'imu_interface.launch.py']
     )
 
+    camera_launch_path = PathJoinSubstitution(
+        [driver_package, 'launch', 'camera.launch.py']
+    )
+
     return LaunchDescription([
         has_lidar_launch_arg,
         has_imu_launch_arg,
@@ -72,5 +82,10 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(imu_launch_path),
             condition=IfCondition(has_imu)
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(camera_launch_path),
+            condition=IfCondition(has_camera)
         )
     ])
+

@@ -40,6 +40,7 @@ def get_config():
     sensors_config = configuration.get('sensors', {})
     sensors_config.setdefault('lidar', False)
     sensors_config.setdefault('imu', False)
+    sensors_config.setdefault('camera', False)
 
     ports_config = configuration.get('ports', {})
 
@@ -76,6 +77,7 @@ def generate_launch_description():
     # Convert bool to str because cannot pass bool directly to launch_arguments.
     has_lidar = str(sensors_config['lidar'])
     has_imu = str(sensors_config['imu'])
+    has_camera = str(sensors_config['camera'])
     lidar_port = ports_config['lidar']
 
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -117,6 +119,7 @@ def generate_launch_description():
         launch_arguments={
             "has_lidar": has_lidar,
             "has_imu": has_imu,
+            "has_camera": has_camera,
             "lidar_port": lidar_port
         }.items()
     )

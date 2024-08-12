@@ -1,5 +1,6 @@
 sensors:
   lidar: true
   imu: true
+  camera: false
 ports: 
   lidar: '/dev/ttyAMA1'
