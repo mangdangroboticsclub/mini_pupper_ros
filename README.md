@@ -361,7 +361,7 @@ Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 ```sh
 # Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_bringup bringup.launch.py has_camera:=true
+ros2 launch mini_pupper_bringup bringup.launch.py has_camera:=true has_imu:=false has_lidar:=false
 
 ```
 

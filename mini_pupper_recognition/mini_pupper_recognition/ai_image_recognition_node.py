@@ -43,7 +43,7 @@ def extract_keyword_constant(input_string):
         elif part.lower() in ['vertical', 'slanted']:
             orientation = part.lower()
         else:
-            proportion = float(part)
+            proportion = part
 
     return keyword, proportion, orientation
 
