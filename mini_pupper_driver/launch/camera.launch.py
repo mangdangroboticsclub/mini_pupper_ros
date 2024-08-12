@@ -21,16 +21,21 @@ from launch.actions import DeclareLaunchArgument
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
-
 def generate_launch_description():
+    output_encoding = LaunchConfiguration('output_encoding')
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'output_encoding',
+            default_value='yuv422_yuy2',
+            description='Output encoding for the camera'
+        ),
         Node(
             package='v4l2_camera',
             executable='v4l2_camera_node',
             name='v4l2_camera',
             output='image',
             parameters=[
-                {'output_encoding': yuv422_yuy2}],
+                {'output_encoding': output_encoding}],
         ),
     ])
