@@ -27,13 +27,13 @@ def generate_launch_description():
             executable="ai_image_recognition_node",
             name="ai_image_recognition_node",
         )
-    movement_node = Node(
+    line_following_node = Node(
             package="mini_pupper_recognition",
             namespace="",
-            executable="movement_node",
-            name="movement_node",
+            executable="line_following_node",
+            name="line_following_node",
         )
     return LaunchDescription([
         ai_image_recognition_node,
-        movement_node
+        line_following_node
     ])
