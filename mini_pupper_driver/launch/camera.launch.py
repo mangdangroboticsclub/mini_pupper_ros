@@ -34,7 +34,7 @@ def generate_launch_description():
             package='v4l2_camera',
             executable='v4l2_camera_node',
             name='v4l2_camera',
-            output='image',
+            output='screen',
             parameters=[
                 {'output_encoding': output_encoding}],
         ),
