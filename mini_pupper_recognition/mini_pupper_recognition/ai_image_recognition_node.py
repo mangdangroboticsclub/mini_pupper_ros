@@ -101,7 +101,7 @@ class AiImageResponse(Node):
         line itself, not its position in the image.
         - [proportion] is a float value between 0.0 and 1.0 indicating the relative
         position or orientation of the line. The proportion should be calculated as:
-        - If the line is vertical, 
+        - If the line is vertical,
         the proportion = 1 - |center_position - line_position| / total_width
         - If the line is slanted,
         the proportion = (1 / slope - min_slope) / (max_slope - min_slope),
