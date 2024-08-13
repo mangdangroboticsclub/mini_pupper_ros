@@ -11,9 +11,6 @@
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
-  <depend>python3-pillow</depend>
-  <depend>python3-numpy</depend>
-  <depend>python3-opencv</depend>
 
   <test_depend>python3-pytest</test_depend>
   <test_depend>ament_copyright</test_depend>
