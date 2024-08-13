@@ -39,7 +39,7 @@ def generate_launch_description():
         description='if the robot has imu sensor'
     )
 
-    has_camera = LaunchConfiguration("has_imu")
+    has_camera = LaunchConfiguration("has_camera")
     has_imu_launch_arg = DeclareLaunchArgument(
         name='has_camera',
         description='if the robot has camera module'
