@@ -355,6 +355,8 @@ Please refer to the README.md inside package "mini_pupper_dance".
 
 ### 2.2.5 AI Image Recognition
 
+This package base on camera, and is tested utilising a package called v4l2 camera that focuses on Raspberry Pi Camera for most systems.
+
 Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 
 - Bring up real mini pupper
@@ -362,7 +364,6 @@ Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 # Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup.launch.py has_camera:=true has_imu:=false has_lidar:=false
-
 ```
 
 - Launch all nodes (currently including line following only)
