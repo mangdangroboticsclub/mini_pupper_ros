@@ -81,8 +81,8 @@ class AiImageResponse(Node):
         self.orientation_publisher_ = self.create_publisher(String, 'orientation_of_movement', 10)
 
     def image_recognition(self, msg):
-        direction_input_prompt = f"""
-        There is a black line in the image. You are an expert in identifying the precise 
+        direction_input_prompt = """
+        There is a black line in the image. You are an expert in identifying the precise
         position and orientation of the black line from the image.
 
         The output should follow this format:
@@ -90,52 +90,52 @@ class AiImageResponse(Node):
         [direction] [proportion] [orientation]
 
         Where:
-        - [direction] is either "left", "right", or "center" depending on the orientation 
+        - [direction] is either "left", "right", or "center" depending on the orientation
         of the line in the image.
-        - For vertical lines, "left" means the line is positioned more towards the left 
-        side of the image, and "right" means the line is positioned more towards the 
+        - For vertical lines, "left" means the line is positioned more towards the left
+        side of the image, and "right" means the line is positioned more towards the
         right side.
-        - For slanted lines, "left" means the line is slanted like "\" (going from 
-        top-left to bottom-right), and "right" means the line is slanted like "/" 
-        (going from top-right to bottom-left). This indicates the orientation of the 
+        - For slanted lines, "left" means the line is slanted like "\" (going from
+        top-left to bottom-right), and "right" means the line is slanted like "/"
+        (going from top-right to bottom-left). This indicates the orientation of the
         line itself, not its position in the image.
-        - [proportion] is a float value between 0.0 and 1.0 indicating the relative 
+        - [proportion] is a float value between 0.0 and 1.0 indicating the relative
         position or orientation of the line. The proportion should be calculated as:
         - If the line is vertical, 
         the proportion = 1 - |center_position - line_position| / total_width
-        - If the line is slanted, 
-        the proportion = (1 / slope - min_slope) / (max_slope - min_slope), 
-        where min_slope and max_slope are the minimum and maximum possible slopes 
+        - If the line is slanted,
+        the proportion = (1 / slope - min_slope) / (max_slope - min_slope),
+        where min_slope and max_slope are the minimum and maximum possible slopes
         for the given image size
-        - [orientation] is either "vertical" or "slanted" depending on the overall 
+        - [orientation] is either "vertical" or "slanted" depending on the overall
         shape of the line in the image.
 
-        It's important to note that for slanted lines, the "left" and "right" directions 
-        refer to the orientation of the line itself, not its position in the image. So 
-        a line that is slanted like "\" would be considered "left", and a line slanted 
-        like "/" would be considered "right", regardless of where the line is positioned 
+        It's important to note that for slanted lines, the "left" and "right" directions
+        refer to the orientation of the line itself, not its position in the image. So
+        a line that is slanted like "\" would be considered "left", and a line slanted
+        like "/" would be considered "right", regardless of where the line is positioned
         in the image.
 
-        If the line is seen to be positioned more towards the left side of the image 
-        (for vertical lines) or slanted like "\" (for the orientation of the line), 
+        If the line is seen to be positioned more towards the left side of the image
+        (for vertical lines) or slanted like "\" (for the orientation of the line),
         output "left [proportion] [orientation]".
-        If the line is seen to be positioned more towards the right side of the image 
-        (for vertical lines) or slanted like "/" (for the orientation of the line), 
+        If the line is seen to be positioned more towards the right side of the image
+        (for vertical lines) or slanted like "/" (for the orientation of the line),
         output "right [proportion] [orientation]".
-        If the line is seen to be positioned in the center of the image, output "center 
+        If the line is seen to be positioned in the center of the image, output "center
         (proportion greater than 0.0) [orientation]".
         If no line is detected (empty image), output "empty 1.0 vertical".
 
-        The proportion value should accurately reflect the true position or orientation 
-        of the line, with values between 0.0 and 1.0. A proportion of 0.0 is not 
-        allowed for "left" or "right" directions, as that would indicate a line 
+        The proportion value should accurately reflect the true position or orientation
+        of the line, with values between 0.0 and 1.0. A proportion of 0.0 is not
+        allowed for "left" or "right" directions, as that would indicate a line
         strictly in the center.
 
-        To determine the orientation, observe the overall shape of the line in the image. 
-        If the line is strictly vertical (no slope), the orientation should be "vertical". 
+        To determine the orientation, observe the overall shape of the line in the image.
+        If the line is strictly vertical (no slope), the orientation should be "vertical".
         If the line has a noticeable slope, the orientation should be "slanted".
 
-        Your output should accurately reflect the true position and orientation of the 
+        Your output should accurately reflect the true position and orientation of the
         line in the image, and follow the specified format exactly.
         """
 
@@ -173,4 +173,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
