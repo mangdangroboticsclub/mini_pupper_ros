@@ -22,6 +22,7 @@ from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 import time
 
+
 class LineFollowingNode(Node):
     def __init__(self):
         super().__init__('line_following_node')
@@ -66,15 +67,15 @@ class LineFollowingNode(Node):
 
         velocity_cmd = Twist()
 
-        if direction.data == 'left' or direction.data == 'right' :
+        if direction.data == 'left' or direction.data == 'right':
             self.previous_direction = direction.data
 
-        if direction.data == 'left' or direction.data == 'right' :
-            if self.orientation == 'vertical' or self.orientation == 'slanted' :
+        if direction.data == 'left' or direction.data == 'right':
+            if self.orientation == 'vertical' or self.orientation == 'slanted':
                 self.previous_orientation = self.orientation
 
         if direction.data == 'left':
-            if self.orientation == 'vertical' :
+            if self.orientation == 'vertical':
                 self.speed = 0.04
                 velocity_cmd.linear.y = 0.025 * float(self.extent)
                 velocity_cmd.angular.z = 0.0
@@ -87,7 +88,7 @@ class LineFollowingNode(Node):
             self.walk_previous_direction = 0
 
         elif direction.data == 'right':
-            if self.orientation == 'vertical' :
+            if self.orientation == 'vertical':
                 self.speed = 0.04
                 velocity_cmd.linear.y = -0.025 * float(self.extent)
                 velocity_cmd.angular.z = 0.0
@@ -102,7 +103,7 @@ class LineFollowingNode(Node):
         elif direction.data == 'center':
             self.speed = 0.04
             self.vel_publisher_.publish(velocity_cmd)
-            time.sleep(1) 
+            time.sleep(1)
             self.walk_previous_direction = 0
 
         elif direction.data == '' and self.walk_previous_direction < 4:
@@ -111,16 +112,16 @@ class LineFollowingNode(Node):
 
             self.speed = 0.0
             self.vel_publisher_.publish(velocity_cmd)
-            time.sleep(self.interval) 
+            time.sleep(self.interval)
 
-            if self.previous_direction == 'left' :
+            if self.previous_direction == 'left':
                 self.speed = 0.02
                 velocity_cmd.linear.y = 0.0
                 velocity_cmd.angular.z = 0.4
                 self.vel_publisher_.publish(velocity_cmd)
                 time.sleep(self.interval)
 
-            elif self.previous_direction == 'right' :
+            elif self.previous_direction == 'right':
                 self.speed = 0.02
                 velocity_cmd.linear.y = 0.0
                 velocity_cmd.angular.z = -0.4
@@ -131,16 +132,16 @@ class LineFollowingNode(Node):
 
             velocity_cmd.angular.z = 0.0
             self.vel_publisher_.publish(velocity_cmd)
-            time.sleep(self.interval) 
+            time.sleep(self.interval)
 
-            if self.previous_direction == 'left' :
+            if self.previous_direction == 'left':
                 self.speed = 0.02
                 velocity_cmd.linear.y = 0.0
                 velocity_cmd.angular.z = -0.5
                 self.vel_publisher_.publish(velocity_cmd)
                 time.sleep(self.interval)
 
-            elif self.previous_direction == 'right' :
+            elif self.previous_direction == 'right':
                 self.speed = 0.02
                 velocity_cmd.linear.y = 0.0
                 velocity_cmd.angular.z = 0.5
@@ -152,12 +153,14 @@ class LineFollowingNode(Node):
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 
+
 def main(args=None):
     rclpy.init(args=args)
     node = LineFollowingNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

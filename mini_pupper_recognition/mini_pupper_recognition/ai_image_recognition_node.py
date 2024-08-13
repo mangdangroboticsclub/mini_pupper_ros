@@ -28,8 +28,8 @@ from langchain_core.messages import HumanMessage
 from io import BytesIO
 from std_msgs.msg import String
 
-def extract_keyword_constant(input_string):
 
+def extract_keyword_constant(input_string):
     input_string = input_string.strip()
     parts = input_string.split()
 
@@ -47,8 +47,8 @@ def extract_keyword_constant(input_string):
 
     return keyword, proportion, orientation
 
-def ai_image_response(llm, image, text):
 
+def ai_image_response(llm, image, text):
     buffered = BytesIO()
     image.save(buffered, format="JPEG")
     image_bytes = buffered.getvalue()
@@ -71,69 +71,82 @@ def ai_image_response(llm, image, text):
 
     return result
 
-class AiImageResponse(Node):
 
+class AiImageResponse(Node):
     def __init__(self):
         super().__init__('mini_pupper_maze_service')
-
-        self.sub = self.create_subscription(Image,
-                                            '/image_raw',
-                                            self.image_recognition,
-                                            10)
-
-        self.direction_publisher_ = self.create_publisher(String,
-                                       'direction',
-                                       10)
-
-        self.extent_publisher_ = self.create_publisher(String,
-                                        'extent_of_movement',
-                                        10)
-
-        self.orientation_publisher_ = self.create_publisher(String,
-                                        'orientation_of_movement',
-                                        10)
+        self.sub = self.create_subscription(Image, '/image_raw', self.image_recognition, 10)
+        self.direction_publisher_ = self.create_publisher(String, 'direction', 10)
+        self.extent_publisher_ = self.create_publisher(String, 'extent_of_movement', 10)
+        self.orientation_publisher_ = self.create_publisher(String, 'orientation_of_movement', 10)
 
     def image_recognition(self, msg):
-
         direction_input_prompt = """
-        There is a black line in the image. You are an expert in identifying the precise position and orientation of the black line from the image.
+        There is a black line in the image. You are an expert in identifying the precise 
+        position and orientation of the black line from the image.
 
         The output should follow this format:
 
         [direction] [proportion] [orientation]
 
         Where:
-        - [direction] is either "left", "right", or "center" depending on the orientation of the line in the image.
-        - For vertical lines, "left" means the line is positioned more towards the left side of the image, and "right" means the line is positioned more towards the right side.
-        - For slanted lines, "left" means the line is slanted like "\" (going from top-left to bottom-right), and "right" means the line is slanted like "/" (going from top-right to bottom-left). This indicates the orientation of the line itself, not its position in the image.
-        - [proportion] is a float value between 0.0 and 1.0 indicating the relative position or orientation of the line. The proportion should be calculated as:
-        - If the line is vertical, the proportion = 1 - |center_position - line_position| / total_width
-        - If the line is slanted, the proportion = (1 / slope - min_slope) / (max_slope - min_slope), where min_slope and max_slope are the minimum and maximum possible slopes for the given image size
-        - [orientation] is either "vertical" or "slanted" depending on the overall shape of the line in the image.
+        - [direction] is either "left", "right", or "center" depending on the orientation 
+        of the line in the image.
+        - For vertical lines, "left" means the line is positioned more towards the left 
+        side of the image, and "right" means the line is positioned more towards the 
+        right side.
+        - For slanted lines, "left" means the line is slanted like "\" (going from 
+        top-left to bottom-right), and "right" means the line is slanted like "/" 
+        (going from top-right to bottom-left). This indicates the orientation of the 
+        line itself, not its position in the image.
+        - [proportion] is a float value between 0.0 and 1.0 indicating the relative 
+        position or orientation of the line. The proportion should be calculated as:
+        - If the line is vertical, 
+        the proportion = 1 - |center_position - line_position| / total_width
+        - If the line is slanted, 
+        the proportion = (1 / slope - min_slope) / (max_slope - min_slope), 
+        where min_slope and max_slope are the minimum and maximum possible slopes 
+        for the given image size
+        - [orientation] is either "vertical" or "slanted" depending on the overall 
+        shape of the line in the image.
 
-        It's important to note that for slanted lines, the "left" and "right" directions refer to the orientation of the line itself, not its position in the image. So a line that is slanted like "\" would be considered "left", and a line slanted like "/" would be considered "right", regardless of where the line is positioned in the image.
+        It's important to note that for slanted lines, the "left" and "right" directions 
+        refer to the orientation of the line itself, not its position in the image. So 
+        a line that is slanted like "\" would be considered "left", and a line slanted 
+        like "/" would be considered "right", regardless of where the line is positioned 
+        in the image.
 
-        If the line is seen to be positioned more towards the left side of the image (for vertical lines) or slanted like "\" (for the orientation of the line), output "left [proportion] [orientation]".
-        If the line is seen to be positioned more towards the right side of the image (for vertical lines) or slanted like "/" (for the orientation of the line), output "right [proportion] [orientation]".
-        If the line is seen to be positioned in the center of the image, output "center (proportion greater than 0.0) [orientation]".
+        If the line is seen to be positioned more towards the left side of the image 
+        (for vertical lines) or slanted like "\" (for the orientation of the line), 
+        output "left [proportion] [orientation]".
+        If the line is seen to be positioned more towards the right side of the image 
+        (for vertical lines) or slanted like "/" (for the orientation of the line), 
+        output "right [proportion] [orientation]".
+        If the line is seen to be positioned in the center of the image, output "center 
+        (proportion greater than 0.0) [orientation]".
         If no line is detected (empty image), output "empty 1.0 vertical".
 
-        The proportion value should accurately reflect the true position or orientation of the line, with values between 0.0 and 1.0. A proportion of 0.0 is not allowed for "left" or "right" directions, as that would indicate a line strictly in the center.
+        The proportion value should accurately reflect the true position or orientation 
+        of the line, with values between 0.0 and 1.0. A proportion of 0.0 is not 
+        allowed for "left" or "right" directions, as that would indicate a line 
+        strictly in the center.
 
-        To determine the orientation, observe the overall shape of the line in the image. If the line is strictly vertical (no slope), the orientation should be "vertical". If the line has a noticeable slope, the orientation should be "slanted".
+        To determine the orientation, observe the overall shape of the line in the image. 
+        If the line is strictly vertical (no slope), the orientation should be "vertical". 
+        If the line has a noticeable slope, the orientation should be "slanted".
 
-        Your output should accurately reflect the true position and orientation of the line in the image, and follow the specified format exactly.
+        Your output should accurately reflect the true position and orientation of the 
+        line in the image, and follow the specified format exactly.
         """
 
         multi_model = ChatVertexAI(model="gemini-pro-vision")
-
         self.bridge = CvBridge()
         cv_img = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
         image = PIL.Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
-        resized = image.resize((320, 240))
 
-        direction_response = extract_keyword_constant(ai_image_response(multi_model, image=image, text=direction_input_prompt))
-
+        direction_response = extract_keyword_constant(
+            ai_image_response(multi_model, image=image, text=direction_input_prompt)
+        )
         self.get_logger().info(f"Direction response: {direction_response}")
 
         message1 = String()
@@ -151,10 +164,12 @@ class AiImageResponse(Node):
         message3.data = orientation
         self.orientation_publisher_.publish(message3)
 
+
 def main():
     rclpy.init()
     minimal_service = AiImageResponse()
     rclpy.spin(minimal_service)
+
 
 if __name__ == '__main__':
     main()

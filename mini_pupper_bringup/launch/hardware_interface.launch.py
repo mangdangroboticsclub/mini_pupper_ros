@@ -88,4 +88,3 @@ def generate_launch_description():
             condition=IfCondition(has_camera)
         )
     ])
-
