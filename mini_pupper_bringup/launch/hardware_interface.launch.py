@@ -40,7 +40,7 @@ def generate_launch_description():
     )
 
     has_camera = LaunchConfiguration("has_camera")
-    has_imu_launch_arg = DeclareLaunchArgument(
+    has_camera_launch_arg = DeclareLaunchArgument(
         name='has_camera',
         description='if the robot has camera module'
     )
@@ -71,6 +71,7 @@ def generate_launch_description():
         has_lidar_launch_arg,
         has_imu_launch_arg,
         lidar_port_launch_arg,
+        has_camera_launch_arg,
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(servos_launch_path)
         ),
