@@ -8,6 +8,8 @@
 
 # Mini Pupper ROS 2 Humble
 
+For a more detailed guide, please refer to our documentation website https://minipupperdocs.readthedocs.io/en/latest/.
+
 Supported versions
 
 * Ubuntu 22.04 + ROS 2 Humble
@@ -359,7 +361,13 @@ This package base on camera, and is tested utilising a package called v4l2 camer
 
 Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 
-Before bringing up mini pupper, please change the config file under ~/ros2_ws/src/mini_pupper_ros/mini_pupper_bringup/config , open the configuration file according to the model that you are using (eg. if you are using mini pupper 2 then change the value of mini_pupper_2.yaml) and change the value of camera to true and that of lidar to false so that camera is turned on for the function as the following example of mini pupper 2.
+Before bringing up mini pupper, please change the config file under
+```
+~/ros2_ws/src/mini_pupper_ros/mini_pupper_bringup/config
+```
+Open the configuration file according to the model that you are using (eg. if you are using mini pupper 2 then change the value of mini_pupper_2.yaml). 
+
+Change the value of camera to true and that of lidar to false so that camera is turned on for the function as the following example of mini pupper 2.
 
 ```yaml
 sensors:
