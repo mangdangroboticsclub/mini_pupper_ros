@@ -359,6 +359,17 @@ This package base on camera, and is tested utilising a package called v4l2 camer
 
 Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 
+Before bringing up mini pupper, please change the config file under ~/ros2_ws/src/mini_pupper_ros/mini_pupper_bringup/config , open the configuration file according to the model that you are using (eg. if you are using mini pupper 2 then change the value of mini_pupper_2.yaml) and change the value of camera to true and that of lidar to false so that camera is turned on for the function as the following example of mini pupper 2.
+
+```yaml
+sensors:
+  lidar: false
+  imu: true
+  camera: true
+ports: 
+  lidar: '/dev/ttyAMA1'
+```
+
 - Bring up real mini pupper
 ```sh
 # Terminal 1 (ssh to real mini pupper)
