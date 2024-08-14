@@ -140,27 +140,11 @@ __Note that the node list depends on the nodes in progress, which may not be exa
 
 ### 1.4 Joystick Setup
 
-- Connection to PC
 Press the HOME button on the controller. Then search for available bluetooth devices on your PC.
-
-- Connection to Mini Pupper using USB port
-Plug the controller to the robot through a USB Type A to USB Micro wire.
-
-- Connection to Mini Pupper using Bluetooth
-Press the HOME button on the controller.
-```sh
-#Terminal 1 (ssh)
-bluetoothctl scan on #then look for your sevice address
-```
-```sh
-#Terminal 2 (ssh)
-bluetoothctl trust <address of your controller>
-bluetoothctl connect <address of your controller>
-```
 
 - To check whether the joystick is connected
 ```sh
-#(ssh or PC)
+#(on PC)
 sudo apt install joystick 
 jstest /dev/input/js0 # there will be output once the joystick is connected
 ```
@@ -303,9 +287,9 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 - If using joystick control
 ```sh
-# Terminal 2 (ssh or PC)
+# Terminal 2 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py joy_dev:=<device file path (usually start with /dev/input/...)>
+ros2 launch teleop_twist_joy teleop-launch.py
 ```
 
 ### 2.2.2 Test SLAM (Mapping)
@@ -366,9 +350,39 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ros2 launch mini_pupper_navigation navigation.launch.py map:=$HOME/map.yaml
 ```
 
-### 2.2.1 Test dance
+### 2.2.4 Test dance
 Please refer to the README.md inside package "mini_pupper_dance".
 
+### 2.2.5 AI Image Recognition
+
+This package base on camera, and is tested utilising a package called v4l2 camera that focuses on Raspberry Pi Camera for most systems.
+
+Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
+
+Before bringing up mini pupper, please change the config file under ~/ros2_ws/src/mini_pupper_ros/mini_pupper_bringup/config , open the configuration file according to the model that you are using (eg. if you are using mini pupper 2 then change the value of mini_pupper_2.yaml) and change the value of camera to true and that of lidar to false so that camera is turned on for the function as the following example of mini pupper 2.
+
+```yaml
+sensors:
+  lidar: false
+  imu: true
+  camera: true
+ports: 
+  lidar: '/dev/ttyAMA1'
+```
+
+- Bring up real mini pupper
+```sh
+# Terminal 1 (ssh to real mini pupper)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_bringup bringup.launch.py
+```
+
+- Launch all nodes (currently including line following only)
+```sh
+# Terminal 2 (ssh or PC)
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_recognition recognition.launch.py
+```
 
 ## License
 
