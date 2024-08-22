@@ -22,10 +22,11 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'cloud_line_recognition_node = mini_pupper_recognition.cloud_line_recognition_node:main',
+            '''cloud_line_recognition_node = 
+            mini_pupper_recognition.cloud_line_recognition_node:main''',
             'cloud_line_following_node = mini_pupper_recognition.cloud_line_following_node:main',
             'line_detection_node = mini_pupper_recognition.line_detection_node:main',
             'pid_line_following_node = mini_pupper_recognition.pid_line_following_node:main'
-        ],
-    },
+        ]
+    }
 )

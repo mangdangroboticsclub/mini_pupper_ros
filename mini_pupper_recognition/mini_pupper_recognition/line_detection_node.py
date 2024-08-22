@@ -21,25 +21,24 @@ import rclpy
 from sensor_msgs.msg import Image
 from rclpy.node import Node
 from std_msgs.msg import String
-import cv2
 import numpy as np
 from cv_bridge import CvBridge
-import PIL.Image
+
 
 def detect_black_line(frame):
     # Convert frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    
+
     # Use adaptive thresholding to isolate the black line
     _, thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY_INV)
-    
+
     # Perform morphological operations to clean the image
     kernel = np.ones((3, 3), np.uint8)
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-    
+
     # Find contours
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
+
     # Process the largest contour which is most likely the black line
     if contours:
         # Sort contours by area to get the largest one
@@ -50,28 +49,27 @@ def detect_black_line(frame):
 
         # Calculate the center of the line
         center_x = int(rect[0][0])
-        center_y = int(rect[0][1])
-        
+
         # Calculate the angle of the line
         angle = rect[2]
-        
+
         angular = 0.0
         linear = 0.0
-        
+
         # Calculate direction based on position relative to frame center
         frame_center = frame.shape[1] // 2
         deviation = (center_x - frame_center) / frame_center
-        
+
         # Calculate extent for slanted lines
         if 0 < angle < 45:
             angular = - angle / 22.5
-        elif 45 < angle < 90 :
+        elif 45 < angle < 90:
             angular = (90 - angle) / 22.5
-            
+
         linear = -(deviation)
-    
+
         return linear, angular
-    
+
     return '', ''
 
 
@@ -87,7 +85,6 @@ class LineResponse(Node):
         # Convert the Image message to a OpenCV image
         self.bridge = CvBridge()
         cv_img = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
-        image = PIL.Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
 
         # Detect the black line's orientation, extent, and direction
         linear, angular = detect_black_line(cv_img)
@@ -111,3 +108,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
