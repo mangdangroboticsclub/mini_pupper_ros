@@ -71,7 +71,7 @@ class LineFollowingNode(Node):
             time.sleep(self.interval)
 
         velocity_cmd = Twist()
-        velocity_cmd.linear.x = 0.14
+        velocity_cmd.linear.x = 0.05
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 
