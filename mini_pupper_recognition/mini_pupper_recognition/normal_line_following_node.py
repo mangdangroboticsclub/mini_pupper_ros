@@ -59,13 +59,8 @@ class LineFollowingNode(Node):
             self.vel_publisher_.publish(velocity_cmd)
             time.sleep(self.interval)
 
-        if self.angular > 0.5:
-            self.speed = 0.05
-        else:
-            self.speed = 0.08
-
         velocity_cmd = Twist()
-        velocity_cmd.linear.x = self.speed
+        velocity_cmd.linear.x = 0.05
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 
