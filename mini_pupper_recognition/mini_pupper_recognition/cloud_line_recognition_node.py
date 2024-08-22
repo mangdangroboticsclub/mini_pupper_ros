@@ -48,7 +48,7 @@ def extract_keyword_constant(input_string):
     return keyword, proportion, orientation
 
 
-def ai_image_response(llm, image, text):
+def cloud_image_response(llm, image, text):
     buffered = BytesIO()
     image.save(buffered, format="JPEG")
     image_bytes = buffered.getvalue()
@@ -72,9 +72,9 @@ def ai_image_response(llm, image, text):
     return result
 
 
-class AiImageResponse(Node):
+class CloudLineResponse(Node):
     def __init__(self):
-        super().__init__('mini_pupper_maze_service')
+        super().__init__('cloud_line_response')
         self.sub = self.create_subscription(Image, '/image_raw', self.image_recognition, 10)
         self.direction_publisher_ = self.create_publisher(String, 'direction', 10)
         self.extent_publisher_ = self.create_publisher(String, 'extent_of_movement', 10)
@@ -145,7 +145,7 @@ class AiImageResponse(Node):
         image = PIL.Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
 
         direction_response = extract_keyword_constant(
-            ai_image_response(multi_model, image=image, text=direction_input_prompt)
+            cloud_image_response(multi_model, image=image, text=direction_input_prompt)
         )
         self.get_logger().info(f"Direction response: {direction_response}")
 
@@ -167,7 +167,7 @@ class AiImageResponse(Node):
 
 def main():
     rclpy.init()
-    minimal_service = AiImageResponse()
+    minimal_service = CloudLineResponse()
     rclpy.spin(minimal_service)
 
 

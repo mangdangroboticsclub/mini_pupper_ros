@@ -23,9 +23,9 @@ from geometry_msgs.msg import Twist
 import time
 
 
-class LineFollowingNode(Node):
+class CloudLineFollowingNode(Node):
     def __init__(self):
-        super().__init__('line_following_node')
+        super().__init__('cloud_line_following_node')
         self.extent = None
         self.orientation = None
         self.interval = 2.0
@@ -156,7 +156,7 @@ class LineFollowingNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = LineFollowingNode()
+    node = CloudLineFollowingNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

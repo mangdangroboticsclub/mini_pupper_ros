@@ -21,19 +21,19 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    line_detection_node = Node(
+    cloud_line_recognition_node = Node(
             package="mini_pupper_recognition",
             namespace="",
-            executable="line_detection_node",
-            name="line_detection_node",
+            executable="cloud_line_recognition_node",
+            name="cloud_line_recognition_node",
         )
-    pid_line_following_node = Node(
+    cloud_line_following_node = Node(
             package="mini_pupper_recognition",
             namespace="",
-            executable="pid_line_following_node",
-            name="pid_line_following_node",
+            executable="cloud_line_following_node",
+            name="cloud_line_following_node",
         )
     return LaunchDescription([
-        line_detection_node,
-        pid_line_following_node
+        cloud_line_recognition_node,
+        cloud_line_following_node
     ])
