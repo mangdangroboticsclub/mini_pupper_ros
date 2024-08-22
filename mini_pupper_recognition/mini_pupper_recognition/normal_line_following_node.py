@@ -46,10 +46,8 @@ class LineFollowingNode(Node):
 
         self.vel_publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
 
-
     def _angular_callback(self, msg):
         self.angular = float(msg.data)
-
 
     def _linear_callback(self, linear):
 

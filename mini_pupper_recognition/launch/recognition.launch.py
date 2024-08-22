@@ -17,14 +17,18 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition, UnlessCondition
+from launch_ros.actions import Node
+
 
 def generate_launch_description():
+    pid = LaunchConfiguration('pid')
+
     pid_arg = DeclareLaunchArgument(
-        name='pid',
-        default_value='False',
+        'pid',
+        default_value='false',
         description='Enable pid if true'
     )
 
@@ -40,7 +44,7 @@ def generate_launch_description():
         namespace="",
         executable="pid_line_following_node",
         name="pid_line_following_node",
-        condition=IfCondition(pid_arg),
+        condition=IfCondition(pid),
     )
 
     normal_line_following_node = Node(
@@ -48,7 +52,7 @@ def generate_launch_description():
         namespace="",
         executable="normal_line_following_node",
         name="normal_line_following_node",
-        condition=IfCondition(~pid_arg),
+        condition=UnlessCondition(pid),
     )
 
     return LaunchDescription([
