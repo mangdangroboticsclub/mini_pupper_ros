@@ -29,7 +29,7 @@ class LineFollowingNode(Node):
         super().__init__('line_following_node')
         self.linear_vel = 0.0
         self.angular_vel = 0.0
-        self.interval = 0.1
+        self.interval = 0.25
 
         self.pid_linear = PID(0.2, 0.01, 0.02, setpoint=0)
         self.pid_linear.output_limits = (-0.01, 0.01)
@@ -71,7 +71,7 @@ class LineFollowingNode(Node):
             time.sleep(self.interval)
 
         velocity_cmd = Twist()
-        velocity_cmd.linear.x = 0.05
+        velocity_cmd.linear.x = 0.10 / ((abs(float(linear.data)) + abs(self.angular)) * 3)
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 

@@ -389,7 +389,7 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ```sh
 # Terminal 2 (ssh or PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_recognition recognition.launch.py #pid:=true if want to implement pid
+ros2 launch mini_pupper_recognition recognition.launch.py #pid:=false if want to disable pid
 ```
 
 ## License

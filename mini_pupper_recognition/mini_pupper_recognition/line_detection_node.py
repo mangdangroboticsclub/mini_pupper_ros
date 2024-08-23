@@ -23,6 +23,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 import numpy as np
 from cv_bridge import CvBridge
+from mini_pupper_recognition.msg import LineDetectionResult
 
 
 def detect_black_line(frame):
@@ -73,9 +74,9 @@ def detect_black_line(frame):
     return '', ''
 
 
-class LineResponse(Node):
+class LineDetectionNode(Node):
     def __init__(self):
-        super().__init__('ai_line_response')
+        super().__init__('line_detection_node')
         self.sub = self.create_subscription(Image, '/image_raw', self.line_recognition, 10)
         self.linear_publisher_ = self.create_publisher(String, 'linear_vel', 10)
         self.angular_publisher_ = self.create_publisher(String, 'angular_vel', 10)
@@ -89,20 +90,15 @@ class LineResponse(Node):
         # Detect the black line's orientation, extent, and direction
         linear, angular = detect_black_line(cv_img)
 
-        self.get_logger().info(f"Linear: {linear}\nAngular: {angular:.2f}")
-
-        message1 = String()
-        message1.data = str(linear)
-        self.linear_publisher_.publish(message1)
-
-        message2 = String()
-        message2.data = str(angular)
-        self.angular_publisher_.publish(message2)
+        message1 = LineDetectionResult()
+        message1.linear = linear
+        message1.angular = angular
+        self.get_logger().info(f"Linear: {message1.linear}\nAngular: {message1.angular:.2f}")
 
 
 def main():
     rclpy.init()
-    minimal_service = LineResponse()
+    minimal_service = LineDetectionNode()
     rclpy.spin(minimal_service)
 
 

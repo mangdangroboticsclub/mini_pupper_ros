@@ -28,7 +28,7 @@ def generate_launch_description():
 
     pid_arg = DeclareLaunchArgument(
         'pid',
-        default_value='false',
+        default_value='true',
         description='Enable pid if true'
     )
 
