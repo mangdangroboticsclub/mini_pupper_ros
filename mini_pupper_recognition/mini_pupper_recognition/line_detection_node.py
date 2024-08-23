@@ -90,8 +90,8 @@ class LineDetectionNode(Node):
         linear, angular = detect_black_line(cv_img)
 
         message1 = LineDetectionResult()
-        message1.linear = linear
-        message1.angular = angular
+        message1.linear = str(linear)
+        message1.angular = str(angular)
         self.get_logger().info(f"Linear: {message1.linear}\nAngular: {message1.angular:.2f}")
 
 
