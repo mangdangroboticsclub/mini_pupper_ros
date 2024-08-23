@@ -20,10 +20,10 @@ import cv2
 import rclpy
 from sensor_msgs.msg import Image
 from rclpy.node import Node
-from std_msgs.msg import String
 import numpy as np
 from cv_bridge import CvBridge
 from mini_pupper_interfaces.msg import LineDetectionResult
+
 
 def detect_black_line(frame):
     # Convert frame to grayscale

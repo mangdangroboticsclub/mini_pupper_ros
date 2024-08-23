@@ -18,7 +18,6 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 import time
 from simple_pid import PID
@@ -62,7 +61,7 @@ class LineFollowingNode(Node):
             time.sleep(self.interval)
 
         velocity_cmd = Twist()
-        velocity_cmd.linear.x = 0.10 / ((abs(float(msg.linear)) + abs(msg.angular)) * 3)
+        velocity_cmd.linear.x = 0.10 / ((abs(float(msg.linear)) + abs(float(msg.angular))) * 3)
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 

@@ -26,7 +26,6 @@ from rclpy.node import Node
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import HumanMessage
 from io import BytesIO
-from std_msgs.msg import String
 from mini_pupper_interfaces.msg import AiLineRecognitionResult
 
 
