@@ -26,7 +26,7 @@ from rclpy.node import Node
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import HumanMessage
 from io import BytesIO
-from std_msgs.msg import String
+from mini_pupper_interfaces.msg import AiLineRecognitionResult
 
 
 def extract_keyword_constant(input_string):
@@ -48,7 +48,7 @@ def extract_keyword_constant(input_string):
     return keyword, proportion, orientation
 
 
-def ai_image_response(llm, image, text):
+def cloud_image_response(llm, image, text):
     buffered = BytesIO()
     image.save(buffered, format="JPEG")
     image_bytes = buffered.getvalue()
@@ -72,13 +72,11 @@ def ai_image_response(llm, image, text):
     return result
 
 
-class AiImageResponse(Node):
+class CloudLineResponse(Node):
     def __init__(self):
-        super().__init__('mini_pupper_maze_service')
+        super().__init__('cloud_line_response')
         self.sub = self.create_subscription(Image, '/image_raw', self.image_recognition, 10)
-        self.direction_publisher_ = self.create_publisher(String, 'direction', 10)
-        self.extent_publisher_ = self.create_publisher(String, 'extent_of_movement', 10)
-        self.orientation_publisher_ = self.create_publisher(String, 'orientation_of_movement', 10)
+        self.image_publisher_ = self.create_publisher(AiLineRecognitionResult, 'image', 10)
 
     def image_recognition(self, msg):
         direction_input_prompt = """
@@ -145,29 +143,20 @@ class AiImageResponse(Node):
         image = PIL.Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
 
         direction_response = extract_keyword_constant(
-            ai_image_response(multi_model, image=image, text=direction_input_prompt)
+            cloud_image_response(multi_model, image=image, text=direction_input_prompt)
         )
         self.get_logger().info(f"Direction response: {direction_response}")
 
-        message1 = String()
-        direction = direction_response[0]
-        message1.data = direction
-        self.direction_publisher_.publish(message1)
-
-        message2 = String()
-        extent = str(direction_response[1])
-        message2.data = extent
-        self.extent_publisher_.publish(message2)
-
-        message3 = String()
-        orientation = direction_response[2]
-        message3.data = orientation
-        self.orientation_publisher_.publish(message3)
+        message = AiLineRecognitionResult()
+        message.direction = direction_response[0]
+        message.extent = str(direction_response[1])
+        message.orientation = direction_response[2]
+        self.image_publisher_.publish(message)
 
 
 def main():
     rclpy.init()
-    minimal_service = AiImageResponse()
+    minimal_service = CloudLineResponse()
     rclpy.spin(minimal_service)
 
 

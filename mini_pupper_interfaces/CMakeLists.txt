@@ -17,6 +17,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/DanceCommand.srv"
   "srv/PlayMusic.srv"
   "srv/StopMusic.srv"
+  "msg/LineDetectionResult.msg"
+  "msg/AiLineRecognitionResult.msg"
   DEPENDENCIES std_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
 )
 

@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2024 MangDang
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
+import time
+from mini_pupper_interfaces.msg import LineDetectionResult
+
+
+class LineFollowingNode(Node):
+    def __init__(self):
+        super().__init__('line_following_node')
+        self.interval = 0.5
+        self.speed = 0.0
+
+        self.vel_sub = self.create_subscription(
+            LineDetectionResult,
+            'velocity',
+            self._vel_callback,
+            10
+        )
+
+        self.vel_publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
+
+    def _vel_callback(self, msg):
+
+        velocity_cmd = Twist()
+
+        if msg.linear != '':
+            velocity_cmd.linear.y = float(msg.linear) / 10
+            velocity_cmd.angular.z = float(msg.angular)
+            self.vel_publisher_.publish(velocity_cmd)
+            time.sleep(self.interval)
+
+        velocity_cmd = Twist()
+        velocity_cmd.linear.x = 0.10 / ((abs(float(msg.linear)) + abs(float(msg.angular))) * 3)
+        self.vel_publisher_.publish(velocity_cmd)
+        time.sleep(self.interval)
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = LineFollowingNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()

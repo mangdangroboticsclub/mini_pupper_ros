@@ -355,7 +355,7 @@ ros2 launch mini_pupper_navigation navigation.launch.py map:=$HOME/map.yaml
 ### 2.2.4 Test dance
 Please refer to the README.md inside package "mini_pupper_dance".
 
-### 2.2.5 AI Image Recognition
+### 2.2.5 Image Recognition
 
 This package base on camera, and is tested utilising a package called v4l2 camera that focuses on Raspberry Pi Camera for most systems.
 
@@ -389,7 +389,7 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ```sh
 # Terminal 2 (ssh or PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_recognition recognition.launch.py
+ros2 launch mini_pupper_recognition recognition.launch.py #pid:=false if want to disable pid
 ```
 
 ## License

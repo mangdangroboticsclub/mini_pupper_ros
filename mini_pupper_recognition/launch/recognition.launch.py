@@ -17,23 +17,47 @@
 # limitations under the License.
 
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition, UnlessCondition
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    ai_image_recognition_node = Node(
-            package="mini_pupper_recognition",
-            namespace="",
-            executable="ai_image_recognition_node",
-            name="ai_image_recognition_node",
-        )
-    line_following_node = Node(
-            package="mini_pupper_recognition",
-            namespace="",
-            executable="line_following_node",
-            name="line_following_node",
-        )
+    pid = LaunchConfiguration('pid')
+
+    pid_arg = DeclareLaunchArgument(
+        'pid',
+        default_value='true',
+        description='Enable pid if true'
+    )
+
+    line_detection_node = Node(
+        package="mini_pupper_recognition",
+        namespace="",
+        executable="line_detection_node",
+        name="line_detection_node",
+    )
+
+    pid_line_following_node = Node(
+        package="mini_pupper_recognition",
+        namespace="",
+        executable="pid_line_following_node",
+        name="pid_line_following_node",
+        condition=IfCondition(pid),
+    )
+
+    normal_line_following_node = Node(
+        package="mini_pupper_recognition",
+        namespace="",
+        executable="normal_line_following_node",
+        name="normal_line_following_node",
+        condition=UnlessCondition(pid),
+    )
+
     return LaunchDescription([
-        ai_image_recognition_node,
-        line_following_node
+        pid_arg,
+        line_detection_node,
+        pid_line_following_node,
+        normal_line_following_node
     ])
