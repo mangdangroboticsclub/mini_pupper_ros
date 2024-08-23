@@ -23,8 +23,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 import numpy as np
 from cv_bridge import CvBridge
-from mini_pupper_recognition.msg import LineDetectionResult
-
+from mini_pupper_interfaces.msg import LineDetectionResult
 
 def detect_black_line(frame):
     # Convert frame to grayscale
