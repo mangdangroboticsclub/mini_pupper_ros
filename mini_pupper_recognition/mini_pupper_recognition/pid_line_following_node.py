@@ -22,6 +22,7 @@ from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 import time
 from simple_pid import PID
+from mini_pupper_interfaces.msg import LineDetectionResult
 
 
 class LineFollowingNode(Node):
@@ -36,31 +37,21 @@ class LineFollowingNode(Node):
         self.pid_angular = PID(0.1, 0.01, 0.02, setpoint=0)
         self.pid_angular.output_limits = (-0.2, 0.2)
 
-        self.linear_sub = self.create_subscription(
-            String,
-            'linear_vel',
-            self._linear_callback,
-            10
-        )
-
-        self.angular_sub = self.create_subscription(
-            String,
-            'angular_vel',
-            self._angular_callback,
+        self.vel_sub = self.create_subscription(
+            LineDetectionResult,
+            'velocity',
+            self._vel_callback,
             10
         )
 
         self.vel_publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
 
-    def _angular_callback(self, msg):
-        self.angular_vel = float(msg.data)
-
-    def _linear_callback(self, linear):
+    def _linear_callback(self, msg):
         velocity_cmd = Twist()
 
-        if linear.data != '':
-            self.linear_vel = float(linear.data) * 2  # Scale the linear velocity
-            self.angular_vel = float(self.angular_vel) / 3  # Scale the angular velocity
+        if msg.linear != '':
+            self.linear_vel = float(msg.linear) * 2  # Scale the linear velocity
+            self.angular_vel = float(msg.angular) / 3  # Scale the angular velocity
 
             control_linear = self.pid_linear(self.linear_vel)
             control_angular = self.pid_angular(self.angular_vel)
@@ -71,7 +62,7 @@ class LineFollowingNode(Node):
             time.sleep(self.interval)
 
         velocity_cmd = Twist()
-        velocity_cmd.linear.x = 0.10 / ((abs(float(linear.data)) + abs(self.angular)) * 3)
+        velocity_cmd.linear.x = 0.10 / ((abs(float(msg.linear)) + abs(msg.angular)) * 3)
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 

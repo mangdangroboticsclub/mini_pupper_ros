@@ -21,46 +21,36 @@ from rclpy.node import Node
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 import time
+from mini_pupper_interfaces.msg import LineDetectionResult
 
 
 class LineFollowingNode(Node):
     def __init__(self):
         super().__init__('line_following_node')
-        self.angular = 0.0
         self.interval = 0.5
         self.speed = 0.0
 
-        self.linear_sub = self.create_subscription(
-            String,
-            'linear_vel',
-            self._linear_callback,
-            10
-        )
-
-        self.angular_sub = self.create_subscription(
-            String,
-            'angular_vel',
-            self._angular_callback,
+        self.vel_sub = self.create_subscription(
+            LineDetectionResult,
+            'velocity',
+            self._vel_callback,
             10
         )
 
         self.vel_publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
 
-    def _angular_callback(self, msg):
-        self.angular = float(msg.data)
-
-    def _linear_callback(self, linear):
+    def _vel_callback(self, msg):
 
         velocity_cmd = Twist()
 
-        if linear.data != '':
-            velocity_cmd.linear.y = float(linear.data) / 10
-            velocity_cmd.angular.z = self.angular
+        if msg.linear != '':
+            velocity_cmd.linear.y = float(msg.linear) / 10
+            velocity_cmd.angular.z = float(msg.angular)
             self.vel_publisher_.publish(velocity_cmd)
             time.sleep(self.interval)
 
         velocity_cmd = Twist()
-        velocity_cmd.linear.x = 0.10 / ((abs(float(linear.data)) + abs(self.angular)) * 3)
+        velocity_cmd.linear.x = 0.10 / ((abs(float(msg.linear)) + abs(msg.angular)) * 3)
         self.vel_publisher_.publish(velocity_cmd)
         time.sleep(self.interval)
 

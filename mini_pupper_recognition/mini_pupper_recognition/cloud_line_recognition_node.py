@@ -27,6 +27,7 @@ from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import HumanMessage
 from io import BytesIO
 from std_msgs.msg import String
+from mini_pupper_interfaces.msg import AiLineRecognitionResult
 
 
 def extract_keyword_constant(input_string):
@@ -76,9 +77,7 @@ class CloudLineResponse(Node):
     def __init__(self):
         super().__init__('cloud_line_response')
         self.sub = self.create_subscription(Image, '/image_raw', self.image_recognition, 10)
-        self.direction_publisher_ = self.create_publisher(String, 'direction', 10)
-        self.extent_publisher_ = self.create_publisher(String, 'extent_of_movement', 10)
-        self.orientation_publisher_ = self.create_publisher(String, 'orientation_of_movement', 10)
+        self.image_publisher_ = self.create_publisher(AiLineRecognitionResult, 'image', 10)
 
     def image_recognition(self, msg):
         direction_input_prompt = """
@@ -149,20 +148,11 @@ class CloudLineResponse(Node):
         )
         self.get_logger().info(f"Direction response: {direction_response}")
 
-        message1 = String()
-        direction = direction_response[0]
-        message1.data = direction
-        self.direction_publisher_.publish(message1)
-
-        message2 = String()
-        extent = str(direction_response[1])
-        message2.data = extent
-        self.extent_publisher_.publish(message2)
-
-        message3 = String()
-        orientation = direction_response[2]
-        message3.data = orientation
-        self.orientation_publisher_.publish(message3)
+        message = AiLineRecognitionResult()
+        message.direction = direction_response[0]
+        message.extent = str(direction_response[1])
+        message.orientation = direction_response[2]
+        self.image_publisher_.publish(message)
 
 
 def main():

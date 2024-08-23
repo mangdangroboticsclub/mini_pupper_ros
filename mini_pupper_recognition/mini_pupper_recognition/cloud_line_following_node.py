@@ -21,92 +21,71 @@ from rclpy.node import Node
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 import time
+from mini_pupper_interfaces.msg import AiLineRecognitionResult
 
 
 class CloudLineFollowingNode(Node):
     def __init__(self):
         super().__init__('cloud_line_following_node')
-        self.extent = None
-        self.orientation = None
         self.interval = 2.0
         self.speed = 0.0
         self.previous_direction = 'center'
         self.walk_previous_direction = 0
         self.previous_orientation = ''
 
-        self.direction_sub = self.create_subscription(
-            String,
-            'direction',
-            self._direction_callback,
-            10
-        )
-
-        self.extent_sub = self.create_subscription(
-            String,
-            'extent_of_movement',
-            self._extent_callback,
-            10
-        )
-
-        self.orientation_sub = self.create_subscription(
-            String,
-            'orientation_of_movement',
-            self._orientation_callback,
+        self.image_sub = self.create_subscription(
+            AiLineRecognitionResult,
+            'image',
+            self._image_callback,
             10
         )
 
         self.vel_publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
 
-    def _extent_callback(self, msg):
-        self.extent = msg.data
-
-    def _orientation_callback(self, msg):
-        self.orientation = msg.data
-
-    def _direction_callback(self, direction):
+    def _image_callback(self, msg):
 
         velocity_cmd = Twist()
 
-        if direction.data == 'left' or direction.data == 'right':
-            self.previous_direction = direction.data
+        if msg.direction == 'left' or msg.direction == 'right':
+            self.previous_direction = msg.direction
 
-        if direction.data == 'left' or direction.data == 'right':
-            if self.orientation == 'vertical' or self.orientation == 'slanted':
-                self.previous_orientation = self.orientation
+        if msg.direction == 'left' or msg.direction == 'right':
+            if msg.orientation == 'vertical' or msg.orientation == 'slanted':
+                self.previous_orientation = msg.orientation
 
-        if direction.data == 'left':
-            if self.orientation == 'vertical':
+        if msg.direction == 'left':
+            if msg.orientation == 'vertical':
                 self.speed = 0.04
-                velocity_cmd.linear.y = 0.025 * float(self.extent)
+                velocity_cmd.linear.y = 0.025 * float(msg.extent)
                 velocity_cmd.angular.z = 0.0
-            elif self.orientation == 'slanted':
+            elif msg.orientation == 'slanted':
                 self.speed = 0.03
                 velocity_cmd.linear.y = 0.0
-                velocity_cmd.angular.z = 0.4 * float(self.extent)
+                velocity_cmd.angular.z = 0.4 * float(msg.extent)
             self.vel_publisher_.publish(velocity_cmd)
             time.sleep(self.interval)
             self.walk_previous_direction = 0
 
-        elif direction.data == 'right':
-            if self.orientation == 'vertical':
+        elif msg.direction == 'right':
+            if msg.orientation == 'vertical':
                 self.speed = 0.04
-                velocity_cmd.linear.y = -0.025 * float(self.extent)
+                velocity_cmd.linear.y = -0.025 * float(msg.extent)
                 velocity_cmd.angular.z = 0.0
-            elif self.orientation == 'slanted':
+            elif msg.orientation == 'slanted':
                 self.speed = 0.03
                 velocity_cmd.linear.y = 0.0
-                velocity_cmd.angular.z = -0.4 * float(self.extent)
+                velocity_cmd.angular.z = -0.4 * float(msg.extent)
             self.vel_publisher_.publish(velocity_cmd)
             time.sleep(self.interval)
             self.walk_previous_direction = 0
 
-        elif direction.data == 'center':
+        elif msg.direction == 'center':
             self.speed = 0.04
             self.vel_publisher_.publish(velocity_cmd)
             time.sleep(1)
             self.walk_previous_direction = 0
 
-        elif direction.data == '' and self.walk_previous_direction < 4:
+        elif msg.direction == '' and self.walk_previous_direction < 4:
 
             self.walk_previous_direction += 1
 
@@ -128,7 +107,7 @@ class CloudLineFollowingNode(Node):
                 self.vel_publisher_.publish(velocity_cmd)
                 time.sleep(self.interval)
 
-        elif direction.data == '' and self.walk_previous_direction >= 4:
+        elif msg.direction == '' and self.walk_previous_direction >= 4:
 
             velocity_cmd.angular.z = 0.0
             self.vel_publisher_.publish(velocity_cmd)

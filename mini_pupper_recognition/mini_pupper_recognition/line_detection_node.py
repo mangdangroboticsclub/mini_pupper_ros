@@ -70,15 +70,14 @@ def detect_black_line(frame):
 
         return linear, angular
 
-    return '', ''
+    return '', 0.0
 
 
 class LineDetectionNode(Node):
     def __init__(self):
         super().__init__('line_detection_node')
         self.sub = self.create_subscription(Image, '/image_raw', self.line_recognition, 10)
-        self.linear_publisher_ = self.create_publisher(String, 'linear_vel', 10)
-        self.angular_publisher_ = self.create_publisher(String, 'angular_vel', 10)
+        self.vel_publisher_ = self.create_publisher(LineDetectionResult, 'velocity', 10)
 
     def line_recognition(self, msg):
 
@@ -89,10 +88,11 @@ class LineDetectionNode(Node):
         # Detect the black line's orientation, extent, and direction
         linear, angular = detect_black_line(cv_img)
 
-        message1 = LineDetectionResult()
-        message1.linear = str(linear)
-        message1.angular = str(angular)
-        self.get_logger().info(f"Linear: {message1.linear}\nAngular: {message1.angular:.2f}")
+        message = LineDetectionResult()
+        message.linear = str(linear)
+        message.angular = str(angular)
+        self.get_logger().info(f"Linear: {linear}\nAngular: {angular:.2f}")
+        self.vel_publisher_.publish(message)
 
 
 def main():
