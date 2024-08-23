@@ -18,6 +18,7 @@
 
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 import time
 from simple_pid import PID
@@ -49,7 +50,7 @@ class LineFollowingNode(Node):
         velocity_cmd = Twist()
 
         if msg.linear != '':
-            self.linear_vel = float(msg.linear) * 2  # Scale the linear velocity
+            self.linear_vel = float(msg.linear) / 5  # Scale the linear velocity
             self.angular_vel = float(msg.angular) / 3  # Scale the angular velocity
 
             control_linear = self.pid_linear(self.linear_vel)
