@@ -46,7 +46,7 @@ class LineFollowingNode(Node):
 
         self.vel_publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
 
-    def _linear_callback(self, msg):
+    def _vel_callback(self, msg):
         velocity_cmd = Twist()
 
         if msg.linear != '':
