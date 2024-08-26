@@ -70,7 +70,7 @@ def detect_black_line(frame):
 
         return linear, angular
 
-    return '', 0.0
+    return '', ''
 
 
 class LineDetectionNode(Node):
@@ -91,7 +91,7 @@ class LineDetectionNode(Node):
         message = LineDetectionResult()
         message.linear = str(linear)
         message.angular = str(angular)
-        self.get_logger().info(f"Linear: {linear}\nAngular: {angular:.2f}")
+        self.get_logger().info(f"Linear: {linear}\nAngular: {angular}")
         self.vel_publisher_.publish(message)
 
 
