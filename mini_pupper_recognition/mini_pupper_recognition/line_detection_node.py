@@ -69,7 +69,6 @@ def detect_black_line(frame):
         linear = -(deviation)
 
         return linear, angular
-
     return '', ''
 
 
