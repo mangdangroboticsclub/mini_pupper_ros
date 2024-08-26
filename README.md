@@ -8,6 +8,9 @@
 
 # Mini Pupper ROS 2 Humble
 
+Make sure the bsp package is installed to your pupper before installing this repositiory if you are not using a pre-built image to install this repository. 
+Please refer to https://github.com/mangdangroboticsclub/mini_pupper_2_bsp (bsp for mini pupper 2) or https://github.com/mangdangroboticsclub/mini_pupper_bsp (bsp for mini pupper) according to your model.
+
 For a more detailed guide, please refer to our documentation website https://minipupperdocs.readthedocs.io/en/latest/.
 
 Supported versions
@@ -16,12 +19,14 @@ Supported versions
 
 ## 1. Installation
 
+__Please note that the setup of PC and the mini pupper is separated__
+
 * To use Gazebo simulator, "1.1 PC Setup" is required.
 * To control Mini Pupper, "1.2 Mini Pupper Setup" is required.
 * To control Mini Pupper using visualize tools, "1.1 PC Setup" and "1.2 Mini Pupper Setup" is required.
 * To use Gazebo simulator or control Mini Pupper using joystick,  "1.4 Joystick Setup" is required.
 
-### 1.1 PC Setup
+### 1.1 PC Setup 
 
 PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator.  
 __Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
@@ -52,6 +57,7 @@ cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y
 sudo apt install ros-humble-teleop-twist-keyboard
 sudo apt install ros-humble-teleop-twist-joy
+pip3 install simple_pid
 colcon build --symlink-install
 ```
 
@@ -87,7 +93,7 @@ Reference(Just for reference, don't need to do it again.):
 
 ### 1.3 Connecting Mini Pupper to PC
 
-The mini pupper is assumed to be automatically connected to the PC under same internet environment, but to make sure the mini pupper is connected to the PC, we can check their ROS domain ID according to the following steps:
+The mini pupper is assumed to be automatically connected to the PC under same internet environment, but to make sure the mini pupper is connected to the PC, we can check their ROS domain ID (which can be defined by user and is 0 in default cases) according to the following steps:
 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
@@ -390,6 +396,12 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 # Terminal 2 (ssh or PC)
 . ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_recognition recognition.launch.py #pid:=false if want to disable pid
+```
+
+- Launch the GenAI Image Recognition Line Following Demo (This is a code sample written to demonstrate the use of GenAI for image recognition and line following, but it is not recommended to use it as a primary function for line following, as there may be significant delays) This code requires access to our repository of generative AI models and supporting infrastructure.
+```sh
+. ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_recognition cloud_line_demo.launch.py
 ```
 
 ## License

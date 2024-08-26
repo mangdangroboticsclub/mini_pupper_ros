@@ -60,11 +60,7 @@ rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publi
 sudo apt install ros-humble-teleop-twist-keyboard
 sudo apt install ros-humble-teleop-twist-joy
 sudo apt install -y ros-humble-v4l2-camera ros-humble-image-transport-plugins
-
-### Get directory where this script is installed
-BASEDIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-# copy defaultcamera calibration file. This should be replaced by a camera spefici calibration file
-cp $BASEDIR/mmal_service_16.1.yaml ~/.ros/camera_info/
+pip3 install simple_pid
 
 #colcon build --symlink-install
 MAKEFLAGS=-j1 colcon build --executor sequential --symlink-install
