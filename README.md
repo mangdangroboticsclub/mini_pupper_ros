@@ -21,54 +21,12 @@ Supported versions
 
 __Please note that the setup of PC and the mini pupper is separated__
 
-* To use Gazebo simulator, "1.1 PC Setup" is required.
-* To control Mini Pupper, "1.2 Mini Pupper Setup" is required.
+* To control Mini Pupper, "1.1 Mini Pupper Setup" is required.
+* To use Gazebo simulator, "1.2 PC Setup" is required.
 * To control Mini Pupper using visualize tools, "1.1 PC Setup" and "1.2 Mini Pupper Setup" is required.
 * To use Gazebo simulator or control Mini Pupper using joystick,  "1.4 Joystick Setup" is required.
 
-### 1.1 PC Setup 
-
-PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator.  
-__Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
-
-Ubuntu 22.04 + ROS 2 Humble is required.  
-
-```sh
-cd ~
-sudo apt update
-git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
-~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
-source /opt/ros/humble/setup.bash
-```
-
-After ROS 2 installation, download the Mini Pupper ROS package in the workspace.
-
-```sh
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/src
-git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
-vcs import < mini_pupper_ros/.minipupper.repos --recursive
-```
-
-Build and install all ROS packages.
-
-```sh
-cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
-sudo apt install ros-humble-teleop-twist-keyboard
-sudo apt install ros-humble-teleop-twist-joy
-pip3 install simple_pid
-colcon build --symlink-install
-```
-
-Reference(Just for reference, don't need to do it again.): 
-
-[installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or
-
-[unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
-
-
-### 1.2 Mini Pupper Setup
+### 1.1 Mini Pupper Setup
 
 Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.  
 Ubuntu 22.04 is required.
@@ -81,7 +39,28 @@ After installing the driver software, install ROS 2 Humble is required.
 cd ~
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
 cd mini_pupper_ros
-./install.sh
+./pupper_install.sh
+```
+
+Reference(Just for reference, don't need to do it again.): 
+
+[installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or
+
+[unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
+
+
+### 1.2 PC Setup 
+
+PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator.  
+__Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
+
+Ubuntu 22.04 + ROS 2 Humble is required.  
+
+```sh
+cd ~
+git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+cd mini_pupper_ros
+./pc_install.sh
 ```
 
 Reference(Just for reference, don't need to do it again.): 

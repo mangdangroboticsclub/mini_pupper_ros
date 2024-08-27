@@ -5,7 +5,7 @@
 # This stack will consist of ROS2 install
 #
 # To install
-#    ./install.sh
+#    ./pupper_install.sh
 ######################################################################################
 
 set -e
@@ -39,14 +39,18 @@ sudo apt-get update
 sudo apt -y install python3-pip python3-venv python3-virtualenv
 
 #Auto install ROS2 Humble
-git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
+if ! [ -d "ros2_setup_scripts_ubuntu" ]; then
+  git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
+fi
 ~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
 source /opt/ros/humble/setup.bash
 
 #clone mini pupper 2 ros2 repo
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
-git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+if ! [ -d "mini_pupper_ros" ]; then
+  git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 # compiling gazebo and cartographer on Raspberry Pi is not recommended
 touch champ/champ/champ_gazebo/AMENT_IGNORE
