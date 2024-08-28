@@ -380,6 +380,12 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ros2 launch mini_pupper_recognition recognition.launch.py #pid:=false if want to disable pid
 ```
 
+- Watch the image from pc
+```sh
+# Terminal 3 (PC)
+ros2 run rqt_image_view rqt_image_view
+```
+
 - Launch the GenAI Image Recognition Line Following Demo (This is a code sample written to demonstrate the use of GenAI for image recognition and line following, but it is not recommended to use it as a primary function for line following, as there may be significant delays) This code requires access to our repository of generative AI models and supporting infrastructure.
 ```sh
 . ~/ros2_ws/install/setup.bash
