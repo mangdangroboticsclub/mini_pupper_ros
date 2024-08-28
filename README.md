@@ -33,7 +33,7 @@ Ubuntu 22.04 is required.
 
 Before installation, you need to install the BSP(board support package) repo for your [Mini Pupper 2](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) or [Mini Pupper](https://github.com/mangdangroboticsclub/mini_pupper_bsp.git).
 
-After installing the driver software, install ROS 2 Humble is required.  
+After installing the driver software, install ROS 2 Humble is required, if the installation is unsuccessful, repeat the steps to install the package again.  
 
 ```sh
 cd ~
@@ -51,7 +51,7 @@ Reference(Just for reference, don't need to do it again.):
 
 ### 1.2 PC Setup 
 
-PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator.  
+PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator, if the installation is unsuccessful, repeat the steps to install the package again.  
 __Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
 
 Ubuntu 22.04 + ROS 2 Humble is required.  
@@ -98,12 +98,14 @@ __This command can be used on both PC and Mini Pupper__
 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
-export ROS_DOMAIN_ID=42
+nano ~/.bashrc
+export ROS_DOMAIN_ID=42 #add to the final line of the file
 ```
 
 ```sh
 # Terminal 2 (on PC)
-export ROS_DOMAIN_ID=42
+nano ~/.bashrc
+export ROS_DOMAIN_ID=42 #add to the final line of the file
 ```
 
 Use the following command in both terminals to confirm that the PC and the mini pupper are connected:
@@ -348,6 +350,7 @@ Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 
 Before bringing up mini pupper, please change the config file under
 ```
+(ssh)
 ~/ros2_ws/src/mini_pupper_ros/mini_pupper_bringup/config
 ```
 Open the configuration file according to the model that you are using (eg. if you are using mini pupper 2 then change the value of mini_pupper_2.yaml). 
