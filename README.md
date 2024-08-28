@@ -21,44 +21,25 @@ Supported versions
 
 __Please note that the setup of PC and the mini pupper is separated__
 
-* To use Gazebo simulator, "1.1 PC Setup" is required.
-* To control Mini Pupper, "1.2 Mini Pupper Setup" is required.
+* To control Mini Pupper, "1.1 Mini Pupper Setup" is required.
+* To use Gazebo simulator, "1.2 PC Setup" is required.
 * To control Mini Pupper using visualize tools, "1.1 PC Setup" and "1.2 Mini Pupper Setup" is required.
 * To use Gazebo simulator or control Mini Pupper using joystick,  "1.4 Joystick Setup" is required.
 
-### 1.1 PC Setup 
+### 1.1 Mini Pupper Setup
 
-PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator.  
-__Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
+Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.  
+Ubuntu 22.04 is required.
 
-Ubuntu 22.04 + ROS 2 Humble is required.  
+Before installation, you need to install the BSP(board support package) repo for your [Mini Pupper 2](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) or [Mini Pupper](https://github.com/mangdangroboticsclub/mini_pupper_bsp.git).
+
+After installing the driver software, install ROS 2 Humble is required, if the installation is unsuccessful, repeat the steps to install the package again.  
 
 ```sh
 cd ~
-sudo apt update
-git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
-~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
-source /opt/ros/humble/setup.bash
-```
-
-After ROS 2 installation, download the Mini Pupper ROS package in the workspace.
-
-```sh
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/src
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
-vcs import < mini_pupper_ros/.minipupper.repos --recursive
-```
-
-Build and install all ROS packages.
-
-```sh
-cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
-sudo apt install ros-humble-teleop-twist-keyboard
-sudo apt install ros-humble-teleop-twist-joy
-pip3 install simple_pid
-colcon build --symlink-install
+cd mini_pupper_ros
+./pupper_install.sh
 ```
 
 Reference(Just for reference, don't need to do it again.): 
@@ -68,20 +49,18 @@ Reference(Just for reference, don't need to do it again.):
 [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
 
 
-### 1.2 Mini Pupper Setup
+### 1.2 PC Setup 
 
-Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.  
-Ubuntu 22.04 is required.
+PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator, if the installation is unsuccessful, repeat the steps to install the package again.  
+__Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
 
-Before installation, you need to install the BSP(board support package) repo for your [Mini Pupper 2](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) or [Mini Pupper](https://github.com/mangdangroboticsclub/mini_pupper_bsp.git).
-
-After installing the driver software, install ROS 2 Humble is required.  
+Ubuntu 22.04 + ROS 2 Humble is required.  
 
 ```sh
 cd ~
 git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
 cd mini_pupper_ros
-./install.sh
+./pc_install.sh
 ```
 
 Reference(Just for reference, don't need to do it again.): 
@@ -119,12 +98,14 @@ __This command can be used on both PC and Mini Pupper__
 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
-export ROS_DOMAIN_ID=42
+nano ~/.bashrc
+export ROS_DOMAIN_ID=42 #add to the final line of the file
 ```
 
 ```sh
 # Terminal 2 (on PC)
-export ROS_DOMAIN_ID=42
+nano ~/.bashrc
+export ROS_DOMAIN_ID=42 #add to the final line of the file
 ```
 
 Use the following command in both terminals to confirm that the PC and the mini pupper are connected:
@@ -369,6 +350,7 @@ Note: This step can be done by only using Mini Pupper or both PC and Mini Pupper
 
 Before bringing up mini pupper, please change the config file under
 ```
+(ssh)
 ~/ros2_ws/src/mini_pupper_ros/mini_pupper_bringup/config
 ```
 Open the configuration file according to the model that you are using (eg. if you are using mini pupper 2 then change the value of mini_pupper_2.yaml). 
@@ -396,6 +378,12 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 # Terminal 2 (ssh or PC)
 . ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_recognition recognition.launch.py #pid:=false if want to disable pid
+```
+
+- Watch the image from pc
+```sh
+# Terminal 3 (PC)
+ros2 run rqt_image_view rqt_image_view
 ```
 
 - Launch the GenAI Image Recognition Line Following Demo (This is a code sample written to demonstrate the use of GenAI for image recognition and line following, but it is not recommended to use it as a primary function for line following, as there may be significant delays) This code requires access to our repository of generative AI models and supporting infrastructure.
