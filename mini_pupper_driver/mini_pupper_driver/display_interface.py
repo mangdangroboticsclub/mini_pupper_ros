@@ -18,6 +18,7 @@
 # @Author  : Yunlong Feng
 
 import PIL
+import PIL.Image
 import rclpy
 from rclpy.node import Node
 import cv2
@@ -35,7 +36,6 @@ class DisplayNode(Node):
         self.get_logger().info("Creating LCD hardware interface")
         self.disp = ST7789()
         self.disp.begin()
-        self.disp.clear()
 
     def callback(self, msg):
         cv_img = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
