@@ -62,7 +62,6 @@ touch mini_pupper_ros/mini_pupper_navigation/AMENT_IGNORE
 cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2 --skip-keys=gazebo_plugins --skip-keys=velodyne_gazebo_plugins
 sudo apt install ros-humble-teleop-twist-keyboard
-sudo apt install ros-humble-teleop-twist-joy
 sudo apt install -y ros-humble-v4l2-camera ros-humble-image-transport-plugins
 pip3 install simple_pid
 
