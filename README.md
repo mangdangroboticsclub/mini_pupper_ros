@@ -208,7 +208,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py
+ros2 launch mini_pupper_simulation main.launch.py
 ```
 
 - If using keyboard control
@@ -232,7 +232,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py
+ros2 launch mini_pupper_simulation main.launch.py
 ```
 
 - Mapping on PC

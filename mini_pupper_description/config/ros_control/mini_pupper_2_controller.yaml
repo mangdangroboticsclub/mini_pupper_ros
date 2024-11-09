@@ -2,7 +2,7 @@ controller_manager:
   ros__parameters:
     use_sim_time: True
     update_rate: 250  # Hz
-    joint_states_controller:
+    joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
     joint_group_effort_controller:
       type: joint_trajectory_controller/JointTrajectoryController

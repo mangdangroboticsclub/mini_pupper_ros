@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
-project(mini_pupper_gazebo)
+project(mini_pupper_simulation)
 
 find_package(ament_cmake REQUIRED)
+find_package(gazebo_ros2_control REQUIRED)
+find_package(gazebo_ros REQUIRED)
 
 install(
-  DIRECTORY launch worlds
+  DIRECTORY config launch worlds
   DESTINATION share/${PROJECT_NAME}
 )
 
