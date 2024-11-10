@@ -100,8 +100,14 @@ def generate_launch_description():
         output='screen'
     )
 
-    ros2_controllers_launch_path = PathJoinSubstitution([this_package, 'launch', 'ros2_controllers.launch.py'])
-    ros2_controllers_launch = IncludeLaunchDescription(PythonLaunchDescriptionSource(ros2_controllers_launch_path))
+    ros2_controllers_launch_path = PathJoinSubstitution([
+        this_package, 
+        'launch', 
+        'ros2_controllers.launch.py'
+    ])
+    ros2_controllers_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(ros2_controllers_launch_path)
+    )
 
     links_map_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_description'), 'config', 'champ', ROBOT_MODEL, 'links.yaml']

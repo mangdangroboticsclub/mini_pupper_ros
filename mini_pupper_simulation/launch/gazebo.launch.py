@@ -24,6 +24,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 
+
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_simulation')
 
@@ -46,7 +47,7 @@ def generate_launch_description():
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'extra_gazebo_args': f'--ros-args --params-file \{gazebo_params_path}',
+            'extra_gazebo_args': f'--ros-args --params-file {gazebo_params_path}',
             'world': world
         }.items()
     )
