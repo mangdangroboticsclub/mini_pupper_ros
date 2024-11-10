@@ -19,7 +19,7 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription,LogInfo
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
@@ -112,7 +112,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'use_sim_time': True},
-            {'links_map_path': links_map_path}
+            links_map_path  # Load parameters from the YAML file,
         ]
     )
 
