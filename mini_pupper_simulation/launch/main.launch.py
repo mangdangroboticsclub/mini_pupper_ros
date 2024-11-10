@@ -101,8 +101,8 @@ def generate_launch_description():
     )
 
     ros2_controllers_launch_path = PathJoinSubstitution([
-        this_package, 
-        'launch', 
+        this_package,
+        'launch',
         'ros2_controllers.launch.py'
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
