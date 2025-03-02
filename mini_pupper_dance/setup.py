@@ -25,7 +25,8 @@ setup(
         'console_scripts': [
             'service = mini_pupper_dance.dance_server:main',
             'client = mini_pupper_dance.dance_client:main',
-            'pose_controller = mini_pupper_dance.pose_controller:main'
+            'pose_controller = mini_pupper_dance.pose_controller:main',
+            'mini_pupper_dance = new_dance.mini_pupper_dance:main'
         ],
     },
 )
