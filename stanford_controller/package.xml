@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>standford_controller</name>
+  <name>stanford_controller</name>
   <version>1.0.0</version>
-  <description>Standford controller</description>
+  <description>Stanford controller</description>
   <maintainer email="sunhongshuai@gmail.com">cullensun</maintainer>
   <license>Apache-2.0</license>
-
-  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
@@ -22,6 +20,6 @@
   <exec_depend>numpy</exec_depend>
   
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>ament_python</build_type>
   </export>
 </package>

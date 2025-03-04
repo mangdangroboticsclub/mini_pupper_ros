@@ -5,7 +5,7 @@ from MangDang.mini_pupper.Config import Configuration
 from .MovementScheme import MovementScheme
 from .createDanceActionListSample import MovementLib
 from mini_pupper_interfaces.msg import Command
-
+from mini_pupper_interfaces.msg import Matrix3x4
 
 class MiniPupperDanceNode(Node):
     def __init__(self):
@@ -27,12 +27,20 @@ class MiniPupperDanceNode(Node):
         # Calculate legsLocation, attitudes, and speed using custom movement script
         self.movementCtl.runMovementScheme()
         command = Command()
+
+        legsLocation = self.movementCtl.getMovemenLegsLocation()
+        matrix = Matrix3x4()
+        matrix.row1 = legsLocation[0]
+        matrix.row2 = legsLocation[1]
+        matrix.row3 = legsLocation[2]
+        command.legs_location = matrix
+
         command.pseudo_dance_event = True
-        command.legslocation = self.movementCtl.getMovemenLegsLocation()
         command.horizontal_velocity = self.movementCtl.getMovemenSpeed()
-        command.roll = self.movementCtl.attitude_now[0]
-        command.pitch = self.movementCtl.attitude_now[1]
-        command.yaw = self.movementCtl.attitude_now[2]
+
+        command.roll = float(self.movementCtl.attitude_now[0])
+        command.pitch = float(self.movementCtl.attitude_now[1])
+        command.yaw = float(self.movementCtl.attitude_now[2])
         command.yaw_rate = self.movementCtl.getMovemenTurn()
 
         self.commands_publisher.publish(command)

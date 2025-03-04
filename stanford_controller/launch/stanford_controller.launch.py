@@ -18,20 +18,24 @@
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
 
 
 def generate_launch_description():
-    orientation_from_imu = LaunchConfiguration("has_imu")
+    orientation_from_imu = LaunchConfiguration("orientation_from_imu")
     orientation_from_imu_launch_arg = DeclareLaunchArgument(
         name='orientation_from_imu',
+        default_value='False',
         description='if use imu for orientation'
     )
 
     return LaunchDescription([
+        orientation_from_imu_launch_arg,
         Node(
-            package='standford_controller',
-            executable='standford_controller',
-            name='standford_controller',
+            package='stanford_controller',
+            executable='stanford_controller',
+            name='stanford_controller',
             output='screen',
             parameters=[
                 {'orientation_from_imu': orientation_from_imu}

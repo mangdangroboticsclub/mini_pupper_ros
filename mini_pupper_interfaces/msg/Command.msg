@@ -16,7 +16,7 @@ float64 yaw
 int32 activation
 
 # Legs location
-float64[3][4] legslocation  # 3x4 matrix
+Matrix3x4 legs_location 
 
 # Events
 bool hop_event

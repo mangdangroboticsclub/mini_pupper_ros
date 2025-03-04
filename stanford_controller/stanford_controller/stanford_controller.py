@@ -1,3 +1,5 @@
+import rclpy
+from rclpy.node import Node
 from .gait_controller import GaitController
 from .stance_controller import StanceController
 from .swing_controller import SwingController
@@ -10,26 +12,23 @@ from MangDang.mini_pupper.Config import Configuration
 
 import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
-from transforms3d.quaternions import qconjugate, quat2axangle
-from transforms3d.axangles import axangle2mat
 
 from sensor_msgs.msg import Imu
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from mini_pupper_interfaces.msg import Command
+from mini_pupper_interfaces.msg import Matrix3x4
 
-class StandfordController(Node):
+class StanfordController(Node):
     """
     ROS 2 Node for StanfordController
     """
 
     def __init__(self, config, inverse_kinematics):
-        super().__init__('standford_controller')
+        super().__init__('stanford_controller')
 
         # Read parameters
         self.declare_parameter('orientation_from_imu', False)
-        self.orientation_from_imu = self.get_parameter('orientation_from_imu')
-                                   .get_parameter_value()
-                                   .bool_value
+        self.orientation_from_imu = self.get_parameter('orientation_from_imu').get_parameter_value().bool_value
         self.get_logger().info(f"use_imu: {self.orientation_from_imu}")
 
         # Configuration and initialization
@@ -226,7 +225,8 @@ class StandfordController(Node):
                 ) @ self.current_state.foot_locations
             )
         else:
-            location_buf = np.array(self.current_command.legslocation)
+            stanford = self.current_command.legs_location
+            location_buf = np.array([stanford.row1, stanford.row2, stanford.row3])
             self.current_state.foot_locations = location_buf
             rotated_foot_locations = (
                 euler2mat(
@@ -262,7 +262,7 @@ class StandfordController(Node):
         Returns
         -------
         Numpy array (3, 4)
-            Matrix of new foot locations.
+            stanford of new foot locations.
         """
         contact_modes = self.gait_controller.contacts(state.ticks)
         new_foot_locations = np.zeros((3, 4))
@@ -315,7 +315,7 @@ class StandfordController(Node):
 def main(args=None):
     rclpy.init(args=args)
     config = Configuration()
-    node = StandfordController(config, four_legs_inverse_kinematics)
+    node = StanfordController(config, four_legs_inverse_kinematics)
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
