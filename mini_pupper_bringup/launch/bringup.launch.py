@@ -108,6 +108,16 @@ def generate_launch_description():
         }.items()
     )
 
+    stanford_controller_launch_path = PathJoinSubstitution(
+        [FindPackageShare('stanford_controller'), 'launch', 'stanford_controller.launch.py']
+    )
+    stanford_controller_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(stanford_controller_launch_path),
+        launch_arguments={
+            'orientation_from_imu': has_imu
+        }.items()
+    )
+
     ekf_localization_launch_path = PathJoinSubstitution(
         [bringup_package, 'launch', 'ekf_localization.launch.py']
     )
@@ -124,5 +134,6 @@ def generate_launch_description():
         description_launch,
         hardware_interface_launch,
         champ_controllers_launch,
+        stanford_controller_launch,
         ekf_localization_launch
     ])

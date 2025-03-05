@@ -102,6 +102,9 @@ class StanfordController(Node):
         """
         Callback to handle incoming Command messages.
         """
+        self.get_logger().info(f'recieved command, \nroll: {msg.roll} pitch: {msg.pitch} yaw: {msg.yaw}')
+        #self.get_logger().info(f'legs_location: {msg.legs_location}')
+
         self.current_command = msg
 
     def imu_callback(self, msg):
@@ -301,7 +304,7 @@ class StanfordController(Node):
 
     def publish_joints_command(self):
         joints_cmd_msg = JointTrajectory()
-        joints_cmd_msg.header.stamp = self.clock.now().to_msg()
+        joints_cmd_msg.header.stamp = self.get_clock().now().to_msg()
         joints_cmd_msg.joint_names = self.joint_names
 
         point = JointTrajectoryPoint()
