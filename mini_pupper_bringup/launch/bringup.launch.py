@@ -109,7 +109,7 @@ def generate_launch_description():
     )
 
     stanford_controller_launch_path = PathJoinSubstitution(
-        [FindPackageShare('stanford_controller'), 'launch', 'stanford_controller.launch.py']
+        [FindPackageShare('stanford_controller'), 'stanford_controller.launch.py']
     )
     stanford_controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(stanford_controller_launch_path),
