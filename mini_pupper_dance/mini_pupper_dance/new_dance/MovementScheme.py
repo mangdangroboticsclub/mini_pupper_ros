@@ -18,8 +18,8 @@
 import numpy as np
 
 LocationStanding = [[ 0.06,0.06,-0.06,-0.06],[-0.05, 0.05,-0.05,0.05],[ -0.07,-0.07,-0.07,-0.07]]
-SpeedStanding = [0,0,0]
-AttitudeStanding = [0,0,0]
+SpeedStanding = [0.0,0.0,0.0]
+AttitudeStanding = [0.0,0.0,0.0]
 
 DeltLocationMax = 0.0005 #unit m
 DeltSpeedMax = 0.0025 #unit m/s
@@ -175,26 +175,23 @@ class Movements:
     """this class used to set three interpolation of movement through the first class called sequenceInterpolation
        legs_location,speed and sttitude
     """
-    def __init__(self,name,speed_enable = "SpeedEnable",attitude_enable = "AttitudeEnable",turn_enable = "TurnEnable",legs_enable = "LegsEnable"):
+    def __init__(self,name,speed_enable = "SpeedEnable",attitude_enable = "AttitudeEnable",legs_enable = "LegsEnable"):
 
         self.MovementName =  name
 
         self.SpeedEnable = speed_enable
         self.AttitudeEnable = attitude_enable
         self.LegsEnable = legs_enable
-        self.TurnEnable = turn_enable
         self.ExitToStand = False
         
         #legs transition speed and gait acceleration
         self.DeltLegsM = np.full((3,4), 0.0005)
         self.DeltSpeedM = np.full(3, 0.001)
         self.DeltAttitudeM = np.full(3, 1)
-        self.DeltTurnM = np.full(3, 0)
         self.transTic = 70       #unit 1
 
         self.SpeedMovements = SequenceInterpolation('speed',2)
         self.AttitudeMovements = SequenceInterpolation('attitude',3)
-        self.TurnMovements = SequenceInterpolation('turn',1)
         self.LegsMovements = []
         self.LegsMovements.append(SequenceInterpolation('leg1',3))
         self.LegsMovements.append(SequenceInterpolation('leg2',3))
@@ -204,13 +201,11 @@ class Movements:
         # init state value
         self.SpeedInit = [0,0,0]          # x, y speed
         self.AttitudeInit = [0,0,0]     # roll pitch yaw rate
-        self.TurnInit = [0,0,0]         # yaw rate
         self.LegsLocationInit = [[0,0,0,0],[0,0,0,0],[0,0,0,0]] # x,y,z for 4 legs
 
         # output
         self.SpeedOutput = [0,0,0]          # x, y speed
         self.AttitudeOutput = [0,0,0]     # roll pitch yaw rate
-        self.TurnOutput = [0,0,0]         # yaw rate
         self.LegsLocationOutput = [[0,0,0,0],[0,0,0,0],[0,0,0,0]] # x,y,z for 4 legs
         
     def setTransitionTic(self, tic):
@@ -221,10 +216,9 @@ class Movements:
         """set interpolation number for three parts
         """    
         for leg in range(4):
-            self.LegsMovements[leg].setInterpolationNumber(number)
-        self.AttitudeMovements.setInterpolationNumber(number)          
+            self.LegsMovements[leg].setInterpolationNumber(number)  
+        self.AttitudeMovements.setInterpolationNumber(number)  
         self.SpeedMovements.setInterpolationNumber(number)  
-        self.TurnMovements.setInterpolationNumber(number)
         return True
         
     def setExitstate(self,state = "Continue"):
@@ -259,18 +253,6 @@ class Movements:
         self.AttitudeMovements.setCycleType(cycle_type,cycle_index)
         self.AttitudeInit = sequence[0]
 
-    def setTurnSequence(self,sequence,cycle_type = "single",cycle_index = 1):
-        """set rotate_speed sequence
-
-        Args:
-            sequence (_type_): your design movement in turn part
-            cycle_type (str, optional): three type :Forever, Multiple,single. Defaults to "single".
-            cycle_index (int, optional): just can be set in Multiple type. Defaults to 1.
-        """
-        self.TurnMovements.setSequencePoint(sequence)
-        self.TurnMovements.setCycleType(cycle_type,cycle_index)
-        self.TurnInit = sequence[0]
-
     def setLegsSequence(self,sequence,cycle_type = "single",cycle_index = 1):
         """set four legs sequence
 
@@ -294,9 +276,8 @@ class Movements:
         """
         Movements.setLegsSequence(self,sequenceLeg)
         Movements.setSpeedSequence(self,sequenceSpeed)
-        Movements.setAttitudeSequence(self,sequenceAttitude)            
-        Movements.setTurnSequence(self,[[0,0,0]])
-
+        Movements.setAttitudeSequence(self,sequenceAttitude)
+                    
     def runLegsSequence(self):
         if self.LegsEnable == 'LegsEnable':
             for leg in range(4):
@@ -311,10 +292,6 @@ class Movements:
     def runSpeedSequence(self):
         if self.SpeedEnable == 'SpeedEnable':
             self.SpeedOutput = self.SpeedMovements.getNewPoint()
-   
-    def runTurnSequence(self):
-        if self.TurnEnable == 'TurnEnable':
-            self.TurnOutput = self.TurnMovements.getNewPoint()
 
     def getSpeedOutput(self, state = 'Normal'):
         """get every interpolation point value of speed
@@ -340,14 +317,6 @@ class Movements:
         else:
             return self.LegsLocationOutput
 
-    def getTurnOutput(self, state = 'Normal'):
-        """get every interpolation point value of rotate speed
-        """
-        if state == 'Init':
-            return self.TurnInit
-        else:
-            return self.TurnOutput
-    
     def getMovementName(self):
         """
         Returns:
@@ -363,17 +332,16 @@ class Movements:
         """
         Speedticks = self.SpeedMovements.PhaseNumberMax * self.SpeedMovements.InterpolationNumber*self.SpeedMovements.ExecuteCounterMax
         Attitudeticks = self.AttitudeMovements.PhaseNumberMax * self.AttitudeMovements.InterpolationNumber*self.AttitudeMovements.ExecuteCounterMax
-        Legsticks = self.LegsMovements[0].PhaseNumberMax * self.LegsMovements[0].InterpolationNumber*self.LegsMovements[0].ExecuteCounterMax 
-        Turnticks = self.TurnMovements.PhaseNumberMax * self.TurnMovements.InterpolationNumber*self.TurnMovements.ExecuteCounterMax
-         
-        return max(Speedticks, Attitudeticks, Legsticks,Turnticks)
+        Legsticks = self.LegsMovements[0].PhaseNumberMax * self.LegsMovements[0].InterpolationNumber*self.LegsMovements[0].ExecuteCounterMax
+        
+        return max(Speedticks, Attitudeticks, Legsticks)
         
     def getPhaseNumberMax(self):
         """
         Returns:
         the phase number in one movement
         """
-        return self.SpeedMovements.PhaseNumberMax, self.AttitudeMovements.PhaseNumberMax, self.LegsMovements[0].PhaseNumberMax,self.TurnMovements.PhaseNumberMax
+        return self.SpeedMovements.PhaseNumberMax, self.AttitudeMovements.PhaseNumberMax, self.LegsMovements[0].PhaseNumberMax
 
 class MovementScheme:
     """this class is to contact two movement,finally you can through this class to get a movementlib which have a series of movement 
@@ -381,7 +349,7 @@ class MovementScheme:
     def __init__(self,movements_lib):
 
         self.movements_lib = movements_lib
-
+        
         self.movements_now = movements_lib[0]
         self.movements_pre = movements_lib[0]
         self.movement_now_name =  movements_lib[0].getMovementName()
@@ -392,18 +360,13 @@ class MovementScheme:
         self.entry_down = False
         self.entry_down1 = False
         self.entry_down2 = False
-        self.entry_down3 = False
         self.exit_down = False
         self.exit_down1 = False
         self.exit_down2 = False
-        self.exit_down3 = False
         self.tick = 0
-        self.now_ticks = 0
         self.Legslocation_gradient_done_counter = 0
         self.Speed_gradient_done_counter = 0
-        self.Turn_gradient_done_counter = 0
         self.Attitude_gradient_done_counter = 0
-        self.DeltTurn = 40.0
 
         self.legs_location_pre = LocationStanding
         self.legs_location_now = LocationStanding
@@ -415,12 +378,10 @@ class MovementScheme:
         self.legslocation_done_index = np.zeros((3,4))
         self.speed_done_index = [0,0,0]
         self.attitude_done_index = [0,0,0]
-        self.turn_done_index = 0
-
+        
         self.legslocation_gradient_done = False
         self.speed_gradient_done = False
         self.attitude_gradient_done = False
-        self.turn_gradient_done = False
 
         self.attitude_pre = [0,0,0]
         self.attitude_now = [0,0,0]
@@ -428,9 +389,6 @@ class MovementScheme:
         self.speed_pre = [0,0,0]
         self.speed_now = [0,0,0]
         
-        self.turn_pre = [0,0,0]
-        self.turn_now = [0,0,0]
-
         self.record_index_number = []
         
         # criterion that make sure delta of the movement transition are obtained at the begining of the transition and doesn't change later
@@ -449,11 +407,9 @@ class MovementScheme:
         self.entry_down = False
         self.entry_down1 = False
         self.entry_down2 = False
-        self.entry_down3 = False
         self.exit_down = False
         self.exit_down1 = False
         self.exit_down2 = False
-        self.exit_down3 = False
         self.transition = False
         self.movements_now = self.movements_lib[self.movement_now_number]
 
@@ -469,12 +425,10 @@ class MovementScheme:
         self.entry_down = False
         self.entry_down1 = False
         self.entry_down2 = False
-        self.entry_down3 = False
         
         self.exit_down = False
         self.exit_down1 = False
         self.exit_down2 = False
-        self.exit_down3 = False
         self.movements_now = self.movements_lib[0]
 
         return True
@@ -489,14 +443,14 @@ class MovementScheme:
         # movement state transition
         if (movement_type != self.movement_now_name):
             self.ststus = 'Exit'
-        elif(self.entry_down and self.entry_down1 and self.entry_down2 and self.entry_down3 ):
+        elif(self.entry_down and self.entry_down1 and self.entry_down2):
             self.ststus = 'Movement'
-        elif(self.exit_down and self.exit_down1 and self.exit_down2 and self.exit_down3 ):
+        elif(self.exit_down and self.exit_down1 and self.exit_down2):
             self.ststus = 'Entry'
         
         
         self.movement_now_name = movement_type
-        self.now_ticks = self.movements_now.getCycleTicks()
+        now_ticks = self.movements_now.getCycleTicks()
 
         # update system tick
         
@@ -526,9 +480,7 @@ class MovementScheme:
 
              location_ready = np.array(self.movements_now.getLegsLocationOutput('Init')) #a matrix with 3 rows and 4 columns
              speed_ready = np.array(self.movements_now.getSpeedOutput('Init'))
-             attitude_ready = np.array(self.movements_now.getAttitudeOutput('Init')) 
-             turn_ready = np.array(self.movements_now.getTurnOutput('Init'))
-             
+             attitude_ready = np.array(self.movements_now.getAttitudeOutput('Init'))
              if self.getAccCommand == True:
                  self.movements_now.DeltLegsM = location_ready - self.legs_location_pre
                  self.movements_now.DeltLegsM  = self.movements_now.DeltLegsM.astype(np.float64)
@@ -541,10 +493,6 @@ class MovementScheme:
                  self.movements_now.DeltAttitudeM = attitude_ready - self.attitude_pre
                  self.movements_now.DeltAttitudeM = self.movements_now.DeltAttitudeM.astype(np.float64)
                  self.movements_now.DeltAttitudeM /= self.movements_now.transTic
-                 
-                 self.movements_now.DeltTurnM = turn_ready - self.turn_pre
-                 self.movements_now.DeltTurnM = self.movements_now.DeltTurnM.astype(np.float64)
-                 self.movements_now.DeltTurnM /= self.movements_now.transTic
                  self.getAccCommand = False
              
              
@@ -557,28 +505,21 @@ class MovementScheme:
              self.attitude_now, self.entry_down2 = self.updateMovementAttitudeGradient(self.attitude_pre,attitude_ready)
              self.attitude_pre = self.attitude_now
              
-             self.turn_now, self.entry_down3 = self.updateMovementTurnGradient(self.turn_pre,turn_ready)
-             self.turn_pre = self.turn_now
-             
-             if self.entry_down == True and self.entry_down1 == True and self.entry_down2 == True and self.entry_down3 == True :
+             if self.entry_down == True and self.entry_down1 == True and self.entry_down2 == True:
              
                  self.Legslocation_gradient_done_counter = 0
                  self.speed_gradient_done_counter = 0
                  self.attitude_gradient_done_counter = 0
-                 self.turn_gradient_done_counter = 0
                  
                  self.exit_down = False
                  self.exit_down1 = False
                  self.exit_down2 = False
-                 self.exit_down3 = False
                  self.legslocation_gradient_done = False
                  self.speed_gradient_done = False
                  self.attitude_gradient_done = False
-                 self.turn_gradient_done = False
-
+                 
                  self.legslocation_done_index = np.zeros((3,4))
                  self.speed_done_index = [0,0]
-                 self.turn_done_index = 0
                  self.attitude_done_index = [0,0,0]
                  self.getAccCommand = True
 
@@ -596,76 +537,60 @@ class MovementScheme:
                   self.attitude_now, self.exit_down2=self.updateMovementAttitudeGradient(self.attitude_pre,AttitudeStanding)
                   self.attitude_pre = self.attitude_now
                   
-                  #update the rotate speed
-                  self.turn_now, self.exit_down3=self.updateMovementAttitudeGradient(self.turn_pre,0)
-                  self.turn_pre = self.turn_now
-                  
-                  if self.exit_down == True and self.exit_down1 == True and self.exit_down2 == True and self.exit_down3 :
+                  if self.exit_down == True and self.exit_down1 == True and self.exit_down2 == True:
                   
                       self.Legslocation_gradient_done_counter = 0
                       self.Speed_gradient_done_counter = 0
                       self.Attitude_gradient_done_counter = 0
-                      self.Turn_gradient_done_counter = 0
-
+                      
                       self.legslocation_done_index = np.zeros((3,4))
                       self.speed_done_index = [0,0]
                       self.attitude_done_index = [0,0,0]
-                      self.turn_done_index = 0
-
+                      
                       self.entry_down = False
                       self.entry_down1 = False
                       self.entry_down2 = False
-                      self.entry_down3 = False
                       self.legslocation_gradient_done = False
                       self.speed_gradient_done = False
                       self.attitude_gradient_done = False
-                      self.turn_gradient_done = False
-
+                      
              else:
                   self.legs_location_now = self.legs_location_pre
                   self.speed_now = self.speed_pre
                   self.attitude_now = self.attitude_pre
-                  self.turn_now = self.turn_pre
                   self.exit_down = True
                   self.exit_down1 = True
                   self.exit_down2 = True
-                  self.exit_down3 = True
                   self.entry_down = False
                   self.entry_down1 = False
                   self.entry_down2 = False
-                  self.entry_down3 = False
                   self.legslocation_gradient_done = False
                   self.speed_gradient_done = False
                   self.attitude_gradient_done = False
-                  self.turn_gradient_done = False
                   self.Legslocation_gradient_done_counter = 0
                   self.Speed_gradient_done_counter = 0
                   self.Attitude_gradient_done_counter = 0
-                  self.Turn_gradient_done_counter = 0
 
 
         elif self.ststus == 'Movement':
-             Nos, Noa, Nol, Not = self.movements_now.getPhaseNumberMax()
+             Nos, Noa, Nol = self.movements_now.getPhaseNumberMax()
              if Nol > 1 :
                  self.updateLegsScheme()
              if Noa > 1 :
                  self.updateAttitudeScheme()
              if Nos > 1 :
                  self.updateSpeedScheme()
-             if Not > 1 :
-                 self.updateTurnScheme()
-             
+
              self.legs_location_pre = self.legs_location_now
              self.speed_pre = self.speed_now 
              self.attitude_pre = self.attitude_now
-             self.turn_pre = self.turn_now
-
+             
              self.tick += 1
-             if self.tick >= self.now_ticks  and self.movement_now_number < len(self.movements_lib) - 1:
+             if self.tick >= now_ticks  and self.movement_now_number < len(self.movements_lib) - 1:
                  self.transition = True
                  self.tick = 0
 
-        return self.legs_location_now,self.speed_now,self.attitude_now, self.turn_now
+        return self.legs_location_now,self.speed_now,self.attitude_now
 
     def updateMovementLegsLocationGradient(self,location_now,location_target):
         """uodate gradient legs_locaiton between two movement
@@ -759,31 +684,6 @@ class MovementScheme:
 
         return attitude_gradient,self.attitude_gradient_done
      
-    def updateMovementTurnGradient(self,turn_now,turn_target):
-        """update gradient rotate speed between two movement
-
-        Args:
-            turn_now (array 1*3): now rotate speed
-            turn_target (arrar 1*3): target rotate speed
-
-        Returns:
-        turn_gradient: new turning in transition
-        self.turn_gradient_done: the state about turning transition
-        """
-        turn_gradient = turn_now
-        diff = turn_target[0] - turn_now[0]
-        if abs(diff) > abs(self.movements_now.DeltTurnM[0]):
-            turn_gradient[0] = turn_now[0] + self.movements_now.DeltTurnM[0]
-        else :
-            turn_gradient[0] = turn_target[0]
-            if self.Turn_gradient_done_counter != 1:
-                self.Turn_gradient_done_counter += 1
-                
-        if self.Turn_gradient_done_counter == 1:
-            self.turn_gradient_done = True
-            
-        return turn_gradient,self.turn_gradient_done 
-            
     def updateLegsScheme(self):
         self.movements_now.runLegsSequence()
         self.legs_location_now = self.movements_now.getLegsLocationOutput('normal')
@@ -795,11 +695,7 @@ class MovementScheme:
     def updateSpeedScheme(self):
         self.movements_now.runSpeedSequence()
         self.speed_now = self.movements_now.getSpeedOutput('normal')
-        
-    def updateTurnScheme(self):
-        self.movements_now.runTurnSequence()
-        self.turn_now = self.movements_now.getTurnOutput('normal')
-        
+
     def runMovementScheme(self):
         """run the movement in movementlib
         """
@@ -807,16 +703,17 @@ class MovementScheme:
         movement_name = ' '
         if self.transition == True:
             movement_name = self.updateMovementType()
-            
+
         self.updateMovement(movement_name) 
+ 
+        return True
 
     def getMovemenSpeed(self):
         """get now speed
         """
-        speed_now = np.zeros(2,dtype=np.float64)
-        for xyz in range(2):
-            speed_now[xyz] = self.speed_now[xyz]
-       
+        speed_now = [0.0,0.0,0.0]
+        for xyz in range(3):
+            speed_now[xyz] = float(self.speed_now[xyz])
         return speed_now
 
     def getMovemenLegsLocation(self):
@@ -827,12 +724,10 @@ class MovementScheme:
     def getMovemenAttitude(self):
         """get now attitude
         """
-        return ture
+        attitude_now_rad = [0.0,0.0,0.0] 
 
-    def getMovemenTurn(self):
-        """get now turn
-        """
-        turn_now_rad = [0.0,0.0,0.0]
-        turn_now_rad[0] = self.turn_now[0]/57.3
+        for rpy in range(3):
+            #angle to radin
+            attitude_now_rad[rpy] = self.attitude_now[rpy] / 57.3
 
-        return turn_now_rad[0]
+        return attitude_now_rad

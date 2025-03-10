@@ -27,22 +27,17 @@ class MiniPupperDanceNode(Node):
         # Calculate legsLocation, attitudes, and speed using custom movement script
         self.movementCtl.runMovementScheme()
         command = Command()
+        command.height = -0.07
+        command.pseudo_dance_event = True
 
         legsLocation = self.movementCtl.getMovemenLegsLocation()
         matrix = Matrix3x4()
         matrix.row1 = legsLocation[0]
         matrix.row2 = legsLocation[1]
         matrix.row3 = legsLocation[2]
-        command.legs_location = matrix
-
-        command.pseudo_dance_event = True
-        command.horizontal_velocity = self.movementCtl.getMovemenSpeed()
-
-        command.roll = float(self.movementCtl.attitude_now[0])
-        command.pitch = float(self.movementCtl.attitude_now[1])
-        command.yaw = float(self.movementCtl.attitude_now[2])
-        command.yaw_rate = self.movementCtl.getMovemenTurn()
-
+        command.foot_location = matrix
+        command.attitude = self.movementCtl.getMovemenAttitude()
+        command.robot_speed = self.movementCtl.getMovemenSpeed()
         self.commands_publisher.publish(command)
 
         # Check if the dance sequence is complete

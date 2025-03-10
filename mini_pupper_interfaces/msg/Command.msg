@@ -15,8 +15,10 @@ float64 yaw
 # Activation
 int32 activation
 
-# Legs location
-Matrix3x4 legs_location 
+# For dancing
+Matrix3x4 foot_location 
+float64[3] robot_speed
+float64[3] attitude
 
 # Events
 bool hop_event
