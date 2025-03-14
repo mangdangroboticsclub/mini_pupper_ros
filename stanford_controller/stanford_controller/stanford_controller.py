@@ -87,34 +87,8 @@ class StanfordController(Node):
             10
         )
 
-        # Timer to run the control loop
-        self.control_timer = self.create_timer(
-            0.01, # 100 Hz
-            self.control_loop_callback
-        )
-
         self.state = State()  
-        self.current_command = None  # Command message
         self.quat_orientation = np.array([1, 0, 0, 0])
-
-    def command_callback(self, msg):
-        """
-        Callback to handle incoming Command messages.
-        """
-        self.get_logger().info(f'''command_callback, 
-                               roll: {msg.roll}
-                               pitch: {msg.pitch}
-                               yaw: {msg.yaw}''')
-        self.get_logger().info(f'''command_callback, foot_location
-                               row0: {msg.foot_location.row1} 
-                               row2: {msg.foot_location.row2} 
-                               row3: {msg.foot_location.row3}''')
-
-        self.get_logger().info(f'command_callback, horizontal_velocity: {msg.horizontal_velocity}')
-        self.get_logger().info(f'command_callback, robot_speed: {msg.robot_speed}')
-        self.get_logger().info(f'command_callback, attitude: {msg.attitude}')
-
-        self.current_command = msg
 
     def imu_callback(self, msg):
         self.quat_orientation = np.array([
@@ -124,155 +98,31 @@ class StanfordController(Node):
             msg.orientation.z
         ])
 
-    def control_loop_callback(self):
+    def dump_state(self, state):
         """
-        Main control loop executed periodically.
+        debug interface to show all info about PS4 command
+        Parameter: None
+        return : None
         """
-        if self.current_command is None:
-            return
+        with open('/home/cullensun/ros2_ws/src/mini_pupper_ros/mini_pupper_dance/mini_pupper_dance/new_dance/state_log.txt', 'a') as file:
+            file.write(f"tick: {state.ticks}\n")
+            file.write(f"horizontal_velocity: {state.horizontal_velocity.tolist()}, yaw_rate: {state.yaw_rate}\n")
+            file.write(f"height: {state.height}, pitch: {state.pitch}, roll: {state.roll}\n")
+            file.write(f"foot locations: {state.foot_locations.tolist()}\n")
+            file.write(f"joint angles: {state.joint_angles.tolist()}\n")
+            file.write("\n")
 
-        # Update the operating state based on the command
-        if self.current_command.activate_event:
-            self.state.behavior_state = self.activate_transition_mapping[self.state.behavior_state]
-        elif self.current_command.trot_event:
-            self.state.behavior_state = self.trot_transition_mapping[self.state.behavior_state]
-        elif self.current_command.hop_event:
-            self.state.behavior_state = self.hop_transition_mapping[self.state.behavior_state]
-
-        self.get_logger().info(f"Behavior state: {self.state.behavior_state}")
-
-        # Manage dance state
-        self.dance_active(self.current_command)
-        self.pseudo_dance_active(self.current_command)
-
-        # Perform actions based on the behavior state
-        if self.state.behavior_state == BehaviorState.TROT:
-            self.handle_trot_state()
-        elif self.state.behavior_state == BehaviorState.HOP:
-            self.handle_hop_state()
-        elif self.state.behavior_state == BehaviorState.FINISHHOP:
-            self.handle_finishhop_state()
-        elif self.state.behavior_state == BehaviorState.REST:
-            self.handle_rest_state()
-
-        # Increment ticks
-        self.state.ticks += 1
-
-        self.publish_joints_command()
-
-    def handle_trot_state(self):
-        """
-        Handle the TROT behavior state.
-        """
-        self.state.foot_locations, contact_modes = self.step_gait(
-            self.state,
-            self.current_command,
-        )
-
-        rotated_foot_locations = (
-            euler2mat(
-                self.current_command.roll,
-                self.current_command.pitch,
-                0.0
-            ) @ self.state.foot_locations
-        )
-
-        # Apply tilt compensation
-        rotated_foot_locations = self.apply_tilt_compensation(rotated_foot_locations)
-
-        # Update joint angles
-        self.state.joint_angles = self.inverse_kinematics(
-            rotated_foot_locations, self.config
-        )
-
-    def handle_hop_state(self):
-        """
-        Handle the HOP behavior state.
-        """
-        self.state.foot_locations = (
-            self.config.default_stance
-            + np.array([0, 0, -0.03])[:, np.newaxis]
-        )
-        self.state.joint_angles = self.inverse_kinematics(
-            self.state.foot_locations, self.config
-        )
-
-    def handle_finishhop_state(self):
-        """
-        Handle the FINISHHOP behavior state.
-        """
-        self.state.foot_locations = (
-            self.config.default_stance
-            + np.array([0, 0, -0.105])[:, np.newaxis]
-        )
-        self.state.joint_angles = self.inverse_kinematics(
-            self.state.foot_locations, self.config
-        )
-
-    def handle_rest_state(self):
-        """
-        Handle the REST behavior state.
-        """
-        yaw_proportion = self.current_command.yaw_rate / self.config.max_yaw_rate
-        self.smoothed_yaw += (
-            self.config.dt
-            * clipped_first_order_filter(
-                self.smoothed_yaw,
-                yaw_proportion * -self.config.max_stance_yaw,
-                self.config.max_stance_yaw_rate,
-                self.config.yaw_time_constant,
-            )
-        )
-
-        if not self.dance_active_state:
-            self.state.foot_locations = (
-                self.config.default_stance
-                + np.array([0, 0, self.current_command.height])[:, np.newaxis]
-            )
-            rotated_foot_locations = (
-                euler2mat(
-                    self.current_command.roll,
-                    self.current_command.pitch,
-                    self.smoothed_yaw,
-                ) @ self.state.foot_locations
-            )
-        else:
-            foot_location = self.current_command.foot_location
-            location_buf = np.array([foot_location.row1, foot_location.row2, foot_location.row3])
-            if (abs(self.current_command.robot_speed[0])<0.01) and (abs(self.current_command.robot_speed[1])<0.01):
-                self.state.foot_locations = location_buf
+    def dance_active(self, command):
+        if command.dance_activate_event == True:
+            if self.dance_active_state == False:
+                self.dance_active_state = True
             else:
-                self.current_command.horizontal_velocity[0] = self.current_command.robot_speed[0]
-                self.current_command.horizontal_velocity[1] = self.current_command.robot_speed[1]
-                self.state.foot_locations, contact_modes = self.step_gait(self.state, self.current_command)
-            
-            rotated_foot_locations = (
-                euler2mat(
-                    self.current_command.attitude[0],
-                    self.current_command.attitude[1],
-                    self.current_command.attitude[2],
-                ) @ self.state.foot_locations
-            )
+                self.dance_active_state = False
+        return True
 
-        # Apply tilt compensation
-        rotated_foot_locations = self.apply_tilt_compensation(rotated_foot_locations)
-
-        # Update joint angles
-        self.state.joint_angles = self.inverse_kinematics(
-            rotated_foot_locations, self.config
-        )
-
-    def apply_tilt_compensation(self, foot_locations):
-        """
-        Apply tilt compensation to the foot locations.
-        """
-        roll, pitch, yaw = quat2euler(self.quat_orientation)
-        correction_factor = 0.8
-        max_tilt = 0.4
-        roll_compensation = correction_factor * np.clip(-roll, -max_tilt, max_tilt)
-        pitch_compensation = correction_factor * np.clip(-pitch, -max_tilt, max_tilt)
-        rmat = euler2mat(roll_compensation, pitch_compensation, 0)
-        return rmat.T @ foot_locations
+    def pseudo_dance_active(self, command):
+        if command.pseudo_dance_event == True:
+            self.dance_active_state = True
 
     def step_gait(self, state, command):
         """Calculate the desired foot locations for the next timestep
@@ -280,7 +130,7 @@ class StanfordController(Node):
         Returns
         -------
         Numpy array (3, 4)
-            stanford of new foot locations.
+            Matrix of new foot locations.
         """
         contact_modes = self.gait_controller.contacts(state.ticks)
         new_foot_locations = np.zeros((3, 4))
@@ -301,21 +151,142 @@ class StanfordController(Node):
                 )
             new_foot_locations[:, leg_index] = new_location
         return new_foot_locations, contact_modes
-   
 
-    def dance_active(self, command):
-        """
-        Manage dance activation state.
-        """
-        if command.dance_activate_event:
-            self.dance_active_state = not self.dance_active_state
+    def command_callback(self, command):
+        """Steps the controller forward one timestep
 
-    def pseudo_dance_active(self, command):
+        Parameters
+        ----------
+        controller : Controller
+            Robot controller object.
         """
-        Manage pseudo-dance activation state.
-        """
-        if command.pseudo_dance_event:
-            self.dance_active_state = True
+
+        ########## Update operating state based on command ######
+        if command.activate_event:
+            self.state.behavior_state = self.activate_transition_mapping[self.state.behavior_state]
+        elif command.trot_event:
+            self.state.behavior_state = self.trot_transition_mapping[self.state.behavior_state]
+        elif command.hop_event:
+            self.state.behavior_state = self.hop_transition_mapping[self.state.behavior_state]
+
+        #disp.show_state(state.behavior_state)
+        self.dance_active(command)
+        self.pseudo_dance_active(command)
+
+        if self.state.behavior_state == BehaviorState.TROT:
+            self.state.foot_locations, contact_modes = self.step_gait(
+                self.state,
+                command,
+            )
+
+            # Apply the desired body rotation
+            rotated_foot_locations = (
+                euler2mat(
+                    command.roll, command.pitch, 0.0
+                )
+                @ self.state.foot_locations
+            )
+
+            # Construct foot rotation matrix to compensate for body tilt
+            (roll, pitch, yaw) = quat2euler(self.state.quat_orientation)
+            correction_factor = 0.8
+            max_tilt = 0.4
+            roll_compensation = correction_factor * np.clip(-roll, -max_tilt, max_tilt)
+            pitch_compensation = correction_factor * np.clip(-pitch, -max_tilt, max_tilt)
+            rmat = euler2mat(roll_compensation, pitch_compensation, 0)
+
+            rotated_foot_locations = rmat.T @ rotated_foot_locations
+
+            self.state.joint_angles = self.inverse_kinematics(
+                rotated_foot_locations, self.config
+            )
+
+        elif self.state.behavior_state == BehaviorState.HOP:
+            self.state.foot_locations = (
+                self.config.default_stance
+                + np.array([0, 0, -0.03])[:, np.newaxis]
+            )
+            self.state.joint_angles = self.inverse_kinematics(
+                self.state.foot_locations, self.config
+            )
+
+        elif self.state.behavior_state == BehaviorState.FINISHHOP:
+            self.state.foot_locations = (
+                self.config.default_stance
+                + np.array([0, 0, -0.105])[:, np.newaxis]
+            )
+            self.state.joint_angles = self.inverse_kinematics(
+                self.state.foot_locations, self.config
+            )
+
+        elif self.state.behavior_state == BehaviorState.REST:
+            yaw_proportion = command.yaw_rate / self.config.max_yaw_rate
+            self.smoothed_yaw += (
+                self.config.dt
+                * clipped_first_order_filter(
+                    self.smoothed_yaw,
+                    yaw_proportion * -self.config.max_stance_yaw,
+                    self.config.max_stance_yaw_rate,
+                    self.config.yaw_time_constant,
+                )
+            )
+
+            if self.dance_active_state == False:
+                #  Set the foot locations to the default stance plus the standard height
+                self.state.foot_locations = (
+                    self.config.default_stance
+                    + np.array([0, 0, command.height])[:, np.newaxis]
+                 )
+                # Apply the desired body rotation
+                rotated_foot_locations = (
+                    euler2mat(
+                        command.roll,
+                        command.pitch,
+                        self.smoothed_yaw,
+                    )
+                    @ self.state.foot_locations
+                )
+            else:
+                location_buf = self.get_2d_foot_locations(command)
+                if (abs(command.robot_speed[0])<0.01) and (abs(command.robot_speed[1])<0.01):
+                    self.state.foot_locations = location_buf
+                else:
+                    command.horizontal_velocity[0] = command.robot_speed[0]
+                    command.horizontal_velocity[1] = command.robot_speed[1]
+                    self.state.foot_locations,contact_modes = self.step_gait(self.state, command)
+
+                rotated_foot_locations = (
+                    euler2mat(
+                        command.attitude[0],
+                        command.attitude[1],
+                        command.attitude[2],
+                    )
+                    @ self.state.foot_locations
+                )
+
+            # Construct foot rotation matrix to compensate for body tilt
+            (roll, pitch, yaw) = quat2euler(self.state.quat_orientation)
+            correction_factor = 0.8
+            max_tilt = 0.4
+            roll_compensation = correction_factor * np.clip(-roll, -max_tilt, max_tilt)
+            pitch_compensation = correction_factor * np.clip(-pitch, -max_tilt, max_tilt)
+            rmat = euler2mat(roll_compensation, pitch_compensation, 0)
+
+            rotated_foot_locations = rmat.T @ rotated_foot_locations
+
+            self.state.joint_angles = self.inverse_kinematics(
+                rotated_foot_locations, self.config
+            )
+
+        self.state.ticks += 1
+        self.state.pitch = command.pitch
+        self.state.roll = command.roll
+        self.state.height = command.height
+        # self.dump_state(self.state)
+
+    def get_2d_foot_locations(self, command):
+        location = command.foot_location
+        return np.array([location.row1, location.row2, location.row3])
 
     def publish_joints_command(self):
         joints_cmd_msg = JointTrajectory()

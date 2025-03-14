@@ -364,6 +364,7 @@ class MovementScheme:
         self.exit_down1 = False
         self.exit_down2 = False
         self.tick = 0
+        self.now_ticks = 0
         self.Legslocation_gradient_done_counter = 0
         self.Speed_gradient_done_counter = 0
         self.Attitude_gradient_done_counter = 0
@@ -448,9 +449,8 @@ class MovementScheme:
         elif(self.exit_down and self.exit_down1 and self.exit_down2):
             self.ststus = 'Entry'
         
-        
         self.movement_now_name = movement_type
-        now_ticks = self.movements_now.getCycleTicks()
+        self.now_ticks = self.movements_now.getCycleTicks()
 
         # update system tick
         
@@ -586,7 +586,7 @@ class MovementScheme:
              self.attitude_pre = self.attitude_now
              
              self.tick += 1
-             if self.tick >= now_ticks  and self.movement_now_number < len(self.movements_lib) - 1:
+             if self.tick >= self.now_ticks  and self.movement_now_number < len(self.movements_lib) - 1:
                  self.transition = True
                  self.tick = 0
 
