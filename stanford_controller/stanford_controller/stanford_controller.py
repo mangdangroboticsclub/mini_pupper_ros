@@ -283,6 +283,7 @@ class StanfordController(Node):
         self.state.roll = command.roll
         self.state.height = command.height
         # self.dump_state(self.state)
+        self.publish_joints_command()
 
     def get_2d_foot_locations(self, command):
         location = command.foot_location
