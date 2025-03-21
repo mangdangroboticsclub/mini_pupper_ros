@@ -6,6 +6,7 @@ from .swing_controller import SwingController
 
 from .Kinematics import four_legs_inverse_kinematics
 from .Utilities import clipped_first_order_filter
+from .Utilities import convert_to_JTP_positions
 from .State import BehaviorState, State
 
 from MangDang.mini_pupper.Config import Configuration
@@ -295,7 +296,7 @@ class StanfordController(Node):
         joints_cmd_msg.joint_names = self.joint_names
 
         point = JointTrajectoryPoint()
-        point.positions = self.state.joint_angles.flatten().tolist()
+        point.positions = convert_to_JTP_positions(self.state.joint_angles)
         point.time_from_start = rclpy.duration.Duration(seconds=1.0 / 60.0).to_msg()
 
         joints_cmd_msg.points.append(point)
