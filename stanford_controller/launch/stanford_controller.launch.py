@@ -34,11 +34,18 @@ def generate_launch_description():
         orientation_from_imu_launch_arg,
         Node(
             package='stanford_controller',
-            executable='stanford_controller',
-            name='stanford_controller',
+            executable='twist_to_command_node',
+            name='twist_to_command_node',
+            output='screen',
+            parameters=[]
+        ),
+        Node(
+            package='stanford_controller',
+            executable='stanford_controller_node',
+            name='stanford_controller_node',
             output='screen',
             parameters=[
                 {'orientation_from_imu': orientation_from_imu}
-            ],
+            ]
         )
     ])

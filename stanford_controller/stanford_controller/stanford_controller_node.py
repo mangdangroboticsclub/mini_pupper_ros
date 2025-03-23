@@ -19,13 +19,13 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from mini_pupper_interfaces.msg import Command
 from mini_pupper_interfaces.msg import Matrix3x4
 
-class StanfordController(Node):
+class StanfordControllerNode(Node):
     """
     ROS 2 Node for StanfordController
     """
 
     def __init__(self, config, inverse_kinematics):
-        super().__init__('stanford_controller')
+        super().__init__('stanford_controller_node')
 
         # Read parameters
         self.declare_parameter('orientation_from_imu', False)
@@ -98,20 +98,6 @@ class StanfordController(Node):
             msg.orientation.y,
             msg.orientation.z
         ])
-
-    def dump_state(self, state):
-        """
-        debug interface to show all info about PS4 command
-        Parameter: None
-        return : None
-        """
-        with open('/home/cullensun/ros2_ws/src/mini_pupper_ros/mini_pupper_dance/mini_pupper_dance/new_dance/state_log.txt', 'a') as file:
-            file.write(f"tick: {state.ticks}\n")
-            file.write(f"horizontal_velocity: {state.horizontal_velocity.tolist()}, yaw_rate: {state.yaw_rate}\n")
-            file.write(f"height: {state.height}, pitch: {state.pitch}, roll: {state.roll}\n")
-            file.write(f"foot locations: {state.foot_locations.tolist()}\n")
-            file.write(f"joint angles: {state.joint_angles.tolist()}\n")
-            file.write("\n")
 
     def dance_active(self, command):
         if command.dance_activate_event == True:
@@ -283,7 +269,6 @@ class StanfordController(Node):
         self.state.pitch = command.pitch
         self.state.roll = command.roll
         self.state.height = command.height
-        # self.dump_state(self.state)
         self.publish_joints_command()
 
     def get_2d_foot_locations(self, command):
@@ -306,7 +291,7 @@ class StanfordController(Node):
 def main(args=None):
     rclpy.init(args=args)
     config = Configuration()
-    node = StanfordController(config, four_legs_inverse_kinematics)
+    node = StanfordControllerNode(config, four_legs_inverse_kinematics)
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

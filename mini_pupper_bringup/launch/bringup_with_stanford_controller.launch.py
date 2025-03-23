@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (c) 2022-2023 MangDang
+# Copyright (c) 2025 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -97,24 +97,13 @@ def generate_launch_description():
         }.items()
     )
 
-    champ_controllers_launch_path = PathJoinSubstitution(
-        [bringup_package, 'launch', 'champ_controllers.launch.py']
+    stanford_controller_launch_path = PathJoinSubstitution(
+        [FindPackageShare('stanford_controller'), 'stanford_controller.launch.py']
     )
-    champ_controllers_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(champ_controllers_launch_path),
+    stanford_controller_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(stanford_controller_launch_path),
         launch_arguments={
-            'use_sim_time': use_sim_time,
-            'has_imu': has_imu
-        }.items()
-    )
-
-    ekf_localization_launch_path = PathJoinSubstitution(
-        [bringup_package, 'launch', 'ekf_localization.launch.py']
-    )
-    ekf_localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(ekf_localization_launch_path),
-        launch_arguments={
-            'use_sim_time': use_sim_time
+            'orientation_from_imu': has_imu
         }.items()
     )
 
@@ -123,6 +112,5 @@ def generate_launch_description():
         hardware_connected_launch_arg,
         description_launch,
         hardware_interface_launch,
-        champ_controllers_launch,
-        ekf_localization_launch
+        stanford_controller_launch,
     ])

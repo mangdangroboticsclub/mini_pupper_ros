@@ -4,7 +4,7 @@
   <name>stanford_controller</name>
   <version>1.0.0</version>
   <description>Stanford controller</description>
-  <maintainer email="sunhongshuai@gmail.com">cullensun</maintainer>
+  <maintainer email="fae@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <test_depend>ament_copyright</test_depend>
