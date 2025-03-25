@@ -67,6 +67,7 @@ class StanfordControllerNode(Node):
         }
 
         # ROS 2 publishers and subscribers
+        self.current_command = None
         self.command_subscriber = self.create_subscription(
             Command,
             'robot_command',
@@ -82,7 +83,7 @@ class StanfordControllerNode(Node):
                 10
             )
 
-        self.joint_commands_publisher = self.create_publisher(
+        self.joint_trajectory_publisher = self.create_publisher(
             JointTrajectory, 
             'joint_group_effort_controller/joint_trajectory',
             10
@@ -90,6 +91,7 @@ class StanfordControllerNode(Node):
 
         self.state = State()  
         self.quat_orientation = np.array([1, 0, 0, 0])
+        self.timer = self.create_timer(self.config.dt, self.control_loop)
 
     def imu_callback(self, msg):
         self.quat_orientation = np.array([
@@ -140,6 +142,9 @@ class StanfordControllerNode(Node):
         return new_foot_locations, contact_modes
 
     def command_callback(self, command):
+        self.current_command = command
+    
+    def control_loop(self):
         """Steps the controller forward one timestep
 
         Parameters
@@ -147,6 +152,9 @@ class StanfordControllerNode(Node):
         controller : Controller
             Robot controller object.
         """
+        command = self.current_command
+        if command is None:
+            return
 
         ########## Update operating state based on command ######
         if command.activate_event:
@@ -285,7 +293,7 @@ class StanfordControllerNode(Node):
         point.time_from_start = rclpy.duration.Duration(seconds=1.0 / 60.0).to_msg()
 
         joints_cmd_msg.points.append(point)
-        self.joint_commands_publisher.publish(joints_cmd_msg)
+        self.joint_trajectory_publisher.publish(joints_cmd_msg)
 
 
 def main(args=None):
