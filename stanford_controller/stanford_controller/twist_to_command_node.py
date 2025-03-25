@@ -19,7 +19,7 @@ class TwistToCommandNode(Node):
     def cmd_vel_callback(self, msg):
         command = self.create_command(msg)
         self.publisher_.publish(command)
-        self.get_logger().info(f'Published Command: horizontal_velocity=({command.horizontal_velocity[0]}, {command.horizontal_velocity[1]}), yaw_rate={command_msg.yaw_rate}')
+        self.get_logger().info(f'Published Command: horizontal_velocity=({command.horizontal_velocity[0]}, {command.horizontal_velocity[1]}), yaw_rate={command.yaw_rate}')
 
     def create_command(self, cmd_vel):
         command = Command()
