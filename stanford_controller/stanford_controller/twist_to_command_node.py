@@ -23,7 +23,7 @@ class TwistToCommandNode(Node):
 
     def create_command(self, cmd_vel):
         command = Command()
-        command.height = self.config.default_height
+        command.height = -0.07
         command.trot_event = True
         x_vel = min(self.config.max_x_velocity, cmd_vel.linear.x)
         y_vel = min(self.config.max_y_velocity, cmd_vel.linear.y)
