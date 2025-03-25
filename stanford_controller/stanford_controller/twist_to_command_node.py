@@ -17,14 +17,20 @@ class TwistToCommandNode(Node):
             10)
 
     def cmd_vel_callback(self, msg):
-        command_msg = Command()
-        x_vel = min(self.config.max_x_velocity, msg.linear.x)
-        y_vel = min(self.config.max_y_velocity, msg.linear.y)
-        yaw_rate = min(self.config.max_yaw_rate, msg.angular.z)
-        command_msg.horizontal_velocity = np.array([x_vel, y_vel])
-        command_msg.yaw_rate = yaw_rate
-        self.publisher_.publish(command_msg)
-        self.get_logger().info(f'Published Command: horizontal_velocity=({command_msg.horizontal_velocity[0]}, {command_msg.horizontal_velocity[1]}), yaw_rate={command_msg.yaw_rate}')
+        command = self.create_command(msg)
+        self.publisher_.publish(command)
+        self.get_logger().info(f'Published Command: horizontal_velocity=({command.horizontal_velocity[0]}, {command.horizontal_velocity[1]}), yaw_rate={command_msg.yaw_rate}')
+
+    def create_command(self, cmd_vel):
+        command = Command()
+        command.height = self.config.default_height
+        command.trot_event = True
+        x_vel = min(self.config.max_x_velocity, cmd_vel.linear.x)
+        y_vel = min(self.config.max_y_velocity, cmd_vel.linear.y)
+        yaw_rate = min(self.config.max_yaw_rate, cmd_vel.angular.z)
+        command.horizontal_velocity = np.array([x_vel, y_vel])
+        command.yaw_rate = yaw_rate
+        return command
 
 def main(args=None):
     rclpy.init(args=args)

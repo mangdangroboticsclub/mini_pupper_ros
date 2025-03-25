@@ -103,6 +103,6 @@ Move.stop()
 
 # Level 3 samples
 Move.body_cycle()
-#Move.head_ellipse()
+Move.stop()
 
 MovementLib = Move.MovementLib
