@@ -3,6 +3,7 @@ from rclpy.node import Node
 import numpy as np
 from geometry_msgs.msg import Twist
 from mini_pupper_interfaces.msg import Command
+from mini_pupper_interfaces.msg import Matrix3x4
 from MangDang.mini_pupper.Config import Configuration
 
 class TwistToCommandNode(Node):
@@ -25,6 +26,14 @@ class TwistToCommandNode(Node):
         command = Command()
         command.height = -0.07
         command.trot_event = True
+        
+        # default standing locations
+        matrix = Matrix3x4()
+        matrix.row1 = [0.06, 0.06, -0.06, -0.06]
+        matrix.row2 = [-0.05, 0.05, -0.05, 0.05]
+        matrix.row3 = [-0.07, -0.07, -0.07, -0.07]
+        command.foot_location = matrix
+        
         x_vel = min(self.config.max_x_velocity, cmd_vel.linear.x)
         y_vel = min(self.config.max_y_velocity, cmd_vel.linear.y)
         yaw_rate = min(self.config.max_yaw_rate, cmd_vel.angular.z)
