@@ -16,16 +16,20 @@ class TwistToCommandNode(Node):
             'cmd_vel',
             self.cmd_vel_callback,
             10)
+        self.is_trotting = False
 
     def cmd_vel_callback(self, msg):
         command = self.create_command(msg)
         self.publisher_.publish(command)
         self.get_logger().info(f'Published Command: horizontal_velocity=({command.horizontal_velocity[0]}, {command.horizontal_velocity[1]}), yaw_rate={command.yaw_rate}')
+        self.get_logger().info(f'Published Command: trot_event=({command.trot_event}, self.is_trotting={self.is_trotting}')
 
     def create_command(self, cmd_vel):
         command = Command()
         command.height = -0.07
-        command.trot_event = True
+        is_cmd_zero = np.allclose([cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z], 0, atol=1e-3)
+        command.trot_event = (self.is_trotting and is_cmd_zero ) or (not self.is_trotting and not is_cmd_zero)
+        self.is_trotting = not is_cmd_zero
         
         # default standing locations
         matrix = Matrix3x4()
@@ -33,7 +37,7 @@ class TwistToCommandNode(Node):
         matrix.row2 = [-0.05, 0.05, -0.05, 0.05]
         matrix.row3 = [-0.07, -0.07, -0.07, -0.07]
         command.foot_location = matrix
-        
+
         x_vel = min(self.config.max_x_velocity, cmd_vel.linear.x)
         y_vel = min(self.config.max_y_velocity, cmd_vel.linear.y)
         yaw_rate = min(self.config.max_yaw_rate, cmd_vel.angular.z)
