@@ -59,6 +59,10 @@ def generate_launch_description():
     has_camera = str(sensors_config['camera'])
     lidar_port = ports_config['lidar']
 
+    # Disable lidar and camera for now, not supported with Stanford Controller yet.
+    has_lidar = 'False'
+    has_camera = 'False'
+
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name='use_sim_time',
