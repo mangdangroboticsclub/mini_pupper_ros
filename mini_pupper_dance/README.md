@@ -36,17 +36,41 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_dance dance.launch.py
 ```
 
-### 3 How to modify
+### 2.3 How to modify
 
-### mini_pupper_music
+**mini_pupper_music**
 If you want to add a new audio file, please place it in the "resource" folder of the package, alongside files like "robot1.mp3" and "robot1.wav".
 
-### mini_pupper_dance
+**mini_pupper_dance**
 This package includes the following Python scripts in the mini_pupper_dance/mini_pupper_dance folder:
 - dance_client.py: The client reads and sends dance commands. It sends a service command to play music on the first dance command and sends another service command to stop music on the last dance command.
 - dance_server.py: The server receives dance commands and executes them. You can add more dance functions in dance_server.py.
 - pose_controller.py: A pose controller for Mini Pupper. You don't need to modify this.
 - episode.py: The dancing episode. You should edit your dancing episode here. You can also modify the music file name here.
 
-### Rebuild
+**Rebuild**
 If you make any changes, you will need to rebuild the modified packages. After that, you can follow the "Quick Start" instructions again to make the robot dance.
+
+
+## 3. New Dance
+
+We recently migrated Stanford controller to the `mini_pupper_ros` repo, enabling enhanced control and new features for Mini Pupper. This migration allows for smoother and more dynamic dance routines.
+
+### 3.1 How to make Mini Pupper dance in the new way
+
+**Mini Pupper**
+```sh
+# Terminal 1 (ssh)
+. ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
+ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
+```
+
+**PC (Or Mini Pupper)**
+```sh
+# Terminal 2 (ssh)
+source ~/ros2_ws/install/setup.bash
+ros2 launch mini_pupper_dance new_dance.launch.py
+```
+
+### 3.2 How to modify
+You can modify the file createDanceActionListSample.py in the new_dance folder to define new dance moves by editing or adding actions to the dance action list. Each action specifies a pose or movement for the robot, and modifying this file allows you to create custom dance routines. After making changes, rebuild the package to apply the updates.
