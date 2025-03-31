@@ -6,6 +6,7 @@ from mini_pupper_interfaces.msg import Command
 from mini_pupper_interfaces.msg import Matrix3x4
 from MangDang.mini_pupper.Config import Configuration
 
+
 class TwistToCommandNode(Node):
     def __init__(self, config):
         super().__init__('twist_to_command_node')
@@ -21,16 +22,21 @@ class TwistToCommandNode(Node):
     def cmd_vel_callback(self, msg):
         command = self.create_command(msg)
         self.publisher_.publish(command)
-        self.get_logger().info(f'Published Command: horizontal_velocity=({command.horizontal_velocity[0]}, {command.horizontal_velocity[1]}), yaw_rate={command.yaw_rate}')
-        self.get_logger().info(f'Published Command: trot_event=({command.trot_event}, self.is_trotting={self.is_trotting}')
+        self.get_logger().info(
+            f'Published Command: horizontal_velocity=({command.horizontal_velocity[0]}, {command.horizontal_velocity[1]}), yaw_rate={command.yaw_rate}')
+        self.get_logger().info(
+            f'Published Command: trot_event=({command.trot_event}, self.is_trotting={self.is_trotting}')
 
     def create_command(self, cmd_vel):
         command = Command()
         command.height = -0.07
-        is_cmd_zero = np.allclose([cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z], 0, atol=1e-3)
-        command.trot_event = (self.is_trotting and is_cmd_zero ) or (not self.is_trotting and not is_cmd_zero)
+        is_cmd_zero = np.allclose(
+            [cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z], 0, atol=1e-3)
+        command.trot_event = (
+            self.is_trotting and is_cmd_zero) or (
+            not self.is_trotting and not is_cmd_zero)
         self.is_trotting = not is_cmd_zero
-        
+
         # default standing locations
         matrix = Matrix3x4()
         matrix.row1 = [0.06, 0.06, -0.06, -0.06]
@@ -45,6 +51,7 @@ class TwistToCommandNode(Node):
         command.yaw_rate = yaw_rate
         return command
 
+
 def main(args=None):
     rclpy.init(args=args)
     config = Configuration()
@@ -52,6 +59,7 @@ def main(args=None):
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

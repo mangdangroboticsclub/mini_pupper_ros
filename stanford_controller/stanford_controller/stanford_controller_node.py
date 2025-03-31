@@ -19,6 +19,7 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from mini_pupper_interfaces.msg import Command
 from mini_pupper_interfaces.msg import Matrix3x4
 
+
 class StanfordControllerNode(Node):
     """
     ROS 2 Node for StanfordController
@@ -29,7 +30,8 @@ class StanfordControllerNode(Node):
 
         # Read parameters
         self.declare_parameter('orientation_from_imu', False)
-        self.orientation_from_imu = self.get_parameter('orientation_from_imu').get_parameter_value().bool_value
+        self.orientation_from_imu = self.get_parameter(
+            'orientation_from_imu').get_parameter_value().bool_value
         self.get_logger().info(f"use_imu: {self.orientation_from_imu}")
 
         # Configuration and initialization
@@ -84,12 +86,12 @@ class StanfordControllerNode(Node):
             )
 
         self.joint_trajectory_publisher = self.create_publisher(
-            JointTrajectory, 
+            JointTrajectory,
             'joint_group_effort_controller/joint_trajectory',
             10
         )
 
-        self.state = State()  
+        self.state = State()
         self.quat_orientation = np.array([1, 0, 0, 0])
         self.timer = self.create_timer(self.config.dt, self.control_loop)
 
@@ -102,15 +104,15 @@ class StanfordControllerNode(Node):
         ])
 
     def dance_active(self, command):
-        if command.dance_activate_event == True:
-            if self.dance_active_state == False:
+        if command.dance_activate_event:
+            if not self.dance_active_state:
                 self.dance_active_state = True
             else:
                 self.dance_active_state = False
         return True
 
     def pseudo_dance_active(self, command):
-        if command.pseudo_dance_event == True:
+        if command.pseudo_dance_event:
             self.dance_active_state = True
 
     def step_gait(self, state, command):
@@ -127,11 +129,12 @@ class StanfordControllerNode(Node):
             contact_mode = contact_modes[leg_index]
             foot_location = state.foot_locations[:, leg_index]
             if contact_mode == 1:
-                new_location = self.stance_controller.next_foot_location(leg_index, state, command)
+                new_location = self.stance_controller.next_foot_location(
+                    leg_index, state, command)
             else:
                 swing_proportion = (
-                    self.gait_controller.subphase_ticks(state.ticks) / self.config.swing_ticks
-                )
+                    self.gait_controller.subphase_ticks(
+                        state.ticks) / self.config.swing_ticks)
                 new_location = self.swing_controller.next_foot_location(
                     swing_proportion,
                     leg_index,
@@ -143,7 +146,7 @@ class StanfordControllerNode(Node):
 
     def command_callback(self, command):
         self.current_command = command
-    
+
     def control_loop(self):
         """Steps the controller forward one timestep
 
@@ -164,7 +167,7 @@ class StanfordControllerNode(Node):
         elif command.hop_event:
             self.state.behavior_state = self.hop_transition_mapping[self.state.behavior_state]
 
-        #disp.show_state(state.behavior_state)
+        # disp.show_state(state.behavior_state)
         self.dance_active(command)
         self.pseudo_dance_active(command)
 
@@ -186,8 +189,10 @@ class StanfordControllerNode(Node):
             (roll, pitch, yaw) = quat2euler(self.state.quat_orientation)
             correction_factor = 0.8
             max_tilt = 0.4
-            roll_compensation = correction_factor * np.clip(-roll, -max_tilt, max_tilt)
-            pitch_compensation = correction_factor * np.clip(-pitch, -max_tilt, max_tilt)
+            roll_compensation = correction_factor * \
+                np.clip(-roll, -max_tilt, max_tilt)
+            pitch_compensation = correction_factor * \
+                np.clip(-pitch, -max_tilt, max_tilt)
             rmat = euler2mat(roll_compensation, pitch_compensation, 0)
 
             rotated_foot_locations = rmat.T @ rotated_foot_locations
@@ -226,12 +231,13 @@ class StanfordControllerNode(Node):
                 )
             )
 
-            if self.dance_active_state == False:
-                #  Set the foot locations to the default stance plus the standard height
+            if not self.dance_active_state:
+                # Set the foot locations to the default stance plus the
+                # standard height
                 self.state.foot_locations = (
                     self.config.default_stance
                     + np.array([0, 0, command.height])[:, np.newaxis]
-                 )
+                )
                 # Apply the desired body rotation
                 rotated_foot_locations = (
                     euler2mat(
@@ -243,12 +249,14 @@ class StanfordControllerNode(Node):
                 )
             else:
                 location_buf = self.get_2d_foot_locations(command)
-                if (abs(command.robot_speed[0])<0.01) and (abs(command.robot_speed[1])<0.01):
+                if (abs(command.robot_speed[0]) < 0.01) and (
+                        abs(command.robot_speed[1]) < 0.01):
                     self.state.foot_locations = location_buf
                 else:
                     command.horizontal_velocity[0] = command.robot_speed[0]
                     command.horizontal_velocity[1] = command.robot_speed[1]
-                    self.state.foot_locations,contact_modes = self.step_gait(self.state, command)
+                    self.state.foot_locations, contact_modes = self.step_gait(
+                        self.state, command)
 
                 rotated_foot_locations = (
                     euler2mat(
@@ -263,8 +271,10 @@ class StanfordControllerNode(Node):
             (roll, pitch, yaw) = quat2euler(self.state.quat_orientation)
             correction_factor = 0.8
             max_tilt = 0.4
-            roll_compensation = correction_factor * np.clip(-roll, -max_tilt, max_tilt)
-            pitch_compensation = correction_factor * np.clip(-pitch, -max_tilt, max_tilt)
+            roll_compensation = correction_factor * \
+                np.clip(-roll, -max_tilt, max_tilt)
+            pitch_compensation = correction_factor * \
+                np.clip(-pitch, -max_tilt, max_tilt)
             rmat = euler2mat(roll_compensation, pitch_compensation, 0)
 
             rotated_foot_locations = rmat.T @ rotated_foot_locations
@@ -290,7 +300,8 @@ class StanfordControllerNode(Node):
 
         point = JointTrajectoryPoint()
         point.positions = convert_to_JTP_positions(self.state.joint_angles)
-        point.time_from_start = rclpy.duration.Duration(seconds=1.0 / 60.0).to_msg()
+        point.time_from_start = rclpy.duration.Duration(
+            seconds=1.0 / 60.0).to_msg()
 
         joints_cmd_msg.points.append(point)
         self.joint_trajectory_publisher.publish(joints_cmd_msg)
