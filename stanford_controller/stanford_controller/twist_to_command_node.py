@@ -62,9 +62,13 @@ def main(args=None):
     rclpy.init(args=args)
     config = Configuration()
     node = TwistToCommandNode(config)
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        node.get_logger().info("Node interrupted by user, shutting down...")
+    finally:
+        node.destroy_node()
 
 
 if __name__ == '__main__':
