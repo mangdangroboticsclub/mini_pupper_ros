@@ -107,7 +107,8 @@ def generate_launch_description():
     stanford_controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(stanford_controller_launch_path),
         launch_arguments={
-            'orientation_from_imu': has_imu
+            'orientation_from_imu': has_imu,
+            'publish_joint_control': 'True'
         }.items()
     )
 

@@ -23,15 +23,21 @@ class TwistToCommandNode(Node):
         command = self.create_command(msg)
         self.publisher_.publish(command)
         self.get_logger().info(
-            f'Published Command: horizontal_velocity=({command.horizontal_velocity[0]}, {command.horizontal_velocity[1]}), yaw_rate={command.yaw_rate}')
+            f'Published Command: \
+              horizontal_velocity=({command.horizontal_velocity[0]}, \
+              {command.horizontal_velocity[1]}), yaw_rate={command.yaw_rate}')
         self.get_logger().info(
-            f'Published Command: trot_event=({command.trot_event}, self.is_trotting={self.is_trotting}')
+            f'Published Command: trot_event=({command.trot_event}, \
+              self.is_trotting={self.is_trotting}')
 
     def create_command(self, cmd_vel):
         command = Command()
         command.height = -0.07
         is_cmd_zero = np.allclose(
-            [cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z], 0, atol=1e-3)
+            [cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z],
+            0,
+            atol=1e-3
+        )
         command.trot_event = (
             self.is_trotting and is_cmd_zero) or (
             not self.is_trotting and not is_cmd_zero)

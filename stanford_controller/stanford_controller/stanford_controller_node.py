@@ -15,9 +15,9 @@ import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
 
 from sensor_msgs.msg import Imu
+from std_msgs.msg import String
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from mini_pupper_interfaces.msg import Command
-from mini_pupper_interfaces.msg import Matrix3x4
 
 
 class StanfordControllerNode(Node):
@@ -33,6 +33,14 @@ class StanfordControllerNode(Node):
         self.orientation_from_imu = self.get_parameter(
             'orientation_from_imu').get_parameter_value().bool_value
         self.get_logger().info(f"use_imu: {self.orientation_from_imu}")
+
+        self.declare_parameter('publish_joint_control', False)
+        self.publish_joint_control = self.get_parameter(
+            'publish_joint_control').get_parameter_value().bool_value
+
+        self.declare_parameter('publish_states', False)
+        self.publish_states = self.get_parameter(
+            'publish_states').get_parameter_value().bool_value
 
         # Configuration and initialization
         self.joint_names = [
@@ -90,10 +98,11 @@ class StanfordControllerNode(Node):
             'joint_group_effort_controller/joint_trajectory',
             10
         )
+        self.state_publisher = self.create_publisher(String, 'state_log', 10)
 
         self.state = State()
         self.quat_orientation = np.array([1, 0, 0, 0])
-        self.timer = self.create_timer(self.config.dt, self.control_loop)
+        # self.timer = self.create_timer(self.config.dt, self.control_loop)
 
     def imu_callback(self, msg):
         self.quat_orientation = np.array([
@@ -127,7 +136,6 @@ class StanfordControllerNode(Node):
         new_foot_locations = np.zeros((3, 4))
         for leg_index in range(4):
             contact_mode = contact_modes[leg_index]
-            foot_location = state.foot_locations[:, leg_index]
             if contact_mode == 1:
                 new_location = self.stance_controller.next_foot_location(
                     leg_index, state, command)
@@ -146,6 +154,7 @@ class StanfordControllerNode(Node):
 
     def command_callback(self, command):
         self.current_command = command
+        self.control_loop()
 
     def control_loop(self):
         """Steps the controller forward one timestep
@@ -159,13 +168,21 @@ class StanfordControllerNode(Node):
         if command is None:
             return
 
-        ########## Update operating state based on command ######
+        # self.get_logger().info(f'control_loop command is {command}')
+
+        # Update operating state based on command
         if command.activate_event:
             self.state.behavior_state = self.activate_transition_mapping[self.state.behavior_state]
+            self.get_logger().info(
+                f'received activate_event new behavior_state is {self.state.behavior_state}')
         elif command.trot_event:
             self.state.behavior_state = self.trot_transition_mapping[self.state.behavior_state]
+            self.get_logger().info(
+                f'received trot_event new behavior_state is {self.state.behavior_state}')
         elif command.hop_event:
             self.state.behavior_state = self.hop_transition_mapping[self.state.behavior_state]
+            self.get_logger().info(
+                f'received hop_event new behavior_state is {self.state.behavior_state}')
 
         # disp.show_state(state.behavior_state)
         self.dance_active(command)
@@ -287,11 +304,20 @@ class StanfordControllerNode(Node):
         self.state.pitch = command.pitch
         self.state.roll = command.roll
         self.state.height = command.height
-        self.publish_joints_command()
+
+        if self.publish_states:
+            self.publish_state()
+        if self.publish_joint_control:
+            self.publish_joints_command()
 
     def get_2d_foot_locations(self, command):
         location = command.foot_location
         return np.array([location.row1, location.row2, location.row3])
+
+    def publish_state(self):
+        state_msg = String()
+        state_msg.data = str(self.state.__dict__)
+        self.state_publisher.publish(state_msg)
 
     def publish_joints_command(self):
         joints_cmd_msg = JointTrajectory()
@@ -300,8 +326,7 @@ class StanfordControllerNode(Node):
 
         point = JointTrajectoryPoint()
         point.positions = convert_to_JTP_positions(self.state.joint_angles)
-        point.time_from_start = rclpy.duration.Duration(
-            seconds=1.0 / 60.0).to_msg()
+        point.time_from_start = rclpy.duration.Duration(seconds=1.0 / 60.0).to_msg()
 
         joints_cmd_msg.points.append(point)
         self.joint_trajectory_publisher.publish(joints_cmd_msg)
@@ -311,9 +336,13 @@ def main(args=None):
     rclpy.init(args=args)
     config = Configuration()
     node = StanfordControllerNode(config, four_legs_inverse_kinematics)
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        node.get_logger().info("Node interrupted by user, shutting down...")
+    finally:
+        node.destroy_node()
 
 
 if __name__ == '__main__':
