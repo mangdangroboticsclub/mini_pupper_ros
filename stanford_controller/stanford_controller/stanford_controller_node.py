@@ -21,9 +21,7 @@ from mini_pupper_interfaces.msg import Command
 
 
 class StanfordControllerNode(Node):
-    """
-    ROS 2 Node for StanfordController
-    """
+    """ROS 2 Node for StanfordController."""
 
     def __init__(self, config, inverse_kinematics):
         super().__init__('stanford_controller_node')
@@ -125,12 +123,21 @@ class StanfordControllerNode(Node):
             self.dance_active_state = True
 
     def step_gait(self, state, command):
-        """Calculate the desired foot locations for the next timestep
+        """
+        Calculate the desired foot locations for the next timestep.
+
+        Parameters
+        ----------
+        state : State
+            Current robot state containing foot locations and tick count.
+        command : Command
+            Command message specifying velocities and gait events.
 
         Returns
         -------
-        Numpy array (3, 4)
-            Matrix of new foot locations.
+        tuple of (numpy.ndarray, numpy.ndarray)
+            new_foot_locations with shape (3, 4) and contact_modes with shape (4,).
+
         """
         contact_modes = self.gait_controller.contacts(state.ticks)
         new_foot_locations = np.zeros((3, 4))
@@ -157,13 +164,7 @@ class StanfordControllerNode(Node):
         self.control_loop()
 
     def control_loop(self):
-        """Steps the controller forward one timestep
-
-        Parameters
-        ----------
-        controller : Controller
-            Robot controller object.
-        """
+        """Step the controller forward one timestep."""
         command = self.current_command
         if command is None:
             return

@@ -2,22 +2,23 @@ import numpy as np
 
 
 def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
-    """Find the joint angles corresponding to the given body-relative
-    foot position for a given leg and configuration
+    """
+    Find the joint angles for one leg given its body-relative foot position.
 
     Parameters
     ----------
-    r_body_foot : [type]
-        [description]
-    leg_index : [type]
-        [description]
-    config : [type]
-        [description]
+    r_body_foot : array_like
+        Foot position (x, y, z) in the body frame.
+    leg_index : int
+        Index of the leg (0-based).
+    config : Config
+        Robot configuration parameters.
 
     Returns
     -------
-    numpy array (3)
-        Array of corresponding joint angles.
+    numpy.ndarray
+        Joint angles for the specified leg (3,).
+
     """
     (x, y, z) = r_body_foot
 
@@ -71,20 +72,21 @@ def leg_explicit_inverse_kinematics(r_body_foot, leg_index, config):
 
 
 def four_legs_inverse_kinematics(r_body_foot, config):
-    """Find the joint angles for all twelve DOF correspoinding to the given matrix
-    of body-relative foot positions.
+    """
+    Find all twelve joint angles for a set of body-relative foot positions.
 
     Parameters
     ----------
-    r_body_foot : numpy array (3,4)
-        Matrix of the body-frame foot positions. Each column corresponds to a separate foot.
-    config : Config object
-        Object of robot configuration parameters.
+    r_body_foot : array_like
+        Matrix of foot positions in the body frame, shape (3, 4).
+    config : Config
+        Robot configuration parameters.
 
     Returns
     -------
-    numpy array (3,4)
-        Matrix of corresponding joint angles.
+    numpy.ndarray
+        Joint angles matrix, shape (3, 4).
+
     """
     alpha = np.zeros((3, 4))
     for i in range(4):

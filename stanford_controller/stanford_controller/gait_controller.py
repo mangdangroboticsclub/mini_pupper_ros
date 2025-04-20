@@ -3,20 +3,21 @@ class GaitController:
         self.config = config
 
     def phase_index(self, ticks):
-        """Calculates which part of the gait cycle the robot
-        should be in given the time in ticks.
+        """
+        Calculate the current gait phase index given the elapsed ticks.
 
         Parameters
         ----------
         ticks : int
-            Number of timesteps since the program started
+            Number of timesteps since the program started.
         gaitparams : GaitParams
-            GaitParams object
+            GaitParams object.
 
         Returns
         -------
-        Int
-            The index of the gait phase that the robot should be in.
+        int
+            Index of the current gait phase.
+
         """
         phase_time = ticks % self.config.phase_length
         phase_sum = 0
@@ -27,20 +28,21 @@ class GaitController:
         assert False
 
     def subphase_ticks(self, ticks):
-        """Calculates the number of ticks (timesteps) since the start
-        of the current phase.
+        """
+        Calculate the number of ticks elapsed since the start of the current phase.
 
         Parameters
         ----------
-        ticks : Int
-            Number of timesteps since the program started
+        ticks : int
+            Number of timesteps since the program started.
         gaitparams : GaitParams
-            GaitParams object
+            GaitParams object.
 
         Returns
         -------
-        Int
+        int
             Number of ticks since the start of the current phase.
+
         """
         phase_time = ticks % self.config.phase_length
         phase_sum = 0
@@ -54,18 +56,20 @@ class GaitController:
         assert False
 
     def contacts(self, ticks):
-        """Calculates which feet should be in contact at the given number of ticks
+        """
+        Calculate which feet should be in contact at the given tick.
 
         Parameters
         ----------
-        ticks : Int
+        ticks : int
             Number of timesteps since the program started.
         gaitparams : GaitParams
-            GaitParams object
+            GaitParams object.
 
         Returns
         -------
-        numpy array (4,)
-            Numpy vector with 0 indicating flight and 1 indicating stance.
+        numpy.ndarray
+            Boolean vector of contact states (4,), where 1 indicates stance and 0 indicates flight.
+
         """
         return self.config.contact_phases[:, self.phase_index(ticks)]

@@ -7,24 +7,23 @@ class StanceController:
         self.config = config
 
     def position_delta(self, leg_index, state, command):
-        """Calculate the difference between the next desired body location
-        and the current body location
+        """
+        Calculate the positional and rotational delta for a foot in stance phase.
 
         Parameters
         ----------
-        z_measured : float
-            Z coordinate of the feet relative to the body.
-        stance_params : StanceParams
-            Stance parameters object.
-        movement_reference : MovementReference
-            Movement reference object.
-        gait_params : GaitParams
-            Gait parameters object.
+        leg_index : int
+            Index of the leg (0-based).
+        state : State
+            Current robot state containing foot locations and height.
+        command : Command
+            Command message specifying horizontal_velocity and yaw_rate.
 
         Returns
         -------
-        (Numpy array (3), Numpy array (3, 3))
-            (Position increment, rotation matrix increment)
+        tuple of (numpy.ndarray, numpy.ndarray)
+            Position increment (shape (3,)) and rotation matrix increment (shape (3, 3)).
+
         """
         z = state.foot_locations[2, leg_index]
         v_xy = np.array(
