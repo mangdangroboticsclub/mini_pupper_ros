@@ -48,14 +48,13 @@ def generate_launch_description():
         orientation_from_imu_launch_arg,
         publish_joint_control_launch_arg,
         publish_states_launch_arg,
-        # TODO: get Twist (cmd_vel) working with Stanford Controller
-        # Node(
-        #     package='stanford_controller',
-        #     executable='twist_to_command_node',
-        #     name='twist_to_command_node',
-        #     output='screen',
-        #     parameters=[]
-        # ),
+        Node(
+            package='stanford_controller',
+            executable='twist_to_command_node',
+            name='twist_to_command_node',
+            output='screen',
+            parameters=[]
+        ),
         Node(
             package='stanford_controller',
             executable='stanford_controller_node',
