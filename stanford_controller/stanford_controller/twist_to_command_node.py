@@ -48,7 +48,7 @@ class TwistToCommandNode(Node):
         matrix.row1 = [0.06, 0.06, -0.06, -0.06]
         matrix.row2 = [-0.05, 0.05, -0.05, 0.05]
         matrix.row3 = [-0.07, -0.07, -0.07, -0.07]
-        command.foot_location = matrix
+        command.legs_location = matrix
 
         x_vel = min(self.config.max_x_velocity, cmd_vel.linear.x)
         y_vel = min(self.config.max_y_velocity, cmd_vel.linear.y)

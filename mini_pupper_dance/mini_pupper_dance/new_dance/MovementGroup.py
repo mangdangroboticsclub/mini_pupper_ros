@@ -492,6 +492,47 @@ class MovementGroups:
         dance_scheme.setAllSequence(dance_all_legs,dance_speed,dance_attitude)
         self.MovementLib.append(dance_scheme)      # append dance
         return self.MovementLib
+    
+    def rotate(self,angle = 1):
+        """ This movement enables the pupper to rotate around its body center in the x-y plane.
+            Params:Radius: the angle of rotation in degree
+        """
+        m = 1
+        if angle >=0:
+            number = angle / 0.66
+        else:
+            number = - angle / 0.66
+            m = -1
+        dance_scheme = Movements('rotate')
+        dance_all_legs = self.default_stand
+        dance_speed    = [[0,0,0]]
+        dance_attitude = [[0,0,0]]
+        dance_scheme.setTransitionTic(10)
+        dance_scheme.setInterpolationNumber(number)
+        dance_scheme.setLegsSequence(dance_all_legs)
+        dance_scheme.setAttitudeSequence(dance_attitude)
+        dance_scheme.setSpeedSequence(dance_speed)
+        dance_scheme.setTurnSequence([[40*m, 0, 0],[40*m,0,0]])
+        self.MovementLib.append(dance_scheme)      # append dance
+        
+        return self.MovementLib
+
+    def bowback(self, angle):
+        """ This movement enables the pupper to bow its head and move backwards.
+        """
+        modified_angle = self.cap_limit(30, 0, angle)
+        dance_scheme = Movements('bowback')
+        dance_all_legs = self.default_stand
+        dance_speed    = [[-0.1,0,0]]
+        dance_attitude = [[0,0,0]]
+        dance_scheme.setInterpolationNumber(20)
+        dance_scheme.setLegsSequence(dance_all_legs)
+        dance_scheme.setAttitudeSequence([[0,-modified_angle,0],[0,-modified_angle,0]],"Forever")
+        dance_scheme.setSpeedSequence(dance_speed)
+        dance_scheme.setTurnSequence([[0, 0, 0]])
+        self.MovementLib.append(dance_scheme)      # append dance
+        
+        return self.MovementLib
 
 #----------- The level2 APIs with input parameters END -----------#
 
@@ -624,4 +665,4 @@ class MovementGroups:
 
         return self.MovementLib
 
-#----------- The level3 samples to DIY complicated movement END END -----------#  
+#----------- The level3 samples to DIY complicated movement END -----------#  

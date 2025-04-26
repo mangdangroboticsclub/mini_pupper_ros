@@ -111,7 +111,7 @@ class TestNormalCommands(unittest.TestCase):
         matrix.row1 = [0.06, 0.06, -0.06, -0.06]
         matrix.row2 = [-0.05, 0.05, -0.05, 0.05]
         matrix.row3 = [-0.07, -0.07, -0.07, -0.07]
-        command.foot_location = matrix
+        command.legs_location = matrix
         command.height = -0.07
         command.trot_event = trot_event
         return command

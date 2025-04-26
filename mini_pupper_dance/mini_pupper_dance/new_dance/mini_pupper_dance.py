@@ -35,9 +35,12 @@ class MiniPupperDanceNode(Node):
         matrix.row1 = legsLocation[0]
         matrix.row2 = legsLocation[1]
         matrix.row3 = legsLocation[2]
-        command.foot_location = matrix
-        command.attitude = self.movementCtl.getMovemenAttitude()
-        command.robot_speed = self.movementCtl.getMovemenSpeed()
+        command.legs_location = matrix
+
+        command.roll = self.movementCtl.attitude_now[0]
+        command.pitch = self.movementCtl.attitude_now[1]
+        command.yaw = self.movementCtl.attitude_now[2]
+        command.yaw_rate = self.movementCtl.getMovemenTurn()
         self.commands_publisher.publish(command)
 
         # Check if the dance sequence is complete

@@ -267,20 +267,18 @@ class StanfordControllerNode(Node):
                 )
             else:
                 location_buf = self.get_2d_foot_locations(command)
-                if (abs(command.robot_speed[0]) < 0.01) and (
-                        abs(command.robot_speed[1]) < 0.01):
+                if (abs(command.horizontal_velocity[0]) < 0.01) and \
+                    (abs(command.horizontal_velocity[1]) < 0.01 and
+                        abs(command.yaw_rate == 0)):
                     self.state.foot_locations = location_buf
                 else:
-                    command.horizontal_velocity[0] = command.robot_speed[0]
-                    command.horizontal_velocity[1] = command.robot_speed[1]
-                    self.state.foot_locations, contact_modes = self.step_gait(
-                        self.state, command)
+                    self.state.foot_locations, contact_modes = self.step_gait(self.state, command)
 
                 rotated_foot_locations = (
                     euler2mat(
-                        command.attitude[0],
-                        command.attitude[1],
-                        command.attitude[2],
+                        command.roll / 57.3,
+                        command.pitch / 57.3,
+                        command.yaw / 57.3
                     )
                     @ self.state.foot_locations
                 )
@@ -312,7 +310,7 @@ class StanfordControllerNode(Node):
             self.publish_joints_command()
 
     def get_2d_foot_locations(self, command):
-        location = command.foot_location
+        location = command.legs_location
         return np.array([location.row1, location.row2, location.row3])
 
     def publish_state(self):
