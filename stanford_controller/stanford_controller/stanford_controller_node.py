@@ -304,6 +304,8 @@ class StanfordControllerNode(Node):
         self.state.roll = command.roll
         self.state.height = command.height
 
+        self.state.joint_angles = self.limit_joint_angles(self.state.joint_angles)
+
         if self.publish_states:
             self.publish_state()
         if self.publish_joint_control:
@@ -312,6 +314,20 @@ class StanfordControllerNode(Node):
     def get_2d_foot_locations(self, command):
         location = command.legs_location
         return np.array([location.row1, location.row2, location.row3])
+
+    def limit_joint_angles(self, joint_angles):
+        """Adjust joint angles to be within the limits."""
+        max_lim = np.array([
+            [1.2, 0.6, 1, 0.5],
+            [1.3, 1.3, 1.6, 1.6],
+            [0.7, 0.7, 0, 0]
+        ])
+        min_lim = np.array([
+            [-0.5, -1, -0.6, -1],
+            [0, 0, -0.6, -0.6],
+            [-1.5, -1.5, -1.2, -1.2]
+        ])
+        return np.clip(joint_angles, min_lim, max_lim)
 
     def publish_state(self):
         state_msg = String()
