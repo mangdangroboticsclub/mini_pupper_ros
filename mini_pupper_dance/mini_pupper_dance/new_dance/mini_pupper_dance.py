@@ -29,6 +29,7 @@ class MiniPupperDanceNode(Node):
         command = Command()
         command.height = -0.07
         command.pseudo_dance_event = True
+        command.horizontal_velocity = self.movementCtl.getMovemenSpeed()
 
         legsLocation = self.movementCtl.getMovemenLegsLocation()
         matrix = Matrix3x4()

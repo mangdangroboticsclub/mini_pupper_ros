@@ -79,6 +79,7 @@ class TestDanceCommands(unittest.TestCase):
             command.height = -0.07
             command.pseudo_dance_event = True
 
+            command.horizontal_velocity = movementCtl.getMovemenSpeed()
             legsLocation = movementCtl.getMovemenLegsLocation()
             matrix = Matrix3x4()
             matrix.row1 = legsLocation[0]

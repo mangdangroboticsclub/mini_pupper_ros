@@ -24,10 +24,10 @@ class TwistToCommandNode(Node):
         self.is_trotting = False
 
     def timer_callback(self):
-        elapsed = (self.get_clock().now() - self.last_twist).to_sec()
-        if self.last_command is not None and elapsed > self.config.dt * 4:
+        elapsed = (self.get_clock().now() - self.last_twist).nanoseconds * 1.0 * 1e-9
+        if self.last_command is not None and elapsed < self.config.dt * 4:
             # publish the last command
-            self.publisher_.publish(self.last_command )
+            self.publisher_.publish(self.last_command)
             self.get_logger().debug('Published last command')
         else:
             # if no fresh /cmd_vel, publish default stand‐still command
