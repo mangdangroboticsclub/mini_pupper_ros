@@ -84,9 +84,22 @@ class TwistToCommandNode(Node):
         matrix.row3 = [-0.07, -0.07, -0.07, -0.07]
         cmd.legs_location = matrix
 
-        x_vel = min(self.config.max_x_velocity, cmd_vel.linear.x)
-        y_vel = min(self.config.max_y_velocity, cmd_vel.linear.y)
-        yaw_rate = min(self.config.max_yaw_rate, cmd_vel.angular.z)
+        # clamp both forward and backward
+        x_vel = float(np.clip(
+            cmd_vel.linear.x,
+            -self.config.max_x_velocity,
+            self.config.max_x_velocity,
+        ))
+        y_vel = float(np.clip(
+            cmd_vel.linear.y,
+            -self.config.max_y_velocity,
+            self.config.max_y_velocity,
+        ))
+        yaw_rate = float(np.clip(
+            cmd_vel.angular.z,
+            -self.config.max_yaw_rate,
+            self.config.max_yaw_rate,
+        ))
         cmd.horizontal_velocity = np.array([x_vel, y_vel])
         cmd.yaw_rate = yaw_rate
         cmd.roll = 0.0
