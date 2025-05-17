@@ -12,70 +12,43 @@ class TwistToCommandNode(Node):
     def __init__(self, config):
         super().__init__('twist_to_command_node')
         self.config = config
-        self.last_twist = self.get_clock().now()
+
+        # remember last incoming cmd_vel & when it arrived
+        self.last_twist = Twist()  
+        self.last_twist_time = self.get_clock().now()
+
+        # used to detect rising/falling edges on “non-zero” cmd_vel
+        self.prev_zero = True
+
+        # publish at your controller rate
         self.timer = self.create_timer(self.config.dt, self.timer_callback)
+
+        # ROS pubs/subs
         self.publisher_ = self.create_publisher(Command, 'robot_command', 10)
         self.subscription = self.create_subscription(
-            Twist,
-            'cmd_vel',
-            self.cmd_vel_callback,
-            10)
-        self.last_command = None
-        self.is_trotting = False
+            Twist, 'cmd_vel', self.cmd_vel_callback, 10
+        )
+
+    def cmd_vel_callback(self, msg: Twist):
+        # simply remember the last twist and its timestamp
+        self.last_twist = msg
+        self.last_twist_time = self.get_clock().now()
 
     def timer_callback(self):
-        elapsed = (self.get_clock().now() - self.last_twist).nanoseconds * 1.0 * 1e-9
-        if self.last_command is not None and elapsed < self.config.dt * 4:
-            # publish the last command
-            self.publisher_.publish(self.last_command)
-            self.get_logger().debug('Published last command')
-        else:
-            # if no fresh /cmd_vel, publish default stand‐still command
-            command = self.get_default_command()
-            self.publisher_.publish(command)
-            self.get_logger().debug('Published stand command')
+        now = self.get_clock().now()
+        elapsed = (now - self.last_twist_time).nanoseconds * 1e-9
 
-    def cmd_vel_callback(self, msg):
-        self.last_twist = self.get_clock().now()
-        command = self.create_command(msg)
-        self.get_logger().info(
-            f'Published Command: \
-              horizontal_velocity=({command.horizontal_velocity}, \
-              yaw_rate={command.yaw_rate}')
-        self.get_logger().info(
-            f'Published Command: trot_event=({command.trot_event}, \
-              self.is_trotting={self.is_trotting}')
-        self.last_command = command
+        # if we’ve seen a fresh non-zero cmd_vel recently use it, else zero
+        use_vel = (elapsed < (self.config.dt * 4) and not self._vel_zero(self.last_twist))
+        twist = self.last_twist if use_vel else Twist()
 
-    def get_default_command(self):
+        cmd = self.create_command(twist)
+        self.publisher_.publish(cmd)
+        self.get_logger().debug(f'Publishing Command | trot_event={cmd.trot_event}')
+
+    def create_command(self, twist: Twist) -> Command:
         cmd = Command()
         cmd.height = -0.07
-        cmd.horizontal_velocity = [0.0, 0.0]
-        matrix = Matrix3x4()
-        matrix.row1 = [0.06, 0.06, -0.06, -0.06]
-        matrix.row2 = [-0.05, 0.05, -0.05, 0.05]
-        matrix.row3 = [-0.07, -0.07, -0.07, -0.07]
-        cmd.legs_location = matrix
-        cmd.yaw_rate = 0.0
-        cmd.roll = 0.0
-        cmd.pitch = 0.0
-        cmd.yaw = 0.0
-        cmd.trot_event = self.is_trotting
-        self.is_trotting = False
-        return cmd
-
-    def create_command(self, cmd_vel):
-        cmd = Command()
-        cmd.height = -0.07
-        is_cmd_zero = np.allclose(
-            [cmd_vel.linear.x, cmd_vel.linear.y, cmd_vel.angular.z],
-            0,
-            atol=1e-3
-        )
-        cmd.trot_event = (
-            self.is_trotting and is_cmd_zero) or (
-            not self.is_trotting and not is_cmd_zero)
-        self.is_trotting = not is_cmd_zero
 
         # default standing locations
         matrix = Matrix3x4()
@@ -86,17 +59,17 @@ class TwistToCommandNode(Node):
 
         # clamp both forward and backward
         x_vel = float(np.clip(
-            cmd_vel.linear.x,
+            twist.linear.x,
             -self.config.max_x_velocity,
             self.config.max_x_velocity,
         ))
         y_vel = float(np.clip(
-            cmd_vel.linear.y,
+            twist.linear.y,
             -self.config.max_y_velocity,
             self.config.max_y_velocity,
         ))
         yaw_rate = float(np.clip(
-            cmd_vel.angular.z,
+            twist.angular.z,
             -self.config.max_yaw_rate,
             self.config.max_yaw_rate,
         ))
@@ -105,8 +78,20 @@ class TwistToCommandNode(Node):
         cmd.roll = 0.0
         cmd.pitch = 0.0
         cmd.yaw = 0.0
+
+        # detect zero↔non-zero edge and fire trot_event only once
+        is_zero = self._vel_zero(twist)
+        cmd.trot_event = (self.prev_zero != is_zero)
+        self.prev_zero = is_zero
+
         return cmd
 
+    def _vel_zero(self, twist: Twist) -> bool:
+        return np.allclose(
+            [twist.linear.x, twist.linear.y, twist.angular.z],
+            0.0,
+            atol=1e-3
+        )
 
 def main(args=None):
     rclpy.init(args=args)
