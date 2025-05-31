@@ -77,11 +77,14 @@ class TestNormalCommands(unittest.TestCase):
             rclpy.spin_once(self.node, timeout_sec=0.1)
             print(f"Sent command {command_counter}")
 
-            # Wait for 1 second between commands
-            time.sleep(1)
+            # Wait for 0.5 second between commands
+            time.sleep(0.5)
+
+        # Uncomment the following line to write received states to a file
+        # self.write_received_states('received_normal_states.txt')
 
         assert len(self.received_states) == total_num_of_commands, \
-            f"Expected 11 states, but received {len(self.received_states)}."
+            f"Expected 101 states, but received {len(self.received_states)}."
 
         # Verify that the received states match the expected states
         for i, (r_state, e_state) in enumerate(zip(self.received_states, expected_states)):
@@ -90,6 +93,16 @@ class TestNormalCommands(unittest.TestCase):
                 f"Expected: {e_state}\n"
                 f"Received: {r_state}"
             )
+
+    def write_received_states(self, file_name):
+        """Write received states to a file."""
+        test_dir = os.path.dirname(os.path.abspath(__file__))
+        output_file = os.path.join(test_dir, file_name)
+
+        with open(output_file, 'w') as f:
+            for state in self.received_states:
+                f.write(state + "\n\n")
+        print(f"Received states written to {output_file}")
 
     def load_expected_states(self, file_name):
         """Load expected states from file."""

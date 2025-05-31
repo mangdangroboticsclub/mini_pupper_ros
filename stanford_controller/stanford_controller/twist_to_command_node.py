@@ -14,7 +14,7 @@ class TwistToCommandNode(Node):
         self.config = config
 
         # remember last incoming cmd_vel & when it arrived
-        self.last_twist = Twist()  
+        self.last_twist = Twist()
         self.last_twist_time = self.get_clock().now()
 
         # used to detect rising/falling edges on “non-zero” cmd_vel
@@ -92,6 +92,7 @@ class TwistToCommandNode(Node):
             0.0,
             atol=1e-3
         )
+
 
 def main(args=None):
     rclpy.init(args=args)

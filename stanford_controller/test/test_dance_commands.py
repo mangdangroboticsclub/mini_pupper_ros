@@ -93,10 +93,16 @@ class TestDanceCommands(unittest.TestCase):
             self.command_pub.publish(command)
             rclpy.spin_once(self.node, timeout_sec=0.1)
 
+            # Wait for 0.5 second between commands
+            time.sleep(0.5)
+
             # Check if the dance sequence is complete
             if (movementCtl.movement_now_number >= lib_length - 1
                and movementCtl.tick >= movementCtl.now_ticks):
                 break
+
+        # Uncomment the following line to write received states to a file
+        # self.write_received_states('received_dance_states.txt')
 
         assert len(self.received_states) == total_num_of_commands, \
             f"Expected {total_num_of_commands} states, but received {len(self.received_states)}."
@@ -108,6 +114,16 @@ class TestDanceCommands(unittest.TestCase):
                 f"Expected: {e_state}\n"
                 f"Received: {r_state}"
             )
+
+    def write_received_states(self, file_name):
+        """Write received states to a file."""
+        test_dir = os.path.dirname(os.path.abspath(__file__))
+        output_file = os.path.join(test_dir, file_name)
+
+        with open(output_file, 'w') as f:
+            for state in self.received_states:
+                f.write(state + "\n\n")
+        print(f"Received states written to {output_file}")
 
     def load_expected_states(self, file_name):
         """Load expected states from file."""
