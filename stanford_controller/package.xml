@@ -20,7 +20,7 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>trajectory_msgs</exec_depend>
   <exec_depend>mini_pupper_interfaces</exec_depend>
-  <exec_depend>transforms3d</exec_depend>
+  <exec_depend>python3-transforms3d</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
   
   <export>
