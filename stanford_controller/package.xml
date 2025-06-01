@@ -21,7 +21,7 @@
   <exec_depend>trajectory_msgs</exec_depend>
   <exec_depend>mini_pupper_interfaces</exec_depend>
   <exec_depend>transforms3d</exec_depend>
-  <exec_depend>numpy</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
   
   <export>
     <build_type>ament_python</build_type>
