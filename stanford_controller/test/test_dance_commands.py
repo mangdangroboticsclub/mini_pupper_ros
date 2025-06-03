@@ -1,4 +1,7 @@
 import os
+import sys
+# Add the path to the mini_pupper_dance module
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../mini_pupper_dance'))
 import pytest
 import rclpy
 import time

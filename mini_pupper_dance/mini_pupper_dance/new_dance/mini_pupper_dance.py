@@ -16,12 +16,12 @@
 
 import rclpy
 from rclpy.node import Node
-from rclpy.timer import Timer
 from MangDang.mini_pupper.Config import Configuration
 from .MovementScheme import MovementScheme
 from .createDanceActionListSample import MovementLib
 from mini_pupper_interfaces.msg import Command
 from mini_pupper_interfaces.msg import Matrix3x4
+
 
 class MiniPupperDanceNode(Node):
     def __init__(self):
@@ -36,7 +36,7 @@ class MiniPupperDanceNode(Node):
 
         self.commands_publisher = self.create_publisher(Command, 'robot_command', 10)
 
-        # Create a timer to run the main loop at the desired frequency, 
+        # Create a timer to run the main loop at the desired frequency
         self.timer = self.create_timer(self.config.dt, self.main_loop)
 
     def main_loop(self):
@@ -80,6 +80,7 @@ def main(args=None):
     # Clean up
     node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
