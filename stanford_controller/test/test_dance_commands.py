@@ -1,7 +1,5 @@
 import os
 import sys
-# Add the path to the mini_pupper_dance module
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../mini_pupper_dance'))
 import pytest
 import rclpy
 import time
@@ -10,6 +8,9 @@ import launch_ros.actions
 import launch_testing
 import unittest
 from std_msgs.msg import String
+
+# Add the path to the mini_pupper_dance module
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../mini_pupper_dance'))
 
 from mini_pupper_interfaces.msg import Command, Matrix3x4
 from mini_pupper_dance.new_dance.MovementGroup import MovementGroups
