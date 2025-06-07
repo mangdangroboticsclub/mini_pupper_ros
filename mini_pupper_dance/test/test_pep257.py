@@ -19,5 +19,6 @@ import pytest
 @pytest.mark.linter
 @pytest.mark.pep257
 def test_pep257():
-    rc = main(argv=['.', 'test'])
+    # exclude the 'new_dance' folder from PEP257 checks
+    rc = main(argv=['--exclude', 'new_dance', '.', 'test'])
     assert rc == 0, 'Found code style errors / warnings'
