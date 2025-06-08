@@ -16,7 +16,7 @@
 
 import rclpy
 from rclpy.node import Node
-from MangDang.mini_pupper.Config import Configuration
+from stanford_controller.Config import Configuration
 from .MovementScheme import MovementScheme
 from .createDanceActionListSample import MovementLib
 from mini_pupper_interfaces.msg import Command

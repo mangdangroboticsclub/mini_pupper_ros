@@ -20,7 +20,7 @@ import numpy as np
 from geometry_msgs.msg import Twist
 from mini_pupper_interfaces.msg import Command
 from mini_pupper_interfaces.msg import Matrix3x4
-from MangDang.mini_pupper.Config import Configuration
+from .Config import Configuration
 
 
 class TwistToCommandNode(Node):

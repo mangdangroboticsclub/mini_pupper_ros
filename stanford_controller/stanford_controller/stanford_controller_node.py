@@ -9,7 +9,7 @@ from .Utilities import clipped_first_order_filter
 from .Utilities import convert_to_JTP_positions
 from .State import BehaviorState, State
 
-from MangDang.mini_pupper.Config import Configuration
+from .Config import Configuration
 
 import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
