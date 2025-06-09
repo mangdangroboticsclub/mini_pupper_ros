@@ -64,14 +64,16 @@ class TwistToCommandNode(Node):
 
     def create_command(self, twist: Twist) -> Command:
         cmd = Command()
-        cmd.height = -0.07
+        cmd.height = self.config.default_z_ref
 
         # default standing locations
-        matrix = Matrix3x4()
-        matrix.row1 = [0.06, 0.06, -0.06, -0.06]
-        matrix.row2 = [-0.05, 0.05, -0.05, 0.05]
-        matrix.row3 = [-0.07, -0.07, -0.07, -0.07]
-        cmd.legs_location = matrix
+
+        default_stance = self.config.default_stance
+        cmd.legs_location = Matrix3x4(
+            row1=default_stance[0].tolist(),
+            row2=default_stance[1].tolist(),
+            row3=default_stance[2].tolist()
+        )
 
         # clamp both forward and backward
         x_vel = float(np.clip(

@@ -121,8 +121,11 @@ class Configuration:
         )
 
     def stance_at_height(self, height: Optional[float] = None) -> np.ndarray:
-        """Return the default 3×4 foot positions shifted up/down by `height`.
-        If no height is given, use `self.default_z_ref`."""
+        """
+        Return the default 3×4 foot positions shifted up/down by `height`.
+
+        If no height is given, use `self.default_z_ref`.
+        """
         if height is None:
             height = self.default_z_ref
         # make a (3×1) column [0,0,height]^T and broadcast across 4 columns
