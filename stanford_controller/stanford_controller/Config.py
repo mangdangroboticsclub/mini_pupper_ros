@@ -1,14 +1,16 @@
+from typing import Optional
 import numpy as np
+
 
 class Configuration:
     def __init__(self):
-        #################### COMMANDS ####################
+        # COMMANDS
         self.max_x_velocity = 0.20
         self.max_y_velocity = 0.20
         self.max_yaw_rate = 2
         self.max_pitch = 20.0 * np.pi / 180.0
 
-        #################### MOVEMENT PARAMS ####################
+        # MOVEMENT PARAMS
         self.z_time_constant = 0.02
         self.z_speed = 0.01  # maximum speed [m/s]
         self.pitch_deadband = 0.02
@@ -19,14 +21,14 @@ class Configuration:
         self.max_stance_yaw = 1.2
         self.max_stance_yaw_rate = 1.5
 
-        #################### STANCE ####################
+        # STANCE
         self.delta_x = 0.059
         self.delta_y = 0.050
         self.x_shift = 0.0
         self.z_shift = 0.0
-        self.default_z_ref = -0.08
+        self.default_z_ref = -0.07
 
-        #################### SWING ######################
+        # SWING
         self.z_coeffs = None
         self.z_clearance = 0.03
         self.alpha = (
@@ -36,7 +38,7 @@ class Configuration:
             0.5  # Ratio between touchdown distance and total horizontal stance movement
         )
 
-        #################### GAIT #######################
+        # GAIT
         self.dt = 0.015
         self.num_phases = 4
         self.contact_phases = np.array(
@@ -49,7 +51,7 @@ class Configuration:
             0.1  # duration of the phase when only two feet are on the ground
         )
 
-        ######################## GEOMETRY ######################
+        # GEOMETRY
         self.LEG_FB = 0.059  # front-back distance from center line to leg axis
         self.LEG_LR = 0.0235  # left-right distance from center line to leg plane
         self.LEG_L2 = 0.060
@@ -83,7 +85,7 @@ class Configuration:
             ]
         )
 
-        ################### INERTIAL ####################
+        # INERTIAL
         self.FRAME_MASS = 0.200  # kg
         self.MODULE_MASS = 0.020  # kg
         self.LEG_MASS = 0.010  # kg
@@ -118,7 +120,16 @@ class Configuration:
             ]
         )
 
-    ################## SWING ###########################
+    def stance_at_height(self, height: Optional[float] = None) -> np.ndarray:
+        """Return the default 3×4 foot positions shifted up/down by `height`.
+        If no height is given, use `self.default_z_ref`."""
+        if height is None:
+            height = self.default_z_ref
+        # make a (3×1) column [0,0,height]^T and broadcast across 4 columns
+        offset = np.array([0.0, 0.0, height])[:, np.newaxis]
+        return self.default_stance + offset
+
+    # SWING
     @property
     def z_clearance(self):
         return self.__z_clearance
@@ -138,7 +149,7 @@ class Configuration:
         # )
         # self.z_coeffs = solve(A_z, b_z)
 
-    ########################### GAIT ####################
+    # GAIT
     @property
     def overlap_ticks(self):
         return int(self.overlap_time / self.dt)

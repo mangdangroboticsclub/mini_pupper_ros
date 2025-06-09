@@ -220,19 +220,13 @@ class StanfordControllerNode(Node):
             )
 
         elif self.state.behavior_state == BehaviorState.HOP:
-            self.state.foot_locations = (
-                self.config.default_stance
-                + np.array([0, 0, -0.03])[:, np.newaxis]
-            )
+            self.state.foot_locations = self.config.stance_at_height(-0.03)
             self.state.joint_angles = self.inverse_kinematics(
                 self.state.foot_locations, self.config
             )
 
         elif self.state.behavior_state == BehaviorState.FINISHHOP:
-            self.state.foot_locations = (
-                self.config.default_stance
-                + np.array([0, 0, -0.105])[:, np.newaxis]
-            )
+            self.state.foot_locations = self.config.stance_at_height(-0.105)
             self.state.joint_angles = self.inverse_kinematics(
                 self.state.foot_locations, self.config
             )
@@ -252,10 +246,8 @@ class StanfordControllerNode(Node):
             if not self.dance_active_state:
                 # Set the foot locations to the default stance plus the
                 # standard height
-                self.state.foot_locations = (
-                    self.config.default_stance
-                    + np.array([0, 0, command.height])[:, np.newaxis]
-                )
+                self.state.foot_locations = self.config.stance_at_height(command.height)
+
                 # Apply the desired body rotation
                 rotated_foot_locations = (
                     euler2mat(
