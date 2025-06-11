@@ -89,10 +89,9 @@ class TwistToCommandNode(Node):
         cmd.yaw = 0.0
 
         # detect zero↔non-zero edge and fire trot_event only once
-        # is_zero = self._vel_zero(twist)
-        # cmd.trot_event = (self.prev_zero != is_zero)
-        # self.prev_zero = is_zero
-        cmd.trot_event = False
+        is_zero = self._vel_zero(twist)
+        cmd.trot_event = (self.prev_zero != is_zero)
+        self.prev_zero = is_zero
         return cmd
 
     def _vel_zero(self, twist: Twist) -> bool:

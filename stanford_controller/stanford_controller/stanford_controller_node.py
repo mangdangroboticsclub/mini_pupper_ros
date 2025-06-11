@@ -190,10 +190,18 @@ class StanfordControllerNode(Node):
         self.pseudo_dance_active(command)
 
         if self.state.behavior_state == BehaviorState.TROT:
-            self.state.foot_locations, contact_modes = self.step_gait(
-                self.state,
-                command,
-            )
+            if (
+                abs(command.horizontal_velocity[0]) < 0.01 and
+                abs(command.horizontal_velocity[1]) < 0.01 and
+                abs(command.yaw_rate) < 0.01
+            ):
+                # Stand in default stance at commanded height
+                self.state.foot_locations = self.config.stance_at_height(command.height)
+            else:
+                self.state.foot_locations, contact_modes = self.step_gait(
+                    self.state,
+                    command,
+                )
 
             # Apply the desired body rotation
             rotated_foot_locations = (

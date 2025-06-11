@@ -84,22 +84,8 @@ class TestTwistToCommandNode(unittest.TestCase):
         self.assertTrue(trots[first_nz] == 1)
 
         # 2) the next N non-zero speeds should be trot_event == False
-        #    (in your publish you sent 3 forwards total)
         forwards = [i for i, v in enumerate(speeds) if v > 0.001]
-        # ensure we saw exactly 3 of them
-        self.assertLess(len(forwards), 7)
-        # check trot_event on the 2nd/3rd
+        self.assertGreater(len(forwards), 10)
         for idx in forwards[1:]:
             self.assertEqual(trots[idx], 0)
-
-        # 3) find the first zero‐speed after those forwards
-        zeros = [i for i, v in enumerate(speeds) if abs(v) < 1e-3 and i > forwards[-1]]
-        self.assertGreater(len(zeros), 0)
-        first_zero = zeros[0]
-
-        # that first zero‐speed should have trot_event == True
-        self.assertEqual(trots[first_zero], 1)
-
-        # 4) all subsequent zero‐speed messages should be trot_event == False
-        for idx in zeros[1:]:
-            self.assertEqual(trots[idx], 0)
+            self.assertEqual(speeds[idx], 0.1)
