@@ -29,9 +29,8 @@ class TwistToCommandNode(Node):
         super().__init__('twist_to_command_node')
         self.config = config
 
-        # remember last incoming cmd_vel & when it arrived
+        # remember last incoming cmd_vel
         self.last_twist = Twist()
-        self.last_twist_time = self.get_clock().now()
 
         # used to detect rising/falling edges on “non-zero” cmd_vel
         self.prev_zero = True
@@ -45,20 +44,12 @@ class TwistToCommandNode(Node):
             Twist, 'cmd_vel', self.cmd_vel_callback, 10
         )
 
-    def cmd_vel_callback(self, msg: Twist):
+    def cmd_vel_callback(self, twist: Twist):
         # simply remember the last twist and its timestamp
-        self.last_twist = msg
-        self.last_twist_time = self.get_clock().now()
+        self.last_twist = twist
 
     def timer_callback(self):
-        now = self.get_clock().now()
-        elapsed = (now - self.last_twist_time).nanoseconds * 1e-9
-
-        # if we’ve seen a fresh non-zero cmd_vel recently use it, else zero
-        use_vel = (elapsed < (self.config.dt * 4) and not self._vel_zero(self.last_twist))
-        twist = self.last_twist if use_vel else Twist()
-
-        cmd = self.create_command(twist)
+        cmd = self.create_command(self.last_twist)
         self.publisher_.publish(cmd)
         self.get_logger().debug(f'Publishing Command | trot_event={cmd.trot_event}')
 
@@ -98,10 +89,10 @@ class TwistToCommandNode(Node):
         cmd.yaw = 0.0
 
         # detect zero↔non-zero edge and fire trot_event only once
-        is_zero = self._vel_zero(twist)
-        cmd.trot_event = (self.prev_zero != is_zero)
-        self.prev_zero = is_zero
-
+        # is_zero = self._vel_zero(twist)
+        # cmd.trot_event = (self.prev_zero != is_zero)
+        # self.prev_zero = is_zero
+        cmd.trot_event = False
         return cmd
 
     def _vel_zero(self, twist: Twist) -> bool:
