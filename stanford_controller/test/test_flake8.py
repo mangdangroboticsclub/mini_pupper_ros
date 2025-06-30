@@ -19,9 +19,7 @@ import pytest
 @pytest.mark.flake8
 @pytest.mark.linter
 def test_flake8():
-    # Exclude the 'new_dance' from flake8 checks, as it's copied
-    # from another package.
-    rc, errors = main_with_errors(argv=['--exclude', 'new_dance'])
+    rc, errors = main_with_errors(argv=[])
     assert rc == 0, \
         'Found %d code style errors / warnings:\n' % len(errors) + \
         '\n'.join(errors)

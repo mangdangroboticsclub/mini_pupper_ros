@@ -1,16 +1,18 @@
 from setuptools import setup
-import os
 from glob import glob
+import os
 
 package_name = 'mini_pupper_dance'
 
 setup(
     name=package_name,
-    version='0.0.0',
-    packages=[package_name],
+    version='0.0.1',
+    packages=['mini_pupper_dance', 'mini_pupper_dance.new_dance'],
+    package_dir={
+        'mini_pupper_dance': 'mini_pupper_dance'
+    },
     data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
+        ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name), glob('launch/*.launch.py'))
     ],
@@ -25,7 +27,8 @@ setup(
         'console_scripts': [
             'service = mini_pupper_dance.dance_server:main',
             'client = mini_pupper_dance.dance_client:main',
-            'pose_controller = mini_pupper_dance.pose_controller:main'
-        ],
-    },
+            'pose_controller = mini_pupper_dance.pose_controller:main',
+            'mini_pupper_dance = mini_pupper_dance.new_dance.mini_pupper_dance:main'
+        ]
+    }
 )
