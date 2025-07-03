@@ -12,6 +12,19 @@ It uses a YOLO11n model to detect people in the camera feed and convert detectio
 - **Camera**: A Raspberry Pi Camera Module is required to run the tracking system.  
   This package was developed using the **v2 module**, compatibility with earlier camera versions such as **v1.3** has not been verified and may vary.
 
+### Dependencies
+Install the required Python packages and ROS2 components to use in the ROS2 workspace:
+
+```bash
+# Python dependencies
+pip install flask onnxruntime transforms3d
+```
+
+```bash
+# ROS2 IMU filter package
+sudo apt install ros-humble-imu-filter-madgwick
+```
+
 ---
 
 ## 1. Export the YOLO11n ONNX Model
@@ -26,7 +39,6 @@ source yolo-env/bin/activate
 
 ### Step 2: Install Ultralytics
 ```bash
-pip install --upgrade pip
 pip install ultralytics
 ```
 
