@@ -2,7 +2,7 @@
 
 This tracking package was independently developed by the author during the 2025 Global Internship Programme at HKSTP.
 
-It uses a YOLOv11n model to detect people in the camera feed and convert detections into motion commands for the Mini Pupper robot.
+It uses a YOLO11n model to detect people in the camera feed and convert detections into motion commands for the Mini Pupper robot.
 
 > **Note:** This package is only supported with the **Stanford Controller**. The **CHAMP Controller** is not supported.
 
@@ -67,3 +67,10 @@ ros2 launch stanford_controller twist_to_command_converter.launch.py
 source ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_tracking tracking.launch.py
 ```
+
+## 3. Overview
+This package includes the following Python scripts in the mini_pupper_tracking/mini_pupper_tracking folder:
+- **flask_server.py**: Creates Flask web server for live video streaming and debugging interface
+- **main.py**: Entry point that initializes the tracking node and Flask server
+- **movement_node.py**: Subscribes to tracking data and IMU, computes PID control, publishes cmd_vel commands
+- **tracking_node.py**: Processes camera feed, runs YOLO11n inference, publishes person detection results

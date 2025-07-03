@@ -12,7 +12,7 @@
   <depend>flask</depend>
   <depend>onnxruntime</depend>
 
-  <!-- New dependencies -->
+  <exec_depend>imu_filter_madgwick</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   
