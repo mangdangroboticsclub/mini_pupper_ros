@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        # IMU Filter Madgwick Node
+        Node(
+            package='imu_filter_madgwick',
+            executable='imu_filter_madgwick_node',
+            name='imu_filter',
+            parameters=[{
+                'use_mag': False,  # Set to True if you have magnetometer data
+                'publish_tf': False,  # Set to True if you want TF frames
+                'world_frame': 'enu',  # Options: 'enu', 'ned', 'nwu'
+                'fixed_frame': 'odom',
+                'constant_dt': 0.0,     
+                'publish_debug_topics': False,
+                'gain': 0.1,    
+                'zeta': 0.0,    
+            }],
+            remappings=[
+                ('imu/data_raw', 'imu/data'),  # Input: read from existing /imu/data
+                ('imu/data', 'imu/qdata'),     # Output: create new /imu/qdata topic
+            ],
+            output='screen'
+        ),
+        Node(
+            package='mini_pupper_tracking',
+            executable='main',
+            name='mini_pupper_tracking_node',
+            output='screen'
+        ),
+        Node(
+            package='mini_pupper_tracking',
+            executable='movement_node',
+            name='mini_pupper_movement_node',
+            output='screen'
+        )
+    ])
