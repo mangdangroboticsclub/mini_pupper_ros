@@ -6,6 +6,9 @@ It uses a YOLO11n model to detect people in the camera feed and convert detectio
 
 > **Note:** This package is only supported with the **Stanford Controller**. The **CHAMP Controller** is not supported.
 
+> ***IMPORTANT*** MAKE SURE YOU HAVE PLENTY OF SPACE ON YOUR TABLE IF THE ROBOT IS NOT ON THE FLOOR, MAKE SURE YOU ARE PREPARED FOR MOVEMENT!
+
+> USE CTRL-C ON THE HOST PC TO STOP MOVEMENT
 
 ### Hardware Requirements
 
@@ -70,12 +73,6 @@ ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
 ### Host PC
 ```bash
 # Terminal 2
-source ~/ros2_ws/install/setup.bash
-ros2 launch stanford_controller twist_to_command_converter.launch.py
-```
-
-```bash
-# Terminal 3
 source ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_tracking tracking.launch.py
 ```

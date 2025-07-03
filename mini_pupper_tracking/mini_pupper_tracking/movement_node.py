@@ -1,31 +1,18 @@
 #!/usr/bin/env python3
 
 import rclpy
+import time as pytime
 from rclpy.time import Time
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Imu, LaserScan
-from mini_pupper_interfaces.msg import Tracking, TrackingArray
+from mini_pupper_interfaces.msg import Tracking, TrackingArray, Command, Matrix3x4
 from tf_transformations import euler_from_quaternion
 import math
 import numpy as np
 import subprocess
 from enum import Enum
-
-
-def stop_rover_manually():
-    """
-    Publishes a zero-velocity Twist message once to stop the robot.
-    """
-    cmd = [
-        "ros2", "topic", "pub", "/cmd_vel", "geometry_msgs/msg/Twist",
-        "{linear: {x: 0.0}, angular: {z: 0.0}}", "--once"
-    ]
-    try:
-        subprocess.run(cmd, check=True)
-        print("Stop command sent from Python script.")
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to run ros2 stop command: {e}")
+from stanford_controller.Config import Configuration
 
 
 class PID:
@@ -56,7 +43,11 @@ class MovementNode(Node):
         super().__init__('mini_pupper_movement_node')
         self.get_logger().info("Movement Node Created")
 
-        self.velpub = self.create_publisher(Twist, "/cmd_vel", 10)
+        self.config = Configuration()
+        # used to detect rising/falling edges on “non-zero” cmd_vel
+        self.prev_zero = True
+        self.cmdpub = self.create_publisher(Command, '/robot_command', 10)
+
         self.tracksub = self.create_subscription(TrackingArray, "/tracking_array", self.tracking_callback, 10)
         self.imusub = self.create_subscription(Imu, "/imu/qdata", self.imu_callback, 10)
         
@@ -68,7 +59,7 @@ class MovementNode(Node):
 
         self.turn_pid = PID(5.0, 0.0, 0.1)
         # Average derivative is around 5.0 (0-10)
-        self.turn_timer = self.create_timer(1 / 30.0, self.turn_callback)
+        self.turn_timer = self.create_timer(0.015, self.turn_callback)
         self.last_turn = 0.0
 
         self.pid_log_timer = self.create_timer(0.2, self.log_pid_data)
@@ -119,13 +110,11 @@ class MovementNode(Node):
     
 
     def turn_callback(self):
-        twist = Twist()
-        twist.linear.x = 0.0
-
         now = self.get_clock().now()
         dt = (now - self.last_turn_time).nanoseconds / 1e9
         self.last_turn_time = now
 
+        angular = 0.0
         yaw_error = 0.0
         output_raw = 0.0
 
@@ -149,8 +138,9 @@ class MovementNode(Node):
             # No detection and no remembered target: decay old command
             self.dead = True
             self.last_turn *= self.turn_decay
-            twist.angular.z = self.last_turn
-            self.velpub.publish(twist)
+            angular = self.last_turn
+            cmd = self.create_command(ang=angular)
+            self.cmdpub.publish(cmd)
             return
 
         # Run PID even if error is small
@@ -158,14 +148,67 @@ class MovementNode(Node):
 
         # Apply deadband: if the output is too small, suppress it
         if abs(output_raw) < self.turn_stable_minimum:
-            twist.angular.z = 0.0
+            angular = 0.0
             self.dead = True
         else:
-            twist.angular.z = max(-self.turn_clamp, min(self.turn_clamp, output_raw))
+            angular = np.clip(output_raw, -self.turn_clamp, self.turn_clamp)
             self.dead = False
 
-        self.last_turn = twist.angular.z
-        self.velpub.publish(twist)
+        self.last_turn = angular
+        cmd = self.create_command(ang=angular)
+        self.cmdpub.publish(cmd)
+
+    def create_command(self, vel=[0.0,0.0], ang=0.0, pitch=0.0):
+        cmd = Command()
+        cmd.height = self.config.default_z_ref
+
+        # Default standing locations
+
+        default_stance = self.config.default_stance
+        cmd.legs_location = Matrix3x4(
+            row1=default_stance[0].tolist(),
+            row2=default_stance[1].tolist(),
+            row3=default_stance[2].tolist()
+        )
+
+        # Clamp velocity and angular velocity
+        x_vel = float(np.clip(
+            vel[0],
+            -self.config.max_x_velocity,
+            self.config.max_x_velocity,
+        ))
+        y_vel = float(np.clip(
+            vel[1],
+            -self.config.max_y_velocity,
+            self.config.max_y_velocity,
+        ))
+        yaw_rate = float(np.clip(
+            ang,
+            -self.config.max_yaw_rate,
+            self.config.max_yaw_rate,
+        ))
+        cmd.horizontal_velocity = np.array([x_vel, y_vel])
+        cmd.yaw_rate = yaw_rate
+        cmd.roll = 0.0
+        cmd.pitch = pitch
+        cmd.yaw = 0.0 # cmd.yaw is only used when the robot is stationary so not used for tracking
+
+        # IMPORTANT
+        # Detect zero↔non-zero edge and fire trot_event only once
+        is_zero = self._vel_zero(vel, yaw_rate)
+        cmd.trot_event = (self.prev_zero != is_zero)
+        self.prev_zero = is_zero
+        return cmd
+
+    def _vel_zero(self, vel, ang):
+        """
+        Returns True if both horizontal velocity and yaw_rate are approximately zero.
+        """
+        return np.allclose(
+            [vel[0], vel[1], ang],
+            0.0,
+            atol=1e-3
+        )
 
 
 def main(args=None):
@@ -175,12 +218,15 @@ def main(args=None):
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        node.destroy_node()
+        # Graceful stop using Command message
+        stop_cmd = node.create_command(vel=[0.0, 0.0], ang=0.0)
+        node.cmdpub.publish(stop_cmd)
+        node.get_logger().info("Stop command sent to robot_command")
+        pytime.sleep(0.5)  # Give it time to send
     finally:
+        node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()
-
-    stop_rover_manually()
 
 
 if __name__ == '__main__':

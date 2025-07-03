@@ -31,7 +31,7 @@ class TrackingNode(Node):
         self.last_processed = 0
         self.frame_counter = 0
         self.frame_skip = 1
-        self.min_interval = 1.0 / 30
+        self.min_interval = 0.015
 
         self.sess = ort.InferenceSession(
             MODEL_PATH,

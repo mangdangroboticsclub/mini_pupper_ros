@@ -13,7 +13,7 @@ def create_flask_app(node):
     def video_feed():
         def generate():
             while True:
-                time.sleep(0.017)
+                time.sleep(1 / 15.0)
                 
                 try:
                     # Non-blocking frame access with timeout
