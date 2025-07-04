@@ -81,5 +81,8 @@ ros2 launch mini_pupper_tracking tracking.launch.py
 This package includes the following Python scripts in the mini_pupper_tracking/mini_pupper_tracking folder:
 - **flask_server.py**: Creates Flask web server for live video streaming and debugging interface
 - **main.py**: Entry point that initializes the tracking node and Flask server
-- **movement_node.py**: Subscribes to tracking data and IMU, computes PID control, publishes cmd_vel commands
+- **movement_node.py**: Subscribes to tracking data and IMU, computes PID control, publishes Command messages
 - **tracking_node.py**: Processes camera feed, runs YOLO11n inference, publishes person detection results
+
+> **Note:** Usage of this package with lidar activated, or with the Stanford controller twist_to_command_node launched may break its functionality.
+
