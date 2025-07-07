@@ -66,7 +66,7 @@ mv yolo11n.onnx ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/models/
 ### Mini Pupper (on robot)
 ```bash
 # Terminal 1 (SSH into robot)
-source ~/ros2_ws_new/install/setup.bash  # Use setup.zsh if your shell is zsh
+source ~/ros2_ws/install/setup.bash  # Use setup.zsh if your shell is zsh
 ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
 ```
 
