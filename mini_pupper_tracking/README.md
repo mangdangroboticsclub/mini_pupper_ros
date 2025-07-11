@@ -4,6 +4,8 @@ This tracking package was independently developed by the author during the 2025 
 
 It uses a YOLO11n model to detect people in the camera feed and convert detections into motion commands for the Mini Pupper robot.
 
+![Tracking Demo](media/tracking_demo.gif)
+
 > **Note:** This package is only supported with the **Stanford Controller**. The **CHAMP Controller** is not supported.
 
 > ***IMPORTANT*** MAKE SURE YOU HAVE PLENTY OF SPACE ON YOUR TABLE IF THE ROBOT IS NOT ON THE FLOOR, MAKE SURE YOU ARE PREPARED FOR MOVEMENT!

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from launch import LaunchDescription
 from launch_ros.actions import Node
+import os
+from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     return LaunchDescription([
@@ -29,12 +31,24 @@ def generate_launch_description():
             package='mini_pupper_tracking',
             executable='main',
             name='mini_pupper_tracking_node',
+            parameters=[
+                os.path.join(get_package_share_directory('mini_pupper_tracking'), 'config', 'tracking_params.yaml')
+            ],
             output='screen'
         ),
         Node(
             package='mini_pupper_tracking',
             executable='movement_node',
             name='mini_pupper_movement_node',
+            parameters=[
+                os.path.join(get_package_share_directory('mini_pupper_tracking'), 'config', 'movement_params.yaml')
+            ],
+            output='screen'
+        ),
+         Node(
+            package='mini_pupper_tracking',
+            executable='camera_visualisation_node',
+            name='mini_pupper_camera_visualisation_node',
             output='screen'
         )
     ])

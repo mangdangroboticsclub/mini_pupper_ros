@@ -13,7 +13,8 @@ setup(
          ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', glob('launch/*')),
-        ('share/' + package_name + '/models', glob('models/*')) 
+        ('share/' + package_name + '/models', glob('models/*')),
+        ('share/' + package_name + '/config', glob('config/*.yaml'))
     ],
     install_requires=['setuptools'],
     zip_safe=False,
@@ -26,6 +27,7 @@ setup(
         'console_scripts': [
             'main = mini_pupper_tracking.main:main',
             'movement_node = mini_pupper_tracking.movement_node:main',
+            'camera_visualisation_node = mini_pupper_tracking.camera_visualisation_node:main',
         ],
     },
 )

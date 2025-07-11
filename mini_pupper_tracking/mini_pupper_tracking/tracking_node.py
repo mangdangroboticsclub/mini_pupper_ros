@@ -10,10 +10,8 @@ import time
 import os
 from threading import Lock
 from ament_index_python.packages import get_package_share_directory
+from motpy import Detection, MultiObjectTracker
 
-IMAGE_SIZE = 320
-CONFIDENCE_THRESHOLD = 0.8
-IOU_THRESHOLD = 0.4 # For NMS
 MODEL_NAME = "yolo11n.onnx" 
 MODEL_PATH = os.path.join(
     get_package_share_directory('mini_pupper_tracking'), 'models', MODEL_NAME)
@@ -22,6 +20,20 @@ class TrackingNode(Node):
     def __init__(self):
         super().__init__('mini_pupper_tracking_node')
         self.get_logger().info("Tracking Node Created")
+
+        # Parameter Fetching
+        self.declare_parameter('yolo.image_size', 320)
+        self.declare_parameter('yolo.confidence_threshold', 0.7)
+        self.declare_parameter('yolo.iou_threshold', 0.35)
+
+        self.image_size = self.get_parameter('yolo.image_size').value
+        self.confidence_threshold = self.get_parameter('yolo.confidence_threshold').value
+        self.iou_threshold = self.get_parameter('yolo.iou_threshold').value
+
+        # Flask Parameter Declaration
+        self.declare_parameter('flask.image_display_size', 1280)
+        self.declare_parameter('flask.frame_rate', 15)
+        self.declare_parameter('flask.auto_open_browser', True)
 
         self.subscription = self.create_subscription(Image, "/image_raw", self.image_callback, 10)
         self.publisher = self.create_publisher(TrackingArray, "/tracking_array", 10)
@@ -39,9 +51,13 @@ class TrackingNode(Node):
         )
         self.get_logger().info(f"Loaded model: {MODEL_NAME}")
 
+        self.tracker = MultiObjectTracker(dt=self.min_interval)
+        self.get_logger().info(f"Loaded tracker: motpy")
+
+
     def _apply_nms(self, boxes, scores, iou_threshold):
         """Non-Maximum Suppression to remove overlapping boxes"""
-        # Convert from [cx, cy, w, h] to [x1, y1, x2, y2]
+        # Convert from [center_x, center_y, w, h] to [x1, y1, x2, y2]
         x1 = boxes[:, 0] - boxes[:, 2] / 2
         y1 = boxes[:, 1] - boxes[:, 3] / 2
         x2 = boxes[:, 0] + boxes[:, 2] / 2
@@ -81,15 +97,15 @@ class TrackingNode(Node):
     def _preprocess_frame(self, frame):
         """Resize while preserving aspect ratio and pad to square"""
         h, w = frame.shape[:2]
-        scale = IMAGE_SIZE / max(h, w)
+        scale = self.image_size / max(h, w)
         new_h, new_w = int(h * scale), int(w * scale)
         resized = cv2.resize(frame, (new_w, new_h))
         
-        # Pad to IMAGE_SIZE x IMAGE_SIZE
-        top = (IMAGE_SIZE - new_h) // 2
-        bottom = IMAGE_SIZE - new_h - top
-        left = (IMAGE_SIZE - new_w) // 2
-        right = IMAGE_SIZE - new_w - left
+        # Pad to self.image_size x self.image_size
+        top = (self.image_size - new_h) // 2
+        bottom = self.image_size - new_h - top
+        left = (self.image_size - new_w) // 2
+        right = self.image_size - new_w - left
         padded = cv2.copyMakeBorder(resized, top, bottom, left, right, 
                                    cv2.BORDER_CONSTANT, value=(114, 114, 114))
         return padded, (scale, left, top)
@@ -116,9 +132,10 @@ class TrackingNode(Node):
             for det in detections:
                 track_msg = Tracking()
                 track_msg.confidence = float(det['score'])
-                track_msg.center_x = det['cx']
-                track_msg.center_y = det['cy']
+                track_msg.center_x = det['center_x']
+                track_msg.top_y = det['top_y']
                 track_msg.bounding_area = det['area']
+                track_msg.track_id = str(det.get('track_id', ''))
                 track_array_msg.tracks.append(track_msg)
 
             self.publisher.publish(track_array_msg)
@@ -129,53 +146,93 @@ class TrackingNode(Node):
 
 
     def process_frame(self, frame):
-        detections = [] 
+        try:
+            detections = [] 
 
-        frame_h, frame_w = frame.shape[:2]
-        img, (scale, pad_left, pad_top) = self._preprocess_frame(frame)
-        img = img.transpose(2, 0, 1)[np.newaxis].astype(np.float32) / 255.0
+            frame_h, frame_w = frame.shape[:2]
+            img, (scale, pad_left, pad_top) = self._preprocess_frame(frame)
+            img = img.transpose(2, 0, 1)[np.newaxis].astype(np.float32) / 255.0
 
-        outputs = self.sess.run(None, {"images": img})[0]
-        predictions = np.squeeze(outputs).T
-        scores = np.max(predictions[:, 4:], axis=1)
-        class_ids = np.argmax(predictions[:, 4:], axis=1)
-        boxes = predictions[:, :4]
+            # Add error checking for ONNX inference
+            outputs = self.sess.run(None, {"images": img})
+            if outputs is None or len(outputs) == 0:
+                self.get_logger().error("ONNX inference returned None or empty")
+                return frame, []
+                
+            predictions = np.squeeze(outputs[0]).T
+            scores = np.max(predictions[:, 4:], axis=1)
+            class_ids = np.argmax(predictions[:, 4:], axis=1)
+            boxes = predictions[:, :4]
 
-        # Valid if person and if confidence is above the threshold
-        valid_indices = [i for i in range(len(scores)) 
-                        if class_ids[i] == 0 and scores[i] > CONFIDENCE_THRESHOLD]
-        
-        if not valid_indices:
-            return frame, []  # No detections
+            # Valid if person and if confidence is above the threshold
+            valid_indices = [i for i in range(len(scores)) 
+                            if class_ids[i] == 0 and scores[i] > self.confidence_threshold]
+            
+            if not valid_indices:
+                return frame, []  # No detections
 
-        boxes_filtered = boxes[valid_indices]
-        scores_filtered = scores[valid_indices]
-        keep_indices = self._apply_nms(boxes_filtered, scores_filtered, IOU_THRESHOLD)
+            boxes_filtered = boxes[valid_indices]
+            scores_filtered = scores[valid_indices]
+            keep_indices = self._apply_nms(boxes_filtered, scores_filtered, self.iou_threshold)
 
-        for i in keep_indices:
-            cx, cy, w, h = boxes_filtered[i]
+            # Prepare detections for motpy
+            motpy_detections = []
+            detection_data = []  # Store original data for later use
 
-            cx = (cx - pad_left) / scale
-            cy = (cy - pad_top) / scale
-            w /= scale
-            h /= scale
+            for i in keep_indices:
+                center_x, center_y, w, h = boxes_filtered[i]
+                
+                center_x = (center_x - pad_left) / scale
+                center_y = (center_y - pad_top) / scale
+                w /= scale
+                h /= scale
+                
+                # Convert to [x1, y1, x2, y2] for motpy
+                x1 = center_x - w / 2
+                y1 = center_y - h / 2
+                x2 = center_x + w / 2
+                y2 = center_y + h / 2
+                
+                # Create motpy Detection
+                motpy_detections.append(Detection(box=np.array([x1, y1, x2, y2]), score=scores_filtered[i]))
+                
+                # Store data for later
+                detection_data.append({
+                    'score': scores_filtered[i],
+                    'center_x': center_x / frame_w,
+                    'top_y': y1 / frame_h,
+                    'area': (w * h) / (frame_w * frame_h),
+                    'pixel_coords': (int(x1), int(y1), int(x2), int(y2))
+                })
 
-            norm_cx = cx / frame_w
-            norm_cy = cy / frame_h
-            norm_area = w * h / (frame_w * frame_h)
+            # Update tracker
+            self.tracker.step(detections=motpy_detections)
+            tracks = self.tracker.active_tracks()
 
-            detections.append({'score': scores_filtered[i], 'cx': norm_cx, 'cy': norm_cy, 'area': norm_area}) 
-
-            # Draw box
-            x1 = int(cx - w / 2)
-            y1 = int(cy - h / 2)
-            x2 = int(cx + w / 2)
-            y2 = int(cy + h / 2)
-            x1, y1 = max(0, x1), max(0, y1)
-            x2, y2 = min(frame.shape[1], x2), min(frame.shape[0], y2)
-
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(frame, f"Person: {scores_filtered[i]:.2f}",
-                        (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-        return frame, detections 
+            # Match tracks to detections and create output
+            for track_idx, track in enumerate(tracks):
+                if track_idx < len(detection_data):
+                    data = detection_data[track_idx]
+                    
+                    detections.append({
+                        'score': data['score'],
+                        'center_x': data['center_x'],
+                        'top_y': data['top_y'],
+                        'area': data['area'],
+                        'track_id': str(track.id)  # Convert UUID to string
+                    })
+                    
+                    # Draw box with track ID
+                    x1, y1, x2, y2 = data['pixel_coords']
+                    x1, y1 = max(0, x1), max(0, y1)
+                    x2, y2 = min(frame.shape[1], x2), min(frame.shape[0], y2)
+                    
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    cv2.putText(frame, f"ID:{track.id}", (x1, y1 - 10), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            
+            return frame, detections
+            
+        except Exception as e:
+            self.get_logger().error(f"Exception in process_frame: {e}")
+            return frame, []

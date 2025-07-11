@@ -4,14 +4,11 @@ import rclpy
 import time as pytime
 from rclpy.time import Time
 from rclpy.node import Node
-from geometry_msgs.msg import Twist
-from sensor_msgs.msg import Imu, LaserScan
+from sensor_msgs.msg import Imu
 from mini_pupper_interfaces.msg import Tracking, TrackingArray, Command, Matrix3x4
 from tf_transformations import euler_from_quaternion
 import math
 import numpy as np
-import subprocess
-from enum import Enum
 from stanford_controller.Config import Configuration
 
 
@@ -43,83 +40,127 @@ class MovementNode(Node):
         super().__init__('mini_pupper_movement_node')
         self.get_logger().info("Movement Node Created")
 
+        # Parameter Fetching
+        self.declare_parameter('yaw.Kp', 5.0)
+        self.declare_parameter('yaw.Kd', 0.1)
+        self.declare_parameter('yaw.decay', 0.5)
+        self.declare_parameter('yaw.clamp', 2.0)
+        self.declare_parameter('yaw.stable_minimum', 0.5)
+        self.declare_parameter('yaw.tracking_enabled', False)
+        self.declare_parameter('pitch.alpha', 0.1)
+        self.declare_parameter('pitch.gain', 1.0)
+        self.declare_parameter('pitch.decay', 0.5)
+        self.declare_parameter('pitch.camera_deadband', 0.020)
+        self.declare_parameter('pitch.tracking_enabled', False)
+
+        # Configuration
         self.config = Configuration()
-        # used to detect rising/falling edges on “non-zero” cmd_vel
-        self.prev_zero = True
+        self.prev_zero = True  # Used to detect zero↔non-zero transitions
         self.cmdpub = self.create_publisher(Command, '/robot_command', 10)
 
+        #  Subscriptions
         self.tracksub = self.create_subscription(TrackingArray, "/tracking_array", self.tracking_callback, 10)
         self.imusub = self.create_subscription(Imu, "/imu/qdata", self.imu_callback, 10)
-        
-        # Tracking variables
+
+        # Detection
         self.detected = False
         self.center_x = 0.0
-        self.center_y = 0.0
+        self.top_y = 0.0
         self.bounding_area = 0.0
 
-        self.turn_pid = PID(5.0, 0.0, 0.1)
-        # Average derivative is around 5.0 (0-10)
-        self.turn_timer = self.create_timer(0.015, self.turn_callback)
-        self.last_turn = 0.0
-
-        self.pid_log_timer = self.create_timer(0.2, self.log_pid_data)
-
-        self.current_yaw = 0.0
+        # Camera FOV
         self.fov_deg = 62.2
         self.fov_rad = math.radians(self.fov_deg)
+        self.vertical_fov_deg = 48.8
+        self.vertical_fov_rad = math.radians(self.vertical_fov_deg)
+
+        # IMU Orientation
+        self.current_yaw = 0.0
+
+        # Yaw Control
+        self.yaw_tracking_enabled = self.get_parameter('yaw.tracking_enabled').value
+        self.yaw_pid = PID(self.get_parameter('yaw.Kp').value, 0.0, self.get_parameter('yaw.Kd').value)
+        self.last_yaw_rate = 0.0
         self.last_target_yaw = None
-        self.turn_decay = 0.5
-        self.turn_clamp = 2.0
-        self.turn_stable_minimum = 0.5
-        self.dead = False
+        self.yaw_decay = self.get_parameter('yaw.decay').value
+        self.yaw_clamp = self.get_parameter('yaw.clamp').value
+        self.yaw_stable_minimum = self.get_parameter('yaw.stable_minimum').value # <-- increase
         self.last_turn_time = self.get_clock().now()
+        self.yaw_dead = False
+
+        # Pitch Control (Smooth Version)
+        self.pitch_tracking_enabled = self.get_parameter('pitch.tracking_enabled').value
+        self.pitch_value = 0.0
+        self.last_pitch_time = self.get_clock().now()
+        self.pitch_dead = False
+        self.current_pitch = 0.0        
+        self.smoothed_offset = 0.0
+        self.wanted_top_y = 0.4
+
+        # Pitch parameters
+        self.pitch_alpha = self.get_parameter('pitch.alpha').value # Smoothing factor (0.1=very smooth, 0.5=responsive)
+        self.pitch_gain = self.get_parameter('pitch.gain').value # Proportional gain (0.2=gentle, 0.8=aggressive)
+        self.pitch_decay = self.get_parameter('pitch.decay').value # To gradually smooth if person lost (0.5=very aggressive, 0.9=smooth)
+        self.pitch_camera_deadband = self.get_parameter('pitch.camera_deadband').value # <-- increase
+
+        self.max_pitch_delta = 10.0 # Currently unused
+
+        # Timers
+        self.yaw_timer = self.create_timer(0.015, self.yaw_callback)
+        self.pitch_timer = self.create_timer(0.015, self.pitch_callback)
+        self.command_timer = self.create_timer(0.015, self.command_callback)
+        self.log_timer = self.create_timer(1.0, self.log_data)
     
-    def imu_callback(self, msg: Imu):
-        q = msg.orientation
-        quaternion = [q.x, q.y, q.z, q.w]
-        roll, pitch, yaw = euler_from_quaternion(quaternion)
-        self.current_yaw = yaw
-
-    def log_pid_data(self):
-        if self.detected:
-            if not self.dead:
-                self.get_logger().info(
-                    f"P={self.turn_pid.last_p:.3f} "
-                    f"I={self.turn_pid.last_i:.3f} "
-                    f"D={self.turn_pid.last_d:.3f} "
-                    f"Total={self.turn_pid.last_p + self.turn_pid.last_i + self.turn_pid.last_d:.3f} "
-                    f"Yaw={self.current_yaw:.3f}"
-                    f"\n"
-                )
-            else:
-                self.get_logger().info("DEAD")
-
-
-    def tracking_callback(self, msg: TrackingArray):
-        if not msg.tracks:
-            self.detected = False
-            return
-
-        # Pick detection with highest confidence
-        choice = max(msg.tracks, key=lambda t: t.bounding_area)
+    def command_callback(self):
+        yaw_rate = self.last_yaw_rate if self.yaw_tracking_enabled else 0.0
+        pitch = self.pitch_value if self.pitch_tracking_enabled else 0.0
         
-        self.center_x = choice.center_x
-        self.center_y = choice.center_y
-        self.bounding_area = choice.bounding_area
-        self.detected = True
-    
+        cmd = self.create_command(yaw_rate=yaw_rate, pitch=pitch)
+        self.cmdpub.publish(cmd)
 
-    def turn_callback(self):
+    def pitch_callback(self):
+        if self.detected:
+            # Calculate offset angle
+            offset_angle = (self.wanted_top_y - self.top_y) * self.vertical_fov_rad
+
+            # Exponential smoothing
+            self.smoothed_offset = (
+                self.pitch_alpha * offset_angle +
+                (1 - self.pitch_alpha) * self.smoothed_offset
+            )
+
+            # Apply control only if outside deadband
+            if abs(self.smoothed_offset) > self.pitch_camera_deadband:
+                target_pitch = self.current_pitch + self.pitch_gain * self.smoothed_offset
+                self.raw_pitch_delta = target_pitch - self.pitch_value
+                delta = np.clip(
+                    target_pitch - self.pitch_value,
+                    -self.max_pitch_delta,
+                    self.max_pitch_delta
+                )
+                self.pitch_value += delta
+                self.pitch_dead = False
+            else:
+                self.pitch_dead = True
+        else:
+            self.smoothed_offset *= self.pitch_decay
+            self.pitch_dead = True
+
+        self.pitch_value = float(np.clip(
+            self.pitch_value,
+            -np.pi/10,
+            np.pi/10,
+        ))
+
+
+    def yaw_callback(self):
         now = self.get_clock().now()
         dt = (now - self.last_turn_time).nanoseconds / 1e9
         self.last_turn_time = now
 
-        angular = 0.0
         yaw_error = 0.0
-        output_raw = 0.0
-
         if self.detected:
-            offset_angle = (self.center_x - 0.5) * self.fov_rad
+            offset_angle = (0.5 - self.center_x) * self.fov_rad
             desired_yaw = self.current_yaw + offset_angle
             self.last_target_yaw = desired_yaw
 
@@ -135,30 +176,51 @@ class MovementNode(Node):
             )
 
         else:
-            # No detection and no remembered target: decay old command
-            self.dead = True
-            self.last_turn *= self.turn_decay
-            angular = self.last_turn
-            cmd = self.create_command(ang=angular)
-            self.cmdpub.publish(cmd)
+            self.yaw_dead = True
+            self.last_yaw_rate *= self.yaw_decay
             return
 
-        # Run PID even if error is small
-        output_raw = self.turn_pid.compute(-yaw_error, dt)
+        output_raw = self.yaw_pid.compute(yaw_error, dt)
 
-        # Apply deadband: if the output is too small, suppress it
-        if abs(output_raw) < self.turn_stable_minimum:
-            angular = 0.0
-            self.dead = True
+        if abs(output_raw) < self.yaw_stable_minimum:
+            self.last_yaw_rate = 0.0
+            self.yaw_dead = True
         else:
-            angular = np.clip(output_raw, -self.turn_clamp, self.turn_clamp)
-            self.dead = False
+            self.last_yaw_rate = float(np.clip(output_raw, -self.yaw_clamp, self.yaw_clamp))
+            self.yaw_dead = False
 
-        self.last_turn = angular
-        cmd = self.create_command(ang=angular)
-        self.cmdpub.publish(cmd)
+    def imu_callback(self, msg: Imu):
+        q = msg.orientation
+        quaternion = [q.x, q.y, q.z, q.w]
+        roll, pitch, yaw = euler_from_quaternion(quaternion)
+        self.current_yaw = yaw # Store current yaw for tracking
+        self.current_pitch = pitch # Store current pitch for tracking
 
-    def create_command(self, vel=[0.0,0.0], ang=0.0, pitch=0.0):
+    def log_data(self):
+        if self.detected:
+            self.get_logger().info(
+                f"Center X: {self.center_x:.2f}, "
+                f"Top Y: {self.top_y:.2f}, "
+                f"Bounding Area: {self.bounding_area:.2f}, "
+                f"Pitch Value: {self.pitch_value:.2f}, "
+                f"Yaw Rate: {self.last_yaw_rate:.2f}"
+            )
+
+
+    def tracking_callback(self, msg: TrackingArray):
+        if not msg.tracks:
+            self.detected = False
+            return
+
+        # Pick detection with highest confidence
+        choice = max(msg.tracks, key=lambda t: t.bounding_area)
+        
+        self.center_x = choice.center_x
+        self.top_y = choice.top_y
+        self.bounding_area = choice.bounding_area
+        self.detected = True
+
+    def create_command(self, vel=[0.0,0.0], yaw_rate=0.0, pitch=0.0):
         cmd = Command()
         cmd.height = self.config.default_z_ref
 
@@ -182,15 +244,20 @@ class MovementNode(Node):
             -self.config.max_y_velocity,
             self.config.max_y_velocity,
         ))
-        yaw_rate = float(np.clip(
-            ang,
+        yaw_rate_clipped = float(np.clip(
+            yaw_rate,
             -self.config.max_yaw_rate,
             self.config.max_yaw_rate,
         ))
+        pitch_clipped = float(np.clip(
+            pitch,
+            -np.pi/10,
+            np.pi/10,
+        ))
         cmd.horizontal_velocity = np.array([x_vel, y_vel])
-        cmd.yaw_rate = yaw_rate
+        cmd.yaw_rate = yaw_rate_clipped
         cmd.roll = 0.0
-        cmd.pitch = pitch
+        cmd.pitch = pitch_clipped
         cmd.yaw = 0.0 # cmd.yaw is only used when the robot is stationary so not used for tracking
 
         # IMPORTANT
@@ -200,12 +267,12 @@ class MovementNode(Node):
         self.prev_zero = is_zero
         return cmd
 
-    def _vel_zero(self, vel, ang):
+    def _vel_zero(self, vel, yaw_rate):
         """
         Returns True if both horizontal velocity and yaw_rate are approximately zero.
         """
         return np.allclose(
-            [vel[0], vel[1], ang],
+            [vel[0], vel[1], yaw_rate],
             0.0,
             atol=1e-3
         )
@@ -219,7 +286,7 @@ def main(args=None):
         rclpy.spin(node)
     except KeyboardInterrupt:
         # Graceful stop using Command message
-        stop_cmd = node.create_command(vel=[0.0, 0.0], ang=0.0)
+        stop_cmd = node.create_command(vel=[0.0, 0.0], yaw_rate=0.0)
         node.cmdpub.publish(stop_cmd)
         node.get_logger().info("Stop command sent to robot_command")
         pytime.sleep(0.5)  # Give it time to send

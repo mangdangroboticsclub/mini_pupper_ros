@@ -1,0 +1,43 @@
+# Mini Pupper Tracking Node Configuration
+# This YAML file contains parameters for the object detection and web visualisation system
+# using YOLO for person detection and Flask for camera streaming
+
+mini_pupper_tracking_node:
+  ros__parameters:
+
+    # ========================
+    # YOLO DETECTION SETTINGS
+    # ========================
+    yolo:
+      # Size (in pixels) to which the input image is resized before detection
+      # Smaller sizes = faster detection but lower accuracy
+      image_size: 320
+
+      # Confidence threshold for YOLO object detection
+      # Controls how certain the model must be to keep a detection
+      # Higher values = fewer detections kept, but more accurate (less false positives)
+      # Lower values = more detections kept, but less reliable (more false positives)
+      # Typically between 0.6 and 0.8
+      confidence_threshold: 0.7
+
+      # Intersection-over-Union (IoU) threshold for non-maximum suppression
+      # Controls how much overlap is allowed between detected bounding boxes
+      # Higher values = more tolerance for overlap → more boxes kept (may include duplicates)
+      # Lower values = stricter suppression → fewer boxes kept (may remove valid detections)
+      # Typically between 0.3 and 0.5
+      iou_threshold: 0.35
+
+
+    # ========================
+    # FLASK SERVER SETTINGS
+    # ========================
+    flask:
+      # Width (in pixels) of the streamed image displayed in the web browser
+      image_display_size: 1280
+
+      # Target frame rate for the streaming server (FPS)
+      frame_rate: 15
+
+      # Automatically open the default browser on launch
+      # true = open the Flask stream in a browser tab automatically
+      auto_open_browser: true

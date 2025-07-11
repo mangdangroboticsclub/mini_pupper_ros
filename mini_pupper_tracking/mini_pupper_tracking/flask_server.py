@@ -2,18 +2,20 @@ from flask import Flask, Response
 import cv2
 import time
 
-def create_flask_app(node):
+def create_flask_app(node, flask_config):
     app = Flask(__name__)
 
     @app.route('/')
     def index():
-        return "<h2>Mini Pupper Tracking</h2><img src='/video_feed' width='1280'>"
+        image_display_size = flask_config.get('image_display_size', 1280)
+        return f"<h2>Mini Pupper Tracking</h2><img src='/video_feed' width='{image_display_size}'>"
 
     @app.route('/video_feed')
     def video_feed():
         def generate():
+            frame_rate = flask_config.get('frame_rate', 15)
             while True:
-                time.sleep(1 / 15.0)
+                time.sleep(1 / frame_rate)
                 
                 try:
                     # Non-blocking frame access with timeout

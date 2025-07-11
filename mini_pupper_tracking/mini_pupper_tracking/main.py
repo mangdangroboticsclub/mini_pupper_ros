@@ -11,16 +11,23 @@ def main(args=None):
     rclpy.init(args=args)
     node = TrackingNode()
 
+    flask_config = {'image_display_size': node.get_parameter('flask.image_display_size').value, 
+                    'frame_rate': node.get_parameter('flask.frame_rate').value}
+    auto_open_browser = node.get_parameter('flask.auto_open_browser').value
+
     # Start Flask app
-    app = create_flask_app(node)
+    app = create_flask_app(node, flask_config)
 
     # Auto-open browser
     def open_browser_delayed():
         time.sleep(1)  # Wait for Flask to be ready
-        try:
-            webbrowser.open("http://localhost:5000")
-        except Exception as e:
-            print(f"Could not open browser: {e}")
+        if auto_open_browser:
+            try:
+                webbrowser.open("http://localhost:5000")
+            except Exception as e:
+                print(f"Could not open browser: {e}")
+        else:
+            node.get_logger().info("Auto-open browser is disabled. Visit http://localhost:5000 to view the stream.")
 
     Thread(target=open_browser_delayed, daemon=True).start()
 
