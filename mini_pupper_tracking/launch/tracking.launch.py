@@ -23,7 +23,7 @@ def generate_launch_description():
             }],
             remappings=[
                 ('imu/data_raw', 'imu/data'),  # Input: read from existing /imu/data
-                ('imu/data', 'imu/qdata'),     # Output: create new /imu/qdata topic
+                ('imu/data', 'imu/data_filtered_madgwick'),     # Output: create new /imu/data_filtered_madgwick topic
             ],
             output='screen'
         ),

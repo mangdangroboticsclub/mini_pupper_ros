@@ -60,7 +60,7 @@ class MovementNode(Node):
 
         #  Subscriptions
         self.tracksub = self.create_subscription(TrackingArray, "/tracking_array", self.tracking_callback, 10)
-        self.imusub = self.create_subscription(Imu, "/imu/qdata", self.imu_callback, 10)
+        self.imusub = self.create_subscription(Imu, "imu/data_filtered_madgwick", self.imu_callback, 10)
 
         # Detection
         self.detected = False

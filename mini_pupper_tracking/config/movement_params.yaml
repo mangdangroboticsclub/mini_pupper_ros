@@ -40,7 +40,7 @@ mini_pupper_movement_node:
       # Enable/disable yaw tracking functionality
       # false = yaw control is disabled, robot won't turn to track
       # true = yaw control is active for person following
-      tracking_enabled: false
+      tracking_enabled: true
     
     # ========================
     # PITCH CONTROL PARAMETERS  

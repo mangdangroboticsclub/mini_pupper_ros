@@ -17,7 +17,7 @@ class CameraVisualisationNode(Node):
 
         # Camera FOV
         self.camera_position = (0.070, 0.000, 0.035)
-        self.range = 1.0
+        self.range = 2.0
         self.fov_deg = 62.2
         self.vertical_fov_deg = 48.8
         self.fov_rad = math.radians(self.fov_deg)
@@ -89,7 +89,7 @@ class CameraVisualisationNode(Node):
         edges.color.r = 0.0
         edges.color.g = 0.0 
         edges.color.b = 1.0
-        edges.color.a = 0.7  
+        edges.color.a = 0.5  
         edges.lifetime.sec = int(0)
         edges.lifetime.nanosec = int(0)
         edges.frame_locked = True  
@@ -109,7 +109,7 @@ class CameraVisualisationNode(Node):
         vertices.color.r = 0.0
         vertices.color.g = 1.0 
         vertices.color.b = 0.0
-        vertices.color.a = 0.7
+        vertices.color.a = 0.6
         vertices.lifetime.sec = int(0)
         vertices.lifetime.nanosec = int(0)
         vertices.frame_locked = True  

@@ -10,7 +10,7 @@ class StanfordStatePublisher(Node):
     def __init__(self):
         super().__init__('stanford_state_publisher')
         self.tf_broadcaster = TransformBroadcaster(self)
-        self.subscription = self.create_subscription(Imu, '/imu/qdata', self.imu_callback, 10)
+        self.subscription = self.create_subscription(Imu, '/imu/data_filtered_madgwick', self.imu_callback, 10)
         
     def imu_callback(self, msg):
         t = TransformStamped()
