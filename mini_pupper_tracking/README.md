@@ -75,6 +75,11 @@ The tracking system consists of four main components:
 Install the required Python packages and ROS2 components to use in the ROS2 workspace:
 
 ```bash
+# Downgrade numpy to a compatible version
+pip install "numpy<2.0"
+```
+
+```bash
 # Python dependencies
 pip install flask onnxruntime motpy
 ```
