@@ -9,8 +9,10 @@
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
-  <depend>flask</depend>
-  <depend>onnxruntime</depend>
+  <depend>mini_pupper_interfaces</depend>
+  <depend>visualization_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <exec_depend>tf_transformations</exec_depend>
 
   <exec_depend>imu_filter_madgwick</exec_depend>
   <exec_depend>launch</exec_depend>
