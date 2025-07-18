@@ -1,11 +1,24 @@
-#!/usr/bin/env python3
+# Copyright 2025 Kishan Grewal
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# !/usr/bin/env python3
 
 import rclpy
 import time as pytime
-from rclpy.time import Time
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
-from mini_pupper_interfaces.msg import Tracking, TrackingArray, Command, Matrix3x4
+from mini_pupper_interfaces.msg import TrackingArray, Command, Matrix3x4
 from tf_transformations import euler_from_quaternion
 import math
 import numpy as np
@@ -25,15 +38,15 @@ class PID:
     def compute(self, error, dt):
         self.integral += error * dt
         derivative = (error - self.prev_error) / dt
-        
+
         # Store individual components
         self.last_p = self.K[0] * error
         self.last_i = self.K[1] * self.integral
         self.last_d = self.K[2] * derivative
-        
+
         self.prev_error = error
         return self.last_p + self.last_i + self.last_d
-    
+
 
 class MovementNode(Node):
     def __init__(self):
@@ -59,8 +72,10 @@ class MovementNode(Node):
         self.cmdpub = self.create_publisher(Command, '/robot_command', 10)
 
         #  Subscriptions
-        self.tracksub = self.create_subscription(TrackingArray, "/tracking_array", self.tracking_callback, 10)
-        self.imusub = self.create_subscription(Imu, "imu/data_filtered_madgwick", self.imu_callback, 10)
+        self.tracksub = self.create_subscription(
+            TrackingArray, "/tracking_array", self.tracking_callback, 10)
+        self.imusub = self.create_subscription(
+            Imu, "imu/data_filtered_madgwick", self.imu_callback, 10)
 
         # Detection
         self.detected = False
@@ -78,50 +93,60 @@ class MovementNode(Node):
         self.current_yaw = 0.0
 
         # Yaw Control
-        self.yaw_tracking_enabled = self.get_parameter('yaw.tracking_enabled').value
-        self.yaw_pid = PID(self.get_parameter('yaw.Kp').value, 0.0, self.get_parameter('yaw.Kd').value)
+        self.yaw_tracking_enabled = self.get_parameter(
+            'yaw.tracking_enabled').value
+        self.yaw_pid = PID(
+            self.get_parameter('yaw.Kp').value, 0.0,
+            self.get_parameter('yaw.Kd').value)
         self.last_yaw_rate = 0.0
         self.last_target_yaw = None
         self.yaw_decay = self.get_parameter('yaw.decay').value
         self.yaw_clamp = self.get_parameter('yaw.clamp').value
-        self.yaw_stable_minimum = self.get_parameter('yaw.stable_minimum').value # <-- increase
+        self.yaw_stable_minimum = self.get_parameter(
+            'yaw.stable_minimum').value  # increase
         self.last_turn_time = self.get_clock().now()
         self.yaw_dead = False
 
         # Pitch Control (Smooth Version)
-        self.pitch_tracking_enabled = self.get_parameter('pitch.tracking_enabled').value
+        self.pitch_tracking_enabled = self.get_parameter(
+            'pitch.tracking_enabled').value
         self.pitch_value = 0.0
         self.last_pitch_time = self.get_clock().now()
         self.pitch_dead = False
-        self.current_pitch = 0.0        
+        self.current_pitch = 0.0
         self.smoothed_offset = 0.0
         self.wanted_top_y = 0.4
 
         # Pitch parameters
-        self.pitch_alpha = self.get_parameter('pitch.alpha').value # Smoothing factor (0.1=very smooth, 0.5=responsive)
-        self.pitch_gain = self.get_parameter('pitch.gain').value # Proportional gain (0.2=gentle, 0.8=aggressive)
-        self.pitch_decay = self.get_parameter('pitch.decay').value # To gradually smooth if person lost (0.5=very aggressive, 0.9=smooth)
-        self.pitch_camera_deadband = self.get_parameter('pitch.camera_deadband').value # <-- increase
+        # Smoothing factor (0.1=very smooth, 0.5=responsive)
+        self.pitch_alpha = self.get_parameter('pitch.alpha').value
+        # Proportional gain (0.2=gentle, 0.8=aggressive)
+        self.pitch_gain = self.get_parameter('pitch.gain').value
+        # To gradually smooth if person lost (0.5=very aggressive, 0.9=smooth)
+        self.pitch_decay = self.get_parameter('pitch.decay').value
+        self.pitch_camera_deadband = self.get_parameter(
+            'pitch.camera_deadband').value  # increase
 
-        self.max_pitch_delta = 10.0 # Currently unused
+        self.max_pitch_delta = 10.0  # Currently unused
 
         # Timers
         self.yaw_timer = self.create_timer(0.015, self.yaw_callback)
         self.pitch_timer = self.create_timer(0.015, self.pitch_callback)
         self.command_timer = self.create_timer(0.015, self.command_callback)
         self.log_timer = self.create_timer(1.0, self.log_data)
-    
+
     def command_callback(self):
         yaw_rate = self.last_yaw_rate if self.yaw_tracking_enabled else 0.0
         pitch = self.pitch_value if self.pitch_tracking_enabled else 0.0
-        
+
         cmd = self.create_command(yaw_rate=yaw_rate, pitch=pitch)
         self.cmdpub.publish(cmd)
 
     def pitch_callback(self):
         if self.detected:
             # Calculate offset angle
-            offset_angle = (self.wanted_top_y - self.top_y) * self.vertical_fov_rad
+            offset_angle = (
+                self.wanted_top_y - self.top_y) * self.vertical_fov_rad
 
             # Exponential smoothing
             self.smoothed_offset = (
@@ -131,7 +156,8 @@ class MovementNode(Node):
 
             # Apply control only if outside deadband
             if abs(self.smoothed_offset) > self.pitch_camera_deadband:
-                target_pitch = self.current_pitch + self.pitch_gain * self.smoothed_offset
+                target_pitch = (
+                    self.current_pitch + self.pitch_gain * self.smoothed_offset)
                 self.raw_pitch_delta = target_pitch - self.pitch_value
                 delta = np.clip(
                     target_pitch - self.pitch_value,
@@ -151,7 +177,6 @@ class MovementNode(Node):
             -np.pi/10,
             np.pi/10,
         ))
-
 
     def yaw_callback(self):
         now = self.get_clock().now()
@@ -186,15 +211,16 @@ class MovementNode(Node):
             self.last_yaw_rate = 0.0
             self.yaw_dead = True
         else:
-            self.last_yaw_rate = float(np.clip(output_raw, -self.yaw_clamp, self.yaw_clamp))
+            self.last_yaw_rate = float(
+                np.clip(output_raw, -self.yaw_clamp, self.yaw_clamp))
             self.yaw_dead = False
 
     def imu_callback(self, msg: Imu):
         q = msg.orientation
         quaternion = [q.x, q.y, q.z, q.w]
         roll, pitch, yaw = euler_from_quaternion(quaternion)
-        self.current_yaw = yaw # Store current yaw for tracking
-        self.current_pitch = pitch # Store current pitch for tracking
+        self.current_yaw = yaw  # Store current yaw for tracking
+        self.current_pitch = pitch  # Store current pitch for tracking
 
     def log_data(self):
         if self.detected:
@@ -206,7 +232,6 @@ class MovementNode(Node):
                 f"Yaw Rate: {self.last_yaw_rate:.2f}"
             )
 
-
     def tracking_callback(self, msg: TrackingArray):
         if not msg.tracks:
             self.detected = False
@@ -214,13 +239,13 @@ class MovementNode(Node):
 
         # Pick detection with highest confidence
         choice = max(msg.tracks, key=lambda t: t.bounding_area)
-        
+
         self.center_x = choice.center_x
         self.top_y = choice.top_y
         self.bounding_area = choice.bounding_area
         self.detected = True
 
-    def create_command(self, vel=[0.0,0.0], yaw_rate=0.0, pitch=0.0):
+    def create_command(self, vel=[0.0, 0.0], yaw_rate=0.0, pitch=0.0):
         cmd = Command()
         cmd.height = self.config.default_z_ref
 
@@ -258,7 +283,9 @@ class MovementNode(Node):
         cmd.yaw_rate = yaw_rate_clipped
         cmd.roll = 0.0
         cmd.pitch = pitch_clipped
-        cmd.yaw = 0.0 # cmd.yaw is only used when the robot is stationary so not used for tracking
+        # cmd.yaw is only used when the robot is stationary
+        # so not used for tracking
+        cmd.yaw = 0.0
 
         # IMPORTANT
         # Detect zero↔non-zero edge and fire trot_event only once

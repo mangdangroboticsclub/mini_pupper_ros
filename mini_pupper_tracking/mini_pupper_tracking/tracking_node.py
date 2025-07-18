@@ -1,7 +1,20 @@
-import rclpy
+# Copyright 2025 Kishan Grewal
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from mini_pupper_interfaces.msg import Tracking, TrackingArray
+from mini_pupper_interfaces.msg import TrackingArray, Tracking
 from cv_bridge import CvBridge
 import numpy as np
 import onnxruntime as ort
@@ -12,9 +25,10 @@ from threading import Lock
 from ament_index_python.packages import get_package_share_directory
 from motpy import Detection, MultiObjectTracker
 
-MODEL_NAME = "yolo11n.onnx" 
+MODEL_NAME = "yolo11n.onnx"
 MODEL_PATH = os.path.join(
     get_package_share_directory('mini_pupper_tracking'), 'models', MODEL_NAME)
+
 
 class TrackingNode(Node):
     def __init__(self):
@@ -27,7 +41,8 @@ class TrackingNode(Node):
         self.declare_parameter('yolo.iou_threshold', 0.35)
 
         self.image_size = self.get_parameter('yolo.image_size').value
-        self.confidence_threshold = self.get_parameter('yolo.confidence_threshold').value
+        self.confidence_threshold = self.get_parameter(
+            'yolo.confidence_threshold').value
         self.iou_threshold = self.get_parameter('yolo.iou_threshold').value
 
         # Flask Parameter Declaration
@@ -35,8 +50,10 @@ class TrackingNode(Node):
         self.declare_parameter('flask.frame_rate', 15)
         self.declare_parameter('flask.auto_open_browser', True)
 
-        self.subscription = self.create_subscription(Image, "/image_raw", self.image_callback, 10)
-        self.publisher = self.create_publisher(TrackingArray, "/tracking_array", 10)
+        self.subscription = self.create_subscription(
+            Image, "/image_raw", self.image_callback, 10)
+        self.publisher = self.create_publisher(
+            TrackingArray, "/tracking_array", 10)
         self.bridge = CvBridge()
         self.latest_frame = None
         self.frame_lock = Lock()
@@ -52,8 +69,7 @@ class TrackingNode(Node):
         self.get_logger().info(f"Loaded model: {MODEL_NAME}")
 
         self.tracker = MultiObjectTracker(dt=self.min_interval)
-        self.get_logger().info(f"Loaded tracker: motpy")
-
+        self.get_logger().info("Loaded tracker: motpy")
 
     def _apply_nms(self, boxes, scores, iou_threshold):
         """Non-Maximum Suppression to remove overlapping boxes"""
@@ -63,35 +79,37 @@ class TrackingNode(Node):
         x2 = boxes[:, 0] + boxes[:, 2] / 2
         y2 = boxes[:, 1] + boxes[:, 3] / 2
         boxes = np.column_stack([x1, y1, x2, y2])
-        
+
         # Sort by descending confidence
         order = scores.argsort()[::-1]
         keep = []
-        
+
         while order.size > 0:
             i = order[0]
             keep.append(i)
-            
+
             # Compute IoU between current box and remaining
             xx1 = np.maximum(boxes[i, 0], boxes[order[1:], 0])
             yy1 = np.maximum(boxes[i, 1], boxes[order[1:], 1])
             xx2 = np.minimum(boxes[i, 2], boxes[order[1:], 2])
             yy2 = np.minimum(boxes[i, 3], boxes[order[1:], 3])
-            
+
             w = np.maximum(0.0, xx2 - xx1)
             h = np.maximum(0.0, yy2 - yy1)
             intersection = w * h
-            
-            area_i = (boxes[i, 2] - boxes[i, 0]) * (boxes[i, 3] - boxes[i, 1])
-            area_j = (boxes[order[1:], 2] - boxes[order[1:], 0]) * (boxes[order[1:], 3] - boxes[order[1:], 1])
+
+            area_i = (boxes[i, 2] - boxes[i, 0]) * (
+                boxes[i, 3] - boxes[i, 1])
+            area_j = (boxes[order[1:], 2] - boxes[order[1:], 0]) * (
+                boxes[order[1:], 3] - boxes[order[1:], 1])
             union = area_i + area_j - intersection
-            
+
             iou = intersection / (union + 1e-7)  # Avoid division by zero
-            
+
             # Keep boxes with IoU < threshold
             inds = np.where(iou <= iou_threshold)[0]
             order = order[inds + 1]
-        
+
         return keep
 
     def _preprocess_frame(self, frame):
@@ -100,14 +118,15 @@ class TrackingNode(Node):
         scale = self.image_size / max(h, w)
         new_h, new_w = int(h * scale), int(w * scale)
         resized = cv2.resize(frame, (new_w, new_h))
-        
+
         # Pad to self.image_size x self.image_size
         top = (self.image_size - new_h) // 2
         bottom = self.image_size - new_h - top
         left = (self.image_size - new_w) // 2
         right = self.image_size - new_w - left
-        padded = cv2.copyMakeBorder(resized, top, bottom, left, right, 
-                                   cv2.BORDER_CONSTANT, value=(114, 114, 114))
+        padded = cv2.copyMakeBorder(
+            resized, top, bottom, left, right,
+            cv2.BORDER_CONSTANT, value=(114, 114, 114))
         return padded, (scale, left, top)
 
     def image_callback(self, msg):
@@ -120,8 +139,9 @@ class TrackingNode(Node):
             return
 
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-            processed, detections = self.process_frame(cv_image)  # Ensure detections is a list of dicts
+            cv_image = self.bridge.imgmsg_to_cv2(
+                msg, desired_encoding='bgr8')
+            processed, detections = self.process_frame(cv_image)
 
             with self.frame_lock:
                 self.latest_frame = processed
@@ -144,36 +164,40 @@ class TrackingNode(Node):
         except Exception as e:
             self.get_logger().error(f"Inference failed: {e}")
 
-
     def process_frame(self, frame):
         try:
-            detections = [] 
+            detections = []
 
             frame_h, frame_w = frame.shape[:2]
             img, (scale, pad_left, pad_top) = self._preprocess_frame(frame)
-            img = img.transpose(2, 0, 1)[np.newaxis].astype(np.float32) / 255.0
+            img = img.transpose(2, 0, 1)[np.newaxis].astype(
+                np.float32) / 255.0
 
             # Add error checking for ONNX inference
             outputs = self.sess.run(None, {"images": img})
             if outputs is None or len(outputs) == 0:
-                self.get_logger().error("ONNX inference returned None or empty")
+                self.get_logger().error(
+                    "ONNX inference returned None or empty")
                 return frame, []
-                
+
             predictions = np.squeeze(outputs[0]).T
             scores = np.max(predictions[:, 4:], axis=1)
             class_ids = np.argmax(predictions[:, 4:], axis=1)
             boxes = predictions[:, :4]
 
             # Valid if person and if confidence is above the threshold
-            valid_indices = [i for i in range(len(scores)) 
-                            if class_ids[i] == 0 and scores[i] > self.confidence_threshold]
-            
+            valid_indices = [
+                i for i in range(len(scores))
+                if class_ids[i] == 0 and scores[i] > self.confidence_threshold
+            ]
+
             if not valid_indices:
                 return frame, []  # No detections
 
             boxes_filtered = boxes[valid_indices]
             scores_filtered = scores[valid_indices]
-            keep_indices = self._apply_nms(boxes_filtered, scores_filtered, self.iou_threshold)
+            keep_indices = self._apply_nms(
+                boxes_filtered, scores_filtered, self.iou_threshold)
 
             # Prepare detections for motpy
             motpy_detections = []
@@ -181,21 +205,23 @@ class TrackingNode(Node):
 
             for i in keep_indices:
                 center_x, center_y, w, h = boxes_filtered[i]
-                
+
                 center_x = (center_x - pad_left) / scale
                 center_y = (center_y - pad_top) / scale
                 w /= scale
                 h /= scale
-                
+
                 # Convert to [x1, y1, x2, y2] for motpy
                 x1 = center_x - w / 2
                 y1 = center_y - h / 2
                 x2 = center_x + w / 2
                 y2 = center_y + h / 2
-                
+
                 # Create motpy Detection
-                motpy_detections.append(Detection(box=np.array([x1, y1, x2, y2]), score=scores_filtered[i]))
-                
+                motpy_detections.append(Detection(
+                    box=np.array([x1, y1, x2, y2]),
+                    score=scores_filtered[i]))
+
                 # Store data for later
                 detection_data.append({
                     'score': scores_filtered[i],
@@ -213,7 +239,7 @@ class TrackingNode(Node):
             for track_idx, track in enumerate(tracks):
                 if track_idx < len(detection_data):
                     data = detection_data[track_idx]
-                    
+
                     detections.append({
                         'score': data['score'],
                         'center_x': data['center_x'],
@@ -221,18 +247,18 @@ class TrackingNode(Node):
                         'area': data['area'],
                         'track_id': str(track.id)  # Convert UUID to string
                     })
-                    
+
                     # Draw box with track ID
                     x1, y1, x2, y2 = data['pixel_coords']
                     x1, y1 = max(0, x1), max(0, y1)
                     x2, y2 = min(frame.shape[1], x2), min(frame.shape[0], y2)
-                    
+
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                    cv2.putText(frame, f"ID:{track.id}", (x1, y1 - 10), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-            
+                    cv2.putText(frame, f"ID:{track.id}", (x1, y1 - 10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
             return frame, detections
-            
+
         except Exception as e:
             self.get_logger().error(f"Exception in process_frame: {e}")
             return frame, []

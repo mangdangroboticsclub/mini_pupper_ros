@@ -1,17 +1,31 @@
+# Copyright 2025 Kishan Grewal
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # Imports
+from mini_pupper_tracking.camera_visualisation_node import CameraVisualisationNode
 import pytest
 import sys
 import os
-import unittest.mock
+from unittest.mock import MagicMock
 import rclpy
 import math
 from itertools import product
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'mini_pupper_tracking'))
-from mini_pupper_tracking.camera_visualisation_node import CameraVisualisationNode
-from unittest.mock import patch, MagicMock
 
 # Fixtures
+
 
 @pytest.fixture
 def ros_context():
@@ -19,7 +33,9 @@ def ros_context():
     yield
     rclpy.shutdown()
 
+
 binary_3bit = list(product([0, 1], repeat=3))
+
 
 @pytest.mark.parametrize("center_x, top_y, bounding_area", binary_3bit)
 def test_person_marker_creation(ros_context, center_x, top_y, bounding_area):
@@ -55,5 +71,3 @@ def test_person_marker_creation(ros_context, center_x, top_y, bounding_area):
     assert point.x == pytest.approx(expected_x)
     assert point.y == pytest.approx(expected_y)
     assert point.z == pytest.approx(expected_z)
-
-
