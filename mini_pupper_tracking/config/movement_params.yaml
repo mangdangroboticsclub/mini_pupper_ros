@@ -1,0 +1,77 @@
+# Mini Pupper Movement Node Configuration
+# This YAML file contains parameters for the movement control system
+# that handles person tracking and robot orientation control
+
+mini_pupper_movement_node:
+  ros__parameters:
+    
+    # =======================
+    # YAW CONTROL PARAMETERS
+    # =======================
+    # Controls horizontal rotation (left/right turning) of the robot
+    # Uses PID control to keep detected person centered horizontally
+    yaw:
+      # Proportional gain for yaw PID controller
+      # Higher values = stronger immediate response to yaw error
+      # Lower values = gentler, more stable turning
+      Kp: 5.0
+      
+      # Derivative gain for yaw PID controller  
+      # Helps dampen oscillations and overshoot
+      # Higher values = more resistance to rapid changes
+      Kd: 0.1
+      
+      # Decay factor for angular velocity when no target is detected
+      # Value between 0-1: how quickly the robot stops turning
+      # Applied as: self.last_yaw_rate *= self.yaw_decay
+      # 0.5 = angular velocity decays to 50% of prior value each control cycle
+      decay: 0.5
+      
+      # Maximum angular velocity limit (rad/s)
+      # Prevents the robot from spinning too fast
+      # Clamp above 2.0 will not apply as it is also limited by config.max_yaw_rate for safety reasons
+      clamp: 2.0
+      
+      # Minimum angular velocity threshold (rad/s)
+      # Commands below this value are set to zero (deadband)
+      # Prevents jittery micro-movements when nearly aligned
+      stable_minimum: 0.65
+      
+      # Enable/disable yaw tracking functionality
+      # false = yaw control is disabled, robot won't turn to track
+      # true = yaw control is active for person following
+      tracking_enabled: true
+    
+    # ========================
+    # PITCH CONTROL PARAMETERS  
+    # ========================
+    # Controls vertical tilt (up/down) of the robot body
+    # Uses exponential smoothing to keep detected person at desired vertical position
+    pitch:
+      # Exponential moving average smoothing factor
+      # Value between 0-1: how much new measurements influence output
+      # Lower values = more smoothing, slower response
+      # smoothed offset angle = alpha * offset angle + (1-alpha) * smoothed offset angle
+      alpha: 0.1
+      
+      # Gain multiplier for pitch adjustment
+      # Scales the pitch response based on detected person position
+      # Higher values = more aggressive pitch changes
+      # target pitch in command = current pitch + gain * smoothed offset angle
+      gain: 1.0
+      
+      # Decay factor for pitch smoothed offset when no target is detected
+      # Applied to smoothed_offset, not the final pitch value
+      # Code: self.smoothed_offset *= self.pitch_decay
+      # 0.5 = smoothed offset decays to 50% of prior value each control cycle
+      decay: 0.5
+      
+      # Vertical angle deadband for camera-based pitch control (radians)
+      # Ignore small vertical movements within this threshold
+      # Prevents unnecessary pitch adjustments for minor position changes
+      camera_deadband: 0.020
+      
+      # Enable/disable pitch tracking functionality
+      # false = pitch control is disabled, robot maintains level orientation
+      # true = pitch control is active for vertical person tracking
+      tracking_enabled: false

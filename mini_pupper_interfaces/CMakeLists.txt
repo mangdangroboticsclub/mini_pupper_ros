@@ -21,6 +21,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Command.msg"
   "msg/LineDetectionResult.msg"
   "msg/AiLineRecognitionResult.msg"
+  "msg/Tracking.msg"
+  "msg/TrackingArray.msg"
   DEPENDENCIES std_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
 )
 
