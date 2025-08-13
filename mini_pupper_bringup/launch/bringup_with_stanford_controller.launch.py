@@ -17,13 +17,14 @@
 # limitations under the License.
 
 import os
-import yaml
+import yaml 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, EnvironmentVariable, TextSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import IfCondition
+from launch_ros.actions import PushRosNamespace
+from launch.conditions import IfCondition, UnlessCondition
 from ament_index_python.packages import get_package_share_directory
 
 ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
@@ -59,9 +60,6 @@ def generate_launch_description():
     has_camera = str(sensors_config['camera'])
     lidar_port = ports_config['lidar']
 
-    # Disable lidar for now, not supported with Stanford Controller yet.
-    has_lidar = 'False'
-
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name='use_sim_time',
@@ -75,6 +73,25 @@ def generate_launch_description():
         default_value='True',
         description='Set to true if connected to a physical robot'
     )
+
+    # multi robot and namespacing
+    multi_robot = LaunchConfiguration("multi_robot")
+    multi_robot_arg = DeclareLaunchArgument(
+    "multi_robot",
+    default_value="false",
+    description="Enable multi-robot mode with namespacing",
+    )
+
+    robot_namespace = LaunchConfiguration("robot_namespace")
+    robot_namespace_arg = DeclareLaunchArgument(
+        "robot_namespace",
+        default_value=[
+            TextSubstitution(text="robot"),
+            EnvironmentVariable("ROBOT_ID", default_value="1"),
+        ],
+        description="Namespace for this robot (e.g. robot1, robot2)",
+    )
+
 
     description_launch_path = PathJoinSubstitution(
         [description_package, 'launch', 'mini_pupper_description.launch.py']
@@ -111,10 +128,26 @@ def generate_launch_description():
         }.items()
     )
 
-    return LaunchDescription([
+    launch_actions = [
+    description_launch,
+    hardware_interface_launch,
+    stanford_controller_launch,
+    ]
+
+    launch_description = [
+        robot_namespace_arg,
+        multi_robot_arg,
         use_sim_time_launch_arg,
         hardware_connected_launch_arg,
-        description_launch,
-        hardware_interface_launch,
-        stanford_controller_launch,
-    ])
+
+        GroupAction(
+            actions=[PushRosNamespace(robot_namespace)] + launch_actions,
+            condition=IfCondition(multi_robot)
+        ),
+        GroupAction(
+            actions=launch_actions,
+            condition=UnlessCondition(multi_robot)
+        ),
+    ]
+
+    return LaunchDescription(launch_description)
