@@ -25,7 +25,7 @@ FleetControllerNode::FleetControllerNode()
 
     auto qos_cmd_vel = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
     cmd_vel_subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
-        "cmd_vel", qos_cmd_vel,
+        "/cmd_vel", qos_cmd_vel,
         std::bind(&FleetControllerNode::cmd_vel_callback_, this, std::placeholders::_1)
     );
 
@@ -34,7 +34,7 @@ FleetControllerNode::FleetControllerNode()
 
     // initialise state
     target_heading_ = 0.0;
-    last_linear_x_  = 0.0;
+    last_linear_x_ = 0.0;
     last_angular_z_ = 0.0;
 
     // use steady time for both dt and staleness tracking
@@ -97,12 +97,12 @@ void FleetControllerNode::fleet_command_loop_()
     fleet_command_msg.forward_velocity = vx;
     fleet_command_msg.angular_velocity = wz;
 
-    RCLCPP_INFO(this->get_logger(),
-                 "dt=%.3f stale=%d heading=%.2f vx=%.2f wz=%.2f",
-                 dt, stale,
-                 fleet_command_msg.target_heading,
-                 fleet_command_msg.forward_velocity,
-                 fleet_command_msg.angular_velocity);
+    // RCLCPP_INFO(this->get_logger(),
+    //              "dt=%.3f stale=%d heading=%.2f vx=%.2f wz=%.2f",
+    //              dt, stale,
+    //              fleet_command_msg.target_heading,
+    //              fleet_command_msg.forward_velocity,
+    //              fleet_command_msg.angular_velocity);
 
     fleet_command_publisher_->publish(fleet_command_msg);
 }

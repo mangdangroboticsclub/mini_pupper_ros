@@ -24,7 +24,6 @@ ImuEkfNode::ImuEkfNode()
 {
     RCLCPP_INFO(this->get_logger(), "ImuEkfNode has started.");
 
-    last_ekf_time_ = this->now();
     last_ekf_time_steady_ = steady_clock_.now();
     ekf_timer_ = this->create_wall_timer(
         std::chrono::milliseconds(EkfPeriodMs), // 50 Hz EKF
@@ -107,7 +106,7 @@ void ImuEkfNode::ekf_loop_ ()
     predict_(dt, u);
     update_accel_(accel);
     ekf_publish_(ekf_time);
-    ekf_log_();
+    // ekf_log_();
 }
 
 void ImuEkfNode::ekf_publish_ (const rclcpp::Time &stamp)

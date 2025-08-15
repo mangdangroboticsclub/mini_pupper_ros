@@ -32,29 +32,18 @@ RobotBehaviourNode::RobotBehaviourNode()
 		std::chrono::milliseconds(ControlPeriodMs),
 		std::bind(&RobotBehaviourNode::control_loop_, this));
 
-	// QoS
-	auto qos_fleet = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
-	auto qos_pose = rclcpp::SensorDataQoS();
-	auto qos_cmd = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
-
+	auto qos_fleet_command = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
 	fleet_command_subscription_ = this->create_subscription<mini_pupper_interfaces::msg::FleetCommand>(
-		"/fleet_command", qos_fleet,
+		"/fleet_command", qos_fleet_command,
 		std::bind(&RobotBehaviourNode::fleet_command_callback_, this, std::placeholders::_1));
-
+	
+    auto qos_ekf_pose = rclcpp::SensorDataQoS();
 	ekf_pose_subscription_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
-		"ekf_pose", qos_pose,
+		"ekf_pose", qos_ekf_pose,
 		std::bind(&RobotBehaviourNode::ekf_pose_callback_, this, std::placeholders::_1));
 
-	cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", qos_cmd);
-}
-
-/* static */ double RobotBehaviourNode::yaw_from_pose_(const geometry_msgs::msg::PoseWithCovarianceStamped & m)
-{
-	const auto & q = m.pose.pose.orientation;
-	tf2::Quaternion tq(q.x, q.y, q.z, q.w);
-	double roll, pitch, yaw;
-	tf2::Matrix3x3(tq).getRPY(roll, pitch, yaw);
-	return yaw;
+	auto qos_cmd_vel = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
+	cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", qos_cmd_vel);
 }
 
 RobotBehaviourNode::Mode RobotBehaviourNode::decide_mode_(double vx_ref) const
@@ -132,7 +121,7 @@ void RobotBehaviourNode::control_loop_()
 		case Mode::RotateOnly: {
 			// no linear motion pure heading regulation
 			vx_cmd = 0.0;
-			wz_cmd = Kp_rotate_ * yaw_err;
+			wz_cmd = wz_ff + Kp_rotate_ * yaw_err;
 			break;
 		}
 		case Mode::MoveAndAlign: {

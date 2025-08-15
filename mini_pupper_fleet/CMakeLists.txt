@@ -12,7 +12,6 @@ find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(tf2 REQUIRED)
-find_package(tf2_geometry_msgs REQUIRED)
 find_package(mini_pupper_interfaces REQUIRED)
 
 # fleet_controller_node ------------
@@ -50,7 +49,6 @@ ament_target_dependencies(imu_ekf_node
   sensor_msgs
   geometry_msgs
   tf2
-  tf2_geometry_msgs
 )
 install(TARGETS imu_ekf_node
   DESTINATION lib/${PROJECT_NAME}
@@ -68,8 +66,9 @@ target_include_directories(robot_behaviour_node PUBLIC
 )
 ament_target_dependencies(robot_behaviour_node
   rclcpp
-  sensor_msgs
   geometry_msgs
+  tf2
+  mini_pupper_interfaces
 )
 install(TARGETS robot_behaviour_node
   DESTINATION lib/${PROJECT_NAME}

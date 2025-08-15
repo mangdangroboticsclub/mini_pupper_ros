@@ -36,9 +36,6 @@ class ImuEkfNode : public rclcpp::Node {
     static constexpr int EkfPeriodMs = 20;
     void ekf_loop_ ();
 
-    // Keep ROS time if you also use it elsewhere (e.g., stamps):
-    rclcpp::Time last_ekf_time_;
-
     // steady clock + last steady tick (monotonic)
     rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
     rclcpp::Time  last_ekf_time_steady_;

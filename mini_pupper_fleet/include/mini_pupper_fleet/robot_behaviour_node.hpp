@@ -34,7 +34,6 @@ private:
   rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
   rclcpp::Time last_tick_st_{};
 
-  // io
   rclcpp::Subscription<mini_pupper_interfaces::msg::FleetCommand>::SharedPtr fleet_command_subscription_;
   rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr ekf_pose_subscription_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
@@ -55,14 +54,14 @@ private:
   Mode mode_{Mode::Stationary};
 
   // gains and limits
-  double Kp_move_ = 1.0;        // p-gain when moving
-  double Kp_rotate_ = 1.0;      // p-gain when rotating in place
+  double Kp_move_ = 0.0; // p-gain when moving
+  double Kp_rotate_ = 0.0; // p-gain when rotating in place
 
   // angular rate bias applied only when moving: wz_offset = wz_offset_factor_ * vx_ref
-  double wz_offset_factor_ = 0.5;  // rad/s per m/s
+  double wz_offset_factor_ = -0.4; // rad/s per m/s
 
-  double max_wz_ = 1.5;         // rad/s
-  double max_vx_ = 0.5;         // m/s
+  double max_wz_ = 1.0;
+  double max_vx_ = 0.5;
 
   // staleness (fleet only)
   double fleet_stale_sec_ = 0.25;
@@ -73,8 +72,6 @@ private:
   void control_loop_();
 
   // helpers
-  static double wrap_to_pi_(double a);
-  static double yaw_from_pose_(const geometry_msgs::msg::PoseWithCovarianceStamped & m);
   Mode decide_mode_(double vx_ref) const;
   void cmd_vel_publish_(double vx, double wz);
 };
