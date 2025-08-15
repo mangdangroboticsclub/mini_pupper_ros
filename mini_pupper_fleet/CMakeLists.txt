@@ -13,19 +13,38 @@ find_package(geometry_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(mini_pupper_interfaces REQUIRED)
+
+# fleet_controller_node ------------
+add_executable(fleet_controller_node
+  src/fleet_controller_node.cpp
+  src/fleet_controller_node_main.cpp
+)
+target_include_directories(fleet_controller_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(fleet_controller_node
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  mini_pupper_interfaces
+)
+install(TARGETS fleet_controller_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+# ------------
 
 # imu_ekf_node ------------
 add_executable(imu_ekf_node
   src/imu_ekf_node.cpp
   src/imu_ekf_node_main.cpp
 )
-
 target_include_directories(imu_ekf_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
   ${EIGEN3_INCLUDE_DIRS}
 )
-
 ament_target_dependencies(imu_ekf_node
   rclcpp
   sensor_msgs
@@ -33,10 +52,29 @@ ament_target_dependencies(imu_ekf_node
   tf2
   tf2_geometry_msgs
 )
-
 install(TARGETS imu_ekf_node
   DESTINATION lib/${PROJECT_NAME}
 )
+# ------------
+
+# robot_behaviour_node ------------
+add_executable(robot_behaviour_node
+  src/robot_behaviour_node.cpp
+  src/robot_behaviour_node_main.cpp
+)
+target_include_directories(robot_behaviour_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(robot_behaviour_node
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+)
+install(TARGETS robot_behaviour_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+# ------------
 
 install(DIRECTORY include/
   DESTINATION include/

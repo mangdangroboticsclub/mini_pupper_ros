@@ -19,26 +19,29 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/imu.hpp>
-#include <sensor_msgs/msg/laser_scan.hpp>       
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <Eigen/Dense>
 
 using Vector6d = Eigen::Matrix<double, 6, 1>;
 using Matrix6d = Eigen::Matrix<double, 6, 6>;
 
-class ImuEkfNode : public rclcpp::Node
-{
-public:
+class ImuEkfNode : public rclcpp::Node {
+    public:
     ImuEkfNode();
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-private:
+    private:
     // ekf timing
     rclcpp::TimerBase::SharedPtr ekf_timer_;
     static constexpr int EkfPeriodMs = 20;
     void ekf_loop_ ();
+
+    // Keep ROS time if you also use it elsewhere (e.g., stamps):
     rclcpp::Time last_ekf_time_;
+
+    // steady clock + last steady tick (monotonic)
+    rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
+    rclcpp::Time  last_ekf_time_steady_;
 
     // msg pointers
     sensor_msgs::msg::Imu::SharedPtr last_imu_;

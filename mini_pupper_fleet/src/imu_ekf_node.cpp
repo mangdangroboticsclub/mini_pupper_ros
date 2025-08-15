@@ -25,23 +25,27 @@ ImuEkfNode::ImuEkfNode()
     RCLCPP_INFO(this->get_logger(), "ImuEkfNode has started.");
 
     last_ekf_time_ = this->now();
+    last_ekf_time_steady_ = steady_clock_.now();
     ekf_timer_ = this->create_wall_timer(
         std::chrono::milliseconds(EkfPeriodMs), // 50 Hz EKF
         std::bind(&ImuEkfNode::ekf_loop_, this)
     );
 
+    auto qos_imu_data = rclcpp::SensorDataQoS();
     imu_data_subscription_ = this->create_subscription<sensor_msgs::msg::Imu>(
-        "imu/data", 10,
+        "imu/data", qos_imu_data,
         std::bind(&ImuEkfNode::imu_data_callback_, this, std::placeholders::_1)
     );
 
+    auto qos_cmd_vel = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
     cmd_vel_subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
-        "cmd_vel", 10,
+        "cmd_vel", qos_cmd_vel,
         std::bind(&ImuEkfNode::cmd_vel_callback_, this, std::placeholders::_1)
     );
 
+    auto qos_ekf_pose = rclcpp::SensorDataQoS();
     ekf_pose_publisher_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>(
-        "ekf_pose", 10
+        "ekf_pose", qos_ekf_pose
     );
 
     P_ = Matrix6d::Identity();
@@ -66,9 +70,15 @@ ImuEkfNode::ImuEkfNode()
 
 void ImuEkfNode::ekf_loop_ ()
 {
-    rclcpp::Time ekf_time = this->now();
-    const double dt = (ekf_time - last_ekf_time_).seconds();
-    last_ekf_time_ = ekf_time;
+    const rclcpp::Time ekf_time = this->now();
+    const rclcpp::Time now_steady = steady_clock_.now();
+    double dt = (now_steady - last_ekf_time_steady_).seconds();
+    last_ekf_time_steady_ = now_steady;
+
+    // clamp against big jumps (sleep, scheduling hiccups)
+    const double tick = static_cast<double>(EkfPeriodMs) / 1000.0; // 0.02
+    if (dt < 0.0) dt = 0.0;
+    if (dt > 2.0 * tick) dt = 2.0 * tick;
 
     if (!last_imu_) return;
 

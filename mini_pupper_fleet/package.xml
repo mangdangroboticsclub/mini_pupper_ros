@@ -13,6 +13,7 @@
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>tf2</depend>
+  <depend>mini_pupper_interfaces</depend>
 
   <build_depend>eigen</build_depend>
   <exec_depend>eigen</exec_depend>
