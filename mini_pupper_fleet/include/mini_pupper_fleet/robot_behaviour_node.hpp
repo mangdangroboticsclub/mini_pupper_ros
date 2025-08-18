@@ -21,6 +21,9 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 #include <mini_pupper_interfaces/msg/fleet_command.hpp>
+#include <mini_pupper_interfaces/msg/command.hpp>
+#include <mini_pupper_interfaces/msg/matrix3x4.hpp>
+#include <vector>
 
 class RobotBehaviourNode : public rclcpp::Node
 {
@@ -36,7 +39,7 @@ private:
 
   rclcpp::Subscription<mini_pupper_interfaces::msg::FleetCommand>::SharedPtr fleet_command_subscription_;
   rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr ekf_pose_subscription_;
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
+  rclcpp::Publisher<mini_pupper_interfaces::msg::Command>::SharedPtr robot_command_publisher_;
 
   // latest inputs
   mini_pupper_interfaces::msg::FleetCommand::SharedPtr last_fleet_command_;
@@ -54,17 +57,42 @@ private:
   Mode mode_{Mode::Stationary};
 
   // gains and limits
-  double Kp_move_ = 0.0; // p-gain when moving
+  double Kp_move_ = 1.0; // p-gain when moving
   double Kp_rotate_ = 0.0; // p-gain when rotating in place
 
   // angular rate bias applied only when moving: wz_offset = wz_offset_factor_ * vx_ref
-  double wz_offset_factor_ = -0.4; // rad/s per m/s
+  double wz_offset_factor_ = -0.33; // rad/s per m/s
 
   double max_wz_ = 1.0;
   double max_vx_ = 0.5;
 
   // staleness (fleet only)
   double fleet_stale_sec_ = 0.25;
+
+  struct Config {
+    double default_z_ref = -0.07;
+    double max_x_velocity = 0.20;
+    double max_y_velocity = 0.20;
+    double max_yaw_rate = 2.0;
+    double delta_x = 0.059;
+    double delta_y = 0.050;
+    double x_shift = 0.0;
+    double z_shift = 0.0;
+
+    std::vector<std::vector<double>> default_stance = {
+      {
+        delta_x + x_shift,
+        delta_x + x_shift,
+        -delta_x + x_shift,
+        -delta_x + x_shift
+      },
+      {-delta_y, delta_y, -delta_y, delta_y},
+      {z_shift, z_shift, z_shift, z_shift}
+    };
+  } config_;
+
+  // State tracking for trot events
+  bool prev_zero_ = true;
 
   // callbacks
   void fleet_command_callback_(mini_pupper_interfaces::msg::FleetCommand::ConstSharedPtr msg);
@@ -73,7 +101,15 @@ private:
 
   // helpers
   Mode decide_mode_(double vx_ref) const;
-  void cmd_vel_publish_(double vx, double wz);
+  void robot_command_publish_(double vx, double wz);
+  
+  // Command creation helpers
+  bool vel_zero_(const std::vector<double>& vel, double yaw_rate);
+  mini_pupper_interfaces::msg::Command create_command_(
+    const std::vector<double>& vel = {0.0, 0.0},
+    double yaw_rate = 0.0,
+    double pitch = 0.0
+  );
 };
 
 #endif

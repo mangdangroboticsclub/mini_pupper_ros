@@ -42,8 +42,7 @@ RobotBehaviourNode::RobotBehaviourNode()
 		"ekf_pose", qos_ekf_pose,
 		std::bind(&RobotBehaviourNode::ekf_pose_callback_, this, std::placeholders::_1));
 
-	auto qos_cmd_vel = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
-	cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", qos_cmd_vel);
+	robot_command_publisher_ = this->create_publisher<mini_pupper_interfaces::msg::Command>("robot_command", 10);
 }
 
 RobotBehaviourNode::Mode RobotBehaviourNode::decide_mode_(double vx_ref) const
@@ -54,12 +53,81 @@ RobotBehaviourNode::Mode RobotBehaviourNode::decide_mode_(double vx_ref) const
 	return Mode::MoveAndAlign;
 }
 
-void RobotBehaviourNode::cmd_vel_publish_(double vx, double wz)
+bool RobotBehaviourNode::vel_zero_(const std::vector<double>& vel, double yaw_rate) {
+	/**
+	 * Returns true if both horizontal velocity and yaw_rate are approximately zero.
+	 */
+	const double tolerance = 1e-3;
+	
+	return (std::abs(vel[0]) <= tolerance) && 
+			(std::abs(vel[1]) <= tolerance) && 
+			(std::abs(yaw_rate) <= tolerance);
+}
+
+mini_pupper_interfaces::msg::Command RobotBehaviourNode::create_command_(
+	const std::vector<double>& vel,
+	double yaw_rate,
+	double pitch)
 {
-	geometry_msgs::msg::Twist t;
-	t.linear.x = std::clamp(vx, -max_vx_, max_vx_);
-	t.angular.z = std::clamp(wz, -max_wz_, max_wz_);
-	cmd_vel_publisher_->publish(t);
+	mini_pupper_interfaces::msg::Command cmd;
+	
+	// Set height
+	cmd.height = config_.default_z_ref;
+	
+	// Set default standing locations
+	mini_pupper_interfaces::msg::Matrix3x4 legs_location;
+	std::copy(config_.default_stance[0].begin(), config_.default_stance[0].end(), legs_location.row1.begin());
+	std::copy(config_.default_stance[1].begin(), config_.default_stance[1].end(), legs_location.row2.begin());
+	std::copy(config_.default_stance[2].begin(), config_.default_stance[2].end(), legs_location.row3.begin());
+	cmd.legs_location = legs_location;
+	
+	// Clamp velocity components
+	double x_vel = std::clamp(
+		vel[0],
+		-config_.max_x_velocity,
+		config_.max_x_velocity
+	);
+	
+	double y_vel = std::clamp(
+		vel[1],
+		-config_.max_y_velocity,
+		config_.max_y_velocity
+	);
+	
+	// Clamp yaw rate
+	double yaw_rate_clipped = std::clamp(
+		yaw_rate,
+		-config_.max_yaw_rate,
+		config_.max_yaw_rate
+	);
+	
+	// Clamp pitch (±π/10 radians ≈ ±18 degrees)
+	double pitch_clipped = std::clamp(
+		pitch,
+		-M_PI / 10.0,
+		M_PI / 10.0
+	);
+	
+	// Set command values
+	cmd.horizontal_velocity = {x_vel, y_vel};
+	cmd.yaw_rate = yaw_rate_clipped;
+	cmd.roll = 0.0;
+	cmd.pitch = pitch_clipped;
+	cmd.yaw = 0.0;  // Only used when robot is stationary
+	
+	// Detect zero↔non-zero edge and fire trot_event only once
+	bool is_zero = vel_zero_(vel, yaw_rate);
+	cmd.trot_event = (prev_zero_ != is_zero);
+	prev_zero_ = is_zero;
+	
+	return cmd;
+}
+
+void RobotBehaviourNode::robot_command_publish_(double vx, double wz)
+{
+	std::vector<double> vel = {vx, 0.0};
+	auto cmd = create_command_(vel, wz, 0.0);
+	robot_command_publisher_->publish(cmd);
 }
 
 void RobotBehaviourNode::fleet_command_callback_(mini_pupper_interfaces::msg::FleetCommand::ConstSharedPtr msg)
@@ -85,7 +153,7 @@ void RobotBehaviourNode::control_loop_()
 	last_tick_st_ = now_st;
 
 	if (!last_fleet_command_ || !last_ekf_pose_) {
-		cmd_vel_publish_(0.0, 0.0);
+		robot_command_publish_(0.0, 0.0);
 		return;
 	}
 
@@ -93,7 +161,7 @@ void RobotBehaviourNode::control_loop_()
 	const bool fleet_stale = (now_st - last_fleet_recv_st_) >
 		rclcpp::Duration::from_seconds(fleet_stale_sec_);
 	if (fleet_stale) {
-		cmd_vel_publish_(0.0, 0.0);
+		robot_command_publish_(0.0, 0.0);
 		mode_ = Mode::Stationary;
 		return;
 	}
@@ -139,5 +207,5 @@ void RobotBehaviourNode::control_loop_()
 		}
 	}
 
-	cmd_vel_publish_(vx_cmd, wz_cmd);
+	robot_command_publish_(vx_cmd, wz_cmd);
 }
