@@ -1,6 +1,6 @@
 # Mini Pupper Tracking System
 
-This ROS 2 package enables real-time person tracking for the Mini Pupper robot, developed independently during the 2025 Global Internship Programme at HKSTP.
+This ROS 2 package enables real-time person tracking for the Mini Pupper robot, developed during the 2025 Global Internship Programme at HKSTP.
 
 It combines visual detection, multi-object tracking, and IMU-based motion control to guide the robot's head and orientation toward detected individuals.
 
@@ -243,3 +243,17 @@ python3 -m pytest ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/test/ -v
 - Detection coordinates: Normalised [0,1] image coordinates
 
 > **Note:** Usage of this package with lidar activated, or with the Stanford controller twist_to_command_node launched may break its functionality due to topic conflicts.
+
+---
+
+## License
+
+This package is licensed under the Apache-2.0 License. See individual source files for detailed copyright information.
+
+---
+
+## Compatibility
+
+- **ROS 2**: Humble
+- **Platform**: Ubuntu 22.04 LTS
+- **Hardware**: Mini Pupper robots with Stanford Controller
