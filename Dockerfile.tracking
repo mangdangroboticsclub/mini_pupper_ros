@@ -8,38 +8,32 @@ RUN apt-get update && apt-get install -y \
     ros-humble-geometry-msgs \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir "numpy<2.0" opencv-python onnxruntime motpy flask
+# Install Python packages with compatible versions
+# Pin transforms3d to a compatible version and use numpy<2.0
+RUN pip install --no-cache-dir \
+    "numpy<2.0" \
+    "transforms3d>=0.4.1" \
+    opencv-python \
+    onnxruntime \
+    motpy \
+    flask
 
 COPY mini_pupper_tracking/ /ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/
 COPY mini_pupper_interfaces/ /ros2_ws/src/mini_pupper_ros/mini_pupper_interfaces/
-
-# Create stanford_controller package structure for Config.py
-RUN mkdir -p /ros2_ws/src/mini_pupper_ros/stanford_controller/stanford_controller
-COPY stanford_controller/stanford_controller/Config.py /ros2_ws/src/mini_pupper_ros/stanford_controller/stanford_controller/
-RUN touch /ros2_ws/src/mini_pupper_ros/stanford_controller/stanford_controller/__init__.py
-
-# Create minimal package.xml
-RUN echo '<?xml version="1.0"?>' > /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '<package format="3">' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '  <name>stanford_controller</name>' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '  <version>1.0.0</version>' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '  <description>Config only</description>' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '  <maintainer email="user@example.com">user</maintainer>' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '  <license>Apache-2.0</license>' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '  <export><build_type>ament_python</build_type></export>' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml && \
-    echo '</package>' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/package.xml
-
-# Create minimal setup.py
-RUN echo 'from setuptools import setup' > /ros2_ws/src/mini_pupper_ros/stanford_controller/setup.py && \
-    echo 'setup(' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/setup.py && \
-    echo '    name="stanford_controller",' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/setup.py && \
-    echo '    version="1.0.0",' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/setup.py && \
-    echo '    packages=["stanford_controller"],' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/setup.py && \
-    echo '    install_requires=["setuptools", "numpy"],' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/setup.py && \
-    echo ')' >> /ros2_ws/src/mini_pupper_ros/stanford_controller/setup.py
+COPY stanford_controller/ /ros2_ws/src/mini_pupper_ros/stanford_controller/
 
 WORKDIR /ros2_ws
+
+# Clean pip cache and upgrade pip to avoid potential conflicts
+RUN pip install --upgrade pip && pip cache purge
+
+# Build the ROS workspace
 RUN bash -c "source /opt/ros/humble/setup.bash && colcon build"
 
+# Copy entrypoint script
+COPY entrypoint.sh /ros2_ws/
+RUN chmod +x /ros2_ws/entrypoint.sh
+
 EXPOSE 5000
-CMD ["bash", "-c", "source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 launch mini_pupper_tracking webcam_tracking.launch.py"]
+
+ENTRYPOINT ["/ros2_ws/entrypoint.sh"]
