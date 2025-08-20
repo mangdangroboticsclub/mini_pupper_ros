@@ -17,46 +17,16 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-
-
-def _launch_nodes(context, *args, **kwargs):
-    multi = (LaunchConfiguration('multi_robot').perform(context).lower() == 'true')
-    count = max(1, int(LaunchConfiguration('robot_count').perform(context)))
-
-    nodes = []
-
-    if multi:
-        for i in range(1, count + 1):
-            nodes.append(
-                Node(
-                    package='stanford_controller',
-                    executable='twist_to_command_node',
-                    name='twist_to_command_node',
-                    namespace=f'robot{i}',
-                    output='screen',
-                )
-            )
-    else:
-        nodes.append(
-            Node(
-                package='stanford_controller',
-                executable='twist_to_command_node',
-                name='twist_to_command_node',
-                output='screen',
-            )
-        )
-    
-    return nodes
 
 
 def generate_launch_description():
     return LaunchDescription([
-        DeclareLaunchArgument('multi_robot', default_value='false',
-                              description='Set true to launch multiple robots'),
-        DeclareLaunchArgument('robot_count', default_value='1',
-                              description='Number of robots when multi_robot is true'),
-        OpaqueFunction(function=_launch_nodes),
+        Node(
+            package='stanford_controller',
+            executable='twist_to_command_node',
+            name='twist_to_command_node',
+            output='screen',
+            parameters=[]
+        )
     ])
