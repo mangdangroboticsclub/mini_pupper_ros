@@ -291,7 +291,4 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
-# YOLO
-*.onnx
-
 # End of https://www.toptal.com/developers/gitignore/api/c,c++,python,ros

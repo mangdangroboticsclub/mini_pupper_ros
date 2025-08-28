@@ -18,56 +18,55 @@
 
 
 from launch_ros.actions import Node
-from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
+
+from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
 def generate_launch_description():
-    champ_base_package = FindPackageShare('champ_base')
+    champ_base_package = FindPackageShare("champ_base")
     base_to_footprint_ekf_config_path = PathJoinSubstitution(
-        [champ_base_package, 'config', 'ekf', 'base_to_footprint.yaml']
+        [champ_base_package, "config", "ekf", "base_to_footprint.yaml"]
     )
     footprint_to_odom_ekf_config_path = PathJoinSubstitution(
-        [champ_base_package, 'config', 'ekf', 'footprint_to_odom.yaml']
+        [champ_base_package, "config", "ekf", "footprint_to_odom.yaml"]
     )
 
-    use_sim_time = LaunchConfiguration('use_sim_time')
+    use_sim_time = LaunchConfiguration("use_sim_time")
     use_sim_time_launch_arg = DeclareLaunchArgument(
-        name='use_sim_time',
-        default_value='False',
-        description='Use simulation (Gazebo) clock if true'
+        name="use_sim_time",
+        default_value="False",
+        description="Use simulation (Gazebo) clock if true",
     )
 
     base_to_footprint_ekf = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='base_to_footprint_ekf',
-        output='screen',
+        package="robot_localization",
+        executable="ekf_node",
+        name="base_to_footprint_ekf",
+        output="screen",
         parameters=[
-            {'base_link_frame': 'base_link'},
-            {'use_sim_time': use_sim_time},
+            {"base_link_frame": "base_link"},
+            {"use_sim_time": use_sim_time},
             base_to_footprint_ekf_config_path,
         ],
-        remappings=[('odometry/filtered', 'odom/local')]
+        remappings=[("odometry/filtered", "odom/local")],
     )
 
     footprint_to_odom_ekf = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='footprint_to_odom_ekf',
-        output='screen',
+        package="robot_localization",
+        executable="ekf_node",
+        name="footprint_to_odom_ekf",
+        output="screen",
         parameters=[
-            {'base_link_frame': 'base_link'},
-            {'use_sim_time': use_sim_time},
+            {"base_link_frame": "base_link"},
+            {"use_sim_time": use_sim_time},
             footprint_to_odom_ekf_config_path,
         ],
-        remappings=[('odometry/filtered', 'odom')]
+        remappings=[("odometry/filtered", "odom")],
     )
 
-    return LaunchDescription([
-        use_sim_time_launch_arg,
-        base_to_footprint_ekf,
-        footprint_to_odom_ekf
-    ])
+    return LaunchDescription(
+        [use_sim_time_launch_arg, base_to_footprint_ekf, footprint_to_odom_ekf]
+    )

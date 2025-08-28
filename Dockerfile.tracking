@@ -1,0 +1,39 @@
+FROM ros:humble-ros-base
+
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    ros-humble-cv-bridge \
+    ros-humble-tf-transformations \
+    ros-humble-sensor-msgs \
+    ros-humble-geometry-msgs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python packages with compatible versions
+# Pin transforms3d to a compatible version and use numpy<2.0
+RUN pip install --no-cache-dir \
+    "numpy<2.0" \
+    "transforms3d>=0.4.1" \
+    opencv-python \
+    onnxruntime \
+    motpy \
+    flask
+
+COPY mini_pupper_tracking/ /ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/
+COPY mini_pupper_interfaces/ /ros2_ws/src/mini_pupper_ros/mini_pupper_interfaces/
+COPY stanford_controller/ /ros2_ws/src/mini_pupper_ros/stanford_controller/
+
+WORKDIR /ros2_ws
+
+# Clean pip cache and upgrade pip to avoid potential conflicts
+RUN pip install --upgrade pip && pip cache purge
+
+# Build the ROS workspace
+RUN bash -c "source /opt/ros/humble/setup.bash && colcon build"
+
+# Copy entrypoint script
+COPY entrypoint.sh /ros2_ws/
+RUN chmod +x /ros2_ws/entrypoint.sh
+
+EXPOSE 5000
+
+ENTRYPOINT ["/ros2_ws/entrypoint.sh"]

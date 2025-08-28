@@ -18,34 +18,18 @@
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import ExecuteProcess
 import os
 from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
     return LaunchDescription([
-        # IMU Filter Madgwick Node
         Node(
-            package='imu_filter_madgwick',
-            executable='imu_filter_madgwick_node',
-            name='imu_filter',
-            parameters=[{
-                'use_mag': False,  # Set to True if you have magnetometer data
-                'publish_tf': False,  # Set to True if you want TF frames
-                'world_frame': 'enu',  # Options: 'enu', 'ned', 'nwu'
-                'fixed_frame': 'odom',
-                'constant_dt': 0.0,
-                'publish_debug_topics': False,
-                'gain': 0.1,
-                'zeta': 0.0,
-            }],
-            remappings=[
-                # Input: read from existing /imu/data
-                ('imu/data_raw', 'imu/data'),
-                # Output: create new /imu/data_filtered_madgwick topic
-                ('imu/data', 'imu/data_filtered_madgwick'),
-            ],
-            output='screen'
+            package='mini_pupper_tracking',
+            executable='webcam_node',
+            name='mini_pupper_webcam_node',
+            output='screen',
         ),
         Node(
             package='mini_pupper_tracking',
@@ -71,10 +55,10 @@ def generate_launch_description():
             ],
             output='screen'
         ),
-        Node(
-            package='mini_pupper_tracking',
-            executable='camera_visualisation_node',
-            name='mini_pupper_camera_visualisation_node',
+        ExecuteProcess(
+            cmd=['ros2', 'topic', 'echo', '/robot_command'],
+            name='robot_command_monitor',
             output='screen'
         )
     ])
+

@@ -28,7 +28,7 @@ class ServoInterface(Node):
     def __init__(self):
         super().__init__('servo_interface')
         self.subscriber = self.create_subscription(
-            JointTrajectory, '/joint_group_effort_controller/joint_trajectory',
+            JointTrajectory, 'joint_group_effort_controller/joint_trajectory',
             self.cmd_callback, 1)
         self.hardware_interface = HardwareInterface()
 

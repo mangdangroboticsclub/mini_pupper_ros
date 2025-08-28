@@ -18,26 +18,16 @@
 # https://docs.ros.org/en/humble/Tutorials/Intermediate/Launch/Creating-Launch-Files.html
 
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration
-from launch.actions import DeclareLaunchArgument
-
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    namespace = LaunchConfiguration('namespace')
 
     return LaunchDescription([
-        DeclareLaunchArgument(
-            name='namespace',
-            default_value='',
-            description='Namespace for the node'
-        ),
         Node(
             package='mini_pupper_driver',
             executable='imu_interface',
             name='imu_interface',
-            namespace=namespace,
             output='screen'
         )
     ])

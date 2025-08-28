@@ -1,6 +1,6 @@
 # Mini Pupper Tracking System
 
-This ROS 2 package enables real-time person tracking for the Mini Pupper robot, developed independently during the 2025 Global Internship Programme at HKSTP.
+This ROS 2 package enables real-time person tracking for the Mini Pupper robot, developed during the 2025 Global Internship Programme at HKSTP.
 
 It combines visual detection, multi-object tracking, and IMU-based motion control to guide the robot's head and orientation toward detected individuals.
 
@@ -51,10 +51,6 @@ RViz displays:
 
 > **Note:** This package is only supported with the **Stanford Controller**. The **CHAMP Controller** is not supported.
 
-> ***IMPORTANT*** MAKE SURE YOU HAVE PLENTY OF SPACE ON YOUR TABLE IF THE ROBOT IS NOT ON THE FLOOR, MAKE SURE YOU ARE PREPARED FOR MOVEMENT!
-
-> USE CTRL-C ON THE HOST PC TO STOP MOVEMENT
-
 ### Hardware Requirements
 
 - **Camera**: A Raspberry Pi Camera Module is required to run the tracking system.  
@@ -93,7 +89,10 @@ sudo apt install ros-humble-imu-filter-madgwick ros-humble-tf-transformations
 
 ## 1. Export the YOLO11n ONNX Model
 
-To use YOLO11n with the tracking module, export the pretrained model to ONNX format using Ultralytics. We recommend doing this in a virtual environment to avoid conflicts with other packages.
+The required YOLO11n ONNX model (yolo11n.onnx) is already included in this repository at models/yolo11n.onnx with 320x320 input resolution.
+
+Using a Different Model or Resolution **(Optional)**
+If you want to use a different YOLO model or change the input resolution, follow these steps to export your own ONNX model:
 
 ### Step 1: Set up a virtual environment
 ```bash
@@ -108,8 +107,15 @@ pip install ultralytics
 
 ### Step 3: Download and export the model
 ```bash
+# Download the PyTorch model
 wget https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt
-yolo export model=yolo11n.pt format=onnx imgsz=320
+
+# Export to ONNX with your desired input size
+yolo export model=yolo11n.pt format=onnx imgsz=320  # Change 320 to your preferred resolution
+
+# For other YOLO models, replace the URL:
+# yolo11s.pt, yolo11m.pt, yolo11l.pt, yolo11x.pt
+
 ```
 
 ### Step 4: Move the ONNX model
@@ -118,6 +124,18 @@ Move the exported `.onnx` file to the tracking package directory:
 ```bash
 mkdir ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/models/
 mv yolo11n.onnx ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/models/
+# To use the YOLO model you exported replace yolo11n.onnx with its model name
+
+# To use a different YOLO model, also update the model name in tracking_node.py:
+# e.g. MODEL_NAME = "yolo11m.onnx"
+```
+
+### Step 5: Update configuration (if needed)
+If you changed the input resolution, update the parameter in `config/tracking_params.yaml`:
+
+```bash
+yolo:
+  image_size: 320  # Change to match your exported model's input size
 ```
 
 ---
@@ -159,49 +177,27 @@ ros2 launch mini_pupper_description stanford_visualisation.launch.py
 ---
 
 ## 4. Configuration
+The package provides configuration through YAML parameter files in the config/ directory:
 
-The package provides extensive configuration options through YAML parameter files:
+**Key Configuration Files:**
+`config/movement_params.yaml` - Robot movement control settings
+`config/tracking_params.yaml` - YOLO detection and web interface settings
 
-### Movement Parameters (`config/movement_params.yaml`)
+### Movement Control:
 
-**Yaw Control (Horizontal Tracking):**
-- `yaw.Kp`: Proportional gain for PID controller (default: 5.0)
-- `yaw.Kd`: Derivative gain for damping (default: 0.1)
-- `yaw.decay`: Angular velocity decay when target lost (default: 0.5)
-- `yaw.clamp`: Maximum angular velocity limit (default: 2.0 rad/s)
-- `yaw.stable_minimum`: Deadband threshold (default: 0.65 rad/s)
-- `yaw.tracking_enabled`: Enable/disable yaw tracking (default: false)
+yaw.tracking_enabled: Enable/disable horizontal tracking (default: true)
+pitch.tracking_enabled: Enable/disable vertical tracking (default: false)
+yaw.Kp: PID proportional gain for turning responsiveness (default: 5.0)
 
-**Pitch Control (Vertical Tracking):**
-- `pitch.alpha`: Exponential smoothing factor (default: 0.1)
-- `pitch.gain`: Pitch response multiplier (default: 1.0)
-- `pitch.decay`: Offset decay when target lost (default: 0.5)
-- `pitch.camera_deadband`: Vertical angle deadband (default: 0.020 rad)
-- `pitch.tracking_enabled`: Enable/disable pitch tracking (default: false)
+### Detection Settings:
 
-### Tracking Parameters (`config/tracking_params.yaml`)
+yolo.confidence_threshold: Detection confidence threshold (default: 0.7)
+yolo.image_size: YOLO input resolution (default: 320)
 
-**YOLO Detection:**
-- `yolo.image_size`: Input image resize dimension (default: 320)
-- `yolo.confidence_threshold`: Detection confidence threshold (default: 0.7)
-- `yolo.iou_threshold`: Non-maximum suppression IoU threshold (default: 0.35)
+### Web Interface:
 
-**Flask Web Interface:**
-- `flask.image_display_size`: Web display width in pixels (default: 1280)
-- `flask.frame_rate`: Target streaming frame rate (default: 15 FPS)
-- `flask.auto_open_browser`: Auto-open browser on launch (default: true)
-
-### Enabling Tracking
-
-**Important:** By default yaw tracking is enabled and pitch tracking is disabled, but both can be used together if desired, neither can be used, or exclusively pitch tracking may also be used
-
-```yaml
-# In movement_params.yaml
-yaw:
-  tracking_enabled: true  # Currently enabled
-pitch:
-  tracking_enabled: false  # Currently disabled
-```
+flask.auto_open_browser: Auto-open browser on launch (default: true)
+flask.frame_rate: Streaming frame rate (default: 15 FPS)
 
 ---
 
@@ -243,3 +239,17 @@ python3 -m pytest ~/ros2_ws/src/mini_pupper_ros/mini_pupper_tracking/test/ -v
 - Detection coordinates: Normalised [0,1] image coordinates
 
 > **Note:** Usage of this package with lidar activated, or with the Stanford controller twist_to_command_node launched may break its functionality due to topic conflicts.
+
+---
+
+## License
+
+This package is licensed under the Apache-2.0 License. See individual source files for detailed copyright information.
+
+---
+
+## Compatibility
+
+- **ROS 2**: Humble
+- **Platform**: Ubuntu 22.04 LTS
+- **Hardware**: Mini Pupper robots with Stanford Controller

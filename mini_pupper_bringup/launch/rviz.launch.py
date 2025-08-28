@@ -16,25 +16,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
+
 from launch import LaunchDescription
 from launch.substitutions import PathJoinSubstitution
-from launch_ros.substitutions import FindPackageShare
-from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    description_package = FindPackageShare('mini_pupper_description')
+    description_package = FindPackageShare("mini_pupper_description")
 
     rviz_config_path = PathJoinSubstitution(
-        [description_package, 'rviz', 'urdf_viewer.rviz']
+        [description_package, "rviz", "urdf_viewer.rviz"]
     )
 
-    return LaunchDescription([
-       Node(
-            package='rviz2',
-            namespace='',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_path]
-        )
-    ])
+    return LaunchDescription(
+        [
+            Node(
+                package="rviz2",
+                namespace="",
+                executable="rviz2",
+                name="rviz2",
+                arguments=["-d", rviz_config_path],
+            )
+        ]
+    )
