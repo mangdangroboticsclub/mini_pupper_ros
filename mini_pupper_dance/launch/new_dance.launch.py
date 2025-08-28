@@ -17,7 +17,7 @@ def _launch_nodes(context, *args, **kwargs):
                 Node(
                     package='mini_pupper_dance',
                     executable='mini_pupper_dance',
-                    name=f'mini_pupper_dance_{i}', # unique node name
+                    name=f'mini_pupper_dance_{i}',  # unique node name
                     output='screen',
                     remappings=[
                         # remap the node’s internal topic "robot_command"
