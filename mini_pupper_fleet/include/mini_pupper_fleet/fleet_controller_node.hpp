@@ -24,32 +24,31 @@
 class FleetControllerNode : public rclcpp::Node
 {
 public:
-    FleetControllerNode();
+  FleetControllerNode();
 
 private:
-    // subscription for cmd_vel
-    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_subscription_;
-    void cmd_vel_callback_(geometry_msgs::msg::Twist::ConstSharedPtr msg);
+  // subscription for cmd_vel
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_subscription_;
+  void cmd_vel_callback_(geometry_msgs::msg::Twist::ConstSharedPtr msg);
 
-    // clocks and timing (use steady time for both dt and staleness)
-    rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
-    rclcpp::Time last_timer_time_;
-    rclcpp::Time last_cmd_vel_time_st_;
+  // clocks and timing (use steady time for both dt and staleness)
+  rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
+  rclcpp::Time last_timer_time_;
+  rclcpp::Time last_cmd_vel_time_st_;
 
-    // publisher for fleet_command
-    rclcpp::Publisher<mini_pupper_interfaces::msg::FleetCommand>::SharedPtr fleet_command_publisher_;
+  // publisher for fleet_command
+  rclcpp::Publisher<mini_pupper_interfaces::msg::FleetCommand>::SharedPtr fleet_command_publisher_;
 
-    // fixed-rate timer loop
-    rclcpp::TimerBase::SharedPtr fleet_command_timer_;
-    static constexpr int FleetCommandPeriod = 15;   // 0.015 s (~66.67 hz)
-    static constexpr double CmdVelStaleSec = 0.5;  // auto-stop if no cmd_vel for this long
-    void fleet_command_loop_();
+  // fixed-rate timer loop
+  rclcpp::TimerBase::SharedPtr fleet_command_timer_;
+  static constexpr int FleetCommandPeriod = 15;     // 0.015 s (~66.67 hz)
+  static constexpr double CmdVelStaleSec = 0.5;    // auto-stop if no cmd_vel for this long
+  void fleet_command_loop_();
 
-    // state
-    double target_heading_;
-    double last_linear_x_;
-    double last_angular_z_;
+  // state
+  double target_heading_;
+  double last_linear_x_;
+  double last_angular_z_;
 };
 
 #endif
-

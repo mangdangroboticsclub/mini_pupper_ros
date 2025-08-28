@@ -37,8 +37,10 @@ private:
   rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
   rclcpp::Time last_tick_st_{};
 
-  rclcpp::Subscription<mini_pupper_interfaces::msg::FleetCommand>::SharedPtr fleet_command_subscription_;
-  rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr ekf_pose_subscription_;
+  rclcpp::Subscription<mini_pupper_interfaces::msg::FleetCommand>::SharedPtr
+    fleet_command_subscription_;
+  rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr
+    ekf_pose_subscription_;
   rclcpp::Publisher<mini_pupper_interfaces::msg::Command>::SharedPtr robot_command_publisher_;
 
   // latest inputs
@@ -49,7 +51,8 @@ private:
   rclcpp::Time last_pose_ros_stamp_{};
 
   // behaviour state
-  enum class Mode : uint8_t {
+  enum class Mode : uint8_t
+  {
     Stationary = 0,
     RotateOnly = 1,
     MoveAndAlign = 2
@@ -69,7 +72,8 @@ private:
   // staleness (fleet only)
   double fleet_stale_sec_ = 0.25;
 
-  struct Config {
+  struct Config
+  {
     double default_z_ref = -0.07;
     double max_x_velocity = 0.20;
     double max_y_velocity = 0.20;
@@ -102,11 +106,11 @@ private:
   // helpers
   Mode decide_mode_(double vx_ref) const;
   void robot_command_publish_(double vx, double wz);
-  
+
   // Command creation helpers
-  bool vel_zero_(const std::vector<double>& vel, double yaw_rate);
+  bool vel_zero_(const std::vector<double> & vel, double yaw_rate);
   mini_pupper_interfaces::msg::Command create_command_(
-    const std::vector<double>& vel = {0.0, 0.0},
+    const std::vector<double> & vel = {0.0, 0.0},
     double yaw_rate = 0.0,
     double pitch = 0.0
   );
