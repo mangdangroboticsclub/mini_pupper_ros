@@ -1,6 +1,7 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
@@ -17,6 +18,12 @@ def generate_launch_description():
             description='Use simulation (Gazebo) clock if true'
         ),
 
+        DeclareLaunchArgument(
+            'use_rviz',
+            default_value='true',
+            description='Whether to start RVIZ'
+        ),
+
         Node(
             package='slam_toolbox',
             executable='sync_slam_toolbox_node',
@@ -26,5 +33,14 @@ def generate_launch_description():
                 slam_params_file,
                 {'use_sim_time': LaunchConfiguration('use_sim_time')}
             ],
+        ),
+
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            output='screen',
+            condition=IfCondition(LaunchConfiguration('use_rviz')),
+            arguments=['-f', 'map'],
         ),
     ])
