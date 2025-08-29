@@ -1,14 +1,52 @@
 slam_toolbox:
   ros__parameters:
-    use_sim_time: false
+    # Core frames
     map_frame: map
     odom_frame: odom
     base_frame: base_link
+    
+    # Topics
     scan_topic: /scan
-    imu_topic: /imu/data
+    scan_queue_size: 30
+    
+    # Mode
     mode: mapping
+    
+    # TF
     publish_tf: true
+    transform_publish_period: 0.02
+    tf_buffer_duration: 30.0
+    transform_timeout: 0.5  # Increased timeout
+    
+    # Map
     resolution: 0.05
-    transform_timeout: 0.2
-    map_update_interval: 5.0
-    enable_interactive_mode: true
+    max_laser_range: 20.0  # Reduced from 50.0 in scan
+    minimum_time_interval: 0.5
+    
+    # Performance tuning for 29Hz scans
+    scan_buffer_size: 10
+    scan_buffer_maximum_scan_distance: 10.0
+    link_match_minimum_response_fine: 0.1
+    link_scan_maximum_distance: 1.5
+    
+    # Loop closure
+    do_loop_closing: true
+    loop_match_minimum_chain_size: 10
+    loop_match_maximum_variance_coarse: 3.0
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+    
+    # Correlation parameters
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+    
+    # Scan matching
+    distance_variance_penalty: 0.5
+    angle_variance_penalty: 1.0
+    fine_search_angle_offset: 0.00349
+    coarse_search_angle_offset: 0.349
+    coarse_angle_resolution: 0.0349
+    minimum_angle_penalty: 0.9
+    minimum_distance_penalty: 0.5
+    use_response_expansion: true
