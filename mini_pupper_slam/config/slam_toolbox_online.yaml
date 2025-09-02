@@ -1,52 +1,49 @@
 slam_toolbox:
   ros__parameters:
-    # Core frames
+    # Keep working infrastructure
     map_frame: map
     odom_frame: odom
     base_frame: base_link
-    
-    # Topics
     scan_topic: /scan
-    scan_queue_size: 30
-    
-    # Mode
     mode: mapping
-    
-    # TF
     publish_tf: true
+    transform_timeout: 2.0
+    tf_buffer_duration: 60.0
     transform_publish_period: 0.02
-    tf_buffer_duration: 30.0
-    transform_timeout: 0.5  # Increased timeout
     
-    # Map
-    resolution: 0.05
-    max_laser_range: 20.0  # Reduced from 50.0 in scan
-    minimum_time_interval: 0.5
+    # Map settings
+    resolution: 0.025
+    max_laser_range: 10.0
+    minimum_laser_range: 0.2              # FIX: Match lidar capability
+    minimum_time_interval: 0.1
     
-    # Performance tuning for 29Hz scans
-    scan_buffer_size: 10
-    scan_buffer_maximum_scan_distance: 10.0
-    link_match_minimum_response_fine: 0.1
-    link_scan_maximum_distance: 1.5
-    
-    # Loop closure
-    do_loop_closing: true
-    loop_match_minimum_chain_size: 10
-    loop_match_maximum_variance_coarse: 3.0
-    loop_match_minimum_response_coarse: 0.35
-    loop_match_minimum_response_fine: 0.45
-    
-    # Correlation parameters
-    correlation_search_space_dimension: 0.5
-    correlation_search_space_resolution: 0.01
-    correlation_search_space_smear_deviation: 0.1
-    
-    # Scan matching
-    distance_variance_penalty: 0.5
-    angle_variance_penalty: 1.0
-    fine_search_angle_offset: 0.00349
-    coarse_search_angle_offset: 0.349
-    coarse_angle_resolution: 0.0349
-    minimum_angle_penalty: 0.9
-    minimum_distance_penalty: 0.5
+    # Quadruped scan matching (with bounds checking)
+    link_match_minimum_response_fine: 0.03
+    link_scan_maximum_distance: 3.0
+    correlation_search_space_dimension: 1.0      # Reduced from 1.2
+    correlation_search_space_resolution: 0.005
+    correlation_search_space_smear_deviation: 0.05  # FIX: Max allowed value
     use_response_expansion: true
+    
+    # Distrust odometry for quadruped
+    distance_variance_penalty: 2.0
+    angle_variance_penalty: 3.0
+    minimum_distance_penalty: 0.1
+    minimum_angle_penalty: 0.3
+    
+    # Relaxed loop closure
+    do_loop_closing: true
+    loop_match_minimum_chain_size: 8
+    loop_match_maximum_variance_coarse: 5.0
+    loop_match_minimum_response_coarse: 0.45
+    loop_match_minimum_response_fine: 0.55
+    
+    # Buffering
+    scan_queue_size: 50
+    scan_buffer_size: 25
+    scan_buffer_maximum_scan_distance: 15.0
+    
+    # Search parameters (within bounds)
+    fine_search_angle_offset: 0.0175
+    coarse_search_angle_offset: 0.175
+    coarse_angle_resolution: 0.0175
