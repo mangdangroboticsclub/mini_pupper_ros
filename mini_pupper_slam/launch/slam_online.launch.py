@@ -10,6 +10,7 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
     package_dir = get_package_share_directory('mini_pupper_slam')
     slam_params_file = os.path.join(package_dir, 'config', 'slam_toolbox_online.yaml')
+    rviz_config_file_path = os.path.join(package_dir, 'rviz', 'slam.rviz')
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -41,6 +42,7 @@ def generate_launch_description():
             name='rviz2',
             output='screen',
             condition=IfCondition(LaunchConfiguration('use_rviz')),
-            arguments=['-f', 'map'],
+            arguments=['-d', rviz_config_file_path],
+            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
         ),
     ])

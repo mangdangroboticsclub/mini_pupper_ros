@@ -29,7 +29,7 @@ def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_navigation')
 
     default_map_path = PathJoinSubstitution([this_package, 'maps', 'map.yaml'])
-    nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'mini_pupper.yaml'])
+    nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'nav2_params.yaml'])
     nav2_launch_path = PathJoinSubstitution(
         [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
     )
