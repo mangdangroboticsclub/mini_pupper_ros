@@ -1,49 +1,47 @@
 slam_toolbox:
-  ros__parameters:
-    # Keep working infrastructure
-    map_frame: map
-    odom_frame: odom
-    base_frame: base_link
-    scan_topic: /scan
-    mode: mapping
-    publish_tf: true
-    transform_timeout: 2.0
-    tf_buffer_duration: 60.0
-    transform_publish_period: 0.02
-    
-    # Map settings
-    resolution: 0.025
-    max_laser_range: 10.0
-    minimum_laser_range: 0.2              # FIX: Match lidar capability
-    minimum_time_interval: 0.1
-    
-    # Quadruped scan matching (with bounds checking)
-    link_match_minimum_response_fine: 0.03
-    link_scan_maximum_distance: 3.0
-    correlation_search_space_dimension: 1.0      # Reduced from 1.2
-    correlation_search_space_resolution: 0.005
-    correlation_search_space_smear_deviation: 0.05  # FIX: Max allowed value
-    use_response_expansion: true
-    
-    # Distrust odometry for quadruped
-    distance_variance_penalty: 2.0
-    angle_variance_penalty: 3.0
-    minimum_distance_penalty: 0.1
-    minimum_angle_penalty: 0.3
-    
-    # Relaxed loop closure
-    do_loop_closing: true
-    loop_match_minimum_chain_size: 8
-    loop_match_maximum_variance_coarse: 5.0
-    loop_match_minimum_response_coarse: 0.45
-    loop_match_minimum_response_fine: 0.55
-    
-    # Buffering
-    scan_queue_size: 50
-    scan_buffer_size: 25
-    scan_buffer_maximum_scan_distance: 15.0
-    
-    # Search parameters (within bounds)
-    fine_search_angle_offset: 0.0175
-    coarse_search_angle_offset: 0.175
-    coarse_angle_resolution: 0.0175
+ ros__parameters:
+   # --- Frames (corrected for Nav2 integration) ---
+   map_frame: map
+   odom_frame: odom  
+   base_frame: base_link  # Must be base_link for Nav2 compatibility
+   publish_tf: true
+   
+   # --- Timing / TF ---
+   transform_timeout: 0.2
+   tf_buffer_duration: 60.0
+   transform_publish_period: 0.02  # 50 Hz
+   map_update_interval: 1.0
+   
+   # --- Map / sensor model (quadruped-optimized) ---
+   resolution: 0.025  # Keep fine resolution for table leg detection
+   max_laser_range: 12.0
+   minimum_laser_range: 0.02
+   minimum_time_interval: 0.1
+   
+   # --- Scan matcher (quadruped-tuned) ---
+   use_response_expansion: true
+   correlation_search_space_dimension: 1.0
+   correlation_search_space_resolution: 0.005
+   correlation_search_space_smear_deviation: 0.05
+   link_scan_maximum_distance: 3.0
+   link_match_minimum_response_fine: 0.55  # Strict for vibration tolerance
+   
+   # --- Odometry weighting (quadruped distrust) ---
+   distance_variance_penalty: 2.0  # High - don't trust leg odometry
+   angle_variance_penalty: 3.0     # High - don't trust rotation
+   minimum_distance_penalty: 0.1
+   minimum_angle_penalty: 0.3
+   
+   # --- Loop closure (conservative for stability) ---
+   do_loop_closing: true
+   loop_match_minimum_chain_size: 8
+   loop_match_maximum_variance_coarse: 5.0
+   loop_match_minimum_response_coarse: 0.45
+   loop_match_minimum_response_fine: 0.55
+   
+   # --- Topics / buffers ---
+   scan_topic: /scan
+   mode: mapping
+   scan_queue_size: 50
+   scan_buffer_size: 25
+   scan_buffer_maximum_scan_distance: 15.0

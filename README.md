@@ -239,7 +239,7 @@ ros2 launch mini_pupper_simulation main.launch.py
 ```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_slam slam.launch.py use_sim_time:=true
+ros2 launch mini_pupper_slam slam_online.launch.py use_sim_time:=true
 ```
 
 - If using keyboard control
@@ -270,7 +270,7 @@ The map will be saved under home directory. Two files will be generated, namely 
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_gazebo gazebo.launch.py
+ros2 launch mini_pupper_simulation main.launch.py
 ```
 
 - Navigation   
@@ -328,7 +328,7 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ```sh
 # Terminal 2 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_slam slam.launch.py
+ros2 launch mini_pupper_slam slam_online.launch.py
 ```
 
 Remotely control the Mini Pupper to complete the mapping.
