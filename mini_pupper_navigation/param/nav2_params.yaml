@@ -6,7 +6,7 @@ amcl:
    alpha3: 0.2
    alpha4: 0.2
    alpha5: 0.2
-   base_frame_id: "base_link"  # Changed from base_footprint for consistency
+   base_frame_id: "base_footprint"  # Should be base_footprint for height consistency
    beam_skip_distance: 0.5
    beam_skip_error_threshold: 0.9
    beam_skip_threshold: 0.3
@@ -183,7 +183,7 @@ local_costmap:
      height: 3
      resolution: 0.025  # Match SLAM resolution
      # Replace robot_radius with footprint
-     footprint: [[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]
+     footprint: "[[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]"
      plugins: ["obstacle_layer", "inflation_layer"]
      inflation_layer:
        plugin: "nav2_costmap_2d::InflationLayer"
@@ -216,7 +216,7 @@ global_costmap:
      global_frame: map
      robot_base_frame: base_link
      # Replace robot_radius with footprint
-     footprint: [[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]
+     footprint: "[[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]"
      resolution: 0.025  # Match SLAM resolution
      track_unknown_space: true
      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
