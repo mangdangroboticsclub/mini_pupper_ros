@@ -23,17 +23,14 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.parameter_descriptions import ParameterFile
+from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_navigation')
 
     default_map_path = PathJoinSubstitution([this_package, 'maps', 'map.yaml'])
-    nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'mini_pupper.yaml'])
-    nav2_launch_path = PathJoinSubstitution(
-        [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
-    )
-    rviz_config_file_path = PathJoinSubstitution([this_package, 'rviz', 'navigation.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_sim_time_launch_arg = DeclareLaunchArgument(
@@ -41,6 +38,18 @@ def generate_launch_description():
         default_value='False',
         description='Use simulation (Gazebo) clock if true'
     )
+    
+    nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'nav2_params.yaml'])
+    configured_params = RewrittenYaml(
+        source_file=nav2_param_file_path,
+        root_key='',
+        param_rewrites={'use_sim_time': use_sim_time},
+        convert_types=True
+    )
+    nav2_launch_path = PathJoinSubstitution(
+        [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
+    )
+    rviz_config_file_path = PathJoinSubstitution([this_package, 'rviz', 'navigation.rviz'])
 
     map = LaunchConfiguration('map')
     map_launch_arg = DeclareLaunchArgument(
@@ -56,7 +65,7 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(nav2_launch_path),
             launch_arguments={
                 'map': map,
-                'params_file': nav2_param_file_path,
+                'params_file': configured_params,
                 'use_sim_time': use_sim_time
             }.items()
         ),

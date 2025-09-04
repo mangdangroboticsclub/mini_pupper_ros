@@ -7,15 +7,15 @@ slam_toolbox:
    publish_tf: true
    
    # --- Timing / TF ---
-   transform_timeout: 0.2
+   transform_timeout: 1.5 # 0.2
    tf_buffer_duration: 60.0
    transform_publish_period: 0.02  # 50 Hz
    map_update_interval: 1.0
    
    # --- Map / sensor model (quadruped-optimized) ---
-   resolution: 0.025  # Keep fine resolution for table leg detection
+   resolution: 0.050  # Keep fine resolution for table leg detection
    max_laser_range: 12.0
-   minimum_laser_range: 0.02
+   minimum_laser_range: 0.20 # 0.02
    minimum_time_interval: 0.1
    
    # --- Scan matcher (quadruped-tuned) ---
@@ -24,7 +24,7 @@ slam_toolbox:
    correlation_search_space_resolution: 0.005
    correlation_search_space_smear_deviation: 0.05
    link_scan_maximum_distance: 3.0
-   link_match_minimum_response_fine: 0.55  # Strict for vibration tolerance
+   link_match_minimum_response_fine: 0.10 # 0.55  # Strict for vibration tolerance
    
    # --- Odometry weighting (quadruped distrust) ---
    distance_variance_penalty: 2.0  # High - don't trust leg odometry

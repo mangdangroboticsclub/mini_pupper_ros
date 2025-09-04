@@ -239,7 +239,7 @@ ros2 launch mini_pupper_simulation main.launch.py
 ```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_slam slam_online.launch.py use_sim_time:=true
+ros2 launch mini_pupper_slam slam_toolbox.launch.py use_sim_time:=true
 ```
 
 - If using keyboard control
@@ -277,11 +277,11 @@ ros2 launch mini_pupper_simulation main.launch.py
 ```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation navigation.launch.py use_sim_time:=true
+ros2 launch mini_pupper_navigation navigation_smacplanner.launch.py use_sim_time:=true
 ```
 Alternatively, if you wish to use the map you generated in previous step, you can specify the map path with the following command.
 ```sh
-ros2 launch mini_pupper_navigation navigation.launch.py use_sim_time:=true map:=$HOME/map.yaml
+ros2 launch mini_pupper_navigation navigation_smacplanner.launch.py use_sim_time:=true map:=$HOME/map.yaml
 ```
 After executing this command, the rviz window will be displayed. You can utilize the "2D Post Estimate" feature to establish an appropriate initial pose for the robot. Subsequently, you can set a goal for the robot by clicking on "Nav2 Goal", hence Nav2 will plan the path and guide the robot towards reaching the goal.
 
@@ -328,7 +328,7 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ```sh
 # Terminal 2 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_slam slam_online.launch.py
+ros2 launch mini_pupper_slam slam_toolbox.launch.py
 ```
 
 Remotely control the Mini Pupper to complete the mapping.
@@ -368,7 +368,7 @@ ros2 launch mini_pupper_bringup bringup.launch.py
 ```sh
 # Terminal 4 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation navigation.launch.py map:=$HOME/map.yaml
+ros2 launch mini_pupper_navigation navigation_smacplanner.launch.py map:=$HOME/map.yaml
 ```
 
 ### 2.2.4 Test dance
