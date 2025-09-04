@@ -39,7 +39,7 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
     )
     
-    nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'nav2_params.yaml'])
+    nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'real_table.yaml'])
     configured_params = RewrittenYaml(
         source_file=nav2_param_file_path,
         root_key='',

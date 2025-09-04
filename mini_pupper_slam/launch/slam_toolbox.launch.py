@@ -27,7 +27,7 @@ def generate_launch_description():
     slam_package = FindPackageShare('mini_pupper_slam')
 
     slam_config_dir = PathJoinSubstitution([slam_package, 'config'])
-    slam_config_basename = TextSubstitution(text='simulation_room.yaml')
+    slam_config_basename = TextSubstitution(text='real_table.yaml')
     rviz_config_file_path = PathJoinSubstitution([slam_package, 'rviz', 'slam.rviz'])
 
     use_sim_time = LaunchConfiguration('use_sim_time')

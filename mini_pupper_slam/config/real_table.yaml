@@ -1,47 +1,62 @@
+# CRITICAL - Will Break Mapping
+# max_laser_range: 2.5
+# minimum_laser_range: 0.03
+# resolution: 0.025
+
+# EMPIRICALLY TESTABLE - Measure on Robot
+# distance_variance_penalty: 2.0
+# angle_variance_penalty: 3.0
+# minimum_distance_penalty: 0.1
+# minimum_angle_penalty: 0.3
+
+# IMPORTANT BUT TUNABLE - Affects Performance
+# transform_timeout: 0.5
+# link_match_minimum_response_fine: 0.10
+# correlation_search_space_dimension: 1.0
+# correlation_search_space_resolution: 0.005
+# correlation_search_space_smear_deviation: 0.05
+
+# CHOSEN BUT NOT CRITICAL - Fine Tuning
+# loop_match_minimum_chain_size: 8
+# loop_match_maximum_variance_coarse: 5.0
+# loop_match_minimum_response_coarse: 0.45
+# loop_match_minimum_response_fine: 0.55
+
 slam_toolbox:
  ros__parameters:
-   # --- Frames (corrected for Nav2 integration) ---
    map_frame: map
    odom_frame: odom  
-   base_frame: base_link  # Must be base_link for Nav2 compatibility
+   base_frame: base_link
    publish_tf: true
-   
-   # --- Timing / TF ---
-   transform_timeout: 1.5 # 0.2
+   scan_topic: /scan
+   mode: mapping
    tf_buffer_duration: 60.0
-   transform_publish_period: 0.02  # 50 Hz
+   transform_publish_period: 0.02
    map_update_interval: 1.0
-   
-   # --- Map / sensor model (quadruped-optimized) ---
-   resolution: 0.050  # Keep fine resolution for table leg detection
-   max_laser_range: 12.0
-   minimum_laser_range: 0.20 # 0.02
    minimum_time_interval: 0.1
-   
-   # --- Scan matcher (quadruped-tuned) ---
    use_response_expansion: true
+   do_loop_closing: true
+   scan_queue_size: 50
+   scan_buffer_size: 25
+   scan_buffer_maximum_scan_distance: 15.0
+
+   max_laser_range: 2.5
+   minimum_laser_range: 0.03
+   resolution: 0.025
+
+   distance_variance_penalty: 2.0
+   angle_variance_penalty: 3.0
+   minimum_distance_penalty: 0.1
+   minimum_angle_penalty: 0.3
+
+   transform_timeout: 0.5
+   link_match_minimum_response_fine: 0.10
    correlation_search_space_dimension: 1.0
    correlation_search_space_resolution: 0.005
    correlation_search_space_smear_deviation: 0.05
    link_scan_maximum_distance: 3.0
-   link_match_minimum_response_fine: 0.10 # 0.55  # Strict for vibration tolerance
-   
-   # --- Odometry weighting (quadruped distrust) ---
-   distance_variance_penalty: 2.0  # High - don't trust leg odometry
-   angle_variance_penalty: 3.0     # High - don't trust rotation
-   minimum_distance_penalty: 0.1
-   minimum_angle_penalty: 0.3
-   
-   # --- Loop closure (conservative for stability) ---
-   do_loop_closing: true
+
    loop_match_minimum_chain_size: 8
    loop_match_maximum_variance_coarse: 5.0
    loop_match_minimum_response_coarse: 0.45
    loop_match_minimum_response_fine: 0.55
-   
-   # --- Topics / buffers ---
-   scan_topic: /scan
-   mode: mapping
-   scan_queue_size: 50
-   scan_buffer_size: 25
-   scan_buffer_maximum_scan_distance: 15.0
