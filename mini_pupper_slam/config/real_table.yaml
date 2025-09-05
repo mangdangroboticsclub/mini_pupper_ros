@@ -1,62 +1,78 @@
-# CRITICAL - Will Break Mapping
-# max_laser_range: 2.5
-# minimum_laser_range: 0.03
-# resolution: 0.025
-
-# EMPIRICALLY TESTABLE - Measure on Robot
-# distance_variance_penalty: 2.0
-# angle_variance_penalty: 3.0
-# minimum_distance_penalty: 0.1
-# minimum_angle_penalty: 0.3
-
-# IMPORTANT BUT TUNABLE - Affects Performance
-# transform_timeout: 0.5
-# link_match_minimum_response_fine: 0.10
-# correlation_search_space_dimension: 1.0
-# correlation_search_space_resolution: 0.005
-# correlation_search_space_smear_deviation: 0.05
-
-# CHOSEN BUT NOT CRITICAL - Fine Tuning
-# loop_match_minimum_chain_size: 8
-# loop_match_maximum_variance_coarse: 5.0
-# loop_match_minimum_response_coarse: 0.45
-# loop_match_minimum_response_fine: 0.55
-
 slam_toolbox:
- ros__parameters:
-   map_frame: map
-   odom_frame: odom  
-   base_frame: base_link
-   publish_tf: true
-   scan_topic: /scan
-   mode: mapping
-   tf_buffer_duration: 60.0
-   transform_publish_period: 0.02
-   map_update_interval: 1.0
-   minimum_time_interval: 0.1
-   use_response_expansion: true
-   do_loop_closing: true
-   scan_queue_size: 50
-   scan_buffer_size: 25
-   scan_buffer_maximum_scan_distance: 15.0
-
-   max_laser_range: 2.5
-   minimum_laser_range: 0.03
-   resolution: 0.025
-
-   distance_variance_penalty: 2.0
-   angle_variance_penalty: 3.0
-   minimum_distance_penalty: 0.1
-   minimum_angle_penalty: 0.3
-
-   transform_timeout: 0.5
-   link_match_minimum_response_fine: 0.10
-   correlation_search_space_dimension: 1.0
-   correlation_search_space_resolution: 0.005
-   correlation_search_space_smear_deviation: 0.05
-   link_scan_maximum_distance: 3.0
-
-   loop_match_minimum_chain_size: 8
-   loop_match_maximum_variance_coarse: 5.0
-   loop_match_minimum_response_coarse: 0.45
-   loop_match_minimum_response_fine: 0.55
+  ros__parameters:
+    # Frame configuration - matching Nav2
+    map_frame: map
+    odom_frame: odom
+    base_frame: base_footprint  # Match Nav2's base_frame_id
+    publish_tf: true
+    scan_topic: /scan
+    mode: mapping
+    
+    # TF timing - reasonable for slow robot
+    tf_buffer_duration: 30.0  # Sufficient buffer
+    transform_publish_period: 0.1  # 10Hz TF publishing - matches Nav2 controller frequency
+    transform_timeout: 0.1  # Match Nav2's transform_tolerance
+    
+    # Map update rates - practical for slow movement
+    map_update_interval: 2.0  # 0.5Hz updates sufficient for 0.03-0.06 m/s
+    minimum_time_interval: 0.2  # 5Hz processing matches Nav2 publish frequencies
+    
+    # Scan processing - balanced for stability
+    scan_queue_size: 50  # Moderate queue size
+    scan_buffer_size: 25  # Reasonable buffer for loop closure
+    scan_buffer_maximum_scan_distance: 2.0  # Practical for 1.5m table
+    
+    # Laser range limits - matching Nav2
+    max_laser_range: 3.0  # Match Nav2's laser_max_range
+    minimum_laser_range: 0.05  # Match Nav2's laser_min_range
+    
+    # Resolution - match Nav2 exactly
+    resolution: 0.02  # Match Nav2 costmap resolution (2cm)
+    
+    # Motion model penalties - realistic for quadruped gait
+    distance_variance_penalty: 1.0  # Moderate - accounts for gait variations
+    angle_variance_penalty: 1.5  # Account for quadruped body sway
+    minimum_distance_penalty: 0.05  # 5cm - reasonable for 21cm robot
+    minimum_angle_penalty: 0.15  # ~8.6 degrees - less sensitive to gait
+    
+    # Loop closure - balanced for stability
+    use_response_expansion: true
+    do_loop_closing: true
+    loop_match_minimum_chain_size: 6  # More conservative chain size
+    loop_match_maximum_variance_coarse: 3.0  # Reasonable variance
+    loop_match_minimum_response_coarse: 0.45  # Balanced threshold
+    loop_match_minimum_response_fine: 0.55  # Conservative fine matching
+    
+    # Scan matching - practical values
+    link_match_minimum_response_fine: 0.12  # Conservative matching
+    link_scan_maximum_distance: 2.0  # Reasonable for environment
+    
+    # Correlation search - practical resolution
+    correlation_search_space_dimension: 0.5  # Moderate search space
+    correlation_search_space_resolution: 0.01  # 1cm - practical resolution
+    correlation_search_space_smear_deviation: 0.03  # Reasonable smearing
+    
+    # Motion thresholds - avoid over-mapping from gait noise
+    minimum_travel_distance: 0.05  # 5cm - filters out gait wobbles
+    minimum_travel_heading: 0.1  # ~6 degrees - ignores minor gait variations
+    scan_matcher_type: "CORRELATIVE"
+    use_scan_matching: true
+    use_scan_barycenter: true
+    
+    # Solver parameters - balanced
+    solver_plugin: "solver_plugins::CeresSolver"
+    ceres_linear_solver: "SPARSE_NORMAL_CHOLESKY"
+    ceres_preconditioner: "SCHUR_JACOBI"
+    ceres_trust_strategy: "LEVENBERG_MARQUARDT"
+    ceres_dogleg_type: "TRADITIONAL_DOGLEG"
+    ceres_loss_function: "HuberLoss"  # Robust to outliers
+    
+    # Loop search - practical values
+    loop_search_space_dimension: 5.0  # Moderate search space
+    loop_search_space_resolution: 0.05  # 5cm resolution
+    loop_search_space_smear_deviation: 0.03
+    loop_search_maximum_distance: 2.0
+    
+    # Online/lifelong SLAM parameters
+    localization_mode: false  # Mapping mode
+    interactive_mode: true  # Real-time visualization

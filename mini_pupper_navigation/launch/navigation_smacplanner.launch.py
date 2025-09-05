@@ -58,15 +58,23 @@ def generate_launch_description():
         description='Full path to map file to load'
     )
 
+    nav_vel_scaler = Node(
+        package='mini_pupper_driver',
+        executable='nav_vel_scaler',
+        name='nav_vel_scaler'
+    )
+
     return LaunchDescription([
         use_sim_time_launch_arg,
         map_launch_arg,
+        nav_vel_scaler,
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(nav2_launch_path),
             launch_arguments={
                 'map': map,
                 'params_file': configured_params,
-                'use_sim_time': use_sim_time
+                'use_sim_time': use_sim_time,
+                'remappings': '/cmd_vel:=/cmd_vel_navigation2',
             }.items()
         ),
         Node(
