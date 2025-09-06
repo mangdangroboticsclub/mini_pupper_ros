@@ -13,15 +13,20 @@ amcl:
       y: 0.0
       yaw: 0.0
     
-    # Motion model noise parameters - tuned for slow quadruped (0.03-0.06 m/s)
-    # Default alpha values are ~0.2, but we reduce them for precise, slow movement
-    alpha1: 0.05  # Rotation noise from translation: 0.05 << 0.2 default for precise odometry
-    alpha2: 0.05  # Translation noise from translation: low for consistent slow speeds
-    alpha3: 0.1   # Translation noise from rotation: slightly higher for leg placement uncertainty
-    alpha4: 0.1   # Rotation noise from rotation: accounts for quadruped gait variations
-    alpha5: 0.02  # Translation noise from strafe: minimal since quadruped has limited lateral drift
+    # Motion model noise - adjusted for trotting gait with 4cm vertical oscillation
+    # Higher values account for leg placement uncertainty and body sway
+    alpha1: 0.08  # Rotation noise from translation (gait-induced yaw drift)
+    alpha2: 0.08  # Translation noise from translation (leg slip)
+    alpha3: 0.15  # Translation noise from rotation (centrifugal effects)
+    alpha4: 0.15  # Rotation noise from rotation (turning slip)
+    alpha5: 0.05  # Translation noise from lateral motion (minimal for quadruped)
     
-    # Beam parameters - standard for most lidars
+    # Transform tolerance - START CONSERVATIVE for WiFi, then tighten after testing
+    # Run 'ros2 run tf2_ros tf2_monitor' to check actual delays
+    # If average delay <50ms, reduce to 0.2; if <30ms, try 0.15
+    transform_tolerance: 0.3  # START HERE, reduce after measuring actual TF delays
+    
+    # Beam parameters for lidar processing
     beam_skip_distance: 0.5
     beam_skip_error_threshold: 0.9
     beam_skip_threshold: 0.3
@@ -29,32 +34,32 @@ amcl:
     recovery_alpha_fast: 0.0
     recovery_alpha_slow: 0.0
 
-    # Particle filter - reduced for small 1.5m x 1.5m environment
-    # Fewer particles needed since state space is constrained by table size
-    max_particles: 500   # Reduced from typical 2000-5000 for small area
-    min_particles: 200   # Maintains 2.5:1 ratio with max_particles
-    max_beams: 60        # Higher than default 60 for better accuracy at slow speeds
+    # Particle filter - balanced for 1.5m table with WiFi bandwidth constraints
+    # Reduce if 'ros2 topic hz /particlecloud' shows <1Hz publish rate
+    max_particles: 400   # Reduce to 300 if network saturated
+    min_particles: 150   # Maintain 2.5:1 ratio with max
+    max_beams: 40        # Reduce to 30 if CPU on laptop >70%
     
-    # Transform and update thresholds - smaller values for precise 21cm robot movement
-    transform_tolerance: 0.1  # Consistent with RPP controller tolerance
-    update_min_a: 0.1    # 0.1 rad = ~6 degrees: update AMCL after small rotations
-    update_min_d: 0.05   # 5cm updates: appropriate for 21cm robot on 1.5m table
+    # Update thresholds - less frequent updates reduce network load
+    # Monitor with 'ros2 topic hz /amcl_pose' - should be 1-3 Hz during motion
+    update_min_a: 0.15   # ~8.6 degrees rotation before update
+    update_min_d: 0.08   # 8cm translation before update
     
-    # Laser model parameters - tuned for small environment and close obstacles
-    laser_likelihood_max_dist: 1.0  # 1m max relevant distance (vs default 2m) for 1.5m table
-    pf_err: 0.03         # Tight convergence: 3cm error tolerance for precise positioning
-    pf_z: 0.95           # Balanced confidence in sensor vs motion model
-    lambda_short: 0.1    # Standard unexplained short readings weight
-    sigma_hit: 0.1       # 10cm sensor noise model (vs default 20cm) for precise localization
-    z_hit: 0.7           # 70% weight on correct measurements
-    z_max: 0.05          # 5% weight on max range readings
-    z_rand: 0.2          # 20% weight on random readings
-    z_short: 0.05        # 5% weight on short readings
-    resample_interval: 1 # Resample every update for responsive particle filter
-    save_pose_rate: 0.5  # Save pose twice per second
+    # Laser model - tuned for oscillating lidar from trotting gait
+    laser_likelihood_max_dist: 1.2  # Search radius for scan matching
+    pf_err: 0.05         # Convergence threshold (5cm)
+    pf_z: 0.90           # Overall confidence in sensor model
+    lambda_short: 0.1    # Weight for unexpected close readings
+    sigma_hit: 0.15      # Expected sensor noise (15cm due to gait oscillation)
+    z_hit: 0.65          # Weight on expected measurements
+    z_max: 0.05          # Weight on max-range readings
+    z_rand: 0.25         # Weight on random noise (high due to gait)
+    z_short: 0.05        # Weight on short readings
+    resample_interval: 2 # Resample every 2nd update (reduces computation)
+    save_pose_rate: 0.5  # Publish pose at 0.5 Hz
     tf_broadcast: true
-    laser_max_range: 3.0   # 3m range limit (vs unlimited) adequate for 1.5m table environment
-    laser_min_range: 0.05  # 5cm minimum for detecting close obstacles like water bottles
+    laser_max_range: 3.0   # Lidar's actual max range
+    laser_min_range: 0.05  # Lidar's actual min range
 
 amcl_map_client:
   ros__parameters:
@@ -68,14 +73,15 @@ bt_navigator:
   ros__parameters:
     use_sim_time: False
     global_frame: map
-    robot_base_frame: base_link
+    robot_base_frame: base_footprint
     odom_topic: /odom
     bt_loop_duration: 10
-    default_server_timeout: 20
+    default_server_timeout: 30  # High timeout for WiFi packet loss
+    # Match AMCL - reduce after testing TF delays
+    transform_tolerance: 0.3
     enable_groot_monitoring: True
     groot_zmq_publisher_port: 1666
     groot_zmq_server_port: 1667
-    # Standard behavior tree plugin list - enables typical navigation behaviors
     plugin_lib_names:
     - nav2_compute_path_to_pose_action_bt_node
     - nav2_compute_path_through_poses_action_bt_node
@@ -120,74 +126,91 @@ controller_server:
     goal_checker_plugins: ["general_goal_checker"]
     controller_plugins: ["FollowPath"]
 
-    # Velocity thresholds - must be below robot's minimum capabilities (0.03 m/s, 0.25 rad/s)
-    # These detect when robot has "stopped" vs actually moving
-    min_x_velocity_threshold: 0.02   # Below robot's minimum linear speed boundary
-    min_y_velocity_threshold: 0.001  # Near-zero for differential-like movement patterns
-    min_theta_velocity_threshold: 0.25  # Exactly robot's minimum angular speed boundary
-    failure_tolerance: 0.2           # 20cm tolerance before declaring controller failure
+    # Velocity thresholds - detect when robot has "stopped"
+    # Set to 50% of absolute minimums for reliable detection
+    min_x_velocity_threshold: 0.005   # Half of 0.01 m/s absolute minimum
+    min_y_velocity_threshold: 0.001   # Near-zero (no lateral motion)
+    min_theta_velocity_threshold: 0.05 # Half of 0.10 rad/s absolute minimum
+    
+    # Controller failure tolerance and transform timeout
+    failure_tolerance: 0.3
+    # Match AMCL - reduce after testing TF delays
+    transform_tolerance: 0.3
 
-    # 10Hz controller frequency: adequate for slow speeds (0.03-0.06 m/s)
-    # At 0.06 m/s, robot moves 6mm between control cycles - sufficient precision
-    controller_frequency: 10.0
+    # Controller frequency - balance between responsiveness and network load
+    # At 5Hz with 0.06 m/s = 1.2cm movement between updates
+    # Monitor with 'ros2 topic hz /cmd_vel' - should maintain steady 5Hz
+    controller_frequency: 5.0
 
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      # 10cm movement required to show "progress" - appropriate for 21cm robot
-      required_movement_radius: 0.1
-      # 15 seconds allowance: at 0.03 m/s, robot moves 45cm in 15s
-      movement_time_allowance: 15.0
+      required_movement_radius: 0.08  # 8cm movement required to show progress
+      movement_time_allowance: 20.0   # Allow 20s for slow maneuvers over WiFi
 
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      # 5cm XY tolerance: precise for 21cm robot on 1.5m table
-      xy_goal_tolerance: 0.05
-      # 0.15 rad = ~8.6 degrees: reasonable angular precision
-      yaw_goal_tolerance: 0.15
+      xy_goal_tolerance: 0.07    # 7cm position tolerance (gait oscillation)
+      yaw_goal_tolerance: 0.20    # ~11 degrees (gait-induced heading variation)
       
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       
-      # Velocity parameters - strictly within robot's 0.03-0.06 m/s range
-      desired_linear_vel: 0.045      # Middle of speed range for balanced performance
-      max_linear_accel: 0.05         # Conservative: 0.05 m/s² = 0.03→0.06 m/s in 0.6 seconds
-      max_linear_decel: 0.08         # Slightly faster decel for safety stops
+      # ==========================================
+      # AGGRESSIVE VELOCITY CONFIGURATION
+      # Always targeting TOP of desired ranges
+      # Desired: 0.03-0.06 m/s linear, 0.25-0.50 rad/s angular
+      # Absolute safe: 0.01-0.29 m/s linear, 0.10-0.50 rad/s angular
+      # ==========================================
       
-      # Angular velocity - within robot's 0.25-0.50 rad/s range
-      max_angular_accel: 0.4         # Conservative angular acceleration
-      rotate_to_heading_angular_vel: 0.35  # Middle of angular range for heading corrections
+      # ALWAYS cruise at maximum desired speed
+      desired_linear_vel: 0.06  # TOP of desired range (aggressive)
       
-      # Lookahead distances - optimized for 21cm robot on 1.5m table
-      lookahead_dist: 0.15           # 15cm default: ~0.7x robot length for responsive turning
-      min_lookahead_dist: 0.08       # 8cm minimum: prevents oversteering in tight spots
-      max_lookahead_dist: 0.25       # 25cm maximum: ~1/6 of table width for longer smooth paths
-      lookahead_time: 2.0            # 2 seconds: at 0.045 m/s = 9cm dynamic lookahead
+      # Acceleration limits - 90% of measured hardware capabilities
+      # Measured: +0.20 m/s², -0.22 m/s² (from odometry during step response)
+      max_linear_accel: 0.18   # 90% of +0.20 m/s² measured max
+      max_linear_decel: 0.20   # 90% of -0.22 m/s² measured max
       
-      # Velocity-scaled lookahead: lookahead grows/shrinks with speed for stability
+      # Angular velocity - ALWAYS at TOP of desired range
+      max_angular_accel: 0.4   # Tune based on actual robot testing
+      rotate_to_heading_angular_vel: 0.50  # TOP of desired range (aggressive)
+      
+      # ==========================================
+      # CRITICAL: LIDAR AT REAR CONFIGURATION
+      # Lidar is at BACK of 210mm robot, not center
+      # Must look ahead MORE to compensate for sensor position
+      # ==========================================
+      
+      # Lookahead distances - INCREASED for rear lidar
+      # Base lookahead should be > robot length when sensor at rear
+      lookahead_dist: 0.25          # >robot length due to rear lidar
+      min_lookahead_dist: 0.18      # CRITICAL: minimum 85% of robot length
+      max_lookahead_dist: 0.35      # Extended for rear sensor compensation
+      lookahead_time: 3.0           # Longer time for rear sensor prediction
       use_velocity_scaled_lookahead_dist: true
       
-      # Goal approach behavior - ensures smooth arrival
-      min_approach_linear_velocity: 0.03  # Never command below robot's minimum speed
-      # Start slowing 30cm from goal: gives plenty of deceleration space on 1.5m table
-      approach_velocity_scaling_dist: 0.3
-      use_interpolation: false        # Simpler control for small, slow robot
+      # Approach velocities - maintain desired minimums
+      min_approach_linear_velocity: 0.03  # Bottom of desired (not absolute min)
+      approach_velocity_scaling_dist: 0.40  # Start slowing earlier with rear lidar
       
-      # Collision detection - conservative safety for close obstacles
+      # Speed regulation - less conservative for aggressive operation
+      use_regulated_linear_velocity_scaling: true
+      use_cost_regulated_linear_velocity_scaling: true
+      regulated_linear_scaling_min_radius: 0.30  # Only regulate in very tight turns
+      regulated_linear_scaling_min_speed: 0.03   # Never below desired minimum
+      
+      # Path following
+      use_interpolation: false  # Simple control for small robot
+      
+      # Collision detection - extended for rear lidar
       use_collision_detection: true
-      # 2 seconds at 0.045 m/s = 9cm lookahead: appropriate for 21cm robot avoiding water bottles
-      max_allowed_time_to_collision_up_to_carrot: 2.0
+      # Longer projection time needed when sensor is at rear
+      max_allowed_time_to_collision_up_to_carrot: 3.5
       
-      # Path regulation - prevents dangerous speeds in tight spaces
-      use_regulated_linear_velocity_scaling: true     # Slow down for tight turns
-      use_cost_regulated_linear_velocity_scaling: true # Slow down near obstacles in costmap
-      regulated_linear_scaling_min_radius: 0.2        # 20cm curve radius triggers speed reduction
-      regulated_linear_scaling_min_speed: 0.03        # Never regulate below robot's minimum
-      
-      # Transform and rotation behavior
-      transform_tolerance: 0.1        # Consistent with AMCL tolerance
-      use_rotate_to_heading: true     # Rotate in place for precise positioning
-      rotate_to_heading_min_angle: 0.3  # 0.3 rad = ~17 degrees: rotate for significant heading changes
+      # Transform tolerance - reduce after testing
+      transform_tolerance: 0.3
+      use_rotate_to_heading: true
+      rotate_to_heading_min_angle: 0.35  # ~20 degrees
       
 controller_server_rclcpp_node:
   ros__parameters:
@@ -198,30 +221,33 @@ local_costmap:
     ros__parameters:
       use_sim_time: False
       global_frame: odom
-      robot_base_frame: base_link
+      robot_base_frame: base_footprint
       rolling_window: true
       plugins: ["obstacle_layer", "inflation_layer"]
       always_send_full_costmap: True
+      # Match controller - reduce after testing TF delays
+      transform_tolerance: 0.3
 
-      # Robot footprint: 210mm x 110mm quadruped (21cm length, 11cm width)
+      # Robot footprint - actual dimensions
       footprint: "[[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]"
+      footprint_padding: 0.01  # Small padding for position uncertainty
       
-      # Local costmap: 1m x 1m rolling window
-      # Small window appropriate for 1.5m table + reduces computational load
+      # Local costmap window
       width: 1.0
       height: 1.0
-      resolution: 0.02               # 2cm resolution: fine detail for water bottles/small boxes
+      resolution: 0.02  # 2cm grid cells
       
-      # Update frequencies - lower rates for slow robot (saves CPU)
-      update_frequency: 5.0          # 5Hz updates adequate for 0.03-0.06 m/s speeds
-      publish_frequency: 2.0         # 2Hz publishing sufficient for visualization
+      # Update rates - balanced for WiFi bandwidth
+      # Monitor with 'ros2 topic bw /local_costmap/costmap'
+      # Should be <1MB/s for stable WiFi operation
+      update_frequency: 3.0   # 3Hz update cycle
+      publish_frequency: 1.0  # 1Hz publish to reduce bandwidth
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        # 15cm inflation: ~1.4x robot length (21cm) for safe clearance around obstacles
-        inflation_radius: 0.15
-        # High cost gradient: rapid cost increase near obstacles for clear avoidance
-        cost_scaling_factor: 8.0
+        # Less conservative for aggressive navigation
+        inflation_radius: 0.12  # Reduced for tighter spaces
+        cost_scaling_factor: 5.0  # Less conservative gradient
 
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
@@ -229,15 +255,16 @@ local_costmap:
         observation_sources: scan
         scan:
           topic: /scan
-          # 50cm max height: covers water bottles (~25cm) and small boxes (~40cm)
-          max_obstacle_height: 0.5
+          max_obstacle_height: 0.5  # Table objects height
           clearing: True
           marking: True
           data_type: "LaserScan"
-          marking_threshold: 0.0     # Mark any detected obstacle
-          clearing_threshold: 0.0    # Clear any non-detected space
-          # 2cm min height: detect even low obstacles like bottle caps
-          min_obstacle_height: 0.02
+          marking_threshold: 0
+          clearing_threshold: 0
+          min_obstacle_height: 0.02  # 2cm minimum
+          # Reduced ranges for reliability with oscillating lidar
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.08  # Filter out gait-induced ground hits
 
 local_costmap_client:
   ros__parameters:
@@ -252,19 +279,20 @@ global_costmap:
     ros__parameters:
       use_sim_time: False
       global_frame: map
-      robot_base_frame: base_link
+      robot_base_frame: base_footprint
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       always_send_full_costmap: True
+      # Match other components - reduce after testing
+      transform_tolerance: 0.3
 
-      # Same robot footprint as local costmap
       footprint: "[[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]"
-      # Match local costmap resolution for consistency
+      footprint_padding: 0.01
       resolution: 0.02
 
-      # Update rates - balanced for laptop processing capability
-      update_frequency: 4.0          # Increased from 2Hz: laptop can handle higher rate for dynamic obstacle updates
-      publish_frequency: 2.0         # Adequate publishing rate for global costmap
+      # Lower update rate than local for WiFi efficiency
+      update_frequency: 2.0
+      publish_frequency: 1.0
 
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
@@ -276,18 +304,20 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          marking_threshold: 0.0
-          clearing_threshold: 0.0
+          marking_threshold: 0
+          clearing_threshold: 0
           min_obstacle_height: 0.02
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.08
 
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: True  # Use reliable QoS for map data
+        map_subscribe_transient_local: True
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        inflation_radius: 0.15       # Match local costmap inflation
-        cost_scaling_factor: 8.0     # Match local costmap cost scaling
+        inflation_radius: 0.12  # Match local costmap
+        cost_scaling_factor: 5.0  # Match local costmap
 
 global_costmap_client:
   ros__parameters:
@@ -306,48 +336,41 @@ map_saver:
   ros__parameters:
     use_sim_time: False
     save_map_timeout: 5.0
-    free_thresh_default: 0.25      # 25% threshold for free space
-    occupied_thresh_default: 0.65  # 65% threshold for occupied space
+    free_thresh_default: 0.25
+    occupied_thresh_default: 0.65
     map_subscribe_transient_local: True
 
 planner_server:
   ros__parameters:
     use_sim_time: False
     planner_plugins: ["GridBased"]
-
-    # 5Hz planning frequency: adequate for slow robot on small table
-    # At 0.06 m/s max speed, robot moves 1.2cm between planning cycles
     expected_planner_frequency: 5.0
 
     GridBased:
       plugin: "nav2_smac_planner::SmacPlanner2D"
       
-      # No costmap downsampling - 1.5m x 1.5m table at 2cm resolution = 75x75 grid
-      # Small enough that downsampling isn't needed for performance
-      downsample_costmap: false
+      downsample_costmap: false  # 75x75 grid is small enough
       downsampling_factor: 1
       
-      # Search parameters optimized for small environment
-      allow_unknown: true             # Allow planning through unmapped areas
-      max_iterations: 100000          # Reduced from default 1M for small 75x75 grid
-      max_on_approach_iterations: 1000 # Standard approach refinement limit
-      max_planning_time: 2.0          # 2 second timeout: generous for small space planning
-      tolerance: 0.05                 # 5cm goal tolerance: precise for 21cm robot
+      allow_unknown: true
+      max_iterations: 100000
+      max_on_approach_iterations: 1000
+      max_planning_time: 2.0
+      tolerance: 0.07  # Match goal checker
       
-      # 2D A* specific parameters
-      motion_model_for_search: "MOORE"  # 8-connected search: allows diagonal movement
-      angle_quantization_bins: 1        # Not used for 2D planning (SE2 only)
-      cost_travel_multiplier: 1.5       # Moderate cost sensitivity: balance path length vs safety
-      use_final_approach_orientation: false  # Let RPP handle final orientation
+      motion_model_for_search: "MOORE"  # 8-connected grid
+      angle_quantization_bins: 1  # Not used in 2D
+      cost_travel_multiplier: 1.0  # Less conservative for aggressive nav
+      use_final_approach_orientation: false
       
-      # Path smoothing - important for RPP controller performance
+      # Smoother configuration
       smoother:
-        max_iterations: 500           # Reduced iterations for small paths
-        w_smooth: 0.4                 # 40% weight on smoothness (vs path fidelity)
-        w_data: 0.3                   # 30% weight on original path data
-        tolerance: 1.0e-8             # Tight convergence tolerance
-        do_refinement: true           # Enable iterative refinement
-        refinement_num: 2             # Two refinement passes for smooth paths
+        max_iterations: 500
+        w_smooth: 0.4
+        w_data: 0.3
+        tolerance: 1.0e-8
+        do_refinement: true
+        refinement_num: 2
 
 planner_server_rclcpp_node:
   ros__parameters:
@@ -358,33 +381,32 @@ behavior_server:
     use_sim_time: False
     costmap_topic: local_costmap/costmap_raw
     footprint_topic: local_costmap/published_footprint
-    # 5Hz behavior frequency: adequate for slow robot recovery behaviors
     cycle_frequency: 5.0
     behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
     global_frame: odom
-    robot_base_frame: base_link
-    # 3 second simulation horizon: at 0.06 m/s = 18cm lookahead for safety
-    simulate_ahead_time: 3.0
-
-    transform_tolerance: 0.1
+    robot_base_frame: base_footprint
+    # Longer simulation due to rear lidar position
+    simulate_ahead_time: 4.0
+    # Match other components - reduce after testing
+    transform_tolerance: 0.3
     
-    # Recovery rotation speeds - exactly match robot's angular capabilities
-    max_rotational_vel: 0.50        # Robot's maximum angular speed limit
-    min_rotational_vel: 0.25        # Robot's minimum angular speed limit
-    rotational_acc_lim: 0.4         # Conservative angular acceleration for stability
+    # AGGRESSIVE RECOVERY VELOCITIES - TOP of desired ranges
+    max_rotational_vel: 0.50   # TOP of desired range (also absolute max)
+    min_rotational_vel: 0.25   # Bottom of desired range
+    rotational_acc_lim: 0.3    # Conservative acceleration
 
     spin:
-      plugin: "nav2_behaviors/Spin"   # Rotate in place recovery behavior
+      plugin: "nav2_behaviors/Spin"
     backup:
       plugin: "nav2_behaviors/BackUp"
-      backup_speed: 0.03             # Exactly robot's minimum linear speed
-      backup_time: 2.0               # 2 seconds at 0.03 m/s = 6cm backup distance
+      backup_speed: 0.03        # Bottom of desired (safety)
+      backup_time: 2.0          # 6cm backup distance
     drive_on_heading:
       plugin: "nav2_behaviors/DriveOnHeading"
-      speed: 0.045                   # Middle of robot's speed range for forward recovery
-      time: 1.0                      # 1 second at 0.045 m/s = 4.5cm forward movement
+      speed: 0.06              # TOP of desired range (aggressive)
+      time: 1.0                # 6cm forward probe
     wait:
-      plugin: "nav2_behaviors/Wait"   # Pause behavior for clearing temporary obstacles
+      plugin: "nav2_behaviors/Wait"
 
 robot_state_publisher:
   ros__parameters:
@@ -393,7 +415,6 @@ robot_state_publisher:
 waypoint_follower:
   ros__parameters:
     use_sim_time: False
-    # 5Hz waypoint processing: matches slow robot movement between waypoints
     loop_rate: 5
     stop_on_failure: false
     waypoint_task_executor_plugin: "wait_at_waypoint"   
@@ -401,4 +422,23 @@ waypoint_follower:
     wait_at_waypoint:
       plugin: "nav2_waypoint_follower::WaitAtWaypoint"
       enabled: True
-      waypoint_pause_duration: 200   # 200ms pause at each waypoint
+      waypoint_pause_duration: 200
+
+velocity_smoother:
+  ros__parameters:
+    use_sim_time: False
+    smoothing_frequency: 20.0  # 20Hz smoothing rate
+    scale_velocities: False  # Don't scale, use actual commanded velocities
+    feedback: "OPEN_LOOP"  # Don't use odometry feedback for smoothing
+    # Maximum velocities [linear_x, linear_y, angular_z]
+    # Using operational maximums, not absolute hardware limits
+    max_velocity: [0.06, 0.0, 0.50]    # [max desired linear, 0 (no lateral), max desired angular]
+    min_velocity: [-0.06, 0.0, -0.50]  # Negative for reverse motion capability
+    # Acceleration limits - 90% of measured hardware capabilities
+    # Measured: +0.20 m/s², -0.22 m/s² linear via odometry step response
+    max_accel: [0.18, 0.0, 0.4]        # 90% of measured +0.20 m/s²
+    max_decel: [-0.20, 0.0, -0.4]      # 90% of measured -0.22 m/s²
+    odom_topic: "odom"
+    odom_duration: 0.1  # Time window for velocity estimation from odometry
+    deadband_velocity: [0.0, 0.0, 0.0]  # No deadband needed
+    velocity_timeout: 1.0  # Stop if no command for 1 second

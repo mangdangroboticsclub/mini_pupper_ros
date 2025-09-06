@@ -1,5 +1,6 @@
 slam_toolbox:
   ros__parameters:
+    use_sim_time: False
     # Frame configuration - matching Nav2
     map_frame: map
     odom_frame: odom
@@ -8,37 +9,37 @@ slam_toolbox:
     scan_topic: /scan
     mode: mapping
     
-    # TF timing - reasonable for slow robot
-    tf_buffer_duration: 30.0  # Sufficient buffer
-    transform_publish_period: 0.1  # 10Hz TF publishing - matches Nav2 controller frequency
-    transform_timeout: 0.1  # Match Nav2's transform_tolerance
+    # TF timing - matched to Nav2 and WiFi constraints
+    tf_buffer_duration: 30.0  # Match Nav2's buffer duration
+    transform_publish_period: 0.1  # 10Hz TF publishing
+    transform_timeout: 0.3  # Match Nav2's increased WiFi tolerance
     
-    # Map update rates - practical for slow movement
-    map_update_interval: 2.0  # 0.5Hz updates sufficient for 0.03-0.06 m/s
-    minimum_time_interval: 0.2  # 5Hz processing matches Nav2 publish frequencies
+    # Map update rates - practical for slow movement (0.03-0.06 m/s)
+    map_update_interval: 2.0  # 0.5Hz updates sufficient for slow robot
+    minimum_time_interval: 0.2  # 5Hz processing matches Nav2 frequencies
     
     # Scan processing - balanced for stability
-    scan_queue_size: 50  # Moderate queue size
-    scan_buffer_size: 25  # Reasonable buffer for loop closure
+    scan_queue_size: 50  # Moderate queue for WiFi delays
+    scan_buffer_size: 25  # Buffer for loop closure
     scan_buffer_maximum_scan_distance: 2.0  # Practical for 1.5m table
     
-    # Laser range limits - matching Nav2
+    # Laser range limits - matching Nav2 AMCL
     max_laser_range: 3.0  # Match Nav2's laser_max_range
     minimum_laser_range: 0.05  # Match Nav2's laser_min_range
     
-    # Resolution - match Nav2 exactly
-    resolution: 0.02  # Match Nav2 costmap resolution (2cm)
+    # Resolution - match Nav2 costmaps exactly
+    resolution: 0.02  # 2cm - matches Nav2 costmap resolution
     
-    # Motion model penalties - realistic for quadruped gait
+    # Motion model penalties - tuned for quadruped trotting gait
     distance_variance_penalty: 1.0  # Moderate - accounts for gait variations
-    angle_variance_penalty: 1.5  # Account for quadruped body sway
+    angle_variance_penalty: 1.5  # Higher - accounts for body sway during trot
     minimum_distance_penalty: 0.05  # 5cm - reasonable for 21cm robot
-    minimum_angle_penalty: 0.15  # ~8.6 degrees - less sensitive to gait
+    minimum_angle_penalty: 0.15  # ~8.6 degrees - matches Nav2 update threshold
     
-    # Loop closure - balanced for stability
+    # Loop closure - conservative for small environment
     use_response_expansion: true
     do_loop_closing: true
-    loop_match_minimum_chain_size: 6  # More conservative chain size
+    loop_match_minimum_chain_size: 6  # Conservative chain size
     loop_match_maximum_variance_coarse: 3.0  # Reasonable variance
     loop_match_minimum_response_coarse: 0.45  # Balanced threshold
     loop_match_minimum_response_fine: 0.55  # Conservative fine matching
@@ -49,25 +50,27 @@ slam_toolbox:
     
     # Correlation search - practical resolution
     correlation_search_space_dimension: 0.5  # Moderate search space
-    correlation_search_space_resolution: 0.01  # 1cm - practical resolution
+    correlation_search_space_resolution: 0.01  # 1cm resolution
     correlation_search_space_smear_deviation: 0.03  # Reasonable smearing
     
-    # Motion thresholds - avoid over-mapping from gait noise
+    # Motion thresholds - filter gait noise
     minimum_travel_distance: 0.05  # 5cm - filters out gait wobbles
-    minimum_travel_heading: 0.1  # ~6 degrees - ignores minor gait variations
+    minimum_travel_heading: 0.1  # ~6 degrees - ignores minor variations
+    
+    # Scan matcher configuration
     scan_matcher_type: "CORRELATIVE"
     use_scan_matching: true
     use_scan_barycenter: true
     
-    # Solver parameters - balanced
+    # Solver parameters - balanced for performance
     solver_plugin: "solver_plugins::CeresSolver"
     ceres_linear_solver: "SPARSE_NORMAL_CHOLESKY"
     ceres_preconditioner: "SCHUR_JACOBI"
     ceres_trust_strategy: "LEVENBERG_MARQUARDT"
     ceres_dogleg_type: "TRADITIONAL_DOGLEG"
-    ceres_loss_function: "HuberLoss"  # Robust to outliers
+    ceres_loss_function: "HuberLoss"  # Robust to outliers from gait
     
-    # Loop search - practical values
+    # Loop search - practical for 1.5m table
     loop_search_space_dimension: 5.0  # Moderate search space
     loop_search_space_resolution: 0.05  # 5cm resolution
     loop_search_space_smear_deviation: 0.03
