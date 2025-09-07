@@ -74,7 +74,8 @@ def generate_launch_description():
                 'map': map,
                 'params_file': configured_params,
                 'use_sim_time': use_sim_time,
-                'remappings': '/cmd_vel:=/cmd_vel_navigation2',
+                #'remappings': '/cmd_vel:=/cmd_vel_navigation2',
+                #'remappings': [('/cmd_vel', '/cmd_vel_navigation2')],
             }.items()
         ),
         Node(

@@ -13,7 +13,6 @@ amcl:
       y: 0.0
       yaw: 0.0
     
-    # Motion model noise - adjusted for trotting gait with 4cm vertical oscillation
     # Higher values account for leg placement uncertainty and body sway
     alpha1: 0.08  # Rotation noise from translation (gait-induced yaw drift)
     alpha2: 0.08  # Translation noise from translation (leg slip)
@@ -46,20 +45,21 @@ amcl:
     update_min_d: 0.08   # 8cm translation before update
     
     # Laser model - tuned for oscillating lidar from trotting gait
+    # Conservative for 1cm lidar height oscillation - /odom/local
     laser_likelihood_max_dist: 1.2  # Search radius for scan matching
     pf_err: 0.05         # Convergence threshold (5cm)
     pf_z: 0.90           # Overall confidence in sensor model
     lambda_short: 0.1    # Weight for unexpected close readings
-    sigma_hit: 0.15      # Expected sensor noise (15cm due to gait oscillation)
-    z_hit: 0.65          # Weight on expected measurements
+    sigma_hit: 0.05      # Default
+    z_hit: 0.95          # High confidence in good readings
     z_max: 0.05          # Weight on max-range readings
-    z_rand: 0.25         # Weight on random noise (high due to gait)
-    z_short: 0.05        # Weight on short readings
+    z_rand: 0.05         # Low random noise
+    z_short: 0.05        # Low short readings
     resample_interval: 2 # Resample every 2nd update (reduces computation)
     save_pose_rate: 0.5  # Publish pose at 0.5 Hz
     tf_broadcast: true
-    laser_max_range: 3.0   # Lidar's actual max range
-    laser_min_range: 0.05  # Lidar's actual min range
+    laser_max_range: 3.0   # Below lidar's actual max range 12m for computation efficiency
+    laser_min_range: 0.05  # Above lidar's actual min range 0.03m for stability
 
 amcl_map_client:
   ros__parameters:
@@ -150,8 +150,8 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.07    # 7cm position tolerance (gait oscillation)
-      yaw_goal_tolerance: 0.20    # ~11 degrees (gait-induced heading variation)
+      xy_goal_tolerance: 0.05 # +-5cm
+      yaw_goal_tolerance: 0.18 # +-0.18 rad = ~10 degrees
       
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
@@ -264,7 +264,7 @@ local_costmap:
           min_obstacle_height: 0.02  # 2cm minimum
           # Reduced ranges for reliability with oscillating lidar
           obstacle_max_range: 2.5
-          obstacle_min_range: 0.08  # Filter out gait-induced ground hits
+          obstacle_min_range: 0.05  # Standard minimum
 
 local_costmap_client:
   ros__parameters:
@@ -308,7 +308,7 @@ global_costmap:
           clearing_threshold: 0
           min_obstacle_height: 0.02
           obstacle_max_range: 2.5
-          obstacle_min_range: 0.08
+          obstacle_min_range: 0.05
 
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
