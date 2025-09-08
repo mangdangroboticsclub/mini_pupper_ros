@@ -17,13 +17,12 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
 # from launch.actions import LogInfo
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node
+from launch_ros.actions import Node, SetRemap
 from launch_ros.substitutions import FindPackageShare
-from launch_ros.parameter_descriptions import ParameterFile
 from nav2_common.launch import RewrittenYaml
 
 
@@ -38,7 +37,7 @@ def generate_launch_description():
         default_value='False',
         description='Use simulation (Gazebo) clock if true'
     )
-    
+
     nav2_param_file_path = PathJoinSubstitution([this_package, 'param', 'real_table.yaml'])
     configured_params = RewrittenYaml(
         source_file=nav2_param_file_path,
@@ -46,50 +45,54 @@ def generate_launch_description():
         param_rewrites={'use_sim_time': use_sim_time},
         convert_types=True
     )
+
     nav2_launch_path = PathJoinSubstitution(
         [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
     )
     rviz_config_file_path = PathJoinSubstitution([this_package, 'rviz', 'navigation.rviz'])
 
-    map = LaunchConfiguration('map')
+    map_cfg = LaunchConfiguration('map')
     map_launch_arg = DeclareLaunchArgument(
         name='map',
         default_value=default_map_path,
         description='Full path to map file to load'
     )
 
+    # Scope remap to Nav2 only: cmd_vel -> cmd_vel_navigation2
+    nav2_group = GroupAction([
+        SetRemap(src='cmd_vel', dst='cmd_vel_navigation2'),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(nav2_launch_path),
+            launch_arguments={
+                'map': map_cfg,
+                'params_file': configured_params,
+                'use_sim_time': use_sim_time,
+            }.items()
+        ),
+    ])
+
+    # Tiny node already uses /cmd_vel_navigation2 -> /cmd_vel, so no remaps needed here
     nav_vel_scaler = Node(
         package='mini_pupper_driver',
         executable='nav_vel_scaler',
-        name='nav_vel_scaler'
+        name='nav_vel_scaler',
+        output='screen'
+    )
+
+    rviz = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config_file_path],
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen'
     )
 
     return LaunchDescription([
         use_sim_time_launch_arg,
         map_launch_arg,
+        nav2_group,
         nav_vel_scaler,
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(nav2_launch_path),
-            launch_arguments={
-                'map': map,
-                'params_file': configured_params,
-                'use_sim_time': use_sim_time,
-                #'remappings': '/cmd_vel:=/cmd_vel_navigation2',
-                #'remappings': [('/cmd_vel', '/cmd_vel_navigation2')],
-            }.items()
-        ),
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=[
-                '-d', rviz_config_file_path
-            ],
-            parameters=[
-                {'use_sim_time': use_sim_time}
-            ],
-            output='screen'
-        ),
-        # Uncomment the following to Log map path for debugging
-        # LogInfo(msg=map),
+        rviz,
+        # LogInfo(msg=map_cfg),
     ])

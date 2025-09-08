@@ -38,8 +38,3 @@ class NavVelScaler(Node):
 def main():
     rclpy.init()
     rclpy.spin(NavVelScaler())
-
-
-0.02951154871606382, 16.52
-
-0.05896303700264211, 6.72
