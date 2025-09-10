@@ -5,7 +5,7 @@ amcl:
     global_frame_id: "map"
     odom_frame_id: "odom"
     scan_topic: scan
-    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    robot_model_type: "nav2_amcl::OmniMotionModel"
     laser_model_type: "likelihood_field"
     set_initial_pose: True
     initial_pose: 
@@ -13,11 +13,12 @@ amcl:
       y: 0.0
       yaw: 0.0
     
-    alpha1: 0.08
-    alpha2: 0.08
-    alpha3: 0.15
-    alpha4: 0.15
-    alpha5: 0.05
+    # Much higher noise for walking gait
+    alpha1: 0.20  # Rotation is noisy due to leg coordination
+    alpha2: 0.15  # Walking forward causes some rotation drift
+    alpha3: 0.25  # High translation noise from gait oscillation
+    alpha4: 0.30  # Rotating causes backward motion - VERY high
+    alpha5: 0.20  # Strafing with legs is inherently noisy
     
     transform_tolerance: 0.3
     
@@ -25,30 +26,38 @@ amcl:
     beam_skip_error_threshold: 0.9
     beam_skip_threshold: 0.3
     do_beamskip: false
-    recovery_alpha_fast: 0.0
-    recovery_alpha_slow: 0.0
 
-    max_particles: 400
-    min_particles: 150
-    max_beams: 40
+   # Increase particles to handle higher uncertainty
+    max_particles: 3000  # Was 2000
+    min_particles: 1000  # Was 500
     
-    update_min_a: 0.15
-    update_min_d: 0.08
+    # Update more frequently due to drift
+    update_min_a: 0.10  # Was 0.15 - update every 0.1 rad
+    update_min_d: 0.04  # Was 0.08 - update every 4cm
     
-    laser_likelihood_max_dist: 1.2
+    # Enable recovery for when gait causes localization loss
+    recovery_alpha_fast: 0.1   # Was 0.0 - fast recovery
+    recovery_alpha_slow: 0.001  # Was 0.0 - slow recovery
+    
+    # Increase laser measurement noise tolerance
+    sigma_hit: 0.08  # Was 0.05 - account for body oscillation
+    
+    # Adjust beam model weights for noisier sensor readings
+    z_hit: 0.75   # Was 0.85 - expect fewer perfect hits
+    z_rand: 0.10  # Was 0.05 - more random readings from vibration
+    z_max: 0.10   # Was 0.05 - more max readings from body tilt
+    z_short: 0.05 # Was 0.05 - keep short readings low
+
+    laser_likelihood_max_dist: 1.5 # 1.4m by 1.1m table
     pf_err: 0.05
     pf_z: 0.90
     lambda_short: 0.1
-    sigma_hit: 0.05
-    z_hit: 0.95
-    z_max: 0.05
-    z_rand: 0.05
-    z_short: 0.05
+
     resample_interval: 2
     save_pose_rate: 0.5
     tf_broadcast: true
-    laser_max_range: 1.0 # 3.0 later
-    laser_min_range: 0.03
+    laser_max_range: 1.5 # 1.4m x 1.1m table
+    laser_min_range: 0.03 # lidar range
 
 amcl_map_client:
   ros__parameters:
@@ -64,8 +73,9 @@ bt_navigator:
     global_frame: map
     robot_base_frame: base_footprint
     odom_topic: /odom
-    bt_loop_duration: 10
+    bt_loop_duration: 100
     default_server_timeout: 30
+    filter_duration: 3.0
     transform_tolerance: 0.3
     enable_groot_monitoring: True
     groot_zmq_publisher_port: 1666
@@ -114,9 +124,9 @@ controller_server:
     goal_checker_plugins: ["general_goal_checker"]
     controller_plugins: ["FollowPath"]
 
-    min_x_velocity_threshold: 0.03
-    min_y_velocity_threshold: 0.03
-    min_theta_velocity_threshold: 0.25
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.001
+    min_theta_velocity_threshold: 0.02
     
     failure_tolerance: 0.0
     transform_tolerance: 0.3
@@ -124,55 +134,53 @@ controller_server:
 
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 15.0
+      required_movement_radius: 0.025 # too low leads to the harlem shake e.g. 0.001 (1mm)
+      movement_time_allowance: 10.0 # lower would lead to premature failure during precise movements
 
     general_goal_checker:
       stateful: False
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.30
-      yaw_goal_tolerance: 0.50
-      
+      xy_goal_tolerance: 0.10
+      yaw_goal_tolerance: 6.28
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
-      min_vel_x: -0.06
-      min_vel_y: -0.06
-      max_vel_x: 0.06
-      max_vel_y: 0.06
+      min_vel_x: 0.05
+      min_vel_y: 0.05
+      max_vel_x: 0.20
+      max_vel_y: 0.20
       max_vel_theta: 0.50
-      min_speed_xy: 0.03
-      max_speed_xy: 0.06
+      min_speed_xy: 0.05
+      max_speed_xy: 0.20
       min_speed_theta: 0.25
-      acc_lim_x: 0.5
-      acc_lim_y: 0.5
-      acc_lim_theta: 2.0
-      decel_lim_x: -0.5
-      decel_lim_y: -0.5
-      decel_lim_theta: -2.0
-      vx_samples: 3
-      vy_samples: 3
-      vtheta_samples: 12
-      sim_time: 1.2
+      # 0.2 deltaT for x,y,theta
+      acc_lim_x: 0.3
+      acc_lim_y: 0.3
+      acc_lim_theta: 2.5
+      decel_lim_x: -0.3
+      decel_lim_y: -0.3
+      decel_lim_theta: -2.5
+      vx_samples: 7
+      vy_samples: 7
+      vtheta_samples: 20
+      sim_time: 1.0
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.3
-      xy_goal_tolerance: 0.25
-      trans_stopped_velocity: 0.25
+      xy_goal_tolerance: 0.10
+      trans_stopped_velocity: 0.005
       short_circuit_trajectory_evaluation: True
       stateful: True
-      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist", "PreferForward"]
-      BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
-      PathAlign.forward_point_distance: 0.1
-      GoalAlign.scale: 24.0
-      GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 32.0
-      GoalDist.scale: 24.0
-      RotateToGoal.scale: 16.0
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      PathAlign.scale: 128.0 # just changed from 12 to 64
+      PathAlign.forward_point_distance: 0.3
+      GoalAlign.scale: 0.0
+      GoalAlign.forward_point_distance: 0.3
+      PathDist.scale: 64.0
+      GoalDist.scale: 0.0
+      RotateToGoal.scale: 0.0
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
-      PreferForward.scale: 25.0
       
 controller_server_rclcpp_node:
   ros__parameters:
@@ -190,10 +198,9 @@ local_costmap:
       transform_tolerance: 0.3
 
       footprint: "[[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]"
-      footprint_padding: 0.01
       
-      width: 1
-      height: 1
+      width: 2
+      height: 2
       resolution: 0.02
       
       update_frequency: 3.0
@@ -201,8 +208,8 @@ local_costmap:
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        inflation_radius: 0.12
-        cost_scaling_factor: 5.0
+        inflation_radius: 0.10
+        cost_scaling_factor: 20.0
 
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
@@ -210,15 +217,15 @@ local_costmap:
         observation_sources: scan
         scan:
           topic: /scan
-          max_obstacle_height: 0.5
+          max_obstacle_height: 1.0
           clearing: True
           marking: True
           data_type: "LaserScan"
           marking_threshold: 0
           clearing_threshold: 0
-          min_obstacle_height: 0.02
-          obstacle_max_range: 1.0
-          obstacle_min_range: 0.03
+          min_obstacle_height: 0.0
+          obstacle_max_range: 1.5 # 1.4m x 1.1m table
+          obstacle_min_range: 0.03 # lidar range
 
 local_costmap_client:
   ros__parameters:
@@ -240,7 +247,6 @@ global_costmap:
       transform_tolerance: 0.3
 
       footprint: "[[-0.105, -0.055], [0.105, -0.055], [0.105, 0.055], [-0.105, 0.055]]"
-      footprint_padding: 0.01
       resolution: 0.02
 
       update_frequency: 2.0
@@ -252,15 +258,15 @@ global_costmap:
         observation_sources: scan
         scan:
           topic: /scan
-          max_obstacle_height: 0.5
+          max_obstacle_height: 1.0
           clearing: True
           marking: True
           data_type: "LaserScan"
           marking_threshold: 0
           clearing_threshold: 0
-          min_obstacle_height: 0.02
-          obstacle_max_range: 1.0
-          obstacle_min_range: 0.03
+          min_obstacle_height: 0.0
+          obstacle_max_range: 1.5 # 1.4m x 1.1m table
+          obstacle_min_range: 0.03 # lidar range
 
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
@@ -268,8 +274,8 @@ global_costmap:
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        inflation_radius: 0.12
-        cost_scaling_factor: 5.0
+        inflation_radius: 0.20
+        cost_scaling_factor: 0.5
 
 global_costmap_client:
   ros__parameters:
@@ -296,7 +302,7 @@ planner_server:
   ros__parameters:
     use_sim_time: False
     planner_plugins: ["GridBased"]
-    expected_planner_frequency: 5.0
+    expected_planner_frequency: 1.0
 
     GridBased:
       plugin: "nav2_smac_planner/SmacPlanner2D"
@@ -308,7 +314,7 @@ planner_server:
       max_iterations: 100000
       max_on_approach_iterations: 1000
       max_planning_time: 2.0
-      tolerance: 0.07
+      tolerance: 0.10
       
       motion_model_for_search: "MOORE"
       angle_quantization_bins: 1
@@ -336,23 +342,24 @@ behavior_server:
     behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
     global_frame: odom
     robot_base_frame: base_footprint
-    simulate_ahead_time: 2.0
     transform_tolerance: 0.3
-    
-    max_rotational_vel: 0.5
-    min_rotational_vel: 0.25
-    rotational_acc_lim: 2.0
 
+    simulate_ahead_time: 0.5
+
+    max_rotational_vel: 0.01
+    min_rotational_vel: 0.01
+    rotational_acc_lim: 0.1
     spin:
       plugin: "nav2_behaviors/Spin"
+
     backup:
       plugin: "nav2_behaviors/BackUp"
-      backup_speed: 0.06
-      backup_time: 2.0
+      backup_speed: 0.02
+      backup_time: 0.5
     drive_on_heading:
       plugin: "nav2_behaviors/DriveOnHeading"
-      speed: 0.06
-      time: 1.0
+      speed: 0.02
+      time: 0.5
     wait:
       plugin: "nav2_behaviors/Wait"
 

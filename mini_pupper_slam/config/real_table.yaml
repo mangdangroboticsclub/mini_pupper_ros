@@ -7,25 +7,23 @@ slam_toolbox:
     publish_tf: true
     scan_topic: /scan
     mode: mapping
-
-    enable_interactive_mode: true
     
     tf_buffer_duration: 30.0
     transform_publish_period: 0.1
     transform_timeout: 0.3
     
-    map_update_interval: 2.0
-    min_time_interval: 0.2
+    map_update_interval: 0.5
+    minimum_time_interval: 0.1
     
     scan_queue_size: 50
     scan_buffer_size: 25
-    scan_buffer_maximum_scan_distance: 2.0
+    scan_buffer_maximum_scan_distance: 1.5
     
-    max_laser_range: 1.0 # 3.0 later
-    minimum_laser_range: 0.03
+    max_laser_range: 1.5 # 1.4m x 1.1m table
+    min_laser_range: 0.03 # lidar range
     
     resolution: 0.02
-    
+  
     distance_variance_penalty: 1.0
     angle_variance_penalty: 1.5
     minimum_distance_penalty: 0.05
@@ -33,13 +31,13 @@ slam_toolbox:
     
     use_response_expansion: true
     do_loop_closing: true
-    loop_match_minimum_chain_size: 6
+    loop_match_minimum_chain_size: 3
     loop_match_maximum_variance_coarse: 3.0
     loop_match_minimum_response_coarse: 0.45
     loop_match_minimum_response_fine: 0.55
     
     link_match_minimum_response_fine: 0.12
-    link_scan_maximum_distance: 2.0
+    link_scan_maximum_distance: 1.5 # 1.4m x 1.1m table
     
     correlation_search_space_dimension: 0.5
     correlation_search_space_resolution: 0.01
@@ -48,7 +46,6 @@ slam_toolbox:
     minimum_travel_distance: 0.05
     minimum_travel_heading: 0.1
     
-    scan_matcher_type: "CORRELATIVE"
     use_scan_matching: true
     use_scan_barycenter: true
     
@@ -62,4 +59,4 @@ slam_toolbox:
     loop_search_space_dimension: 5.0
     loop_search_space_resolution: 0.05
     loop_search_space_smear_deviation: 0.03
-    loop_search_maximum_distance: 2.0
+    loop_search_maximum_distance: 1.5 # 1.4m x 1.1m table
