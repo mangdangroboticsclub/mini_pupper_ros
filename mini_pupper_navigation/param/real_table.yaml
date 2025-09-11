@@ -13,12 +13,11 @@ amcl:
       y: 0.0
       yaw: 0.0
     
-    # Much higher noise for walking gait
-    alpha1: 0.20  # Rotation is noisy due to leg coordination
-    alpha2: 0.15  # Walking forward causes some rotation drift
-    alpha3: 0.25  # High translation noise from gait oscillation
-    alpha4: 0.30  # Rotating causes backward motion - VERY high
-    alpha5: 0.20  # Strafing with legs is inherently noisy
+    alpha1: 0.20
+    alpha2: 0.15
+    alpha3: 0.25
+    alpha4: 0.30
+    alpha5: 0.20
     
     transform_tolerance: 0.3
     
@@ -27,28 +26,22 @@ amcl:
     beam_skip_threshold: 0.3
     do_beamskip: false
 
-   # Increase particles to handle higher uncertainty
-    max_particles: 3000  # Was 2000
-    min_particles: 1000  # Was 500
+    max_particles: 3000
+    min_particles: 1000
     
-    # Update more frequently due to drift
-    update_min_a: 0.10  # Was 0.15 - update every 0.1 rad
-    update_min_d: 0.04  # Was 0.08 - update every 4cm
+    update_min_a: 0.10
+    update_min_d: 0.04
     
-    # Enable recovery for when gait causes localization loss
-    recovery_alpha_fast: 0.1   # Was 0.0 - fast recovery
-    recovery_alpha_slow: 0.001  # Was 0.0 - slow recovery
+    recovery_alpha_fast: 0.1
+    recovery_alpha_slow: 0.001
     
-    # Increase laser measurement noise tolerance
-    sigma_hit: 0.08  # Was 0.05 - account for body oscillation
-    
-    # Adjust beam model weights for noisier sensor readings
-    z_hit: 0.75   # Was 0.85 - expect fewer perfect hits
-    z_rand: 0.10  # Was 0.05 - more random readings from vibration
-    z_max: 0.10   # Was 0.05 - more max readings from body tilt
-    z_short: 0.05 # Was 0.05 - keep short readings low
+    sigma_hit: 0.08
+    z_hit: 0.75
+    z_rand: 0.10
+    z_max: 0.10
+    z_short: 0.05
 
-    laser_likelihood_max_dist: 1.5 # 1.4m by 1.1m table
+    laser_likelihood_max_dist: 1.5
     pf_err: 0.05
     pf_z: 0.90
     lambda_short: 0.1
@@ -56,8 +49,8 @@ amcl:
     resample_interval: 2
     save_pose_rate: 0.5
     tf_broadcast: true
-    laser_max_range: 1.5 # 1.4m x 1.1m table
-    laser_min_range: 0.03 # lidar range
+    laser_max_range: 1.5
+    laser_min_range: 0.03
 
 amcl_map_client:
   ros__parameters:
@@ -134,8 +127,8 @@ controller_server:
 
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.025 # too low leads to the harlem shake e.g. 0.001 (1mm)
-      movement_time_allowance: 10.0 # lower would lead to premature failure during precise movements
+      required_movement_radius: 0.025
+      movement_time_allowance: 10.0
 
     general_goal_checker:
       stateful: False
@@ -153,7 +146,6 @@ controller_server:
       min_speed_xy: 0.05
       max_speed_xy: 0.20
       min_speed_theta: 0.25
-      # 0.2 deltaT for x,y,theta
       acc_lim_x: 0.3
       acc_lim_y: 0.3
       acc_lim_theta: 2.5
@@ -172,7 +164,7 @@ controller_server:
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      PathAlign.scale: 256.0 # just changed from 12 to 64
+      PathAlign.scale: 256.0
       PathAlign.forward_point_distance: 0.15
       GoalAlign.scale: 0.0
       GoalAlign.forward_point_distance: 0.15
@@ -224,8 +216,8 @@ local_costmap:
           marking_threshold: 0
           clearing_threshold: 0
           min_obstacle_height: 0.0
-          obstacle_max_range: 1.5 # 1.4m x 1.1m table
-          obstacle_min_range: 0.03 # lidar range
+          obstacle_max_range: 1.5
+          obstacle_min_range: 0.03
 
 local_costmap_client:
   ros__parameters:
@@ -265,8 +257,8 @@ global_costmap:
           marking_threshold: 0
           clearing_threshold: 0
           min_obstacle_height: 0.0
-          obstacle_max_range: 1.5 # 1.4m x 1.1m table
-          obstacle_min_range: 0.03 # lidar range
+          obstacle_max_range: 1.5
+          obstacle_min_range: 0.03
 
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"

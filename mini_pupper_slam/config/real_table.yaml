@@ -19,8 +19,8 @@ slam_toolbox:
     scan_buffer_size: 25
     scan_buffer_maximum_scan_distance: 1.5
     
-    max_laser_range: 1.5 # 1.4m x 1.1m table
-    min_laser_range: 0.03 # lidar range
+    max_laser_range: 1.5
+    min_laser_range: 0.03
     
     resolution: 0.02
   
@@ -37,7 +37,7 @@ slam_toolbox:
     loop_match_minimum_response_fine: 0.55
     
     link_match_minimum_response_fine: 0.12
-    link_scan_maximum_distance: 1.5 # 1.4m x 1.1m table
+    link_scan_maximum_distance: 1.5
     
     correlation_search_space_dimension: 0.5
     correlation_search_space_resolution: 0.01
@@ -59,4 +59,4 @@ slam_toolbox:
     loop_search_space_dimension: 5.0
     loop_search_space_resolution: 0.05
     loop_search_space_smear_deviation: 0.03
-    loop_search_maximum_distance: 1.5 # 1.4m x 1.1m table
+    loop_search_maximum_distance: 1.5

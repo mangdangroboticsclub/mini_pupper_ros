@@ -22,8 +22,8 @@ mini_pupper_tracking_node:
 
       # Intersection-over-Union (IoU) threshold for non-maximum suppression
       # Controls how much overlap is allowed between detected bounding boxes
-      # Higher values = more tolerance for overlap → more boxes kept (may include duplicates)
-      # Lower values = stricter suppression → fewer boxes kept (may remove valid detections)
+      # Higher values = more tolerance for overlap -> more boxes kept (may include duplicates)
+      # Lower values = stricter suppression -> fewer boxes kept (may remove valid detections)
       # Typically between 0.3 and 0.5
       iou_threshold: 0.35
 
