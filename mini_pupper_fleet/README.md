@@ -1,12 +1,12 @@
 # Mini Pupper Fleet Control System
 
-This ROS 2 package enables multi-robot operation for a group of Mini Pupper robots, with centralised command distribution and individual robot pose estimation. It was developed during the 2025 Global Internship Programme at HKSTP.
+This ROS 2 package enables multi-robot operation for a group of Mini Pupper 2 robots, with centralized command distribution and individual robot pose estimation.
 
 The system combines fleet-level command coordination, IMU-based Extended Kalman Filter (EKF) pose estimation with attitude correction, and individual robot behaviour control to enable scalable multi-robot deployments.
 
 ## Features
 
-- **Centralised Fleet Control** with `/cmd_vel` to distributed robot commands  
+- **Centralized Fleet Control** with `/cmd_vel` to distributed robot commands  
 - **SE(3) Extended Kalman Filter** for robust pose estimation with IMU attitude correction  
 - **Individual Robot Behaviour** with heading control and velocity regulation  
 - **Scalable Architecture** supporting 1 to N robots with namespace isolation  
@@ -117,7 +117,7 @@ robot3/: imu_ekf_node + robot_behaviour_node -> robot_command
 
 ## Namespace Architecture
 
-ROS 2 namespaces isolate each robot while keeping centralised coordination:
+ROS 2 namespaces isolate each robot while keeping centralized coordination:
 
 ### Global Level (No Namespace)
 - `fleet_controller_node`: Single instance managing all robots  
