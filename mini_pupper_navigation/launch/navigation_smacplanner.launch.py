@@ -71,7 +71,7 @@ def generate_launch_description():
         ),
     ])
 
-    # Tiny node already uses /cmd_vel_navigation2 -> /cmd_vel, so no remaps needed here
+    # Already uses /cmd_vel_navigation2 -> /cmd_vel, so no remaps needed here
     nav_vel_scaler = Node(
         package='mini_pupper_driver',
         executable='nav_vel_scaler',

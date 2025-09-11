@@ -27,12 +27,12 @@ class NavVelScaler(Node):
         super().__init__("nav_vel_scaler")
         self.sub = self.create_subscription(Twist, "/cmd_vel_navigation2", self.scale_vel, 10)
         self.pub = self.create_publisher(Twist, "/cmd_vel", 10)
-    
+
     def scale_vel(self, msg):
         scaled = Twist()
-        scaled.linear.x = msg.linear.x * 1.7 # 0.0294 -> 0.05, 0.0588 -> 0.10
+        scaled.linear.x = msg.linear.x * 1.7
         scaled.linear.y = msg.linear.y * 2.0
-        scaled.angular.z = msg.angular.z * 2.0 # 0.25 -> 0.5, 0.50 -> 1.0
+        scaled.angular.z = msg.angular.z * 2.0
         self.pub.publish(scaled)
 
 
