@@ -172,10 +172,10 @@ controller_server:
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      PathAlign.scale: 128.0 # just changed from 12 to 64
-      PathAlign.forward_point_distance: 0.3
+      PathAlign.scale: 256.0 # just changed from 12 to 64
+      PathAlign.forward_point_distance: 0.15
       GoalAlign.scale: 0.0
-      GoalAlign.forward_point_distance: 0.3
+      GoalAlign.forward_point_distance: 0.15
       PathDist.scale: 64.0
       GoalDist.scale: 0.0
       RotateToGoal.scale: 0.0
