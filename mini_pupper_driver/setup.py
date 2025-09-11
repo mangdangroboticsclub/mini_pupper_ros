@@ -27,7 +27,9 @@ setup(
         'console_scripts': [
             'servo_interface = mini_pupper_driver.servo_interface:main',
             'display_interface = mini_pupper_driver.display_interface:main',
-            'imu_interface = mini_pupper_driver.imu_interface:main'
+            'imu_interface = mini_pupper_driver.imu_interface:main',
+            'curvature_compensation = mini_pupper_driver.curvature_compensation:main',
+            'nav_vel_scaler = mini_pupper_driver.nav_vel_scaler:main',
         ],
     },
 )

@@ -24,8 +24,7 @@ from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import (Command, LaunchConfiguration,
-                                  PathJoinSubstitution)
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
 
 ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 
@@ -57,6 +56,25 @@ def generate_launch_description():
     has_imu = LaunchConfiguration("has_imu")
     has_imu_launch_arg = DeclareLaunchArgument(
         name="has_imu", description="if the robot has imu sensor"
+    )
+
+    drift_correction_launch_arg = DeclareLaunchArgument(
+        name="drift_correction",
+        default_value="0.0",
+        description="Forward drift correction factor (0=disabled)",
+    )
+
+    drift_correction = LaunchConfiguration("drift_correction")
+
+    # Add drift compensation node
+    drift_corrector = Node(
+        package="mini_pupper_driver",
+        executable="curvature_compensation",
+        name="drift_compensation",
+        parameters=[
+            {"drift_correction": drift_correction, "use_sim_time": use_sim_time}
+        ],
+        output="screen",
     )
 
     quadruped_controller = Node(
@@ -98,6 +116,8 @@ def generate_launch_description():
         [
             use_sim_time_launch_arg,
             has_imu_launch_arg,
+            drift_correction_launch_arg,
+            drift_corrector,
             quadruped_controller,
             state_estimator,
         ]

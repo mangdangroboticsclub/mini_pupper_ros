@@ -1,12 +1,12 @@
 # Mini Pupper Fleet Control System
 
-This ROS 2 package enables multi-robot operation for a group of Mini Pupper robots, with centralised command distribution and individual robot pose estimation. It was developed during the 2025 Global Internship Programme at HKSTP.
+This ROS 2 package enables multi-robot operation for a group of Mini Pupper 2 robots, with centralized command distribution and individual robot pose estimation.
 
 The system combines fleet-level command coordination, IMU-based Extended Kalman Filter (EKF) pose estimation with attitude correction, and individual robot behaviour control to enable scalable multi-robot deployments.
 
 ## Features
 
-- **Centralised Fleet Control** with `/cmd_vel` to distributed robot commands  
+- **Centralized Fleet Control** with `/cmd_vel` to distributed robot commands  
 - **SE(3) Extended Kalman Filter** for robust pose estimation with IMU attitude correction  
 - **Individual Robot Behaviour** with heading control and velocity regulation  
 - **Scalable Architecture** supporting 1 to N robots with namespace isolation  
@@ -16,7 +16,7 @@ The system combines fleet-level command coordination, IMU-based Extended Kalman 
 
 ## Quick Start
 
-### Multi-Robot Fleet — 3 robot example
+### Multi-Robot Fleet - 3 robot example
 
 **Robot Terminals (SSH to each robot individually):**
 ```bash
@@ -33,13 +33,13 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py multi_robot:=true robot_namespace:=robot3
 ```
 
-**Host PC Terminal 1 — Fleet Controller:**
+**Host PC Terminal 1 - Fleet Controller:**
 ```bash
 source ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_fleet fleet_controller.launch.py robot_count:=3
 ```
 
-**Host PC Terminal 2 — Teleop:**
+**Host PC Terminal 2 - Teleop:**
 ```bash
 source ~/ros2_ws/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -95,7 +95,7 @@ robot3/: imu_ekf_node + robot_behaviour_node -> robot_command
 ```
 
 ---
-
+    
 ## Node Functions
 
 **Fleet Controller (`fleet_controller_node`)**  
@@ -117,7 +117,7 @@ robot3/: imu_ekf_node + robot_behaviour_node -> robot_command
 
 ## Namespace Architecture
 
-ROS 2 namespaces isolate each robot while keeping centralised coordination:
+ROS 2 namespaces isolate each robot while keeping centralized coordination:
 
 ### Global Level (No Namespace)
 - `fleet_controller_node`: Single instance managing all robots  

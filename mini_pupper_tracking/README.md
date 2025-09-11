@@ -1,12 +1,12 @@
 # Mini Pupper Tracking System
 
-This ROS 2 package enables real-time person tracking for the Mini Pupper robot, developed during the 2025 Global Internship Programme at HKSTP.
+This ROS 2 package enables real-time person tracking for the Mini Pupper 2 robot.
 
 It combines visual detection, multi-object tracking, and IMU-based motion control to guide the robot's head and orientation toward detected individuals.
 
 ## Features
 
-- **YOLOv11n object detection** on live camera feed  
+- **YOLO11n object detection** on live camera feed  
 - **Real-time tracking** with unique temporary IDs per person (via [motpy](https://github.com/wmuron/motpy))  
 - **IMU-based PID control** for yaw correction and smooth pitch tracking  
 - **Flask web interface** for monitoring camera and tracking overlays  
@@ -18,15 +18,28 @@ It combines visual detection, multi-object tracking, and IMU-based motion contro
 
 ### Tracking Behaviour
 
-![Tracking Demo](media/tracking_demo.gif)
+<p align="left">
+  <img src="media/mini_pupper_tracking_640_15.gif" alt="Tracking Demo" width="640"/>
+</p>
 
-The robot uses YOLOv11n to detect people and converts these detections into movement commands via PID control. Yaw adjustments are smoothed using IMU feedback to maintain heading stability.
+The robot uses YOLO11n to detect people and converts these detections into movement commands via PID control. Yaw adjustments are smoothed using IMU feedback to maintain heading stability.
+
+---
+
+### RViz Visualisation
+
+<p align="left">
+  <img src="media/rviz_demo.png" alt="Rviz Interface" width="640"/>
+</p>
+
+RViz displays:
+
+- A pyramid cone representing the camera's field of view  
+- Red points in 3D space representing detected individuals, estimated using bounding box area and field-of-view angles
 
 ---
 
 ### Web Interface (Flask)
-
-![Flask Demo](media/flask_demo.png)
 
 The Flask web interface shows:
 
@@ -35,17 +48,6 @@ The Flask web interface shows:
 - Assigned temporary UUIDs for short-term identification
 
 This is useful for remote observation and debugging.
-
----
-
-### RViz Visualisation
-
-![Rviz Demo](media/rviz_demo.png)
-
-RViz displays:
-
-- A pyramid cone representing the camera's field of view  
-- Red points in 3D space representing detected individuals, estimated using bounding box area and field-of-view angles
 
 ---
 
