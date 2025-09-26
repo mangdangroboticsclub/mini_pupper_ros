@@ -12,13 +12,17 @@
 
 # Mini Pupper ROS 2 Humble
 
-A comprehensive ROS 2 robotics platform for autonomous navigation, computer vision, and multi-robot coordination. Built for research, education, and development on Ubuntu 22.04 with ROS 2 Humble.
-
 <p align="left">
   <img src="imgs/mini_pupper_2.jpg" alt="Mini Pupper 2" width="480"/>
 </p>
 
+A comprehensive ROS 2 robotics platform for autonomous navigation, computer vision, and multi-robot coordination. Built for research, education, and development on Ubuntu 22.04 with ROS 2 Humble.
+
 ## Key Capabilities
+
+<p align="left">
+  <img src="imgs/mini_pupper_navigation_480_12.gif" alt="Navigation Demo" width="480"/>
+</p>
 
 ### SLAM & Autonomous Navigation
 Real-time mapping and path planning with ROS 2 Nav2 stack integration.  

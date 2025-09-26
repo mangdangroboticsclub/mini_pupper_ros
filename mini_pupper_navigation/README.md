@@ -10,6 +10,10 @@ Mini Pupper supports two key navigation capabilities:
 
 This navigation package depends on `mini_pupper_slam` to generate maps for real robot operation.
 
+<p align="left">
+  <img src="media/mini_pupper_navigation_640_15.gif" alt="Navigation Demo" width="640"/>
+</p>
+
 ## Architecture
 
 This implementation integrates several ROS 2 navigation components:
