@@ -4,6 +4,10 @@ This ROS 2 package enables multi-robot operation for a group of Mini Pupper 2 ro
 
 The system combines fleet-level command coordination, IMU-based Extended Kalman Filter (EKF) pose estimation with attitude correction, and individual robot behaviour control to enable scalable multi-robot deployments.
 
+<p align="left">
+  <img src="media/mini_pupper_fleet_640_15.gif" alt="Fleet Demo" width="640"/>
+</p>
+
 ## Features
 
 - **Centralized Fleet Control** with `/cmd_vel` to distributed robot commands  

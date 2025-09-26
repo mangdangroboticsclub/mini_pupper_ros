@@ -14,8 +14,6 @@ It combines visual detection, multi-object tracking, and IMU-based motion contro
 
 ---
 
-## Demo
-
 ### Tracking Behaviour
 
 <p align="left">
