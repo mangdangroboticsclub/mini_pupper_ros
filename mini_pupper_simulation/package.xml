@@ -10,9 +10,13 @@
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
   <build_depend>launch_ros</build_depend>
 
   <depend>rclcpp</depend>
+  <depend>rclpy</depend>
+
+  <!-- Gazebo dependencies -->
   <exec_depend>gazebo_ros</exec_depend>
   <exec_depend>gazebo_ros_pkgs</exec_depend>
   <exec_depend>gazebo_plugins</exec_depend>
@@ -20,7 +24,16 @@
   <exec_depend>gazebo_ros2_control</exec_depend>
   <exec_depend>ros2_control</exec_depend>
 
+  <!-- ROS 2 message dependencies -->
+  <exec_depend>trajectory_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <!-- Visualization -->
   <exec_depend>rviz2</exec_depend>
+
+  <!-- Python testing dependencies -->
+  <test_depend>python3-pytest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 

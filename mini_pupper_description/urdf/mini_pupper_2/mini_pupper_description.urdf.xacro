@@ -2,12 +2,17 @@
 <robot name="mini_pupper_2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper_2/materials.xacro" />
-  <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper_2/mini_pupper_description.trans" />
+  <!-- Import Mini Pupper ros2_control description -->
+  <xacro:include filename="$(find mini_pupper_description)/urdf/ros2_control/mini_pupper.ros2_control.xacro" />
   
+  <!-- Arguments -->
+  <xacro:arg name="use_mock_hardware" default="true"/>
+  <xacro:arg name="use_debug_stand" default="false"/>
+
   <!-- CONSTANTS -->
   <!-- Link group 1 - lf1, rf1, lb1, rb1 -->
   <xacro:property name="lnkgrp1_weight" value="0.020769" />
-  
+
   <!-- Link group 2 - lf2, rf2, lb2, rb2 -->
   <xacro:property name="lnkgrp2_weight" value="0.001906" />
   
@@ -26,7 +31,6 @@
   <!-- COM-Y: 0.00025 -->
   <xacro:property name="feet_centre_of_mass"
                   value="-0.014 0.00025 0.002488" />
-  
   <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -692,7 +696,7 @@
       </geometry>
     </collision>
   </link>
-  
+
   <joint name="base_link_to_base_inertia" type="fixed">
     <parent link="base_link"/>
     <child link="base_inertia"/>
@@ -902,71 +906,6 @@
     <parent link="base_link"/>
     <child link="Shell_Side"/>
   </joint>
-  <ros2_control name="GazeboSystem" type="system">
-    <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-    </hardware>
-    <joint name="base_lf1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lf1_lf2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lf2_lf3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="base_rf1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rf1_rf2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rf2_rf3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="base_lb1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lb1_lb2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lb2_lb3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="base_rb1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rb1_rb2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rb2_rb3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control>
   <!-- coloring Gazebo model -->
   <gazebo reference="base_link">
     <material>Gazebo/FlatBlack</material>
@@ -1206,12 +1145,6 @@
       <gaussian_noise>0.01</gaussian_noise>
     </plugin>
   </gazebo>
-
-  <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find mini_pupper_description)/config/ros_control/mini_pupper_2_controller.yaml</parameters>
-    </plugin>
-  </gazebo>
   
   <link name="imu_link">
     <inertial>
@@ -1238,5 +1171,11 @@
       </plugin>
     </sensor>
   </gazebo>
+  <xacro:mini_pupper_ros2_control use_mock_hardware="$(arg use_mock_hardware)" />
 
+  <!-- Conditional debug support stand -->
+  <xacro:if value="$(arg use_debug_stand)">
+    <xacro:include filename="$(find mini_pupper_description)/urdf/ros2_control/support_stand.debug.xacro" />
+    <xacro:support_stand_debug robot_base_link="base_link"/>
+  </xacro:if>
 </robot>

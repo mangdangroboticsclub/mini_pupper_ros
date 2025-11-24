@@ -42,12 +42,9 @@ def generate_launch_description():
         'launch',
         'gazebo.launch.py'
     ])
-    gazebo_params_path = PathJoinSubstitution([this_package, 'config', 'gazebo_params.yaml'])
-
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'extra_gazebo_args': f'--ros-args --params-file {gazebo_params_path}',
             'world': world
         }.items()
     )

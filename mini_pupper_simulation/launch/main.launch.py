@@ -21,7 +21,7 @@ import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 from launch.actions import RegisterEventHandler
@@ -33,7 +33,15 @@ ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_simulation')
 
+    debug_control = LaunchConfiguration('debug_control')
+    debug_control_launch_arg = DeclareLaunchArgument(
+        name='debug_control',
+        default_value='false',
+        description='Include support stand in robot description for debugging control (true/false)'
+    )
+
     default_world_path = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.world'])
+
     world = LaunchConfiguration('world')
     world_launch_arg = DeclareLaunchArgument(
         name='world',
@@ -41,38 +49,40 @@ def generate_launch_description():
         description='Gazebo world path'
     )
 
-    world_init_x = LaunchConfiguration('world_init_x')
-    world_init_x_launch_arg = DeclareLaunchArgument(
-        name='world_init_x',
-        default_value='0.0'
-    )
-
-    world_init_y = LaunchConfiguration('world_init_y')
-    world_init_y_launch_arg = DeclareLaunchArgument(
-        name='world_init_y',
-        default_value='0.0'
-    )
-
+    # Conditional spawn height based on debug_control
+    # When debug stand is enabled, spawn higher since the stand extends below the robot
+    selected_spawn_z = PythonExpression([
+        '"0.396" if "', debug_control, '" == "true" else "0.066"'
+    ])
+    
     world_init_z = LaunchConfiguration('world_init_z')
     world_init_z_launch_arg = DeclareLaunchArgument(
         name='world_init_z',
-        default_value='0.066'
+        default_value=selected_spawn_z,
+        description='Robot spawn height (higher when debug stand is included in URDF)'
     )
 
-    world_init_heading = LaunchConfiguration('world_init_heading')
-    world_init_heading_launch_arg = DeclareLaunchArgument(
-        name='world_init_heading',
-        default_value='0.0'
+    # Simulation-specific robot description launch with debug stand support
+    description_launch_path = PathJoinSubstitution(
+        [FindPackageShare('mini_pupper_description'), 'launch', 'mini_pupper_description.launch.py']
     )
-
-    bringup_launch_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_bringup'), 'launch', 'bringup.launch.py']
-    )
-    mini_pupper_bringup_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(bringup_launch_path),
+    description_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(description_launch_path),
         launch_arguments={
-            'use_sim_time': 'True',
-            'hardware_connected': 'False'
+            'use_sim_time': 'true',
+            'use_debug_stand': debug_control
+        }.items()
+    )
+
+    # Stanford controller launch for simulation
+    stanford_controller_launch_path = PathJoinSubstitution(
+        [FindPackageShare('stanford_controller'), 'stanford_controller.launch.py']
+    )
+    stanford_controller_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(stanford_controller_launch_path),
+        launch_arguments={
+            'orientation_from_imu': 'false',  # No IMU in simulation
+            'publish_joint_control': 'true',
         }.items()
     )
 
@@ -90,12 +100,12 @@ def generate_launch_description():
         arguments=[
             '-topic', 'robot_description',
             '-entity', ROBOT_MODEL,
-            '-x', world_init_x,
-            '-y', world_init_y,
+            '-x', '0.0',
+            '-y', '0.0',
             '-z', world_init_z,
             '-R', '0',
             '-P', '0',
-            '-Y', world_init_heading
+            '-Y', '0.0'
         ],
         output='screen'
     )
@@ -109,32 +119,18 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)
     )
 
-    links_map_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_description'), 'config', 'champ', ROBOT_MODEL, 'links.yaml']
-    )
-    contact_sensor_launch = Node(
-        package='champ_gazebo',
-        executable='contact_sensor',
-        output='screen',
-        parameters=[
-            {'use_sim_time': True},
-            links_map_path  # Load parameters from the YAML file,
-        ]
-    )
-
     return LaunchDescription([
+        debug_control_launch_arg,
+        world_launch_arg,
+        world_init_z_launch_arg,
+        description_launch,
+        stanford_controller_launch,
+        gazebo_launch,
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=spawn_entity,
-                on_exit=[ros2_controllers_launch, contact_sensor_launch]
+                on_exit=[ros2_controllers_launch]
             )
         ),
-        world_launch_arg,
-        world_init_x_launch_arg,
-        world_init_y_launch_arg,
-        world_init_z_launch_arg,
-        world_init_heading_launch_arg,
-        mini_pupper_bringup_launch,
-        gazebo_launch,
         spawn_entity
     ])

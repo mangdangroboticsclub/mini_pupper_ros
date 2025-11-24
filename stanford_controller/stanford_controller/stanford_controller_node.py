@@ -15,7 +15,7 @@ import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
 
 from sensor_msgs.msg import Imu
-from std_msgs.msg import String
+from std_msgs.msg import String, Float64MultiArray
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from mini_pupper_interfaces.msg import Command
 
@@ -91,9 +91,9 @@ class StanfordControllerNode(Node):
                 10
             )
 
-        self.joint_trajectory_publisher = self.create_publisher(
-            JointTrajectory,
-            'joint_group_effort_controller/joint_trajectory',
+        self.joint_position_publisher = self.create_publisher(
+            Float64MultiArray,
+            '/joint_group_position_controller/commands',
             10
         )
         self.state_publisher = self.create_publisher(String, 'state_log', 10)
@@ -335,16 +335,9 @@ class StanfordControllerNode(Node):
         self.state_publisher.publish(state_msg)
 
     def publish_joints_command(self):
-        joints_cmd_msg = JointTrajectory()
-        joints_cmd_msg.header.stamp = self.get_clock().now().to_msg()
-        joints_cmd_msg.joint_names = self.joint_names
-
-        point = JointTrajectoryPoint()
-        point.positions = convert_to_JTP_positions(self.state.joint_angles)
-        point.time_from_start = rclpy.duration.Duration(seconds=1.0 / 60.0).to_msg()
-
-        joints_cmd_msg.points.append(point)
-        self.joint_trajectory_publisher.publish(joints_cmd_msg)
+        joints_cmd_msg = Float64MultiArray()
+        joints_cmd_msg.data = convert_to_JTP_positions(self.state.joint_angles)
+        self.joint_position_publisher.publish(joints_cmd_msg)
 
 
 def main(args=None):
