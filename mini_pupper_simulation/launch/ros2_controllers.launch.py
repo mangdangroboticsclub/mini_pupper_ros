@@ -28,14 +28,14 @@ def generate_launch_description():
         output='screen'
     )
 
-    joint_group_position_controller_spawner = Node(
+    simple_quadruped_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_group_position_controller"],
-        output='screen'
+        arguments=["simple_quadruped_controller"],
+        output="screen"
     )
 
     return LaunchDescription([
         joint_state_broadcaster_spawner,
-        joint_group_position_controller_spawner,
+        simple_quadruped_controller_spawner,
     ])

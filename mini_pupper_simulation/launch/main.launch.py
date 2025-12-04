@@ -19,12 +19,11 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
-from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessExit
 
 ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
@@ -40,7 +39,7 @@ def generate_launch_description():
         description='Include support stand in robot description for debugging control (true/false)'
     )
 
-    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.world'])
+    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'empty.world'])
 
     world = LaunchConfiguration('world')
     world_launch_arg = DeclareLaunchArgument(
@@ -119,17 +118,22 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)
     )
 
+    # Delayed start node for Stanford controller (wait 2 seconds for physics to settle)
+    delayed_stanford_controller_launch = TimerAction(
+        period=2.0,
+        actions=[stanford_controller_launch]
+    )
+
     return LaunchDescription([
         debug_control_launch_arg,
         world_launch_arg,
         world_init_z_launch_arg,
         description_launch,
-        stanford_controller_launch,
         gazebo_launch,
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=spawn_entity,
-                on_exit=[ros2_controllers_launch]
+                on_exit=[ros2_controllers_launch, delayed_stanford_controller_launch]
             )
         ),
         spawn_entity

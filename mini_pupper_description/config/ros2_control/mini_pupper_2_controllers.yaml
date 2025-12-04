@@ -4,10 +4,10 @@ controller_manager:
     update_rate: 100  # Hz (realistic for servo hardware, still >67Hz for smooth interpolation)
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
-    joint_group_position_controller:
-      type: position_controllers/JointGroupPositionController
+    simple_quadruped_controller:
+      type: mini_pupper_simulation/SimpleQuadrupedController
 
-joint_group_position_controller:
+simple_quadruped_controller:
   ros__parameters:
     use_sim_time: True
     joints:
@@ -23,4 +23,16 @@ joint_group_position_controller:
       - base_rb1
       - rb1_rb2
       - rb2_rb3
-      
+    default_positions:
+      - 0.0
+      - 1.35
+      - -2.8
+      - 0.0
+      - 1.35
+      - -2.8
+      - 0.0
+      - 1.35
+      - -2.8
+      - 0.0
+      - 1.35
+      - -2.8

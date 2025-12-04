@@ -12,8 +12,28 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_python</buildtool_depend>
   <build_depend>launch_ros</build_depend>
+  <build_depend>controller_interface</build_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>rclcpp</build_depend>
+  <build_depend>rclcpp_lifecycle</build_depend>
+  <build_depend>realtime_tools</build_depend>
+  <build_depend>std_msgs</build_depend>
 
-  <depend>rclcpp</depend>
+  <build_export_depend>controller_interface</build_export_depend>
+  <build_export_depend>hardware_interface</build_export_depend>
+  <build_export_depend>pluginlib</build_export_depend>
+  <build_export_depend>rclcpp</build_export_depend>
+  <build_export_depend>rclcpp_lifecycle</build_export_depend>
+  <build_export_depend>realtime_tools</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+
+  <exec_depend>controller_interface</exec_depend>
+  <exec_depend>hardware_interface</exec_depend>
+  <exec_depend>pluginlib</exec_depend>
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>rclcpp_lifecycle</exec_depend>
+  <exec_depend>realtime_tools</exec_depend>
   <depend>rclpy</depend>
 
   <!-- Gazebo dependencies -->
@@ -39,5 +59,6 @@
 
   <export>
     <build_type>ament_cmake</build_type>
+    <controller_interface plugin="${prefix}/share/mini_pupper_simulation/simple_quadruped_controller_plugin.xml"/>
   </export>
 </package>

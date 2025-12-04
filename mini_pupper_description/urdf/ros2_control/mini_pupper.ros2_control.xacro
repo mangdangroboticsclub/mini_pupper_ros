@@ -13,51 +13,75 @@
       </hardware>
       <joint name="base_lf1">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_abduction}</param>
+        </state_interface>
       </joint>
       <joint name="lf1_lf2">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_hip}</param>
+        </state_interface>
       </joint>
       <joint name="lf2_lf3">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_knee}</param>
+        </state_interface>
       </joint>
       <joint name="base_rf1">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_abduction}</param>
+        </state_interface>
       </joint>
       <joint name="rf1_rf2">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_hip}</param>
+        </state_interface>
       </joint>
       <joint name="rf2_rf3">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_knee}</param>
+        </state_interface>
       </joint>
       <joint name="base_lb1">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_abduction}</param>
+        </state_interface>
       </joint>
       <joint name="lb1_lb2">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_hip}</param>
+        </state_interface>
       </joint>
       <joint name="lb2_lb3">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_knee}</param>
+        </state_interface>
       </joint>
       <joint name="base_rb1">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_abduction}</param>
+        </state_interface>
       </joint>
       <joint name="rb1_rb2">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_hip}</param>
+        </state_interface>
       </joint>
       <joint name="rb2_rb3">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${startup_knee}</param>
+        </state_interface>
       </joint>
     </ros2_control>
   </xacro:macro>
