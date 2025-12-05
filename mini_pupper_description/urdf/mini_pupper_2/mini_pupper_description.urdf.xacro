@@ -11,8 +11,8 @@
 
   <!-- CONSTANTS -->
   <xacro:property name="startup_abduction" value="0.0" />
-  <xacro:property name="startup_hip" value="0.977" />
-  <xacro:property name="startup_knee" value="-0.794" />
+  <xacro:property name="startup_hip" value="0.994" />
+  <xacro:property name="startup_knee" value="-1.767" />
   <xacro:property name="foot_mu1" value="50.0" />
   <xacro:property name="foot_mu2" value="50.0" />
   <xacro:property name="foot_kp" value="1000000.0" />

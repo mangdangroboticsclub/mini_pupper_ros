@@ -16,7 +16,6 @@ from transforms3d.euler import euler2mat, quat2euler
 
 from sensor_msgs.msg import Imu
 from std_msgs.msg import String, Float64MultiArray
-from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from mini_pupper_interfaces.msg import Command
 
 
@@ -93,7 +92,7 @@ class StanfordControllerNode(Node):
 
         self.joint_position_publisher = self.create_publisher(
             Float64MultiArray,
-            '/joint_group_position_controller/commands',
+            '/simple_quadruped_controller/commands',
             10
         )
         self.state_publisher = self.create_publisher(String, 'state_log', 10)
