@@ -3,6 +3,11 @@
   <xacro:macro name="mini_pupper_ros2_control" params="use_mock_hardware:=^|true">
     <gazebo>
       <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+        <ros>
+          <argument>--ros-args</argument>
+          <argument>--params-file</argument>
+          <argument>$(find mini_pupper_description)/config/ros2_control/gazebo_ros2_control_pid.yaml</argument>
+        </ros>
         <parameters>$(find mini_pupper_description)/config/ros2_control/mini_pupper_2_controllers.yaml</parameters>
       </plugin>
     </gazebo>
@@ -10,6 +15,7 @@
     <ros2_control name="MiniPupper" type="system">
       <hardware>
         <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        <param name="hold_joints">true</param>
       </hardware>
       <joint name="base_lf1">
         <command_interface name="position"/>
