@@ -50,8 +50,9 @@ def generate_launch_description():
 
     # Conditional spawn height based on debug_control
     # When debug stand is enabled, spawn higher since the stand extends below the robot
+    # Normal spawn: 0.10m for crouch pose (feet ~7cm below body, so body at 10cm keeps feet slightly above ground for settling)
     selected_spawn_z = PythonExpression([
-        '"0.396" if "', debug_control, '" == "true" else "0.066"'
+        '"0.396" if "', debug_control, '" == "true" else "0.10"'
     ])
     
     world_init_z = LaunchConfiguration('world_init_z')
