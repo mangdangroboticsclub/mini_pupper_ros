@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2025 MangDang
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import os
+
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
+
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+
+
+def generate_launch_description():
+
+    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
+
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    description_path = LaunchConfiguration("description_path")
+
+    declare_use_sim_time = DeclareLaunchArgument(
+        name="use_sim_time", default_value="false",
+        description="Use simulation (Gazebo) clock if true")
+
+    default_model_path = PathJoinSubstitution([
+        FindPackageShare('mini_pupper_description'),
+        'urdf',
+        ROBOT_MODEL,
+        'mini_pupper_description.urdf.xacro'
+    ])
+
+    declare_description_path = DeclareLaunchArgument(
+        name="description_path", default_value=default_model_path,
+        description="Absolute path to robot urdf file")
+
+    rviz_config_path = PathJoinSubstitution([
+        FindPackageShare('mini_pupper_description'),
+        'rviz',
+        'stanford_viewer.rviz'
+    ])
+
+    return LaunchDescription(
+        [
+            declare_description_path,
+            declare_use_sim_time,
+            Node(
+                package='tf2_ros',
+                executable='static_transform_publisher',
+                name='odom_to_base_link',
+                arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_link']
+            ),
+            Node(
+                package="robot_state_publisher",
+                executable="robot_state_publisher",
+                parameters=[
+                    {"robot_description": Command(["xacro ", description_path])},
+                    {"use_tf_static": False},
+                    {"publish_frequency": 200.0},
+                    {"ignore_timestamp": True},
+                    {'use_sim_time': use_sim_time}
+                ]
+            ),
+            Node(
+                package='joint_state_publisher_gui',
+                executable='joint_state_publisher_gui',
+                name='joint_state_publisher_gui',
+                output='screen'
+            ),
+            Node(
+                package='mini_pupper_description',
+                executable='stanford_joint_trajectory_to_states',
+                name='stanford_joint_trajectory_to_states',
+                output='screen',
+            ),
+            Node(
+                package='mini_pupper_description',
+                executable='stanford_state_publisher',
+                name='stanford_state_publisher',
+                output='screen'),
+            Node(
+                package='rviz2',
+                executable='rviz2',
+                arguments=['-d', rviz_config_path]
+            ),
+        ]
+    )
