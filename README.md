@@ -10,7 +10,7 @@
 &nbsp;
 [![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FLeggedRobot)](https://twitter.com/LeggedRobot)
 
-# Mini Pupper ROS 2 Humble
+# Mini Pupper ROS 2 Humble (Test)
 
 <p align="left">
   <img src="imgs/mini_pupper_2.jpg" alt="Mini Pupper 2" width="480"/>
