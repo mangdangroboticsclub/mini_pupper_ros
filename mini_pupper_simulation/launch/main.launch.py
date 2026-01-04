@@ -26,26 +26,26 @@ from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 from launch.event_handlers import OnProcessExit
 
-ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
+ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 
 
 def generate_launch_description():
-    this_package = FindPackageShare('mini_pupper_simulation')
+    this_package = FindPackageShare("mini_pupper_simulation")
 
-    debug_control = LaunchConfiguration('debug_control')
+    debug_control = LaunchConfiguration("debug_control")
     debug_control_launch_arg = DeclareLaunchArgument(
-        name='debug_control',
-        default_value='false',
-        description='Include support stand in robot description for debugging control (true/false)'
+        name="debug_control",
+        default_value="false",
+        description="Include support stand in robot description for debugging control (true/false)"
     )
 
-    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'empty.world'])
+    default_world_path = PathJoinSubstitution([this_package, "worlds", "empty.world"])
 
-    world = LaunchConfiguration('world')
+    world = LaunchConfiguration("world")
     world_launch_arg = DeclareLaunchArgument(
-        name='world',
+        name="world",
         default_value=default_world_path,
-        description='Gazebo world path'
+        description="Gazebo world path"
     )
 
     # Conditional spawn height based on debug_control
@@ -55,65 +55,66 @@ def generate_launch_description():
         '"0.396" if "', debug_control, '" == "true" else "0.10"'
     ])
     
-    world_init_z = LaunchConfiguration('world_init_z')
+    world_init_z = LaunchConfiguration("world_init_z")
     world_init_z_launch_arg = DeclareLaunchArgument(
-        name='world_init_z',
+        name="world_init_z",
         default_value=selected_spawn_z,
-        description='Robot spawn height (higher when debug stand is included in URDF)'
+        description="Robot spawn height (higher when debug stand is included in URDF)"
     )
 
     # Simulation-specific robot description launch with debug stand support
     description_launch_path = PathJoinSubstitution(
-        [FindPackageShare('mini_pupper_description'), 'launch', 'mini_pupper_description.launch.py']
+        [FindPackageShare("mini_pupper_description"), "launch", "mini_pupper_description.launch.py"]
     )
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),
         launch_arguments={
-            'use_sim_time': 'true',
-            'use_debug_stand': debug_control
+            "use_sim_time": "true",
+            "use_debug_stand": debug_control
         }.items()
     )
 
     # Stanford controller launch for simulation
     stanford_controller_launch_path = PathJoinSubstitution(
-        [FindPackageShare('stanford_controller'), 'stanford_controller.launch.py']
+        [FindPackageShare("stanford_controller"), "stanford_controller.launch.py"]
     )
     stanford_controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(stanford_controller_launch_path),
         launch_arguments={
-            'orientation_from_imu': 'false',  # No IMU in simulation
-            'publish_joint_control': 'true',
+            "orientation_from_imu": "false",  # No IMU in simulation
+            "publish_joint_control": "true",
+            "publish_states": "true"
         }.items()
     )
 
-    gazebo_launch_path = PathJoinSubstitution([this_package, 'launch', 'gazebo.launch.py'])
+    gazebo_launch_path = PathJoinSubstitution([this_package, "launch", "gazebo.launch.py"])
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'world': world
+            "world": world
         }.items()
     )
 
     spawn_entity = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
+        package="gazebo_ros",
+        executable="spawn_entity.py",
         arguments=[
-            '-topic', 'robot_description',
-            '-entity', ROBOT_MODEL,
-            '-x', '0.0',
-            '-y', '0.0',
-            '-z', world_init_z,
-            '-R', '0',
-            '-P', '0',
-            '-Y', '0.0'
+            "-topic", "robot_description",
+            "-entity", ROBOT_MODEL,
+            "-x", "0.0",
+            "-y", "0.0",
+            "-z", world_init_z,
+            "-R", "0",
+            "-P", "0",
+            "-Y", "0.0"
         ],
-        output='screen'
+        output="screen"
     )
 
     ros2_controllers_launch_path = PathJoinSubstitution([
         this_package,
-        'launch',
-        'ros2_controllers.launch.py'
+        "launch",
+        "ros2_controllers.launch.py"
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)

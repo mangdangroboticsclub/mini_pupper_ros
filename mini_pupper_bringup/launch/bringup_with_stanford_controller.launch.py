@@ -123,6 +123,15 @@ def generate_launch_description():
         }.items(),
     )
 
+    ros2_controllers_launch_path = PathJoinSubstitution([
+        bringup_package,
+        "launch",
+        "ros2_controllers.launch.py"
+    ])
+    ros2_controllers_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(ros2_controllers_launch_path)
+    )
+
     stanford_controller_launch_path = PathJoinSubstitution(
         [FindPackageShare("stanford_controller"), "stanford_controller.launch.py"]
     )
@@ -137,6 +146,7 @@ def generate_launch_description():
     launch_actions = [
         description_launch,
         hardware_interface_launch,
+        ros2_controllers_launch,
         stanford_controller_launch,
     ]
 

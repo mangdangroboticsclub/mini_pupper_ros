@@ -1,0 +1,5 @@
+<library path="lib/libmini_pupper_hardware">
+  <class type="mini_pupper_hardware::MiniPupperHardware" base_class_type="hardware_interface::SystemInterface">
+    <description>Hardware interface for Mini Pupper robot</description>
+  </class>
+</library>

@@ -36,7 +36,7 @@ from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitut
 
 def generate_launch_description():
 
-    ROBOT_MODEL = os.getenv('ROBOT_MODEL', default="mini_pupper_2")
+    ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     use_sim_time_launch_arg = DeclareLaunchArgument(
@@ -51,10 +51,10 @@ def generate_launch_description():
     )
 
     default_model_path = PathJoinSubstitution([
-        FindPackageShare('mini_pupper_description'),
-        'urdf',
+        FindPackageShare("mini_pupper_description"),
+        "urdf",
         ROBOT_MODEL,
-        'mini_pupper_description.urdf.xacro'
+        "mini_pupper_description.urdf.xacro"
     ])
 
     description_path = LaunchConfiguration("description_path")
@@ -67,7 +67,7 @@ def generate_launch_description():
             "xacro ",
             description_path,
             " ",
-            "use_mock_hardware:=",
+            "use_gazebo_hardware:=",
             use_sim_time,
             " ",
             "use_debug_stand:=",
@@ -84,7 +84,7 @@ def generate_launch_description():
             {"use_tf_static": False},
             {"publish_frequency": 200.0},
             {"ignore_timestamp": True},
-            {'use_sim_time': use_sim_time}
+            {"use_sim_time": use_sim_time}
         ]
     )
 
