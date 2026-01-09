@@ -26,12 +26,15 @@ target_include_directories(mini_pupper_hardware PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(mini_pupper_hardware PUBLIC
-  hardware_interface::hardware_interface
-  pluginlib::pluginlib
-  rclcpp::rclcpp
-  rclcpp_lifecycle::rclcpp_lifecycle
+ament_target_dependencies(mini_pupper_hardware
+  hardware_interface
+  pluginlib
+  rclcpp
+  rclcpp_lifecycle
+  controller_manager
 )
+
+pluginlib_export_plugin_description_file(hardware_interface mini_pupper_hardware_plugins.xml)
 
 # Install
 install(
@@ -44,9 +47,14 @@ install(
   DESTINATION include
 )
 
-install(
-  FILES mini_pupper_hardware_plugins.xml
-  DESTINATION share/mini_pupper_hardware
+ament_export_include_directories(include)
+ament_export_libraries(mini_pupper_hardware)
+ament_export_dependencies(
+  hardware_interface
+  pluginlib
+  rclcpp
+  rclcpp_lifecycle
+  controller_manager
 )
 
 ament_package()
