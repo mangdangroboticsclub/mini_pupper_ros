@@ -6,7 +6,7 @@
   <xacro:include filename="$(find mini_pupper_description)/urdf/ros2_control/mini_pupper.ros2_control.xacro" />
   
   <!-- Arguments -->
-  <xacro:arg name="use_mock_hardware" default="true"/>
+  <xacro:arg name="use_gazebo_hardware" default="true"/>
   <xacro:arg name="use_debug_stand" default="false"/>
 
   <!-- CONSTANTS -->
@@ -1212,7 +1212,7 @@
       </plugin>
     </sensor>
   </gazebo>
-  <xacro:mini_pupper_ros2_control use_mock_hardware="$(arg use_mock_hardware)" />
+  <xacro:mini_pupper_ros2_control use_gazebo_hardware="$(arg use_gazebo_hardware)" />
 
   <!-- Conditional debug support stand -->
   <xacro:if value="$(arg use_debug_stand)">

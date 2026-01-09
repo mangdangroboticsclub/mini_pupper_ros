@@ -70,7 +70,8 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(description_launch_path),
         launch_arguments={
             "use_sim_time": "true",
-            "use_debug_stand": debug_control
+            "use_debug_stand": debug_control,
+            "use_gazebo_hardware": "true"
         }.items()
     )
 

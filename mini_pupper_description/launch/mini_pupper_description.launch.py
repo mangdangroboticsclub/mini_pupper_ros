@@ -50,6 +50,12 @@ def generate_launch_description():
         description="Include debug support stand in URDF"
     )
 
+    use_gazebo_hardware = LaunchConfiguration("use_gazebo_hardware")
+    use_gazebo_hardware_launch_arg = DeclareLaunchArgument(
+        name="use_gazebo_hardware", default_value="false",
+        description="Use Gazebo hardware interface if true"
+    )
+
     default_model_path = PathJoinSubstitution([
         FindPackageShare("mini_pupper_description"),
         "urdf",
@@ -72,6 +78,9 @@ def generate_launch_description():
             " ",
             "use_debug_stand:=",
             use_debug_stand,
+            " ",
+            "use_gazebo_hardware:=",
+            use_gazebo_hardware,
         ]
     )
 
@@ -93,6 +102,7 @@ def generate_launch_description():
             description_path_launch_arg,
             use_sim_time_launch_arg,
             use_debug_stand_launch_arg,
+            use_gazebo_hardware_launch_arg,
             robot_state_publisher_node,
         ]
     )
