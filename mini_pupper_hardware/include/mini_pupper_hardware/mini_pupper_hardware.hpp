@@ -59,13 +59,25 @@ private:
   // Each servo has: position, velocity, effort
   static constexpr size_t NUM_JOINTS = 12;
 
-  // Names of joints (must match URDF joint names)
-  // Servo hardware mapping: RF(1-3), LF(4-6), RB(7-9), LB(10-12)
+  // Names of joints (must match URDF joint order: LF, RF, LB, RB)
   std::vector<std::string> joint_names_ = {
-    "base_rf1", "rf1_rf2", "rf2_rf3",  // right front (servos 1, 2, 3)
-    "base_lf1", "lf1_lf2", "lf2_lf3",  // left front (servos 4, 5, 6)
-    "base_rb1", "rb1_rb2", "rb2_rb3",  // right back (servos 7, 8, 9)
-    "base_lb1", "lb1_lb2", "lb2_lb3"   // left back (servos 10, 11, 12)
+    "base_lf1", "lf1_lf2", "lf2_lf3",  // left front (joint indices 0,1,2)
+    "base_rf1", "rf1_rf2", "rf2_rf3",  // right front (joint indices 3,4,5)
+    "base_lb1", "lb1_lb2", "lb2_lb3",  // left back (joint indices 6,7,8)
+    "base_rb1", "rb1_rb2", "rb2_rb3"   // right back (joint indices 9,10,11)
+  };
+  
+  // Servo hardware mapping: joint index -> servo ID (0-based index)
+  // URDF order (LF,RF,LB,RB) -> Hardware order (RF,LF,RB,LB)
+  // LF joints 0,1,2 -> servos 3,4,5 (leg_index=1)
+  // RF joints 3,4,5 -> servos 0,1,2 (leg_index=0)
+  // LB joints 6,7,8 -> servos 9,10,11 (leg_index=3)
+  // RB joints 9,10,11 -> servos 6,7,8 (leg_index=2)
+  const std::array<size_t, 12> joint_to_servo_map_ = {
+    3, 4, 5,   // LF -> servos 4,5,6 (indices 3,4,5)
+    0, 1, 2,   // RF -> servos 1,2,3 (indices 0,1,2)
+    9, 10, 11, // LB -> servos 10,11,12 (indices 9,10,11)
+    6, 7, 8    // RB -> servos 7,8,9 (indices 6,7,8)
   };
 
   // Joint state: [position, velocity, effort] for each joint

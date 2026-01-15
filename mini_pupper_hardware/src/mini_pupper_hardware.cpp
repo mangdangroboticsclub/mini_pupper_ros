@@ -228,10 +228,12 @@ void MiniPupperHardware::send_commands_to_hardware()
   }
 
   // Convert radians to servo raw values (0-1023)
+  // Map from URDF joint order to hardware servo order
   std::array<uint16_t, ESP32Interface::NUM_SERVOS> servo_positions;
   for (size_t i = 0; i < NUM_JOINTS; ++i)
   {
-    servo_positions[i] = radians_to_servo(hw_position_commands_[i]);
+    size_t servo_index = joint_to_servo_map_[i];
+    servo_positions[servo_index] = radians_to_servo(hw_position_commands_[i]);
   }
 
   // Send to hardware
@@ -265,9 +267,11 @@ void MiniPupperHardware::read_state_from_hardware()
   }
 
   // Convert servo raw values to radians
+  // Map from hardware servo order to URDF joint order
   for (size_t i = 0; i < NUM_JOINTS; ++i)
   {
-    hw_positions_[i] = servo_to_radians(servo_positions[i]);
+    size_t servo_index = joint_to_servo_map_[i];
+    hw_positions_[i] = servo_to_radians(servo_positions[servo_index]);
   }
 }
 
