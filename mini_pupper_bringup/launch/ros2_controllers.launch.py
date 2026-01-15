@@ -37,7 +37,7 @@ def generate_launch_description():
         "mini_pupper_description.urdf.xacro"
     ])
     
-    robot_description = Command(["xacro ", urdf_file])
+    robot_description = Command(["xacro ", urdf_file, " use_gazebo_hardware:=false"])
 
     controller_params_file = PathJoinSubstitution([
         FindPackageShare("mini_pupper_description"),
