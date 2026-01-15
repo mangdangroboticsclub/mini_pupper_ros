@@ -59,12 +59,12 @@ private:
   // Each servo has: position, velocity, effort
   static constexpr size_t NUM_JOINTS = 12;
 
-  // Names of joints
+  // Names of joints (must match URDF joint names)
   std::vector<std::string> joint_names_ = {
-    "rf1", "rf2", "rf3",  // right front
-    "lf1", "lf2", "lf3",  // left front
-    "rb1", "rb2", "rb3",  // right back
-    "lb1", "lb2", "lb3"   // left back
+    "base_lf1", "lf1_lf2", "lf2_lf3",  // left front
+    "base_rf1", "rf1_rf2", "rf2_rf3",  // right front
+    "base_lb1", "lb1_lb2", "lb2_lb3",  // left back
+    "base_rb1", "rb1_rb2", "rb2_rb3"   // right back
   };
 
   // Joint state: [position, velocity, effort] for each joint
