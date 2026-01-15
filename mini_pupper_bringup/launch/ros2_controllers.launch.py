@@ -22,10 +22,22 @@ from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+import os
 
 
 def generate_launch_description():
-    robot_description = Command(["ros2 param get --hide-type /robot_state_publisher robot_description"])
+    # Get robot description from URDF file
+    robot_model = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
+    description_package = FindPackageShare("mini_pupper_description")
+    
+    urdf_file = PathJoinSubstitution([
+        description_package,
+        "urdf",
+        robot_model,
+        "mini_pupper_description.urdf.xacro"
+    ])
+    
+    robot_description = Command(["xacro ", urdf_file])
 
     controller_params_file = PathJoinSubstitution([
         FindPackageShare("mini_pupper_description"),
