@@ -60,11 +60,12 @@ private:
   static constexpr size_t NUM_JOINTS = 12;
 
   // Names of joints (must match URDF joint names)
+  // Servo hardware mapping: RF(1-3), LF(4-6), RB(7-9), LB(10-12)
   std::vector<std::string> joint_names_ = {
-    "base_lf1", "lf1_lf2", "lf2_lf3",  // left front
-    "base_rf1", "rf1_rf2", "rf2_rf3",  // right front
-    "base_lb1", "lb1_lb2", "lb2_lb3",  // left back
-    "base_rb1", "rb1_rb2", "rb2_rb3"   // right back
+    "base_rf1", "rf1_rf2", "rf2_rf3",  // right front (servos 1, 2, 3)
+    "base_lf1", "lf1_lf2", "lf2_lf3",  // left front (servos 4, 5, 6)
+    "base_rb1", "rb1_rb2", "rb2_rb3",  // right back (servos 7, 8, 9)
+    "base_lb1", "lb1_lb2", "lb2_lb3"   // left back (servos 10, 11, 12)
   };
 
   // Joint state: [position, velocity, effort] for each joint
