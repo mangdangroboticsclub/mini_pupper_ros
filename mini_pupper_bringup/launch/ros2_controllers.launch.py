@@ -71,14 +71,19 @@ def generate_launch_description():
         output="screen"
     )
 
-    delayed_controllers_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=controller_manager_node,
-            on_exit=[joint_state_broadcaster_spawner, simple_quadruped_controller_spawner],
-        )
+    # Spawn controllers after controller manager is ready
+    delayed_joint_state_broadcaster = TimerAction(
+        period=5.0,
+        actions=[joint_state_broadcaster_spawner]
+    )
+    
+    delayed_quadruped_controller = TimerAction(
+        period=6.0,
+        actions=[simple_quadruped_controller_spawner]
     )
 
     return LaunchDescription([
         delayed_controller_manager,
-        delayed_controllers_spawner,
+        delayed_joint_state_broadcaster,
+        delayed_quadruped_controller,
     ])
