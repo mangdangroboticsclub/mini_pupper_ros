@@ -68,10 +68,10 @@ bool ESP32Interface::connect()
     return false;
   }
 
-  // Set socket timeout (1 second)
+  // Set socket timeout (10ms for 100Hz control loop)
   struct timeval timeout;
-  timeout.tv_sec = 1;
-  timeout.tv_usec = 0;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 10000;  // 10ms
   
   if (setsockopt(socket_fd_, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
   {
@@ -207,14 +207,25 @@ bool ESP32Interface::servos_set_position_torque(
     send_data.push_back((p >> 8) & 0xFF);
   }
 
+  RCLCPP_DEBUG(rclcpp::get_logger("ESP32Interface"), "Sending position command");
   auto response = send_and_receive(send_data, 2);
-
-  if (response.size() != 2 || response[0] != 2 || response[1] != 1)
+  
+  if (response.empty())
   {
-    RCLCPP_ERROR(rclcpp::get_logger("ESP32Interface"), "Invalid acknowledgment");
+    RCLCPP_WARN(rclcpp::get_logger("ESP32Interface"), "No response from ESP32 proxy");
     return false;
   }
 
+  if (response.size() != 2 || response[0] != 2 || response[1] != 1)
+  {
+    RCLCPP_ERROR(rclcpp::get_logger("ESP32Interface"), 
+                 "Invalid acknowledgment: size=%zu, [0]=%d, [1]=%d", 
+                 response.size(), response.size() > 0 ? response[0] : -1, 
+                 response.size() > 1 ? response[1] : -1);
+    return false;
+  }
+
+  RCLCPP_DEBUG(rclcpp::get_logger("ESP32Interface"), "Position command ACK received");
   return true;
 }
 
