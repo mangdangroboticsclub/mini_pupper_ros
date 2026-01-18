@@ -68,6 +68,25 @@ bool ESP32Interface::connect()
     return false;
   }
 
+  // Set socket timeout (1 second)
+  struct timeval timeout;
+  timeout.tv_sec = 1;
+  timeout.tv_usec = 0;
+  
+  if (setsockopt(socket_fd_, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
+  {
+    RCLCPP_WARN(
+      rclcpp::get_logger("ESP32Interface"),
+      "Failed to set recv timeout: %s", strerror(errno));
+  }
+  
+  if (setsockopt(socket_fd_, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout)) < 0)
+  {
+    RCLCPP_WARN(
+      rclcpp::get_logger("ESP32Interface"),
+      "Failed to set send timeout: %s", strerror(errno));
+  }
+
   // Connect to the socket
   struct sockaddr_un addr;
   memset(&addr, 0, sizeof(addr));
@@ -129,8 +148,17 @@ std::vector<uint8_t> ESP32Interface::send_and_receive(
 
   if (bytes_received < 0)
   {
-    RCLCPP_ERROR(
-      rclcpp::get_logger("ESP32Interface"), "Recv failed: %s", strerror(errno));
+    if (errno == EAGAIN || errno == EWOULDBLOCK)
+    {
+      RCLCPP_WARN(
+        rclcpp::get_logger("ESP32Interface"),
+        "Recv timeout - no response from ESP32");
+    }
+    else
+    {
+      RCLCPP_ERROR(
+        rclcpp::get_logger("ESP32Interface"), "Recv failed: %s", strerror(errno));
+    }
     handle_socket_error();
     return response;
   }
