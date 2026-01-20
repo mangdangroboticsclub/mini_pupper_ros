@@ -228,7 +228,9 @@ void MiniPupperHardware::update_velocities(const rclcpp::Duration & period)
 
 void MiniPupperHardware::send_commands_to_hardware()
 {
-  if// Don't spam errors - just skip this cycle
+  if (!esp32_interface_ || !esp32_interface_->is_connected())
+  {
+    // Don't spam errors - just skip this cycle
     return;
   }
 
@@ -242,23 +244,14 @@ void MiniPupperHardware::send_commands_to_hardware()
   }
 
   // Send to hardware - don't care if it fails, we'll try again next cycle
-  esp32_interface_->servos_set_position(servo_positions);   rclcpp::get_logger("MiniPupperHardware"), steady_clock_, 1000,
-      "Failed to send servo commands");
-  }
+  esp32_interface_->servos_set_position(servo_positions);
 }
 
 void MiniPupperHardware::read_state_from_hardware()
 {
   if (!esp32_interface_ || !esp32_interface_->is_connected())
   {
-    RCLCPP_ERROR_THROTTLE(
-      rclcpp::get_logger("MiniPupperHardware"), steady_clock_, 1000,
-      "ESP32 interface not connected");
-    return;
-  }
-
-  // Read current servo positions from hardware
-  au// Don't spam errors - just skip this read
+    // Don't spam errors - just skip this read
     return;
   }
 
@@ -268,6 +261,13 @@ void MiniPupperHardware::read_state_from_hardware()
   if (servo_positions.size() != NUM_JOINTS)
   {
     // Failed to read - keep previous values
+    return;
+  }
+
+  // Convert servo raw values to radians
+  // Map from hardware servo order to URDF joint order
+  for (size_t i = 0; i < NUM_JOINTS; ++i)
+  {
     size_t servo_index = joint_to_servo_map_[i];
     hw_positions_[i] = servo_to_radians(servo_positions[servo_index]);
   }
