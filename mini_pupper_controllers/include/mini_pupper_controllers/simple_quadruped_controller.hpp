@@ -11,7 +11,7 @@
 #include "realtime_tools/realtime_buffer.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
 
-namespace mini_pupper_simulation
+namespace mini_pupper_controllers
 {
 class SimpleQuadrupedController : public controller_interface::ControllerInterface
 {
@@ -48,4 +48,4 @@ private:
   realtime_tools::RealtimeBuffer<std::shared_ptr<CommandMsg>> command_buffer_;
   bool has_external_command_{false};
 };
-}  // namespace mini_pupper_simulation
+}  // namespace mini_pupper_controllers

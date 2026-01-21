@@ -5,7 +5,7 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
     simple_quadruped_controller:
-      type: mini_pupper_simulation/SimpleQuadrupedController
+      type: mini_pupper_controllers/SimpleQuadrupedController
 
 simple_quadruped_controller:
   ros__parameters:

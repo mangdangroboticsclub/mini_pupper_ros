@@ -1,9 +1,0 @@
-<library path="simple_quadruped_controller">
-  <class name="mini_pupper_simulation/SimpleQuadrupedController"
-         type="mini_pupper_simulation::SimpleQuadrupedController"
-         base_class_type="controller_interface::ControllerInterface">
-    <description>
-      A minimal controller that holds joints at configured default positions.
-    </description>
-  </class>
-</library>

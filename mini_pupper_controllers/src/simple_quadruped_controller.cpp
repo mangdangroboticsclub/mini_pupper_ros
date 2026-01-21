@@ -1,4 +1,4 @@
-#include "mini_pupper_simulation/simple_quadruped_controller.hpp"
+#include "mini_pupper_controllers/simple_quadruped_controller.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -10,7 +10,7 @@
 
 #include "pluginlib/class_list_macros.hpp"
 
-namespace mini_pupper_simulation
+namespace mini_pupper_controllers
 {
 controller_interface::CallbackReturn SimpleQuadrupedController::on_init()
 {
@@ -98,6 +98,7 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_configure(
   has_external_command_ = false;
 
   command_buffer_.writeFromNonRT(nullptr);
+
   command_subscription_ = node->create_subscription<CommandMsg>(
     "~/commands", rclcpp::SystemDefaultsQoS(),
     [this](const CommandMsg::SharedPtr msg) { command_buffer_.writeFromNonRT(msg); });
@@ -199,7 +200,7 @@ void SimpleQuadrupedController::assign_default_if_needed()
   }
 }
 
-}  // namespace mini_pupper_simulation
+}  // namespace mini_pupper_controllers
 
 PLUGINLIB_EXPORT_CLASS(
-  mini_pupper_simulation::SimpleQuadrupedController, controller_interface::ControllerInterface)
+  mini_pupper_controllers::SimpleQuadrupedController, controller_interface::ControllerInterface)
