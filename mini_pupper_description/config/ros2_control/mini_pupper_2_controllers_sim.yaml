@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: True  # Simulation uses sim time
     update_rate: 100  # Hz (realistic for servo hardware, still >67Hz for smooth interpolation)
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -9,7 +9,7 @@ controller_manager:
 
 simple_quadruped_controller:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: True  # Simulation uses sim time
     joints:
       - base_lf1
       - lf1_lf2

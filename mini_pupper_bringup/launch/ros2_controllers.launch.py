@@ -49,9 +49,10 @@ def generate_launch_description():
     controller_manager_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[{"robot_description": robot_description,
-                     "use_sim_time": False},
-                    controller_params_file],
+        parameters=[
+            {"robot_description": robot_description},
+            controller_params_file
+        ],
         output="screen",
     )
 
