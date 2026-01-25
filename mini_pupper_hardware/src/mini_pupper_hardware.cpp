@@ -39,6 +39,24 @@ CallbackReturn MiniPupperHardware::on_init(const hardware_interface::HardwareInf
 
   RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Initializing Mini Pupper Hardware");
 
+  // Extract joint names from URDF (info_.joints gives us the URDF order)
+  joint_names_.clear();
+  for (const auto & joint : info_.joints)
+  {
+    joint_names_.push_back(joint.name);
+  }
+
+  if (joint_names_.size() != NUM_JOINTS)
+  {
+    RCLCPP_ERROR(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "Expected %zu joints, got %zu from URDF", NUM_JOINTS, joint_names_.size());
+    return CallbackReturn::ERROR;
+  }
+
+  // Build mapping from URDF joint order to our canonical order (LF, RF, LB, RB)
+  build_joint_mapping();
+
   // Get configuration from hardware parameters
   if (info_.hardware_parameters.count("hardware_interface_type"))
   {
@@ -250,22 +268,22 @@ void MiniPupperHardware::send_commands_to_hardware()
   std::array<uint16_t, ESP32Interface::NUM_SERVOS> servo_positions;
   servo_positions.fill(static_cast<uint16_t>(NEUTRAL_POSITION));
 
-  // Joint command order (see joint_names_): LF(0..2), RF(3..5), LB(6..8), RB(9..11)
-  const double lf_abd = hw_position_commands_[0];
-  const double lf_hip = hw_position_commands_[1];
-  const double lf_knee = hw_position_commands_[2];
+  // Extract commands using canonical joint mapping (URDF order -> LF, RF, LB, RB order)
+  const double lf_abd = hw_position_commands_[urdf_to_canonical_[0]];
+  const double lf_hip = hw_position_commands_[urdf_to_canonical_[1]];
+  const double lf_knee = hw_position_commands_[urdf_to_canonical_[2]];
 
-  const double rf_abd = hw_position_commands_[3];
-  const double rf_hip = hw_position_commands_[4];
-  const double rf_knee = hw_position_commands_[5];
+  const double rf_abd = hw_position_commands_[urdf_to_canonical_[3]];
+  const double rf_hip = hw_position_commands_[urdf_to_canonical_[4]];
+  const double rf_knee = hw_position_commands_[urdf_to_canonical_[5]];
 
-  const double lb_abd = hw_position_commands_[6];
-  const double lb_hip = hw_position_commands_[7];
-  const double lb_knee = hw_position_commands_[8];
+  const double lb_abd = hw_position_commands_[urdf_to_canonical_[6]];
+  const double lb_hip = hw_position_commands_[urdf_to_canonical_[7]];
+  const double lb_knee = hw_position_commands_[urdf_to_canonical_[8]];
 
-  const double rb_abd = hw_position_commands_[9];
-  const double rb_hip = hw_position_commands_[10];
-  const double rb_knee = hw_position_commands_[11];
+  const double rb_abd = hw_position_commands_[urdf_to_canonical_[9]];
+  const double rb_hip = hw_position_commands_[urdf_to_canonical_[10]];
+  const double rb_knee = hw_position_commands_[urdf_to_canonical_[11]];
 
   // Legacy expects axis2 as absolute: hip + knee.
   const double rf_knee_abs = rf_hip + rf_knee;
@@ -334,22 +352,22 @@ void MiniPupperHardware::read_state_from_hardware()
   const double lb_knee_abs = servo_position_to_angle(servo_positions[11], 2, 3);
   const double lb_knee = lb_knee_abs - lb_hip;
 
-  // Joint state order (see joint_names_): LF, RF, LB, RB
-  hw_positions_[0] = lf_abd;
-  hw_positions_[1] = lf_hip;
-  hw_positions_[2] = lf_knee;
+  // Write state in URDF order using canonical-to-URDF mapping
+  hw_positions_[canonical_to_urdf_[0]] = lf_abd;
+  hw_positions_[canonical_to_urdf_[1]] = lf_hip;
+  hw_positions_[canonical_to_urdf_[2]] = lf_knee;
 
-  hw_positions_[3] = rf_abd;
-  hw_positions_[4] = rf_hip;
-  hw_positions_[5] = rf_knee;
+  hw_positions_[canonical_to_urdf_[3]] = rf_abd;
+  hw_positions_[canonical_to_urdf_[4]] = rf_hip;
+  hw_positions_[canonical_to_urdf_[5]] = rf_knee;
 
-  hw_positions_[6] = lb_abd;
-  hw_positions_[7] = lb_hip;
-  hw_positions_[8] = lb_knee;
+  hw_positions_[canonical_to_urdf_[6]] = lb_abd;
+  hw_positions_[canonical_to_urdf_[7]] = lb_hip;
+  hw_positions_[canonical_to_urdf_[8]] = lb_knee;
 
-  hw_positions_[9] = rb_abd;
-  hw_positions_[10] = rb_hip;
-  hw_positions_[11] = rb_knee;
+  hw_positions_[canonical_to_urdf_[9]] = rb_abd;
+  hw_positions_[canonical_to_urdf_[10]] = rb_hip;
+  hw_positions_[canonical_to_urdf_[11]] = rb_knee;
 }
 
 uint16_t MiniPupperHardware::angle_to_servo_position(
@@ -389,6 +407,45 @@ double MiniPupperHardware::servo_position_to_angle(
   // Invert: servo_position = neutral - micros_per_rad * ((angle - neutral_angle) * multiplier)
   const double delta = (NEUTRAL_POSITION - static_cast<double>(servo_position)) / MICROS_PER_RAD;
   return neutral_angle + (delta / static_cast<double>(multiplier));
+}
+
+void MiniPupperHardware::build_joint_mapping()
+{
+  // Canonical joint order (what our servo math expects): LF, RF, LB, RB
+  const std::array<std::string, NUM_JOINTS> canonical_names = {
+    "base_lf1", "lf1_lf2", "lf2_lf3",
+    "base_rf1", "rf1_rf2", "rf2_rf3",
+    "base_lb1", "lb1_lb2", "lb2_lb3",
+    "base_rb1", "rb1_rb2", "rb2_rb3"
+  };
+
+  // Build mapping from URDF order to canonical order
+  for (size_t urdf_idx = 0; urdf_idx < NUM_JOINTS; ++urdf_idx)
+  {
+    const std::string & urdf_name = joint_names_[urdf_idx];
+    
+    // Find this joint in canonical order
+    bool found = false;
+    for (size_t canonical_idx = 0; canonical_idx < NUM_JOINTS; ++canonical_idx)
+    {
+      if (urdf_name == canonical_names[canonical_idx])
+      {
+        urdf_to_canonical_[urdf_idx] = canonical_idx;
+        canonical_to_urdf_[canonical_idx] = urdf_idx;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+    {
+      RCLCPP_ERROR(
+        rclcpp::get_logger("MiniPupperHardware"),
+        "Joint '%s' from URDF not found in canonical joint list", urdf_name.c_str());
+    }
+  }
+
+  RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Joint mapping built successfully");
 }
 
 uint16_t MiniPupperHardware::radians_to_servo(double radians)

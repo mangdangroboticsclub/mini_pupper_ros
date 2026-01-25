@@ -60,13 +60,12 @@ private:
   // matching the legacy MangDang Python HardwareInterface.
   static constexpr size_t NUM_JOINTS = 12;
 
-  // Names of joints (must match URDF joint order: LF, RF, LB, RB)
-  std::vector<std::string> joint_names_ = {
-    "base_lf1", "lf1_lf2", "lf2_lf3",  // left front (joint indices 0,1,2)
-    "base_rf1", "rf1_rf2", "rf2_rf3",  // right front (joint indices 3,4,5)
-    "base_lb1", "lb1_lb2", "lb2_lb3",  // left back (joint indices 6,7,8)
-    "base_rb1", "rb1_rb2", "rb2_rb3"   // right back (joint indices 9,10,11)
-  };
+  // Joint names extracted from URDF (in URDF order)
+  std::vector<std::string> joint_names_;
+  
+  // Mapping arrays between URDF order and canonical order (LF, RF, LB, RB)
+  std::array<size_t, NUM_JOINTS> urdf_to_canonical_;     // URDF index -> canonical index
+  std::array<size_t, NUM_JOINTS> canonical_to_urdf_;     // canonical index -> URDF index
   
   // Legacy servo calibration model (mirrors MangDang Python Config/HardwareInterface)
   // - neutral position at 512
@@ -114,6 +113,7 @@ private:
 
   // Helper methods
   void initialize_state_storage();
+  void build_joint_mapping();
   void update_velocities(const rclcpp::Duration & period);
   void send_commands_to_hardware();
   void read_state_from_hardware();
