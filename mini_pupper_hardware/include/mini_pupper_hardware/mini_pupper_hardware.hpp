@@ -55,8 +55,9 @@ public:
   std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
 
 private:
-  // Mini Pupper has 12 servos: 4 legs * 3 joints each (abduction, inner hip, outer hip)
-  // Each servo has: position, velocity, effort
+  // Mini Pupper has 12 servos: 4 legs * 3 joints each (abduction, hip, knee)
+  // Hardware expects the 3rd joint per leg as an absolute angle (hip + knee),
+  // matching the legacy MangDang Python HardwareInterface.
   static constexpr size_t NUM_JOINTS = 12;
 
   // Names of joints (must match URDF joint order: LF, RF, LB, RB)
@@ -67,17 +68,20 @@ private:
     "base_rb1", "rb1_rb2", "rb2_rb3"   // right back (joint indices 9,10,11)
   };
   
-  // Servo hardware mapping: joint index -> servo ID (0-based index)
-  // URDF order (LF,RF,LB,RB) -> Hardware order (RF,LF,RB,LB)
-  // LF joints 0,1,2 -> servos 3,4,5 (leg_index=1)
-  // RF joints 3,4,5 -> servos 0,1,2 (leg_index=0)
-  // LB joints 6,7,8 -> servos 9,10,11 (leg_index=3)
-  // RB joints 9,10,11 -> servos 6,7,8 (leg_index=2)
-  const std::array<size_t, 12> joint_to_servo_map_ = {
-    3, 4, 5,   // LF -> servos 4,5,6 (indices 3,4,5)
-    0, 1, 2,   // RF -> servos 1,2,3 (indices 0,1,2)
-    9, 10, 11, // LB -> servos 10,11,12 (indices 9,10,11)
-    6, 7, 8    // RB -> servos 7,8,9 (indices 6,7,8)
+  // Legacy servo calibration model (mirrors MangDang Python Config/HardwareInterface)
+  // - neutral position at 512
+  // - per-axis neutral angles (0, +45deg, -45deg)
+  // - per-leg direction multipliers
+  static constexpr double NEUTRAL_POSITION = 512.0;
+  static constexpr double MICROS_PER_RAD = (760.0 - 210.0) / M_PI;
+  static constexpr std::array<double, 3> NEUTRAL_ANGLES_RAD = {0.0, M_PI_4, -M_PI_4};
+
+  // Multipliers indexed by [axis][leg], where leg order is:
+  // 0: front-right (RF), 1: front-left (LF), 2: back-right (RB), 3: back-left (LB)
+  static constexpr std::array<std::array<int, 4>, 3> SERVO_MULTIPLIERS = {
+    std::array<int, 4>{1, 1, -1, -1},
+    std::array<int, 4>{-1, 1, -1, 1},
+    std::array<int, 4>{-1, 1, -1, 1},
   };
 
   // Joint state: [position, velocity, effort] for each joint
@@ -104,7 +108,8 @@ private:
   rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
 
   // Servo position scaling (radians to raw servo values)
-  static constexpr double RAD_TO_SERVO = 512.0 / M_PI;  // Assuming ±π maps to ±512
+  // NOTE: kept for compatibility, but not used for calibrated conversion.
+  static constexpr double RAD_TO_SERVO = 512.0 / M_PI;
   static constexpr double SERVO_TO_RAD = M_PI / 512.0;
 
   // Helper methods
@@ -112,6 +117,9 @@ private:
   void update_velocities(const rclcpp::Duration & period);
   void send_commands_to_hardware();
   void read_state_from_hardware();
+
+  uint16_t angle_to_servo_position(double angle_rad, size_t axis_index, size_t leg_index);
+  double servo_position_to_angle(uint16_t servo_position, size_t axis_index, size_t leg_index);
 
   /**
    * Convert from radians to raw servo values (0-1023).

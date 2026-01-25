@@ -103,6 +103,13 @@ CallbackReturn MiniPupperHardware::on_activate(const rclcpp_lifecycle::State & /
 {
   RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Activating Mini Pupper Hardware");
 
+  // Best-effort: read once on activation so we don't immediately command zeros
+  // before controllers publish a valid posture.
+  if (!use_mock_hardware_)
+  {
+    read_state_from_hardware();
+  }
+
   // Initialize position commands with current positions
   hw_position_commands_ = hw_positions_;
 
@@ -234,14 +241,54 @@ void MiniPupperHardware::send_commands_to_hardware()
     return;
   }
 
-  // Convert radians to servo raw values (0-1023)
-  // Map from URDF joint order to hardware servo order
+  // Convert joint targets to calibrated servo positions.
+  // Hardware servo order matches legacy MangDang PWMParams.servo_ids:
+  // RF: (abd, hip, knee_abs) -> indices 0,1,2
+  // LF: (abd, hip, knee_abs) -> indices 3,4,5
+  // RB: (abd, hip, knee_abs) -> indices 6,7,8
+  // LB: (abd, hip, knee_abs) -> indices 9,10,11
   std::array<uint16_t, ESP32Interface::NUM_SERVOS> servo_positions;
-  for (size_t i = 0; i < NUM_JOINTS; ++i)
-  {
-    size_t servo_index = joint_to_servo_map_[i];
-    servo_positions[servo_index] = radians_to_servo(hw_position_commands_[i]);
-  }
+  servo_positions.fill(static_cast<uint16_t>(NEUTRAL_POSITION));
+
+  // Joint command order (see joint_names_): LF(0..2), RF(3..5), LB(6..8), RB(9..11)
+  const double lf_abd = hw_position_commands_[0];
+  const double lf_hip = hw_position_commands_[1];
+  const double lf_knee = hw_position_commands_[2];
+
+  const double rf_abd = hw_position_commands_[3];
+  const double rf_hip = hw_position_commands_[4];
+  const double rf_knee = hw_position_commands_[5];
+
+  const double lb_abd = hw_position_commands_[6];
+  const double lb_hip = hw_position_commands_[7];
+  const double lb_knee = hw_position_commands_[8];
+
+  const double rb_abd = hw_position_commands_[9];
+  const double rb_hip = hw_position_commands_[10];
+  const double rb_knee = hw_position_commands_[11];
+
+  // Legacy expects axis2 as absolute: hip + knee.
+  const double rf_knee_abs = rf_hip + rf_knee;
+  const double lf_knee_abs = lf_hip + lf_knee;
+  const double rb_knee_abs = rb_hip + rb_knee;
+  const double lb_knee_abs = lb_hip + lb_knee;
+
+  // leg_index mapping: 0 RF, 1 LF, 2 RB, 3 LB
+  servo_positions[0] = angle_to_servo_position(rf_abd, 0, 0);
+  servo_positions[1] = angle_to_servo_position(rf_hip, 1, 0);
+  servo_positions[2] = angle_to_servo_position(rf_knee_abs, 2, 0);
+
+  servo_positions[3] = angle_to_servo_position(lf_abd, 0, 1);
+  servo_positions[4] = angle_to_servo_position(lf_hip, 1, 1);
+  servo_positions[5] = angle_to_servo_position(lf_knee_abs, 2, 1);
+
+  servo_positions[6] = angle_to_servo_position(rb_abd, 0, 2);
+  servo_positions[7] = angle_to_servo_position(rb_hip, 1, 2);
+  servo_positions[8] = angle_to_servo_position(rb_knee_abs, 2, 2);
+
+  servo_positions[9] = angle_to_servo_position(lb_abd, 0, 3);
+  servo_positions[10] = angle_to_servo_position(lb_hip, 1, 3);
+  servo_positions[11] = angle_to_servo_position(lb_knee_abs, 2, 3);
 
   // Send to hardware - don't care if it fails, we'll try again next cycle
   esp32_interface_->servos_set_position(servo_positions);
@@ -265,12 +312,83 @@ void MiniPupperHardware::read_state_from_hardware()
   }
 
   // Convert servo raw values to radians
-  // Map from hardware servo order to URDF joint order
-  for (size_t i = 0; i < NUM_JOINTS; ++i)
+
+  // Decode hardware servo order back into URDF joint order.
+  const double rf_abd = servo_position_to_angle(servo_positions[0], 0, 0);
+  const double rf_hip = servo_position_to_angle(servo_positions[1], 1, 0);
+  const double rf_knee_abs = servo_position_to_angle(servo_positions[2], 2, 0);
+  const double rf_knee = rf_knee_abs - rf_hip;
+
+  const double lf_abd = servo_position_to_angle(servo_positions[3], 0, 1);
+  const double lf_hip = servo_position_to_angle(servo_positions[4], 1, 1);
+  const double lf_knee_abs = servo_position_to_angle(servo_positions[5], 2, 1);
+  const double lf_knee = lf_knee_abs - lf_hip;
+
+  const double rb_abd = servo_position_to_angle(servo_positions[6], 0, 2);
+  const double rb_hip = servo_position_to_angle(servo_positions[7], 1, 2);
+  const double rb_knee_abs = servo_position_to_angle(servo_positions[8], 2, 2);
+  const double rb_knee = rb_knee_abs - rb_hip;
+
+  const double lb_abd = servo_position_to_angle(servo_positions[9], 0, 3);
+  const double lb_hip = servo_position_to_angle(servo_positions[10], 1, 3);
+  const double lb_knee_abs = servo_position_to_angle(servo_positions[11], 2, 3);
+  const double lb_knee = lb_knee_abs - lb_hip;
+
+  // Joint state order (see joint_names_): LF, RF, LB, RB
+  hw_positions_[0] = lf_abd;
+  hw_positions_[1] = lf_hip;
+  hw_positions_[2] = lf_knee;
+
+  hw_positions_[3] = rf_abd;
+  hw_positions_[4] = rf_hip;
+  hw_positions_[5] = rf_knee;
+
+  hw_positions_[6] = lb_abd;
+  hw_positions_[7] = lb_hip;
+  hw_positions_[8] = lb_knee;
+
+  hw_positions_[9] = rb_abd;
+  hw_positions_[10] = rb_hip;
+  hw_positions_[11] = rb_knee;
+}
+
+uint16_t MiniPupperHardware::angle_to_servo_position(
+  double angle_rad, size_t axis_index, size_t leg_index)
+{
+  if (axis_index >= 3 || leg_index >= 4)
   {
-    size_t servo_index = joint_to_servo_map_[i];
-    hw_positions_[i] = servo_to_radians(servo_positions[servo_index]);
+    return static_cast<uint16_t>(NEUTRAL_POSITION);
   }
+
+  const double neutral_angle = NEUTRAL_ANGLES_RAD[axis_index];
+  const int multiplier = SERVO_MULTIPLIERS[axis_index][leg_index];
+
+  // Mirrors MangDang.mini_pupper.HardwareInterface.angle_to_position
+  const double angle_deviation = (angle_rad - neutral_angle) * static_cast<double>(multiplier);
+  double servo_position = NEUTRAL_POSITION - MICROS_PER_RAD * angle_deviation;
+
+  servo_position = std::max(0.0, std::min(1023.0, servo_position));
+  return static_cast<uint16_t>(std::lround(servo_position));
+}
+
+double MiniPupperHardware::servo_position_to_angle(
+  uint16_t servo_position, size_t axis_index, size_t leg_index)
+{
+  if (axis_index >= 3 || leg_index >= 4)
+  {
+    return 0.0;
+  }
+
+  const double neutral_angle = NEUTRAL_ANGLES_RAD[axis_index];
+  const int multiplier = SERVO_MULTIPLIERS[axis_index][leg_index];
+  if (multiplier == 0)
+  {
+    return neutral_angle;
+  }
+
+  // Invert: servo_position = neutral - micros_per_rad * ((angle - neutral_angle) * multiplier)
+  const double delta = (NEUTRAL_POSITION - static_cast<double>(servo_position)) / MICROS_PER_RAD;
+  return neutral_angle + (delta / static_cast<double>(multiplier));
 }
 
 uint16_t MiniPupperHardware::radians_to_servo(double radians)
