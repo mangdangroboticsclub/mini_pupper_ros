@@ -315,6 +315,19 @@ void MiniPupperHardware::send_commands_to_hardware()
   servo_positions[10] = angle_to_servo_position(lb_hip, 1, 3);
   servo_positions[11] = angle_to_servo_position(lb_knee_abs, 2, 3);
 
+  // Debug: log servo positions occasionally
+  static int debug_counter = 0;
+  if (++debug_counter % 100 == 0)
+  {
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "Servo positions: [%d,%d,%d, %d,%d,%d, %d,%d,%d, %d,%d,%d]",
+      servo_positions[0], servo_positions[1], servo_positions[2],
+      servo_positions[3], servo_positions[4], servo_positions[5],
+      servo_positions[6], servo_positions[7], servo_positions[8],
+      servo_positions[9], servo_positions[10], servo_positions[11]);
+  }
+
   // Send to hardware - don't care if it fails, we'll try again next cycle
   esp32_interface_->servos_set_position(servo_positions);
 }
