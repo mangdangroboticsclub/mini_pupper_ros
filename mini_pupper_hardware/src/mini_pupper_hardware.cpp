@@ -39,7 +39,7 @@ CallbackReturn MiniPupperHardware::on_init(const hardware_interface::HardwareInf
 
   RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Initializing Mini Pupper Hardware");
 
-  // Extract joint names from URDF (info_.joints gives us the URDF order)
+  // Extract joint names from URDF (info_.joints gives us the ros2_control order)
   joint_names_.clear();
   for (const auto & joint : info_.joints)
   {
@@ -52,6 +52,13 @@ CallbackReturn MiniPupperHardware::on_init(const hardware_interface::HardwareInf
       rclcpp::get_logger("MiniPupperHardware"),
       "Expected %zu joints, got %zu from URDF", NUM_JOINTS, joint_names_.size());
     return CallbackReturn::ERROR;
+  }
+
+  // Log the joint order we received
+  RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Joint order from ros2_control:");
+  for (size_t i = 0; i < joint_names_.size(); ++i)
+  {
+    RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "  [%zu] %s", i, joint_names_[i].c_str());
   }
 
   // Build mapping from URDF joint order to our canonical order (LF, RF, LB, RB)
@@ -419,19 +426,23 @@ void MiniPupperHardware::build_joint_mapping()
     "base_rb1", "rb1_rb2", "rb2_rb3"
   };
 
-  // Build mapping from URDF order to canonical order
-  for (size_t urdf_idx = 0; urdf_idx < NUM_JOINTS; ++urdf_idx)
+  // Build mapping from ros2_control order to canonical order
+  for (size_t ros2_control_idx = 0; ros2_control_idx < NUM_JOINTS; ++ros2_control_idx)
   {
-    const std::string & urdf_name = joint_names_[urdf_idx];
+    const std::string & joint_name = joint_names_[ros2_control_idx];
     
     // Find this joint in canonical order
     bool found = false;
     for (size_t canonical_idx = 0; canonical_idx < NUM_JOINTS; ++canonical_idx)
     {
-      if (urdf_name == canonical_names[canonical_idx])
+      if (joint_name == canonical_names[canonical_idx])
       {
-        urdf_to_canonical_[urdf_idx] = canonical_idx;
-        canonical_to_urdf_[canonical_idx] = urdf_idx;
+        urdf_to_canonical_[ros2_control_idx] = canonical_idx;
+        canonical_to_urdf_[canonical_idx] = ros2_control_idx;
+        RCLCPP_INFO(
+          rclcpp::get_logger("MiniPupperHardware"),
+          "  Mapping: ros2_control[%zu]='%s' -> canonical[%zu]",
+          ros2_control_idx, joint_name.c_str(), canonical_idx);
         found = true;
         break;
       }
@@ -441,7 +452,7 @@ void MiniPupperHardware::build_joint_mapping()
     {
       RCLCPP_ERROR(
         rclcpp::get_logger("MiniPupperHardware"),
-        "Joint '%s' from URDF not found in canonical joint list", urdf_name.c_str());
+        "Joint '%s' from ros2_control not found in canonical joint list", joint_name.c_str());
     }
   }
 
