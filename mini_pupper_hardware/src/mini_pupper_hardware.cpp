@@ -206,11 +206,6 @@ std::vector<hardware_interface::StateInterface> MiniPupperHardware::export_state
     state_interfaces.emplace_back(
       hardware_interface::StateInterface(
         joint_names_[i], hardware_interface::HW_IF_POSITION, &hw_positions_[i]));
-    
-    RCLCPP_INFO(
-      rclcpp::get_logger("MiniPupperHardware"),
-      "Export state: joint_names_[%zu]='%s' -> &hw_positions_[%zu]=%p",
-      i, joint_names_[i].c_str(), i, (void*)&hw_positions_[i]);
 
     state_interfaces.emplace_back(
       hardware_interface::StateInterface(

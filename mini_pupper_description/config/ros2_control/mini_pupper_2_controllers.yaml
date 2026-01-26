@@ -7,6 +7,22 @@ controller_manager:
     simple_quadruped_controller:
       type: mini_pupper_controllers/SimpleQuadrupedController
 
+joint_state_broadcaster:
+  ros__parameters:
+    joints:
+      - base_lf1
+      - lf1_lf2
+      - lf2_lf3
+      - base_rf1
+      - rf1_rf2
+      - rf2_rf3
+      - base_lb1
+      - lb1_lb2
+      - lb2_lb3
+      - base_rb1
+      - rb1_rb2
+      - rb2_rb3
+
 simple_quadruped_controller:
   ros__parameters:
     use_sim_time: False
