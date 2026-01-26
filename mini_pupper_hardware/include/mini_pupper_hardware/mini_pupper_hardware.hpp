@@ -60,15 +60,8 @@ private:
   // matching the legacy MangDang Python HardwareInterface.
   static constexpr size_t NUM_JOINTS = 12;
 
-  // Joint names extracted from URDF (in URDF order)
+  // Joint names extracted from URDF (in ros2_control order)
   std::vector<std::string> joint_names_;
-  
-  // Mapping arrays between URDF order and canonical order (LF, RF, LB, RB)
-  std::array<size_t, NUM_JOINTS> urdf_to_canonical_;     // URDF index -> canonical index
-  std::array<size_t, NUM_JOINTS> canonical_to_urdf_;     // canonical index -> URDF index
-  
-  // ros2_control sorts interfaces alphabetically - map joint order to hw_positions_ array order
-  std::array<size_t, NUM_JOINTS> joint_to_hw_index_;     // joint index -> hw_positions_ index
   
   // Legacy servo calibration model (mirrors MangDang Python Config/HardwareInterface)
   // - neutral position at 512

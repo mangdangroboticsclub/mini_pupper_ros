@@ -275,23 +275,23 @@ void MiniPupperHardware::send_commands_to_hardware()
   std::array<uint16_t, ESP32Interface::NUM_SERVOS> servo_positions;
   servo_positions.fill(static_cast<uint16_t>(NEUTRAL_POSITION));
 
-  // Extract commands: joint index -> hw_positions_ index -> canonical index
-  // LF is canonical 0,1,2 which maps to joint names base_lf1, lf1_lf2, lf2_lf3
-  const double lf_abd = hw_position_commands_[joint_to_hw_index_[0]];
-  const double lf_hip = hw_position_commands_[joint_to_hw_index_[1]];
-  const double lf_knee = hw_position_commands_[joint_to_hw_index_[2]];
+  // Extract commands from hw_position_commands_[]
+  // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are LB, [9..11] are RB
+  const double lf_abd = hw_position_commands_[0];
+  const double lf_hip = hw_position_commands_[1];
+  const double lf_knee = hw_position_commands_[2];
 
-  const double rf_abd = hw_position_commands_[joint_to_hw_index_[3]];
-  const double rf_hip = hw_position_commands_[joint_to_hw_index_[4]];
-  const double rf_knee = hw_position_commands_[joint_to_hw_index_[5]];
+  const double rf_abd = hw_position_commands_[3];
+  const double rf_hip = hw_position_commands_[4];
+  const double rf_knee = hw_position_commands_[5];
 
-  const double lb_abd = hw_position_commands_[joint_to_hw_index_[6]];
-  const double lb_hip = hw_position_commands_[joint_to_hw_index_[7]];
-  const double lb_knee = hw_position_commands_[joint_to_hw_index_[8]];
+  const double lb_abd = hw_position_commands_[6];
+  const double lb_hip = hw_position_commands_[7];
+  const double lb_knee = hw_position_commands_[8];
 
-  const double rb_abd = hw_position_commands_[joint_to_hw_index_[9]];
-  const double rb_hip = hw_position_commands_[joint_to_hw_index_[10]];
-  const double rb_knee = hw_position_commands_[joint_to_hw_index_[11]];
+  const double rb_abd = hw_position_commands_[9];
+  const double rb_hip = hw_position_commands_[10];
+  const double rb_knee = hw_position_commands_[11];
 
   // Legacy expects axis2 as absolute: hip + knee.
   const double rf_knee_abs = rf_hip + rf_knee;
@@ -373,22 +373,22 @@ void MiniPupperHardware::read_state_from_hardware()
   const double lb_knee_abs = servo_position_to_angle(servo_positions[11], 2, 3);
   const double lb_knee = lb_knee_abs - lb_hip;
 
-  // Write state back using hw index mapping
-  hw_positions_[joint_to_hw_index_[0]] = lf_abd;
-  hw_positions_[joint_to_hw_index_[1]] = lf_hip;
-  hw_positions_[joint_to_hw_index_[2]] = lf_knee;
+  // Write state back to hw_positions_[] in joint_names_ order
+  hw_positions_[0] = lf_abd;
+  hw_positions_[1] = lf_hip;
+  hw_positions_[2] = lf_knee;
 
-  hw_positions_[joint_to_hw_index_[3]] = rf_abd;
-  hw_positions_[joint_to_hw_index_[4]] = rf_hip;
-  hw_positions_[joint_to_hw_index_[5]] = rf_knee;
+  hw_positions_[3] = rf_abd;
+  hw_positions_[4] = rf_hip;
+  hw_positions_[5] = rf_knee;
 
-  hw_positions_[joint_to_hw_index_[6]] = lb_abd;
-  hw_positions_[joint_to_hw_index_[7]] = lb_hip;
-  hw_positions_[joint_to_hw_index_[8]] = lb_knee;
+  hw_positions_[6] = lb_abd;
+  hw_positions_[7] = lb_hip;
+  hw_positions_[8] = lb_knee;
 
-  hw_positions_[joint_to_hw_index_[9]] = rb_abd;
-  hw_positions_[joint_to_hw_index_[10]] = rb_hip;
-  hw_positions_[joint_to_hw_index_[11]] = rb_knee;
+  hw_positions_[9] = rb_abd;
+  hw_positions_[10] = rb_hip;
+  hw_positions_[11] = rb_knee;
 }
 
 uint16_t MiniPupperHardware::angle_to_servo_position(
@@ -432,64 +432,9 @@ double MiniPupperHardware::servo_position_to_angle(
 
 void MiniPupperHardware::build_joint_mapping()
 {
-  // Canonical joint order (what our servo math expects): LF, RF, LB, RB
-  const std::array<std::string, NUM_JOINTS> canonical_names = {
-    "base_lf1", "lf1_lf2", "lf2_lf3",
-    "base_rf1", "rf1_rf2", "rf2_rf3",
-    "base_lb1", "lb1_lb2", "lb2_lb3",
-    "base_rb1", "rb1_rb2", "rb2_rb3"
-  };
-
-  // Build mapping from ros2_control order to canonical order
-  for (size_t ros2_control_idx = 0; ros2_control_idx < NUM_JOINTS; ++ros2_control_idx)
-  {
-    const std::string & joint_name = joint_names_[ros2_control_idx];
-    
-    // Find this joint in canonical order
-    bool found = false;
-    for (size_t canonical_idx = 0; canonical_idx < NUM_JOINTS; ++canonical_idx)
-    {
-      if (joint_name == canonical_names[canonical_idx])
-      {
-        urdf_to_canonical_[ros2_control_idx] = canonical_idx;
-        canonical_to_urdf_[canonical_idx] = ros2_control_idx;
-        RCLCPP_INFO(
-          rclcpp::get_logger("MiniPupperHardware"),
-          "  Mapping: ros2_control[%zu]='%s' -> canonical[%zu]",
-          ros2_control_idx, joint_name.c_str(), canonical_idx);
-        found = true;
-        break;
-      }
-    }
-
-    if (!found)
-    {
-      RCLCPP_ERROR(
-        rclcpp::get_logger("MiniPupperHardware"),
-        "Joint '%s' from ros2_control not found in canonical joint list", joint_name.c_str());
-    }
-  }
-
-  RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Joint mapping built successfully");
-  
-  // Build alphabetical mapping: ros2_control exports interfaces in alphabetical order
-  // so hw_positions_[0] corresponds to the first joint alphabetically, not joint_names_[0]
-  std::vector<std::pair<std::string, size_t>> joint_name_with_index;
-  for (size_t i = 0; i < NUM_JOINTS; ++i)
-  {
-    joint_name_with_index.push_back({joint_names_[i], i});
-  }
-  std::sort(joint_name_with_index.begin(), joint_name_with_index.end());
-  
-  for (size_t alphabetical_idx = 0; alphabetical_idx < NUM_JOINTS; ++alphabetical_idx)
-  {
-    size_t original_idx = joint_name_with_index[alphabetical_idx].second;
-    joint_to_hw_index_[original_idx] = alphabetical_idx;
-    RCLCPP_INFO(
-      rclcpp::get_logger("MiniPupperHardware"),
-      "  HW mapping: joint[%zu]='%s' -> hw_positions_[%zu]",
-      original_idx, joint_names_[original_idx].c_str(), alphabetical_idx);
-  }
+  // Nothing to do - we use joint_names_ order directly
+  // StateInterfaces bind joint names to hw_positions_ array indices 1:1
+  RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Using joint order as-is from ros2_control");
 }
 
 uint16_t MiniPupperHardware::radians_to_servo(double radians)
