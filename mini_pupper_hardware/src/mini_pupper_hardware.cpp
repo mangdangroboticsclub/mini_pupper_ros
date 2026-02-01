@@ -114,6 +114,17 @@ CallbackReturn MiniPupperHardware::on_configure(const rclcpp_lifecycle::State & 
       
       // Debug: log expected neutral servo positions
       RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Expected neutral servo positions:");
+      RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Neutral angles: [%.3f, %.3f, %.3f] rad = [%.1f, %.1f, %.1f] deg",
+                  NEUTRAL_ANGLES_RAD[0], NEUTRAL_ANGLES_RAD[1], NEUTRAL_ANGLES_RAD[2],
+                  NEUTRAL_ANGLES_RAD[0] * 180.0 / M_PI, NEUTRAL_ANGLES_RAD[1] * 180.0 / M_PI, NEUTRAL_ANGLES_RAD[2] * 180.0 / M_PI);
+      RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Servo multipliers:");
+      RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "  axis 0 (abd):  [%2d, %2d, %2d, %2d]", 
+                  SERVO_MULTIPLIERS[0][0], SERVO_MULTIPLIERS[0][1], SERVO_MULTIPLIERS[0][2], SERVO_MULTIPLIERS[0][3]);
+      RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "  axis 1 (hip):  [%2d, %2d, %2d, %2d]", 
+                  SERVO_MULTIPLIERS[1][0], SERVO_MULTIPLIERS[1][1], SERVO_MULTIPLIERS[1][2], SERVO_MULTIPLIERS[1][3]);
+      RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "  axis 2 (knee): [%2d, %2d, %2d, %2d]", 
+                  SERVO_MULTIPLIERS[2][0], SERVO_MULTIPLIERS[2][1], SERVO_MULTIPLIERS[2][2], SERVO_MULTIPLIERS[2][3]);
+      
       for (size_t leg = 0; leg < 4; leg++)
       {
         const char* leg_names[] = {"RF", "LF", "RB", "LB"};
@@ -121,8 +132,8 @@ CallbackReturn MiniPupperHardware::on_configure(const rclcpp_lifecycle::State & 
         uint16_t hip_neutral = angle_to_servo_position(NEUTRAL_ANGLES_RAD[1], 1, leg);
         uint16_t knee_neutral = angle_to_servo_position(NEUTRAL_ANGLES_RAD[2] + NEUTRAL_ANGLES_RAD[1], 2, leg);  // knee as absolute
         RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), 
-                    "  %s: abd=%d, hip=%d, knee_abs=%d", 
-                    leg_names[leg], abd_neutral, hip_neutral, knee_neutral);
+                    "  %s (leg_index=%zu): abd=%d, hip=%d, knee_abs=%d", 
+                    leg_names[leg], leg, abd_neutral, hip_neutral, knee_neutral);
       }
     }
     catch (const std::exception & e)
