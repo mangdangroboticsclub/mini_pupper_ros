@@ -111,6 +111,19 @@ CallbackReturn MiniPupperHardware::on_configure(const rclcpp_lifecycle::State & 
       }
       RCLCPP_INFO(
         rclcpp::get_logger("MiniPupperHardware"), "ESP32 interface configured");
+      
+      // Debug: log expected neutral servo positions
+      RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Expected neutral servo positions:");
+      for (size_t leg = 0; leg < 4; leg++)
+      {
+        const char* leg_names[] = {"RF", "LF", "RB", "LB"};
+        uint16_t abd_neutral = angle_to_servo_position(NEUTRAL_ANGLES_RAD[0], 0, leg);
+        uint16_t hip_neutral = angle_to_servo_position(NEUTRAL_ANGLES_RAD[1], 1, leg);
+        uint16_t knee_neutral = angle_to_servo_position(NEUTRAL_ANGLES_RAD[2] + NEUTRAL_ANGLES_RAD[1], 2, leg);  // knee as absolute
+        RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), 
+                    "  %s: abd=%d, hip=%d, knee_abs=%d", 
+                    leg_names[leg], abd_neutral, hip_neutral, knee_neutral);
+      }
     }
     catch (const std::exception & e)
     {

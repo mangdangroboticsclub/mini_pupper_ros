@@ -207,12 +207,36 @@ bool ESP32Interface::servos_set_position_torque(
     send_data.push_back((p >> 8) & 0xFF);
   }
 
+  // Debug: log what we're sending
+  static int send_count = 0;
+  if (++send_count % 100 == 0)
+  {
+    RCLCPP_INFO(
+      rclcpp::get_logger("ESP32Interface"),
+      "Sending positions: [%d,%d,%d, %d,%d,%d, %d,%d,%d, %d,%d,%d]",
+      positions[0], positions[1], positions[2],
+      positions[3], positions[4], positions[5],
+      positions[6], positions[7], positions[8],
+      positions[9], positions[10], positions[11]);
+    RCLCPP_INFO(
+      rclcpp::get_logger("ESP32Interface"),
+      "Packet size: %zu bytes, first 10 bytes: [%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x]",
+      send_data.size(),
+      send_data[0], send_data[1], send_data[2], send_data[3], send_data[4],
+      send_data[5], send_data[6], send_data[7], send_data[8], send_data[9]);
+  }
+
   RCLCPP_DEBUG(rclcpp::get_logger("ESP32Interface"), "Sending position command");
   auto response = send_and_receive(send_data, 2);
   
   if (response.empty())
   {
-    RCLCPP_WARN(rclcpp::get_logger("ESP32Interface"), "No response from ESP32 proxy");
+    static int no_response_count = 0;
+    if (++no_response_count % 10 == 0)
+    {
+      RCLCPP_WARN(rclcpp::get_logger("ESP32Interface"), 
+                  "No response from ESP32 proxy (count: %d)", no_response_count);
+    }
     return false;
   }
 
@@ -223,6 +247,11 @@ bool ESP32Interface::servos_set_position_torque(
                  response.size(), response.size() > 0 ? response[0] : -1, 
                  response.size() > 1 ? response[1] : -1);
     return false;
+  }
+
+  if (send_count % 100 == 0)
+  {
+    RCLCPP_INFO(rclcpp::get_logger("ESP32Interface"), "ACK received, servos commanded successfully");
   }
 
   RCLCPP_DEBUG(rclcpp::get_logger("ESP32Interface"), "Position command ACK received");

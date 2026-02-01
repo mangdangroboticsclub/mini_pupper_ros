@@ -85,11 +85,20 @@ def generate_launch_description():
         }.items(),
     )
 
-    hardware_interface_launch_path = PathJoinSubstitution(
+    driver_package = FindPackageShare("mini_pupper_driver")
+    servo_interface_launch_path = PathJoinSubstitution(
+        [driver_package, "launch", "servo_interface.launch.py"]
+    )
+    servo_interface_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(servo_interface_launch_path),
+        condition=IfCondition(hardware_connected)
+    )
+
+    accessories_launch_path = PathJoinSubstitution(
         [bringup_package, "launch", "hardware_interface.launch.py"]
     )
-    hardware_interface_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(hardware_interface_launch_path),
+    accessories_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(accessories_launch_path),
         condition=IfCondition(hardware_connected),
         launch_arguments={
             "has_lidar": has_lidar,
@@ -120,7 +129,8 @@ def generate_launch_description():
             use_sim_time_launch_arg,
             hardware_connected_launch_arg,
             description_launch,
-            hardware_interface_launch,
+            servo_interface_launch,
+            accessories_launch,
             champ_controllers_launch,
             ekf_localization_launch,
         ]
