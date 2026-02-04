@@ -323,7 +323,8 @@ void MiniPupperHardware::send_commands_to_hardware()
   servo_positions.fill(static_cast<uint16_t>(NEUTRAL_POSITION));
 
   // Extract commands from hw_position_commands_[]
-  // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are LB, [9..11] are RB
+  // URDF defines joints in order: LF, RF, RB, LB (verified from urdf.xacro)
+  // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are RB, [9..11] are LB
   const double lf_abd = hw_position_commands_[0];
   const double lf_hip = hw_position_commands_[1];
   const double lf_knee = hw_position_commands_[2];
@@ -332,13 +333,13 @@ void MiniPupperHardware::send_commands_to_hardware()
   const double rf_hip = hw_position_commands_[4];
   const double rf_knee = hw_position_commands_[5];
 
-  const double lb_abd = hw_position_commands_[6];
-  const double lb_hip = hw_position_commands_[7];
-  const double lb_knee = hw_position_commands_[8];
+  const double rb_abd = hw_position_commands_[6];
+  const double rb_hip = hw_position_commands_[7];
+  const double rb_knee = hw_position_commands_[8];
 
-  const double rb_abd = hw_position_commands_[9];
-  const double rb_hip = hw_position_commands_[10];
-  const double rb_knee = hw_position_commands_[11];
+  const double lb_abd = hw_position_commands_[9];
+  const double lb_hip = hw_position_commands_[10];
+  const double lb_knee = hw_position_commands_[11];
 
   // Debug: Log received joint angles from controller
   static int angle_log_counter = 0;
@@ -377,19 +378,27 @@ void MiniPupperHardware::send_commands_to_hardware()
       lf_knee_abs, rf_knee_abs, lb_knee_abs, rb_knee_abs);
   }
 
-  // leg_index mapping: 0 RF, 1 LF, 2 RB, 3 LB
+  // Servo ID mapping from Python: servo_ids = [[1,4,7,10],[2,5,8,11],[3,6,9,12]]
+  // This means: RF=(1,2,3), LF=(4,5,6), RB=(7,8,9), LB=(10,11,12)
+  // Array indices 0-11 map to servo IDs 1-12, so:
+  // indices [0-2] -> RF, [3-5] -> LF, [6-8] -> RB, [9-11] -> LB
+  
+  // RF leg -> servo IDs 1,2,3 -> array indices 0,1,2
   servo_positions[0] = angle_to_servo_position(rf_abd, 0, 0);
   servo_positions[1] = angle_to_servo_position(rf_hip, 1, 0);
   servo_positions[2] = angle_to_servo_position(rf_knee_abs, 2, 0);
 
+  // LF leg -> servo IDs 4,5,6 -> array indices 3,4,5
   servo_positions[3] = angle_to_servo_position(lf_abd, 0, 1);
   servo_positions[4] = angle_to_servo_position(lf_hip, 1, 1);
   servo_positions[5] = angle_to_servo_position(lf_knee_abs, 2, 1);
 
+  // RB leg -> servo IDs 7,8,9 -> array indices 6,7,8
   servo_positions[6] = angle_to_servo_position(rb_abd, 0, 2);
   servo_positions[7] = angle_to_servo_position(rb_hip, 1, 2);
   servo_positions[8] = angle_to_servo_position(rb_knee_abs, 2, 2);
 
+  // LB leg -> servo IDs 10,11,12 -> array indices 9,10,11
   servo_positions[9] = angle_to_servo_position(lb_abd, 0, 3);
   servo_positions[10] = angle_to_servo_position(lb_hip, 1, 3);
   servo_positions[11] = angle_to_servo_position(lb_knee_abs, 2, 3);
