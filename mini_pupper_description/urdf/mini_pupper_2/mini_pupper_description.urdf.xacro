@@ -774,7 +774,7 @@
     <child link="lf1"/>
     <axis xyz="1.0 0.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="0.425" lower="-0.550" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lf1_lf2" type="revolute">
@@ -783,7 +783,7 @@
     <child link="lf2"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="2.40" lower="0.55" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lf2_lf3" type="revolute">
@@ -792,7 +792,7 @@
     <child link="lf3"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="-0.22" lower="-3.0" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_rf1" type="revolute">
@@ -801,7 +801,7 @@
     <child link="rf1"/>
     <axis xyz="1.0 0.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="0.550" lower="-0.425" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rf1_rf2" type="revolute">
@@ -810,7 +810,7 @@
     <child link="rf2"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="2.40" lower="0.55" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rf2_rf3" type="revolute">
@@ -819,7 +819,7 @@
     <child link="rf3"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="-0.22" lower="-3.0" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_rb1" type="revolute">
@@ -828,7 +828,7 @@
     <child link="rb1"/>
     <axis xyz="1.0 0.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="0.550" lower="-0.425" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rb1_rb2" type="revolute">
@@ -837,7 +837,7 @@
     <child link="rb2"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="2.40" lower="0.55" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rb2_rb3" type="revolute">
@@ -846,7 +846,7 @@
     <child link="rb3"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="-0.22" lower="-3.0" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_lb1" type="revolute">
@@ -855,7 +855,7 @@
     <child link="lb1"/>
     <axis xyz="1.0 0.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="0.425" lower="-0.550" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lb1_lb2" type="revolute">
@@ -864,7 +864,7 @@
     <child link="lb2"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="2.40" lower="0.55" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lb2_lb3" type="revolute">
@@ -873,7 +873,7 @@
     <child link="lb3"/>
     <axis xyz="0.0 1.0 0.0"/>
     <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
-    <limit upper="-0.22" lower="-3.0" effort="10.0" velocity="10.47"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_front" type="fixed">
