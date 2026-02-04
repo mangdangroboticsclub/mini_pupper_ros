@@ -220,10 +220,18 @@ bool ESP32Interface::servos_set_position_torque(
       positions[9], positions[10], positions[11]);
     RCLCPP_INFO(
       rclcpp::get_logger("ESP32Interface"),
-      "Packet size: %zu bytes, first 10 bytes: [%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x]",
+      "Sending torques: [%d,%d,%d, %d,%d,%d, %d,%d,%d, %d,%d,%d]",
+      torque[0], torque[1], torque[2],
+      torque[3], torque[4], torque[5],
+      torque[6], torque[7], torque[8],
+      torque[9], torque[10], torque[11]);
+    RCLCPP_INFO(
+      rclcpp::get_logger("ESP32Interface"),
+      "Packet: size=%zu, header=[%02x %02x], torque_bytes=[%02x %02x %02x %02x], pos_bytes=[%02x %02x %02x %02x]",
       send_data.size(),
-      send_data[0], send_data[1], send_data[2], send_data[3], send_data[4],
-      send_data[5], send_data[6], send_data[7], send_data[8], send_data[9]);
+      send_data[0], send_data[1],
+      send_data[2], send_data[3], send_data[4], send_data[5],
+      send_data[26], send_data[27], send_data[28], send_data[29]);
   }
 
   RCLCPP_DEBUG(rclcpp::get_logger("ESP32Interface"), "Sending position command");

@@ -97,6 +97,15 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_configure(
   commanded_positions_ = default_positions_;
   has_external_command_ = false;
 
+  // Log the default positions being used
+  RCLCPP_INFO(node->get_logger(), "Controller initialized with default_positions:");
+  for (size_t i = 0; i < joint_names_.size(); ++i)
+  {
+    RCLCPP_INFO(node->get_logger(), "  %s: %.4f rad (%.2f deg)", 
+                joint_names_[i].c_str(), default_positions_[i], 
+                default_positions_[i] * 180.0 / M_PI);
+  }
+
   command_buffer_.writeFromNonRT(nullptr);
 
   command_subscription_ = node->create_subscription<CommandMsg>(
@@ -168,6 +177,22 @@ controller_interface::return_type SimpleQuadrupedController::update(
   }
 
   const auto & target_positions = commanded_positions_;
+
+  // Debug: Log what controller is commanding
+  static int controller_log_counter = 0;
+  if (++controller_log_counter % 100 == 0)
+  {
+    RCLCPP_INFO(
+      get_node()->get_logger(),
+      "Controller commanding positions (rad): [%.3f,%.3f,%.3f, %.3f,%.3f,%.3f, %.3f,%.3f,%.3f, %.3f,%.3f,%.3f]",
+      target_positions[0], target_positions[1], target_positions[2],
+      target_positions[3], target_positions[4], target_positions[5],
+      target_positions[6], target_positions[7], target_positions[8],
+      target_positions[9], target_positions[10], target_positions[11]);
+    RCLCPP_INFO(
+      get_node()->get_logger(),
+      "Using %s commands", has_external_command_ ? "EXTERNAL" : "DEFAULT");
+  }
 
   if (command_interfaces_.size() != target_positions.size())
   {

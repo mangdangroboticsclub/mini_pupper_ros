@@ -162,6 +162,16 @@ CallbackReturn MiniPupperHardware::on_activate(const rclcpp_lifecycle::State & /
   // Initialize position commands with current positions
   hw_position_commands_ = hw_positions_;
 
+  // Log initial hardware state
+  RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), 
+              "Hardware activated with initial positions (rad):");
+  for (size_t i = 0; i < NUM_JOINTS; ++i)
+  {
+    RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), 
+                "  Joint %zu (%s): position=%.4f command=%.4f", 
+                i, joint_names_[i].c_str(), hw_positions_[i], hw_position_commands_[i]);
+  }
+
   if (!use_mock_hardware_)
   {
     // Initialize hardware if not using mock
@@ -204,6 +214,19 @@ hardware_interface::return_type MiniPupperHardware::read(
 hardware_interface::return_type MiniPupperHardware::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
+  // Debug: Verify what hardware interface received from controller
+  static int hw_write_counter = 0;
+  if (++hw_write_counter % 100 == 0)
+  {
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "Hardware interface write() received commands (rad): [%.3f,%.3f,%.3f, %.3f,%.3f,%.3f, %.3f,%.3f,%.3f, %.3f,%.3f,%.3f]",
+      hw_position_commands_[0], hw_position_commands_[1], hw_position_commands_[2],
+      hw_position_commands_[3], hw_position_commands_[4], hw_position_commands_[5],
+      hw_position_commands_[6], hw_position_commands_[7], hw_position_commands_[8],
+      hw_position_commands_[9], hw_position_commands_[10], hw_position_commands_[11]);
+  }
+
   if (use_mock_hardware_)
   {
     // In mock mode, simply mirror commands to state
@@ -317,11 +340,42 @@ void MiniPupperHardware::send_commands_to_hardware()
   const double rb_hip = hw_position_commands_[10];
   const double rb_knee = hw_position_commands_[11];
 
+  // Debug: Log received joint angles from controller
+  static int angle_log_counter = 0;
+  if (++angle_log_counter % 100 == 0)
+  {
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "Joint angles received from controller (rad):");
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  LF [abd=%.3f, hip=%.3f, knee=%.3f]", lf_abd, lf_hip, lf_knee);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  RF [abd=%.3f, hip=%.3f, knee=%.3f]", rf_abd, rf_hip, rf_knee);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  LB [abd=%.3f, hip=%.3f, knee=%.3f]", lb_abd, lb_hip, lb_knee);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  RB [abd=%.3f, hip=%.3f, knee=%.3f]", rb_abd, rb_hip, rb_knee);
+  }
+
   // Legacy expects axis2 as absolute: hip + knee.
   const double rf_knee_abs = rf_hip + rf_knee;
   const double lf_knee_abs = lf_hip + lf_knee;
   const double rb_knee_abs = rb_hip + rb_knee;
   const double lb_knee_abs = lb_hip + lb_knee;
+
+  // Log absolute knee angles for debugging
+  static int abs_log_counter = 0;
+  if (++abs_log_counter % 100 == 0)
+  {
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "Absolute knee angles (hip+knee): LF=%.3f RF=%.3f LB=%.3f RB=%.3f",
+      lf_knee_abs, rf_knee_abs, lb_knee_abs, rb_knee_abs);
+  }
 
   // leg_index mapping: 0 RF, 1 LF, 2 RB, 3 LB
   servo_positions[0] = angle_to_servo_position(rf_abd, 0, 0);
@@ -340,17 +394,23 @@ void MiniPupperHardware::send_commands_to_hardware()
   servo_positions[10] = angle_to_servo_position(lb_hip, 1, 3);
   servo_positions[11] = angle_to_servo_position(lb_knee_abs, 2, 3);
 
-  // Debug: log servo positions occasionally
+  // Debug: log servo positions and conversion details
   static int debug_counter = 0;
   if (++debug_counter % 100 == 0)
   {
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "Servo positions: [%d,%d,%d, %d,%d,%d, %d,%d,%d, %d,%d,%d]",
+      "Commanded servo positions: [%d,%d,%d, %d,%d,%d, %d,%d,%d, %d,%d,%d]",
       servo_positions[0], servo_positions[1], servo_positions[2],
       servo_positions[3], servo_positions[4], servo_positions[5],
       servo_positions[6], servo_positions[7], servo_positions[8],
       servo_positions[9], servo_positions[10], servo_positions[11]);
+    
+    // Show sample conversion for LF leg
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "LF conversion example: abd %.3f->%d, hip %.3f->%d, knee_abs %.3f->%d",
+      lf_abd, servo_positions[3], lf_hip, servo_positions[4], lf_knee_abs, servo_positions[5]);
   }
 
   // Send to hardware - don't care if it fails, we'll try again next cycle
@@ -452,6 +512,47 @@ uint16_t MiniPupperHardware::angle_to_servo_position(
   // Mirrors MangDang.mini_pupper.HardwareInterface.angle_to_position
   const double angle_deviation = (angle_rad - neutral_angle) * static_cast<double>(multiplier);
   double servo_position = NEUTRAL_POSITION - MICROS_PER_RAD * angle_deviation;
+
+  // Debug: detailed conversion logging for first call per control cycle
+  static int conversion_log_counter = 0;
+  static bool logged_this_cycle = false;
+  
+  if (++conversion_log_counter % 100 == 0)
+  {
+    logged_this_cycle = false;
+  }
+  
+  // Log first LF hip conversion each cycle (axis=1, leg=1)
+  if (!logged_this_cycle && axis_index == 1 && leg_index == 1)
+  {
+    logged_this_cycle = true;
+    const char* axis_names[] = {"abd", "hip", "knee"};
+    const char* leg_names[] = {"RF", "LF", "RB", "LB"};
+    
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "Conversion details for %s %s:", leg_names[leg_index], axis_names[axis_index]);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  Input angle: %.4f rad (%.2f deg)", angle_rad, angle_rad * 180.0 / M_PI);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  Neutral angle: %.4f rad (%.2f deg)", neutral_angle, neutral_angle * 180.0 / M_PI);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  Multiplier: %d", multiplier);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  Angle deviation: (%.4f - %.4f) * %d = %.4f", 
+      angle_rad, neutral_angle, multiplier, angle_deviation);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  MICROS_PER_RAD: %.4f", MICROS_PER_RAD);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  Servo calc: %.2f - %.4f * %.4f = %.2f",
+      NEUTRAL_POSITION, MICROS_PER_RAD, angle_deviation, servo_position);
+  }
 
   servo_position = std::max(0.0, std::min(1023.0, servo_position));
   return static_cast<uint16_t>(std::lround(servo_position));
