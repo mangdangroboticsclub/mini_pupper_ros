@@ -513,6 +513,12 @@ uint16_t MiniPupperHardware::angle_to_servo_position(
   const double angle_deviation = (angle_rad - neutral_angle) * static_cast<double>(multiplier);
   double servo_position = NEUTRAL_POSITION - MICROS_PER_RAD * angle_deviation;
 
+  // Check for NaN (matches Python behavior)
+  if (std::isnan(servo_position))
+  {
+    return 0;
+  }
+
   // Debug: detailed conversion logging for first call per control cycle
   static int conversion_log_counter = 0;
   static bool logged_this_cycle = false;
