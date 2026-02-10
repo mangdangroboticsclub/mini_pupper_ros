@@ -27,6 +27,12 @@ from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 class ServoInterface(Node):
     def __init__(self):
         super().__init__('servo_interface')
+        
+        # Log at startup with WARN level so it's always visible
+        self.get_logger().warn('========================================')
+        self.get_logger().warn('Servo Interface Node Starting...')
+        self.get_logger().warn('========================================')
+        
         self.subscriber = self.create_subscription(
             JointTrajectory, 'joint_group_effort_controller/joint_trajectory',
             self.cmd_callback, 1)
@@ -34,6 +40,10 @@ class ServoInterface(Node):
         
         # Create timer to periodically read servo positions (1Hz)
         self.read_timer = self.create_timer(1.0, self.read_servo_positions)
+        
+        self.get_logger().info('Servo Interface Node initialized successfully')
+        self.get_logger().info('Listening on: joint_group_effort_controller/joint_trajectory')
+        self.get_logger().info('Reading servo positions every 1 second')
 
     def cmd_callback(self, msg):
         joint_positions = msg.points[0].positions
@@ -82,17 +92,20 @@ class ServoInterface(Node):
     def read_servo_positions(self):
         """Periodically read and log servo positions from hardware"""
         # Access ESP32Interface through HardwareInterface -> PWMParams -> esp32
-        positions = self.hardware_interface.pwm_params.esp32.servos_get_position()
-        
-        if positions is None or len(positions) != 12:
-            self.get_logger().warn('Failed to read servo positions from hardware')
-            return
-        
-        self.get_logger().info('Read servo positions from hardware:')
-        self.get_logger().info(f'  RF: abd={positions[0]}, hip={positions[1]}, knee_abs={positions[2]}')
-        self.get_logger().info(f'  LF: abd={positions[3]}, hip={positions[4]}, knee_abs={positions[5]}')
-        self.get_logger().info(f'  RB: abd={positions[6]}, hip={positions[7]}, knee_abs={positions[8]}')
-        self.get_logger().info(f'  LB: abd={positions[9]}, hip={positions[10]}, knee_abs={positions[11]}')
+        try:
+            positions = self.hardware_interface.pwm_params.esp32.servos_get_position()
+            
+            if positions is None or len(positions) != 12:
+                self.get_logger().warn('Failed to read servo positions from hardware')
+                return
+            
+            self.get_logger().warn('Read servo positions from hardware:')
+            self.get_logger().warn(f'  RF: abd={positions[0]}, hip={positions[1]}, knee_abs={positions[2]}')
+            self.get_logger().warn(f'  LF: abd={positions[3]}, hip={positions[4]}, knee_abs={positions[5]}')
+            self.get_logger().warn(f'  RB: abd={positions[6]}, hip={positions[7]}, knee_abs={positions[8]}')
+            self.get_logger().warn(f'  LB: abd={positions[9]}, hip={positions[10]}, knee_abs={positions[11]}')
+        except Exception as e:
+            self.get_logger().error(f'Error reading servo positions: {e}')
 
 
 def main(args=None):
