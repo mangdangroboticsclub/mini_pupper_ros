@@ -95,7 +95,7 @@ def generate_launch_description():
     )
 
     accessories_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "hardware_interface.launch.py"]
+        [bringup_package, "launch", "accessories.launch.py"]
     )
     accessories_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(accessories_launch_path),
