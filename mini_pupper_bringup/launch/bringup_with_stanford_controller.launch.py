@@ -109,11 +109,11 @@ def generate_launch_description():
         }.items(),
     )
 
-    hardware_interface_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "hardware_interface.launch.py"]
+    accessories_launch_path = PathJoinSubstitution(
+        [bringup_package, "launch", "accessories.launch.py"]
     )
-    hardware_interface_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(hardware_interface_launch_path),
+    accessories_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(accessories_launch_path),
         condition=IfCondition(hardware_connected),
         launch_arguments={
             "has_lidar": has_lidar,
@@ -145,7 +145,7 @@ def generate_launch_description():
 
     launch_actions = [
         description_launch,
-        hardware_interface_launch,
+        accessories_launch,
         ros2_controllers_launch,
         stanford_controller_launch,
     ]
