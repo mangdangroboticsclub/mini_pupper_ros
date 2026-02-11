@@ -349,16 +349,16 @@ void MiniPupperHardware::send_commands_to_hardware()
       "Joint angles received from controller (rad):");
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  LF [abd=%.3f, hip=%.3f, knee=%.3f]", lf_abd, lf_hip, lf_knee);
-    RCLCPP_INFO(
-      rclcpp::get_logger("MiniPupperHardware"),
       "  RF [abd=%.3f, hip=%.3f, knee=%.3f]", rf_abd, rf_hip, rf_knee);
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  LB [abd=%.3f, hip=%.3f, knee=%.3f]", lb_abd, lb_hip, lb_knee);
+      "  LF [abd=%.3f, hip=%.3f, knee=%.3f]", lf_abd, lf_hip, lf_knee);
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
       "  RB [abd=%.3f, hip=%.3f, knee=%.3f]", rb_abd, rb_hip, rb_knee);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  LB [abd=%.3f, hip=%.3f, knee=%.3f]", lb_abd, lb_hip, lb_knee);
   }
 
   // Legacy expects axis2 as absolute: hip + knee.
