@@ -323,22 +323,22 @@ void MiniPupperHardware::send_commands_to_hardware()
   servo_positions.fill(static_cast<uint16_t>(NEUTRAL_POSITION));
 
   // Extract commands from hw_position_commands_[]
-  // joint_names_[0..2] are RF, [3..5] are LF, [6..8] are RB, [9..11] are LB (matches leg_index order)
-  const double rf_abd = hw_position_commands_[0];
-  const double rf_hip = hw_position_commands_[1];
-  const double rf_knee = hw_position_commands_[2];
+  // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are LB, [9..11] are RB (matches URDF/ros2_control order)
+  const double lf_abd = hw_position_commands_[0];
+  const double lf_hip = hw_position_commands_[1];
+  const double lf_knee = hw_position_commands_[2];
 
-  const double lf_abd = hw_position_commands_[3];
-  const double lf_hip = hw_position_commands_[4];
-  const double lf_knee = hw_position_commands_[5];
+  const double rf_abd = hw_position_commands_[3];
+  const double rf_hip = hw_position_commands_[4];
+  const double rf_knee = hw_position_commands_[5];
 
-  const double rb_abd = hw_position_commands_[6];
-  const double rb_hip = hw_position_commands_[7];
-  const double rb_knee = hw_position_commands_[8];
+  const double lb_abd = hw_position_commands_[6];
+  const double lb_hip = hw_position_commands_[7];
+  const double lb_knee = hw_position_commands_[8];
 
-  const double lb_abd = hw_position_commands_[9];
-  const double lb_hip = hw_position_commands_[10];
-  const double lb_knee = hw_position_commands_[11];
+  const double rb_abd = hw_position_commands_[9];
+  const double rb_hip = hw_position_commands_[10];
+  const double rb_knee = hw_position_commands_[11];
 
   // Debug: Log received joint angles from controller
   static int angle_log_counter = 0;
@@ -349,16 +349,16 @@ void MiniPupperHardware::send_commands_to_hardware()
       "Joint angles received from controller (rad):");
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  RF [abd=%.3f, hip=%.3f, knee=%.3f]", rf_abd, rf_hip, rf_knee);
-    RCLCPP_INFO(
-      rclcpp::get_logger("MiniPupperHardware"),
       "  LF [abd=%.3f, hip=%.3f, knee=%.3f]", lf_abd, lf_hip, lf_knee);
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  RB [abd=%.3f, hip=%.3f, knee=%.3f]", rb_abd, rb_hip, rb_knee);
+      "  RF [abd=%.3f, hip=%.3f, knee=%.3f]", rf_abd, rf_hip, rf_knee);
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
       "  LB [abd=%.3f, hip=%.3f, knee=%.3f]", lb_abd, lb_hip, lb_knee);
+    RCLCPP_INFO(
+      rclcpp::get_logger("MiniPupperHardware"),
+      "  RB [abd=%.3f, hip=%.3f, knee=%.3f]", rb_abd, rb_hip, rb_knee);
   }
 
   // Legacy expects axis2 as absolute: hip + knee.

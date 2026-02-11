@@ -73,10 +73,11 @@ private:
 
   // Multipliers indexed by [axis][leg], where leg order is:
   // 0: front-right (RF), 1: front-left (LF), 2: back-right (RB), 3: back-left (LB)
+  // NOTE: Front legs (RF, LF) use -1 for abduction to match hardware behavior
   static constexpr std::array<std::array<int, 4>, 3> SERVO_MULTIPLIERS = {
-    std::array<int, 4>{1, 1, -1, -1},  // axis 0 (abduction)
-    std::array<int, 4>{-1, 1, -1, 1},  // axis 1 (hip)
-    std::array<int, 4>{-1, 1, -1, 1},  // axis 2 (knee)
+    std::array<int, 4>{-1, -1, -1, -1},  // axis 0 (abduction)
+    std::array<int, 4>{-1, 1, -1, 1},    // axis 1 (hip)
+    std::array<int, 4>{-1, 1, -1, 1},    // axis 2 (knee)
   };
 
   // Joint state: [position, velocity, effort] for each joint
