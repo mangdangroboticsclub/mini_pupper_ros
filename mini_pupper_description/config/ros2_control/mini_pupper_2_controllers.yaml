@@ -40,19 +40,19 @@ simple_quadruped_controller:
       - rb1_rb2
       - rb2_rb3
     default_positions:
-      # LF leg (left front): positive abduction
-      - 0.080   # base_lf1 (abduction)
+      # LF leg (left front): negative abduction (matches working Python)
+      - -0.080  # base_lf1 (abduction)
       - 1.078   # lf1_lf2 (hip)
       - -1.983  # lf2_lf3 (knee)
-      # RF leg (right front): negative abduction  
-      - -0.080  # base_rf1 (abduction)
+      # RF leg (right front): positive abduction (matches working Python)
+      - 0.080   # base_rf1 (abduction)
       - 1.078   # rf1_rf2 (hip)
       - -1.983  # rf2_rf3 (knee)
-      # LB leg (left back): positive abduction
-      - 0.080   # base_lb1 (abduction)
+      # LB leg (left back): negative abduction (matches working Python)
+      - -0.080  # base_lb1 (abduction)
       - 1.078   # lb1_lb2 (hip)
       - -1.983  # lb2_lb3 (knee)
-      # RB leg (right back): negative abduction
-      - -0.080  # base_rb1 (abduction)
+      # RB leg (right back): positive abduction (matches working Python)
+      - 0.080   # base_rb1 (abduction)
       - 1.078   # rb1_rb2 (hip)
       - -1.983  # rb2_rb3 (knee)
