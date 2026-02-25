@@ -110,11 +110,11 @@ public:
   {
     // Protocol: BB12H12H (size=38, cmd=1, 12x torque uint16, 12x pos uint16)
     std::vector<uint8_t> pkt;
-    pkt.push_back(38);  // size
-    pkt.push_back(1);   // cmd: set_position_torque
-    // torque = 500 for all (matches Python DEFAULT_TORQUE; torque_enable is a 0-1023 limit, not binary)
-    for (int i = 0; i < 12; ++i) { pkt.push_back(500 & 0xFF); pkt.push_back((500 >> 8) & 0xFF); }
-    // positions
+    pkt.push_back(38);  // size = 2 + 12 + 24 = 38
+    pkt.push_back(1);   // cmd: INST_SETPOS
+    // torque: 12 x uint8 (BB12B12H protocol - torque is a BYTE, not uint16)
+    for (int i = 0; i < 12; ++i) { pkt.push_back(1); }  // 1 = torque enabled
+    // positions: 12 x uint16 little-endian
     for (auto p : positions) { pkt.push_back(p & 0xFF); pkt.push_back((p >> 8) & 0xFF); }
 
     if (send(sock_fd, pkt.data(), pkt.size(), 0) < 0) { perror("send"); return false; }

@@ -183,24 +183,23 @@ bool ESP32Interface::servos_set_position_torque(
   const std::array<uint16_t, NUM_SERVOS> & positions,
   const std::array<uint16_t, NUM_SERVOS> & torque)
 {
-  // Protocol: BB12H12H
-  // B: packet size (38)
-  // B: command type (1)
-  // 12H: torque values
-  // 12H: position values
+  // Protocol: BB12B12H  (matches installed esp32-proxy on Mini Pupper 2)
+  // B:  packet size (38 = 2 + 12 + 24)
+  // B:  command type (1 = INST_SETPOS)
+  // 12B: torque values as uint8 (0=disabled, 1=enabled)
+  // 12H: position values as uint16 little-endian
 
   std::vector<uint8_t> send_data;
-  send_data.push_back(38);  // packet size
+  send_data.push_back(38);  // total packet size
   send_data.push_back(1);   // command type
 
-  // Add torque values (little-endian)
+  // Add torque values as single bytes (uint8)
   for (const auto & t : torque)
   {
-    send_data.push_back(t & 0xFF);
-    send_data.push_back((t >> 8) & 0xFF);
+    send_data.push_back(static_cast<uint8_t>(t & 0xFF));
   }
 
-  // Add position values (little-endian)
+  // Add position values (uint16 little-endian)
   for (const auto & p : positions)
   {
     send_data.push_back(p & 0xFF);
@@ -220,18 +219,11 @@ bool ESP32Interface::servos_set_position_torque(
       positions[9], positions[10], positions[11]);
     RCLCPP_INFO(
       rclcpp::get_logger("ESP32Interface"),
-      "Sending torques: [%d,%d,%d, %d,%d,%d, %d,%d,%d, %d,%d,%d]",
-      torque[0], torque[1], torque[2],
-      torque[3], torque[4], torque[5],
-      torque[6], torque[7], torque[8],
-      torque[9], torque[10], torque[11]);
-    RCLCPP_INFO(
-      rclcpp::get_logger("ESP32Interface"),
-      "Packet: size=%zu, header=[%02x %02x], torque_bytes=[%02x %02x %02x %02x], pos_bytes=[%02x %02x %02x %02x]",
+      "Packet: size=%zu bytes, header=[%02x %02x], torque=[%02x %02x %02x %02x], pos_bytes=[%02x %02x %02x %02x]",
       send_data.size(),
       send_data[0], send_data[1],
       send_data[2], send_data[3], send_data[4], send_data[5],
-      send_data[26], send_data[27], send_data[28], send_data[29]);
+      send_data[14], send_data[15], send_data[16], send_data[17]);
   }
 
   RCLCPP_DEBUG(rclcpp::get_logger("ESP32Interface"), "Sending position command");
@@ -270,7 +262,7 @@ bool ESP32Interface::servos_set_position(
   const std::array<uint16_t, NUM_SERVOS> & positions)
 {
   std::array<uint16_t, NUM_SERVOS> torque;
-  torque.fill(500);  // Match Python DEFAULT_TORQUE (torque_enable is a 0-1023 limit, not binary)
+  torque.fill(1);  // Binary enable (BB12B12H protocol: torque is uint8, 1=enabled)
   return servos_set_position_torque(positions, torque);
 }
 

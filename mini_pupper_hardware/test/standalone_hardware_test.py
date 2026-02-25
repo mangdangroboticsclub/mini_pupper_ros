@@ -162,8 +162,8 @@ def run_live_test(standing):
         return
 
     esp32 = ESP32Interface()
-    torque_500 = [500] * 12
-    torque_1   = [1]   * 12
+    torque_on  = [1]   * 12  # Binary enable (BB12B12H: torque is uint8, 1=enabled)
+    torque_1   = [1]   * 12  # Same - kept for comparison test
 
     # ── [1] Read current positions ────────────────────────────────────────────
     print("\n[1] Reading current servo positions...")
@@ -171,11 +171,11 @@ def run_live_test(standing):
     if before:
         print_servo_array("  Current", before)
 
-    # ── [2a] Send via servos_set_position_torque with torque=500  (C++ fix) ──
-    print("\n[2a] Sending standing pose via servos_set_position_torque(torque=500)...")
-    print("     (This is what the fixed C++ code uses)")
+    # ── [2a] Send via servos_set_position_torque with torque=1 (correct protocol) ──
+    print("\n[2a] Sending standing pose via servos_set_position_torque(torque=1)...")
+    print("     (BB12B12H protocol: torque is uint8 binary enable, 1=enabled)")
     print_servo_array("  Commanding", standing)
-    esp32.servos_set_position_torque(standing, torque_500)
+    esp32.servos_set_position_torque(standing, torque_on)
     print("  Waiting 2s...")
     time.sleep(2)
 
@@ -184,11 +184,11 @@ def run_live_test(standing):
         print_servo_array("  Actual  ", after_500)
         compare_positions(standing, after_500, "2a torque=500")
 
-    # ── [2b] Send via servos_set_position (torque=1, the broken path) ────────
-    print("\n[2b] Returning to neutral, then sending via servos_set_position(torque=1)...")
-    print("     (This is the broken path - torque too low)")
+    # ── [2b] Send via servos_set_position (uses internal torque=1) ────────────
+    print("\n[2b] Returning to neutral, then sending via servos_set_position()...")
+    print("     (Uses ESP32Interface.servos_set_position internally, torque=1)")
     neutral = [512] * 12
-    esp32.servos_set_position_torque(neutral, torque_500)
+    esp32.servos_set_position_torque(neutral, torque_on)
     time.sleep(1)
 
     esp32.servos_set_position(standing)   # uses torque=1 internally
@@ -203,7 +203,7 @@ def run_live_test(standing):
     # ── [2c] Send via HardwareInterface (the actual servo_interface.py path) ─
     print("\n[2c] Returning to neutral, then sending via HardwareInterface...")
     print("     (This is the exact path used by servo_interface.py)")
-    esp32.servos_set_position_torque(neutral, torque_500)
+    esp32.servos_set_position_torque(neutral, torque_on)
     time.sleep(1)
 
     joint_angles = np.array([
@@ -222,10 +222,10 @@ def run_live_test(standing):
         compare_positions(standing, after_hw, "2c HardwareInterface")
 
     # ── [3] Individual servo sweep ────────────────────────────────────────────
-    print("\n[3] Individual servo sweep (torque=500, each channel 400→624)...")
+    print("\n[3] Individual servo sweep (torque=1 binary enable, each channel 400→624)...")
     print("    Watch the PHYSICAL robot - which leg/joint moves?")
 
-    esp32.servos_set_position_torque(neutral, torque_500)
+    esp32.servos_set_position_torque(neutral, torque_on)
     time.sleep(1)
 
     for i in range(12):
@@ -233,13 +233,13 @@ def run_live_test(standing):
 
         cmd = list(neutral)
         cmd[i] = 400
-        esp32.servos_set_position_torque(cmd, torque_500)
+        esp32.servos_set_position_torque(cmd, torque_on)
         time.sleep(1)
         pos = esp32.servos_get_position()
         actual_400 = pos[i] if pos else -1
 
         cmd[i] = 624
-        esp32.servos_set_position_torque(cmd, torque_500)
+        esp32.servos_set_position_torque(cmd, torque_on)
         time.sleep(1)
         pos2 = esp32.servos_get_position()
         actual_624 = pos2[i] if pos2 else -1
@@ -250,7 +250,7 @@ def run_live_test(standing):
 
         # Return to neutral
         cmd[i] = 512
-        esp32.servos_set_position_torque(cmd, torque_500)
+        esp32.servos_set_position_torque(cmd, torque_on)
         time.sleep(0.3)
 
     esp32.close()
