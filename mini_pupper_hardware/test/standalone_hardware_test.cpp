@@ -195,8 +195,8 @@ void run_math_test()
     {"LF abd -0.080", -0.080, 0, 1, 526},
     {"LF hip  1.078", 1.078,  1, 1, 461},
     {"LF knee_abs -0.905", -0.905, 2, 1, 533},
-    {"RB abd -0.080", -0.080, 0, 2, 526},  // same as LF (multiplier -1)
-    {"LB abd +0.080", 0.080,  0, 3, 498},  // same as RF (multiplier -1)
+    {"RB abd +0.080", 0.080,  0, 2, 526},  // RB multiplier=-1: 512 - 175*( 0.080)*(-1) = 526
+    {"LB abd -0.080", -0.080, 0, 3, 498},  // LB multiplier=-1: 512 - 175*(-0.080)*(-1) = 498
     // Neutral position (all axes, all legs should be 512 at neutral angles)
     {"RF abd neutral", 0.0,    0, 0, 512},
     {"LF abd neutral", 0.0,    0, 1, 512},
