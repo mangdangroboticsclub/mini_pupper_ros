@@ -112,8 +112,8 @@ public:
     std::vector<uint8_t> pkt;
     pkt.push_back(38);  // size
     pkt.push_back(1);   // cmd: set_position_torque
-    // torque = 1 for all
-    for (int i = 0; i < 12; ++i) { pkt.push_back(1); pkt.push_back(0); }
+    // torque = 500 for all (matches Python DEFAULT_TORQUE; torque_enable is a 0-1023 limit, not binary)
+    for (int i = 0; i < 12; ++i) { pkt.push_back(500 & 0xFF); pkt.push_back((500 >> 8) & 0xFF); }
     // positions
     for (auto p : positions) { pkt.push_back(p & 0xFF); pkt.push_back((p >> 8) & 0xFF); }
 

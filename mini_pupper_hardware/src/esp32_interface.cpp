@@ -270,7 +270,7 @@ bool ESP32Interface::servos_set_position(
   const std::array<uint16_t, NUM_SERVOS> & positions)
 {
   std::array<uint16_t, NUM_SERVOS> torque;
-  torque.fill(1);  // Default torque value
+  torque.fill(500);  // Match Python DEFAULT_TORQUE (torque_enable is a 0-1023 limit, not binary)
   return servos_set_position_torque(positions, torque);
 }
 
