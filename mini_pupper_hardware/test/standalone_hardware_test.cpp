@@ -272,6 +272,13 @@ void run_live_test()
 {
   std::cout << "\n========== LIVE HARDWARE TEST ==========\n";
 
+  const char* servo_labels[] = {
+    "RF-abd","RF-hip","RF-knee",
+    "LF-abd","LF-hip","LF-knee",
+    "RB-abd","RB-hip","RB-knee",
+    "LB-abd","LB-hip","LB-knee"
+  };
+
   SimpleESP32 esp32;
   if (!esp32.connect())
   {
@@ -338,12 +345,6 @@ void run_live_test()
               << "  LB[abd=" << after[9]  << " hip=" << after[10] << " knee=" << after[11] << "]\n";
 
     std::cout << "\n[4] Comparing commanded vs actual:\n";
-    const char* servo_labels[] = {
-      "RF-abd","RF-hip","RF-knee",
-      "LF-abd","LF-hip","LF-knee",
-      "RB-abd","RB-hip","RB-knee",
-      "LB-abd","LB-hip","LB-knee"
-    };
     bool any_error = false;
     for (int i = 0; i < 12; ++i)
     {
