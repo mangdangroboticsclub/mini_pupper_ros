@@ -6,7 +6,7 @@ from .swing_controller import SwingController
 
 from .Kinematics import four_legs_inverse_kinematics
 from .Utilities import clipped_first_order_filter
-from .Utilities import convert_to_JTP_positions
+from .Utilities import convert_to_command_positions
 from .State import BehaviorState, State
 
 from .Config import Configuration
@@ -335,7 +335,7 @@ class StanfordControllerNode(Node):
 
     def publish_joints_command(self):
         joints_cmd_msg = Float64MultiArray()
-        joints_cmd_msg.data = convert_to_JTP_positions(self.state.joint_angles)
+        joints_cmd_msg.data = convert_to_command_positions(self.state.joint_angles)
         self.joint_position_publisher.publish(joints_cmd_msg)
 
 
