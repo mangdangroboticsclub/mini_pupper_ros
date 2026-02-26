@@ -108,7 +108,10 @@ public:
 
   bool send_positions(const std::array<uint16_t, 12>& positions)
   {
-    // Protocol: BB12H12H (size=38, cmd=1, 12x torque uint16, 12x pos uint16)
+    // Protocol: BB12B12H — total 38 bytes
+    //   BB:  2 bytes  — header (size=38, cmd=1)
+    //   12B: 12 bytes — torque enable as uint8 (1=enabled)
+    //   12H: 24 bytes — positions as uint16 little-endian
     std::vector<uint8_t> pkt;
     pkt.push_back(38);  // size = 2 + 12 + 24 = 38
     pkt.push_back(1);   // cmd: INST_SETPOS

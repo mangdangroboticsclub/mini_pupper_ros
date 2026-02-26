@@ -8,7 +8,7 @@ Run on the robot (no ROS2 required):
   python3 standalone_hardware_test.py --live   # send to real ESP32 socket
 
 NOTE: ESP32Interface.servos_set_position() uses torque=1 (broken!).
-      HardwareInterface.set_actuator_postions() uses torque=500 (correct).
+      HardwareInterface.set_actuator_postions() uses torque=1 (correct, binary enable byte).
       This test exercises BOTH paths so you can compare.
 """
 
@@ -163,7 +163,6 @@ def run_live_test(standing):
 
     esp32 = ESP32Interface()
     torque_on  = [1]   * 12  # Binary enable (BB12B12H: torque is uint8, 1=enabled)
-    torque_1   = [1]   * 12  # Same - kept for comparison test
 
     # ── [1] Read current positions ────────────────────────────────────────────
     print("\n[1] Reading current servo positions...")
@@ -182,11 +181,11 @@ def run_live_test(standing):
     after_500 = esp32.servos_get_position()
     if after_500:
         print_servo_array("  Actual  ", after_500)
-        compare_positions(standing, after_500, "2a torque=500")
+        compare_positions(standing, after_500, "2a torque=1")
 
     # ── [2b] Send via servos_set_position (uses internal torque=1) ────────────
     print("\n[2b] Returning to neutral, then sending via servos_set_position()...")
-    print("     (Uses ESP32Interface.servos_set_position internally, torque=1)")
+    print("     (Uses ESP32Interface.servos_set_position - same result as 2a)")
     neutral = [512] * 12
     esp32.servos_set_position_torque(neutral, torque_on)
     time.sleep(1)
@@ -198,7 +197,7 @@ def run_live_test(standing):
     after_1 = esp32.servos_get_position()
     if after_1:
         print_servo_array("  Actual  ", after_1)
-        compare_positions(standing, after_1, "2b torque=1 (broken)")
+        compare_positions(standing, after_1, "2b servos_set_position")
 
     # ── [2c] Send via HardwareInterface (the actual servo_interface.py path) ─
     print("\n[2c] Returning to neutral, then sending via HardwareInterface...")
