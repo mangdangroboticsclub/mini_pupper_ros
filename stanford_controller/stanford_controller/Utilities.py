@@ -39,10 +39,10 @@ def convert_to_JTP_positions(joint_angles):
     rb2_position = joint_angles[1, 2]
     lb2_position = joint_angles[1, 3]
 
-    rf3_position = joint_angles[2, 0] - rf2_position
-    lf3_position = joint_angles[2, 1] - lf2_position
-    rb3_position = joint_angles[2, 2] - rb2_position
-    lb3_position = joint_angles[2, 3] - lb2_position
+    rf3_position = joint_angles[2, 0]
+    lf3_position = joint_angles[2, 1]
+    rb3_position = joint_angles[2, 2]
+    lb3_position = joint_angles[2, 3]
 
     joint_positions = [
         lf1_position, lf2_position, lf3_position,

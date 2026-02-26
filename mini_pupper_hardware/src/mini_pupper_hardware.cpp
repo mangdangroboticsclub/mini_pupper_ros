@@ -326,19 +326,19 @@ void MiniPupperHardware::send_commands_to_hardware()
   // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are LB, [9..11] are RB (matches URDF/ros2_control order)
   const double lf_abd = hw_position_commands_[0];
   const double lf_hip = hw_position_commands_[1];
-  const double lf_knee = hw_position_commands_[2];
+  const double lf_knee_abs = hw_position_commands_[2];
 
   const double rf_abd = hw_position_commands_[3];
   const double rf_hip = hw_position_commands_[4];
-  const double rf_knee = hw_position_commands_[5];
+  const double rf_knee_abs = hw_position_commands_[5];
 
   const double lb_abd = hw_position_commands_[6];
   const double lb_hip = hw_position_commands_[7];
-  const double lb_knee = hw_position_commands_[8];
+  const double lb_knee_abs = hw_position_commands_[8];
 
   const double rb_abd = hw_position_commands_[9];
   const double rb_hip = hw_position_commands_[10];
-  const double rb_knee = hw_position_commands_[11];
+  const double rb_knee_abs = hw_position_commands_[11];
 
   // Debug: Log received joint angles from controller
   static int angle_log_counter = 0;
@@ -349,32 +349,16 @@ void MiniPupperHardware::send_commands_to_hardware()
       "Joint angles received from controller (rad):");
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  LF [abd=%.3f, hip=%.3f, knee=%.3f]", lf_abd, lf_hip, lf_knee);
+      "  LF [abd=%.3f, hip=%.3f, knee_abs=%.3f]", lf_abd, lf_hip, lf_knee_abs);
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  RF [abd=%.3f, hip=%.3f, knee=%.3f]", rf_abd, rf_hip, rf_knee);
+      "  RF [abd=%.3f, hip=%.3f, knee_abs=%.3f]", rf_abd, rf_hip, rf_knee_abs);
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  LB [abd=%.3f, hip=%.3f, knee=%.3f]", lb_abd, lb_hip, lb_knee);
+      "  LB [abd=%.3f, hip=%.3f, knee_abs=%.3f]", lb_abd, lb_hip, lb_knee_abs);
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
-      "  RB [abd=%.3f, hip=%.3f, knee=%.3f]", rb_abd, rb_hip, rb_knee);
-  }
-
-  // Legacy expects axis2 as absolute: hip + knee.
-  const double rf_knee_abs = rf_hip + rf_knee;
-  const double lf_knee_abs = lf_hip + lf_knee;
-  const double rb_knee_abs = rb_hip + rb_knee;
-  const double lb_knee_abs = lb_hip + lb_knee;
-
-  // Log absolute knee angles for debugging
-  static int abs_log_counter = 0;
-  if (++abs_log_counter % 100 == 0)
-  {
-    RCLCPP_INFO(
-      rclcpp::get_logger("MiniPupperHardware"),
-      "Absolute knee angles (hip+knee): LF=%.3f RF=%.3f LB=%.3f RB=%.3f",
-      lf_knee_abs, rf_knee_abs, lb_knee_abs, rb_knee_abs);
+      "  RB [abd=%.3f, hip=%.3f, knee_abs=%.3f]", rb_abd, rb_hip, rb_knee_abs);
   }
 
   // leg_index mapping: 0 RF, 1 LF, 2 RB, 3 LB
@@ -453,22 +437,18 @@ void MiniPupperHardware::read_state_from_hardware()
   const double rf_abd = servo_position_to_angle(servo_positions[0], 0, 0);
   const double rf_hip = servo_position_to_angle(servo_positions[1], 1, 0);
   const double rf_knee_abs = servo_position_to_angle(servo_positions[2], 2, 0);
-  const double rf_knee = rf_knee_abs - rf_hip;
 
   const double lf_abd = servo_position_to_angle(servo_positions[3], 0, 1);
   const double lf_hip = servo_position_to_angle(servo_positions[4], 1, 1);
   const double lf_knee_abs = servo_position_to_angle(servo_positions[5], 2, 1);
-  const double lf_knee = lf_knee_abs - lf_hip;
 
   const double rb_abd = servo_position_to_angle(servo_positions[6], 0, 2);
   const double rb_hip = servo_position_to_angle(servo_positions[7], 1, 2);
   const double rb_knee_abs = servo_position_to_angle(servo_positions[8], 2, 2);
-  const double rb_knee = rb_knee_abs - rb_hip;
 
   const double lb_abd = servo_position_to_angle(servo_positions[9], 0, 3);
   const double lb_hip = servo_position_to_angle(servo_positions[10], 1, 3);
   const double lb_knee_abs = servo_position_to_angle(servo_positions[11], 2, 3);
-  const double lb_knee = lb_knee_abs - lb_hip;
   
   // Debug: log decoded joint angles occasionally
   if (read_debug_counter % 100 == 0)
@@ -476,26 +456,26 @@ void MiniPupperHardware::read_state_from_hardware()
     RCLCPP_INFO(
       rclcpp::get_logger("MiniPupperHardware"),
       "Decoded angles: LF[%.3f,%.3f,%.3f] RF[%.3f,%.3f,%.3f] LB[%.3f,%.3f,%.3f] RB[%.3f,%.3f,%.3f]",
-      lf_abd, lf_hip, lf_knee, rf_abd, rf_hip, rf_knee, 
-      lb_abd, lb_hip, lb_knee, rb_abd, rb_hip, rb_knee);
+      lf_abd, lf_hip, lf_knee_abs, rf_abd, rf_hip, rf_knee_abs,
+      lb_abd, lb_hip, lb_knee_abs, rb_abd, rb_hip, rb_knee_abs);
   }
 
   // Write state back to hw_positions_[] in joint_names_ order
   hw_positions_[0] = lf_abd;
   hw_positions_[1] = lf_hip;
-  hw_positions_[2] = lf_knee;
+  hw_positions_[2] = lf_knee_abs;
 
   hw_positions_[3] = rf_abd;
   hw_positions_[4] = rf_hip;
-  hw_positions_[5] = rf_knee;
+  hw_positions_[5] = rf_knee_abs;
 
   hw_positions_[6] = lb_abd;
   hw_positions_[7] = lb_hip;
-  hw_positions_[8] = lb_knee;
+  hw_positions_[8] = lb_knee_abs;
 
   hw_positions_[9] = rb_abd;
   hw_positions_[10] = rb_hip;
-  hw_positions_[11] = rb_knee;
+  hw_positions_[11] = rb_knee_abs;
 }
 
 uint16_t MiniPupperHardware::angle_to_servo_position(
