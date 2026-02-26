@@ -7,9 +7,10 @@ Run on the robot (no ROS2 required):
   python3 standalone_hardware_test.py          # math-only test (no hardware)
   python3 standalone_hardware_test.py --live   # send to real ESP32 socket
 
-NOTE: ESP32Interface.servos_set_position() uses torque=1 (broken!).
-      HardwareInterface.set_actuator_postions() uses torque=1 (correct, binary enable byte).
-      This test exercises BOTH paths so you can compare.
+Live test structure (mirrors C++):
+  [1] Read current servo positions
+  [2] Send standing pose via HardwareInterface (the production code path)
+  [3] Individual servo sweep: each channel 400 -> 512 -> 624
 """
 
 import math
@@ -162,7 +163,7 @@ def run_live_test(standing):
         return
 
     esp32 = ESP32Interface()
-    torque_on  = [1]   * 12  # Binary enable (BB12B12H: torque is uint8, 1=enabled)
+    torque_on = [1] * 12  # Binary enable (BB12B12H: torque is uint8, 1=enabled)
 
     # ── [1] Read current positions ────────────────────────────────────────────
     print("\n[1] Reading current servo positions...")
@@ -170,43 +171,13 @@ def run_live_test(standing):
     if before:
         print_servo_array("  Current", before)
 
-    # ── [2a] Send via servos_set_position_torque with torque=1 (correct protocol) ──
-    print("\n[2a] Sending standing pose via servos_set_position_torque(torque=1)...")
-    print("     (BB12B12H protocol: torque is uint8 binary enable, 1=enabled)")
+    # ── [2] Send standing pose via HardwareInterface (the production code path) ──
+    print("\n[2] Sending standing pose via HardwareInterface...")
+    print("     (This is the exact path used by servo_interface.py / ros2_control)")
     print_servo_array("  Commanding", standing)
-    esp32.servos_set_position_torque(standing, torque_on)
-    print("  Waiting 2s...")
-    time.sleep(2)
-
-    after_500 = esp32.servos_get_position()
-    if after_500:
-        print_servo_array("  Actual  ", after_500)
-        compare_positions(standing, after_500, "2a torque=1")
-
-    # ── [2b] Send via servos_set_position (uses internal torque=1) ────────────
-    print("\n[2b] Returning to neutral, then sending via servos_set_position()...")
-    print("     (Uses ESP32Interface.servos_set_position - same result as 2a)")
-    neutral = [512] * 12
-    esp32.servos_set_position_torque(neutral, torque_on)
-    time.sleep(1)
-
-    esp32.servos_set_position(standing)   # uses torque=1 internally
-    print("  Waiting 2s...")
-    time.sleep(2)
-
-    after_1 = esp32.servos_get_position()
-    if after_1:
-        print_servo_array("  Actual  ", after_1)
-        compare_positions(standing, after_1, "2b servos_set_position")
-
-    # ── [2c] Send via HardwareInterface (the actual servo_interface.py path) ─
-    print("\n[2c] Returning to neutral, then sending via HardwareInterface...")
-    print("     (This is the exact path used by servo_interface.py)")
-    esp32.servos_set_position_torque(neutral, torque_on)
-    time.sleep(1)
 
     joint_angles = np.array([
-        [RF_ABD,   LF_ABD,   RB_ABD,   LB_ABD],
+        [RF_ABD,    LF_ABD,    RB_ABD,    LB_ABD],
         [HIP_ANGLE, HIP_ANGLE, HIP_ANGLE, HIP_ANGLE],
         [KNEE_ABS,  KNEE_ABS,  KNEE_ABS,  KNEE_ABS],
     ])
@@ -215,15 +186,16 @@ def run_live_test(standing):
     print("  Waiting 2s...")
     time.sleep(2)
 
-    after_hw = esp32.servos_get_position()
-    if after_hw:
-        print_servo_array("  Actual  ", after_hw)
-        compare_positions(standing, after_hw, "2c HardwareInterface")
+    after = esp32.servos_get_position()
+    if after:
+        print_servo_array("  Actual  ", after)
+        compare_positions(standing, after, "2 HardwareInterface standing pose")
 
     # ── [3] Individual servo sweep ────────────────────────────────────────────
-    print("\n[3] Individual servo sweep (torque=1 binary enable, each channel 400→624)...")
+    print("\n[3] Individual servo sweep (each channel 400 → 624)...")
     print("    Watch the PHYSICAL robot - which leg/joint moves?")
 
+    neutral = [512] * 12
     esp32.servos_set_position_torque(neutral, torque_on)
     time.sleep(1)
 
