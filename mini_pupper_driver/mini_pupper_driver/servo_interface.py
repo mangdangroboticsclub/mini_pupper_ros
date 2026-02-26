@@ -28,22 +28,12 @@ class ServoInterface(Node):
     def __init__(self):
         super().__init__('servo_interface')
         
-        # Log at startup with WARN level so it's always visible
-        self.get_logger().warn('========================================')
-        self.get_logger().warn('Servo Interface Node Starting...')
-        self.get_logger().warn('========================================')
-        
         self.subscriber = self.create_subscription(
             JointTrajectory, 'joint_group_effort_controller/joint_trajectory',
             self.cmd_callback, 1)
         self.hardware_interface = HardwareInterface()
         
-        # Create timer to periodically read servo positions (1Hz)
-        self.read_timer = self.create_timer(1.0, self.read_servo_positions)
-        
-        self.get_logger().info('Servo Interface Node initialized successfully')
-        self.get_logger().info('Listening on: joint_group_effort_controller/joint_trajectory')
-        self.get_logger().info('Reading servo positions every 1 second')
+        self.get_logger().info('Servo Interface Node initialized')
 
     def cmd_callback(self, msg):
         joint_positions = msg.points[0].positions
@@ -60,26 +50,11 @@ class ServoInterface(Node):
         rb2_position = joint_positions[10]
         rb3_position = joint_positions[11]
 
-        # Debug: Log received joint angles from controller (every 100 calls)
-        if not hasattr(self, '_cmd_counter'):
-            self._cmd_counter = 0
-        self._cmd_counter += 1
-        
-        if self._cmd_counter % 100 == 0:
-            self.get_logger().info('Joint angles received from controller (rad):')
-            self.get_logger().info(f'  LF [abd={lf1_position:.3f}, hip={lf2_position:.3f}, knee={lf3_position:.3f}]')
-            self.get_logger().info(f'  RF [abd={rf1_position:.3f}, hip={rf2_position:.3f}, knee={rf3_position:.3f}]')
-            self.get_logger().info(f'  LB [abd={lb1_position:.3f}, hip={lb2_position:.3f}, knee={lb3_position:.3f}]')
-            self.get_logger().info(f'  RB [abd={rb1_position:.3f}, hip={rb2_position:.3f}, knee={rb3_position:.3f}]')
-
         # Calculate absolute knee angles (hip + knee)
         lf_knee_abs = lf2_position + lf3_position
         rf_knee_abs = rf2_position + rf3_position
         lb_knee_abs = lb2_position + lb3_position
         rb_knee_abs = rb2_position + rb3_position
-
-        if self._cmd_counter % 100 == 0:
-            self.get_logger().info(f'Absolute knee angles (hip+knee): LF={lf_knee_abs:.3f} RF={rf_knee_abs:.3f} LB={lb_knee_abs:.3f} RB={rb_knee_abs:.3f}')
 
         joint_angles = np.array([
             [rf1_position, lf1_position, rb1_position, lb1_position],
@@ -88,24 +63,6 @@ class ServoInterface(Node):
         ])
 
         self.hardware_interface.set_actuator_postions(joint_angles)
-
-    def read_servo_positions(self):
-        """Periodically read and log servo positions from hardware"""
-        # Access ESP32Interface through HardwareInterface -> PWMParams -> esp32
-        try:
-            positions = self.hardware_interface.pwm_params.esp32.servos_get_position()
-            
-            if positions is None or len(positions) != 12:
-                self.get_logger().warn('Failed to read servo positions from hardware')
-                return
-            
-            self.get_logger().warn('Read servo positions from hardware:')
-            self.get_logger().warn(f'  RF: abd={positions[0]}, hip={positions[1]}, knee_abs={positions[2]}')
-            self.get_logger().warn(f'  LF: abd={positions[3]}, hip={positions[4]}, knee_abs={positions[5]}')
-            self.get_logger().warn(f'  RB: abd={positions[6]}, hip={positions[7]}, knee_abs={positions[8]}')
-            self.get_logger().warn(f'  LB: abd={positions[9]}, hip={positions[10]}, knee_abs={positions[11]}')
-        except Exception as e:
-            self.get_logger().error(f'Error reading servo positions: {e}')
 
 
 def main(args=None):
