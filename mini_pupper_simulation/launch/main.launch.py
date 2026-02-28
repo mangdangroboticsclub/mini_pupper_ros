@@ -16,6 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+ROS 2 Jazzy Main Simulation Launch File
+Uses ros_gz_sim for entity spawning with Gazebo Sim (Harmonic)
+"""
 
 import os
 from launch import LaunchDescription
@@ -33,38 +37,29 @@ ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_simulation')
 
-    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.world'])
+    # World configuration
+    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.sdf'])
     world = LaunchConfiguration('world')
     world_launch_arg = DeclareLaunchArgument(
         name='world',
         default_value=default_world_path,
-        description='Gazebo world path'
+        description='Gazebo world path (.sdf format for Gazebo Sim)'
     )
 
+    # Initial pose
     world_init_x = LaunchConfiguration('world_init_x')
-    world_init_x_launch_arg = DeclareLaunchArgument(
-        name='world_init_x',
-        default_value='0.0'
-    )
+    world_init_x_launch_arg = DeclareLaunchArgument('world_init_x', default_value='0.0')
 
     world_init_y = LaunchConfiguration('world_init_y')
-    world_init_y_launch_arg = DeclareLaunchArgument(
-        name='world_init_y',
-        default_value='0.0'
-    )
+    world_init_y_launch_arg = DeclareLaunchArgument('world_init_y', default_value='0.0')
 
     world_init_z = LaunchConfiguration('world_init_z')
-    world_init_z_launch_arg = DeclareLaunchArgument(
-        name='world_init_z',
-        default_value='0.066'
-    )
+    world_init_z_launch_arg = DeclareLaunchArgument('world_init_z', default_value='0.066')
 
     world_init_heading = LaunchConfiguration('world_init_heading')
-    world_init_heading_launch_arg = DeclareLaunchArgument(
-        name='world_init_heading',
-        default_value='0.0'
-    )
+    world_init_heading_launch_arg = DeclareLaunchArgument('world_init_heading', default_value='0.0')
 
+    # Bringup launch
     bringup_launch_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_bringup'), 'launch', 'bringup.launch.py']
     )
@@ -76,20 +71,20 @@ def generate_launch_description():
         }.items()
     )
 
+    # Gazebo Sim launch (with bridge)
     gazebo_launch_path = PathJoinSubstitution([this_package, 'launch', 'gazebo.launch.py'])
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
-        launch_arguments={
-            'world': world
-        }.items()
+        launch_arguments={'world': world}.items()
     )
 
+    # Spawn entity using ros_gz_sim (replaces gazebo_ros spawn_entity.py)
     spawn_entity = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
+        package='ros_gz_sim',
+        executable='create',
         arguments=[
+            '-name', ROBOT_MODEL,
             '-topic', 'robot_description',
-            '-entity', ROBOT_MODEL,
             '-x', world_init_x,
             '-y', world_init_y,
             '-z', world_init_z,
@@ -100,15 +95,15 @@ def generate_launch_description():
         output='screen'
     )
 
+    # ROS2 Controllers
     ros2_controllers_launch_path = PathJoinSubstitution([
-        this_package,
-        'launch',
-        'ros2_controllers.launch.py'
+        this_package, 'launch', 'ros2_controllers.launch.py'
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)
     )
 
+    # Contact sensor (champ_gazebo)
     links_map_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_description'), 'config', 'champ', ROBOT_MODEL, 'links.yaml']
     )
@@ -118,7 +113,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'use_sim_time': True},
-            links_map_path  # Load parameters from the YAML file,
+            links_map_path
         ]
     )
 

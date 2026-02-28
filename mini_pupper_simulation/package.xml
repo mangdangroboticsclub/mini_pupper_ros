@@ -2,7 +2,7 @@
 <package format="3">
   <name>mini_pupper_simulation</name>
   <version>1.0.0</version>
-  <description>Mini Pupper Simulation Package</description>
+  <description>Mini Pupper Simulation Package for ROS 2 Jazzy with Gazebo Sim (Harmonic)</description>
 
   <maintainer email="fae@mangdang.net">MangDang</maintainer>
   <author email="thefoxfoxfox@outlook.com">Han</author>
@@ -13,11 +13,12 @@
   <build_depend>launch_ros</build_depend>
 
   <depend>rclcpp</depend>
-  <exec_depend>gazebo_ros</exec_depend>
-  <exec_depend>gazebo_ros_pkgs</exec_depend>
-  <exec_depend>gazebo_plugins</exec_depend>
+  <!-- ROS 2 Jazzy: Gazebo Classic → Gazebo Sim (Harmonic) -->
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>ros_gz_image</exec_depend>
+  <exec_depend>gz_ros2_control</exec_depend>
   <exec_depend>ros2_controllers</exec_depend>
-  <exec_depend>gazebo_ros2_control</exec_depend>
   <exec_depend>ros2_control</exec_depend>
 
   <exec_depend>rviz2</exec_depend>

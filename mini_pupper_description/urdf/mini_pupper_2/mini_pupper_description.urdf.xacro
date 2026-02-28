@@ -902,9 +902,10 @@
     <parent link="base_link"/>
     <child link="Shell_Side"/>
   </joint>
-  <ros2_control name="GazeboSystem" type="system">
+  <!-- ROS 2 Jazzy: Gazebo Classic → Gazebo Sim (Harmonic) -->
+  <ros2_control name="GazeboSimSystem" type="system">
     <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
     <joint name="base_lf1">
       <command_interface name="effort"/> 
@@ -1207,8 +1208,9 @@
     </plugin>
   </gazebo>
 
+  <!-- ROS 2 Jazzy: Gazebo Classic → Gazebo Sim (Harmonic) -->
   <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control">
       <parameters>$(find mini_pupper_description)/config/ros_control/mini_pupper_2_controller.yaml</parameters>
     </plugin>
   </gazebo>
