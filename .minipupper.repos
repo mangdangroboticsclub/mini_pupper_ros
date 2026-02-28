@@ -1,5 +1,5 @@
 repositories:
-  # Core robot control
+  # Core robot control - CHAMP uses ros2 branch
   champ/champ:
     type: git
     url: https://github.com/mangdangroboticsclub/champ.git
@@ -15,13 +15,12 @@ repositories:
     url: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
     version: master
   
-  # ROS 2 Jazzy Gazebo Sim (Harmonic) integration
-  # Using main/ros2 branches as jazzy-specific branches may not exist yet
+  # ROS 2 Jazzy Gazebo Sim (Harmonic) - use jazzy branches
   ros_gz:
     type: git
     url: https://github.com/gazebosim/ros_gz.git
-    version: ros2
+    version: jazzy
   gz_ros2_control:
     type: git
     url: https://github.com/ros-controls/gz_ros2_control.git
-    version: master
+    version: jazzy
