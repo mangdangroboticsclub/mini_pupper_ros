@@ -14,8 +14,8 @@ jobs:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           ROS_REPO: ${{ matrix.ros_repo }}
           OS_CODE_NAME: noble
-          # 修正点：将 gz_ros2_control 移出 skip 列表，确保 rosdep 安装其底层依赖
-          ROSDEP_SKIP_KEYS: "ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image velodyne_gazebo_plugins gazebo_ros2_control gazebo_plugins gazebo_ros gazebo_dev gazebo_msgs champ_gazebo"
+          # 重点：将 gz_ros2_control 重新加入 SKIP 列表，因为我们已经有它的源码了，不需要 rosdep 去找二进制包
+          ROSDEP_SKIP_KEYS: "ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image gz_ros2_control velodyne_gazebo_plugins gazebo_ros2_control gazebo_plugins gazebo_ros gazebo_dev gazebo_msgs champ_gazebo champ_base champ champ_msgs champ_description champ_init"
           COLCON_PKG_BLOCKLIST: "champ_gazebo"
-          # 专家级修正：在编译前手动注入 Gazebo Harmonic 的核心开发库，确保源码编译 gz_ros2_control 成功
-          BEFORE_INSTALL_TARGET_DEPENDENCIES: "sudo apt-get update && sudo apt-get install -y wget && sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable noble main' | sudo tee /etc/apt/sources.list.d/gazebo-stable.list && sudo apt-get update && sudo apt-get install -y libgz-sim8-dev libgz-ros2-control-dev"
+          # 修正：删除不存在的 libgz-ros2-control-dev，仅保留核心模拟器库
+          BEFORE_INSTALL_TARGET_DEPENDENCIES: "sudo apt-get update && sudo apt-get install -y wget && sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable noble main' | sudo tee /etc/apt/sources.list.d/gazebo-stable.list && sudo apt-get update && sudo apt-get install -y libgz-sim8-dev"
