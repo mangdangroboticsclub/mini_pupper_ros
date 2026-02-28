@@ -13,7 +13,9 @@
   <build_depend>launch_ros</build_depend>
 
   <depend>rclcpp</depend>
+  
   <!-- ROS 2 Jazzy: Gazebo Classic → Gazebo Sim (Harmonic) -->
+  <!-- These packages may need to be built from source in early Jazzy releases -->
   <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>ros_gz_bridge</exec_depend>
   <exec_depend>ros_gz_image</exec_depend>

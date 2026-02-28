@@ -1,4 +1,5 @@
 repositories:
+  # Core robot control
   champ/champ:
     type: git
     url: https://github.com/mangdangroboticsclub/champ.git
@@ -7,7 +8,20 @@ repositories:
     type: git
     url: https://github.com/chvmp/champ_teleop.git
     version: ros2
+  
+  # Lidar driver
   ldlidar_stl_ros:
     type: git
     url: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
     version: master
+  
+  # ROS 2 Jazzy Gazebo Sim (Harmonic) integration
+  # These may not be available via apt in early Jazzy releases
+  ros_gz:
+    type: git
+    url: https://github.com/gazebosim/ros_gz.git
+    version: jazzy
+  gz_ros2_control:
+    type: git
+    url: https://github.com/ros-controls/gz_ros2_control.git
+    version: jazzy
