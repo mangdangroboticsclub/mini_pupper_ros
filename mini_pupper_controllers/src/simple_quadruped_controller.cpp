@@ -1,3 +1,19 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// Copyright (c) 2026 MangDang
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "mini_pupper_controllers/simple_quadruped_controller.hpp"
 
 #include <algorithm>
@@ -177,22 +193,6 @@ controller_interface::return_type SimpleQuadrupedController::update(
   }
 
   const auto & target_positions = commanded_positions_;
-
-  // Debug: Log what controller is commanding
-  static int controller_log_counter = 0;
-  if (++controller_log_counter % 100 == 0)
-  {
-    RCLCPP_INFO(
-      get_node()->get_logger(),
-      "Controller commanding positions (rad): [%.3f,%.3f,%.3f, %.3f,%.3f,%.3f, %.3f,%.3f,%.3f, %.3f,%.3f,%.3f]",
-      target_positions[0], target_positions[1], target_positions[2],
-      target_positions[3], target_positions[4], target_positions[5],
-      target_positions[6], target_positions[7], target_positions[8],
-      target_positions[9], target_positions[10], target_positions[11]);
-    RCLCPP_INFO(
-      get_node()->get_logger(),
-      "Using %s commands", has_external_command_ ? "EXTERNAL" : "DEFAULT");
-  }
 
   if (command_interfaces_.size() != target_positions.size())
   {
