@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (c) 2024 MangDang
+# Copyright (c) 2026 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import TimerAction, RegisterEventHandler
-from launch.event_handlers import OnProcessExit
+from launch.actions import TimerAction
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -29,14 +28,14 @@ def generate_launch_description():
     # Get robot description from URDF file
     robot_model = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
     description_package = FindPackageShare("mini_pupper_description")
-    
+
     urdf_file = PathJoinSubstitution([
         description_package,
         "urdf",
         robot_model,
         "mini_pupper_description.urdf.xacro"
     ])
-    
+
     robot_description = Command(["xacro ", urdf_file, " use_gazebo_hardware:=false"])
 
     controller_params_file = PathJoinSubstitution([
@@ -77,7 +76,7 @@ def generate_launch_description():
         period=5.0,
         actions=[joint_state_broadcaster_spawner]
     )
-    
+
     delayed_quadruped_controller = TimerAction(
         period=6.0,
         actions=[simple_quadruped_controller_spawner]

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (c) 2024 MangDang
+# Copyright (c) 2026 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction
+from launch.actions import (
+    DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.substitutions import FindPackageShare
@@ -50,11 +51,11 @@ def generate_launch_description():
 
     # Conditional spawn height based on debug_control
     # When debug stand is enabled, spawn higher since the stand extends below the robot
-    # Normal spawn: 0.10m for crouch pose (feet ~7cm below body, so body at 10cm keeps feet slightly above ground for settling)
+    # Normal spawn: 0.10m for crouch pose (feet ~7cm below body)
     selected_spawn_z = PythonExpression([
         '"0.396" if "', debug_control, '" == "true" else "0.10"'
     ])
-    
+
     world_init_z = LaunchConfiguration("world_init_z")
     world_init_z_launch_arg = DeclareLaunchArgument(
         name="world_init_z",
@@ -64,7 +65,8 @@ def generate_launch_description():
 
     # Simulation-specific robot description launch with debug stand support
     description_launch_path = PathJoinSubstitution(
-        [FindPackageShare("mini_pupper_description"), "launch", "mini_pupper_description.launch.py"]
+        [FindPackageShare("mini_pupper_description"),
+         "launch", "mini_pupper_description.launch.py"]
     )
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),

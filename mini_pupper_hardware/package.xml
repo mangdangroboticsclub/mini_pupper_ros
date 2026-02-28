@@ -4,8 +4,9 @@
   <name>mini_pupper_hardware</name>
   <version>0.1.0</version>
   <description>ROS 2 hardware interface for Mini Pupper robot integrated with ros2_control</description>
-  <maintainer email="contact@mangdang.net">MangDang</maintainer>
+  <maintainer email="fae@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
+  <author email="sunhongshuai@gmail.com">cullensun</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

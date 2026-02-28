@@ -6,9 +6,10 @@
   <description>Custom ros2_control controllers for Mini Pupper robot</description>
 
   <maintainer email="fae@mangdang.net">MangDang</maintainer>
-  <author email="thefoxfoxfox@outlook.com">Han</author>
 
   <license>Apache-2.0</license>
+
+  <author email="sunhongshuai@gmail.com">cullensun</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
