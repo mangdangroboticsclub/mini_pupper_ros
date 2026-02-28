@@ -6,6 +6,8 @@ The `stanford_controller` package in this repository migrates the [StanfordQuadr
 
 ## Architecture
 
+This integration uses [ros2_control](https://control.ros.org) — the industry-standard hardware abstraction framework for ROS 2. It decouples controllers from hardware, enables controller hot-swapping at runtime, runs the hardware loop at a fixed rate (100 Hz) independent of the ROS executor, and provides full simulation/hardware parity via a mock plugin. Mini Pupper is now compatible with any ros2_control-compatible tool in the ecosystem.
+
 ```mermaid
 graph TD
     subgraph PC

@@ -4,6 +4,8 @@ ROS 2 `ros2_control` hardware interface plugin for the Mini Pupper 2 quadruped r
 
 ## Architecture
 
+This package integrates Mini Pupper 2 with [ros2_control](https://control.ros.org) — the industry-standard hardware abstraction framework for ROS 2. ros2_control decouples controllers from hardware: controllers talk to abstract command/state interfaces, while the hardware plugin handles the actual servo protocol. This enables controller hot-swapping at runtime, a fixed-rate real-time hardware loop, and full simulation/hardware parity via a mock plugin — all without changing any controller code.
+
 ```
 ros2_control framework
     ↓  (position commands / state feedback)
