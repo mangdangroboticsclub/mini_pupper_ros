@@ -62,6 +62,8 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
+            # Simulation clock (the pulse of simulation!)
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             # Velocity command
             '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
             # Odometry

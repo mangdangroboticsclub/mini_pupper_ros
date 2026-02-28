@@ -21,8 +21,8 @@ jobs:
     strategy:
       matrix:
         env:
-          # ROS 2 Jazzy on Ubuntu 24.04
-          - { ROS_DISTRO: jazzy, ROS_REPO: ros }
+          # ROS 2 Jazzy on Ubuntu 24.04 (Noble)
+          - { ROS_DISTRO: jazzy, ROS_REPO: ros, OS_CODE_NAME: noble }
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
