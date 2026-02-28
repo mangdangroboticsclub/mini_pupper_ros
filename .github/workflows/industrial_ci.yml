@@ -15,7 +15,7 @@ permissions:
 env:
   UPSTREAM_WORKSPACE: .minipupper.repos
   # Skip keys that may not be available in Jazzy yet
-  ROSDEP_SKIP_KEYS: ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image gz_ros2_control
+  ROSDEP_SKIP_KEYS: ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image gz_ros2_control velodyne_gazebo_plugins gazebo_ros2_control
 
 jobs:
   industrial_ci:
