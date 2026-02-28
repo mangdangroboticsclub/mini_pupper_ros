@@ -1,34 +1,19 @@
 name: industrial_ci
-
-on:
-  push:
-    paths-ignore:
-    - '**.md'
-  pull_request:
-    paths-ignore:
-    - '**.md'
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
-env:
-  UPSTREAM_WORKSPACE: .minipupper.repos
-  # Skip keys that may not be available in Jazzy yet
-  ROSDEP_SKIP_KEYS: "ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image gz_ros2_control velodyne_gazebo_plugins gazebo_ros2_control gazebo_plugins gazebo_ros gazebo_dev gazebo_msgs"
-  # Create COLCON_IGNORE for champ_gazebo after vcs import
-  BEFORE_SCRIPT: "touch $BASEDIR/upstream_ws/src/champ/champ_gazebo/COLCON_IGNORE"
-
+on: [push, pull_request]
 jobs:
   industrial_ci:
     strategy:
       matrix:
-        env:
-          # ROS 2 Jazzy on Ubuntu 24.04 (Noble)
-          # Using ros-testing for latest packages
-          - { ROS_DISTRO: jazzy, ROS_REPO: testing, OS_CODE_NAME: noble }
+        ros_distro: [jazzy]
+        ros_repo: [main]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: "ros-industrial/industrial_ci@master"
-        env: ${{ matrix.env }}
+      - uses: 'ros-industrial/industrial_ci@master'
+        env:
+          ROS_DISTRO: ${{ matrix.ros_distro }}
+          ROS_REPO: ${{ matrix.ros_repo }}
+          OS_CODE_NAME: noble
+          ROSDEP_SKIP_KEYS: "ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image gz_ros2_control velodyne_gazebo_plugins gazebo_ros2_control gazebo_plugins gazebo_ros gazebo_dev gazebo_msgs"
+          COLCON_PKG_BLOCKLIST: "champ_gazebo"
+          BEFORE_INSTALL_TARGET_DEPENDENCIES: "sudo apt-get update && sudo apt-get install -y python3-vcstool"
