@@ -77,7 +77,7 @@ on the robot without ROS 2. See [`test/README.md`](test/README.md).
 |---------|-------|
 | Plugin not found | `colcon build`, then `source install/setup.bash` |
 | Servos not moving | Is `esp32-proxy` running? Does `/tmp/esp32-proxy.socket` exist? |
-| Wrong standing pose | Check `default_positions` in `mini_pupper_2_controllers.yaml` — knee values must be `knee_abs` (= hip + knee ≈ −0.905), not the raw joint angle |
+| Wrong standing pose | Check `default_positions` in `mini_pupper_2_controllers.yaml` — knee values must be `knee_abs` (absolute angle from IK ≈ −0.774 at `default_z_ref=-0.07`), not the raw inter-link angle |
 | Front/rear leg mismatch | Check `SERVO_MULTIPLIERS` abduction row in `mini_pupper_hardware.hpp` |
 
 ## License

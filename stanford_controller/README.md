@@ -4,6 +4,46 @@ This controller was originally developed by students from the Stanford Robotics 
 
 The `stanford_controller` package in this repository migrates the [StanfordQuadruped](https://github.com/mangdangroboticsclub/StanfordQuadruped) into the ROS2 ecosystem for the `mini_pupper_ros` project. Currently, the controller can only be run on a real device, not in a simulator.
 
+## Architecture
+
+```mermaid
+graph TD
+    subgraph PC
+        TK[teleop_twist_keyboard]
+        TTC[TwistToCommandNode]
+        TK -- /cmd_vel --> TTC
+    end
+
+    subgraph Robot["Robot - ROS 2"]
+        SC[StanfordControllerNode\nIK + gait logic]
+        TTC -- "/robot_command (Command)" --> SC
+
+        subgraph ros2_control["ros2_control framework"]
+            CM[controller_manager]
+            SQC["SimpleQuadrupedController\n(mini_pupper_controllers)"]
+            JSB[JointStateBroadcaster]
+            HW["MiniPupperHardware\n(mini_pupper_hardware)\nSystemInterface plugin"]
+            CM --> SQC
+            CM --> JSB
+            SQC -- command interfaces --> HW
+            HW -- state interfaces --> JSB
+        end
+
+        SC -- "/simple_quadruped_controller/commands\n(Float64MultiArray)" --> SQC
+    end
+
+    subgraph Hardware["Robot - Hardware"]
+        ESP[ESP32Interface\nBB12B12H socket protocol]
+        PROXY["esp32-proxy\n(/tmp/esp32-proxy.socket)"]
+        SERVOS[12× Servos]
+        HW --> ESP
+        ESP -- "38-byte packet\n(Unix SOCK_SEQPACKET)" --> PROXY
+        PROXY --> SERVOS
+    end
+```
+
+**Key integration point**: `StanfordControllerNode` publishes joint position commands to `/simple_quadruped_controller/commands`. The `SimpleQuadrupedController` holds the robot in a neutral standing pose at startup (before any command arrives), then passes through commands from the stanford controller once they start flowing. The `MiniPupperHardware` plugin translates joint angles to servo positions and sends them to the hardware via the `esp32-proxy` socket.
+
 ## 1. Stanford Controller vs. Champ Controller
 
 You can only run one controller at a time: either the Stanford Controller or the Champ Controller. 

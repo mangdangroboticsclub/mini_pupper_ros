@@ -15,7 +15,7 @@ A position controller that:
 
 **Parameters**:
 - `joints` (string_array): Joint names in the same order as the hardware interface
-- `default_positions` (double_array): Positions in radians to hold on startup. Knee values must be `knee_abs = hip + knee`, not the raw joint angle.
+- `default_positions` (double_array): Positions in radians to hold on startup. Knee values must be `knee_abs` (absolute angle relative to vertical, as output by the Stanford IK), not the raw inter-link angle.
 
 **Subscribed Topics**:
 - `~/commands` (`std_msgs/Float64MultiArray`): 12-element array of joint position commands (rad)
@@ -38,18 +38,19 @@ simple_quadruped_controller:
       - rb1_rb2
       - rb2_rb3
     default_positions:
-      - -0.080   # base_lf1  (abduction)
-      - 1.078    # lf1_lf2   (hip)
-      - -0.905   # lf2_lf3   (knee_abs = 1.078 + (-1.983))
-      - 0.080    # base_rf1
-      - 1.078    # rf1_rf2
-      - -0.905   # rf2_rf3
-      - -0.080   # base_lb1
-      - 1.078    # lb1_lb2
-      - -0.905   # lb2_lb3
-      - 0.080    # base_rb1
-      - 1.078    # rb1_rb2
-      - -0.905   # rb2_rb3
+      # Values match IK output at default_z_ref=-0.07 (zero jump on stanford handoff)
+      - 0.0     # base_lf1  (abduction)
+      - 0.994   # lf1_lf2   (hip)
+      - -0.774  # lf2_lf3   (knee_abs)
+      - 0.0     # base_rf1
+      - 0.994   # rf1_rf2
+      - -0.774  # rf2_rf3
+      - 0.0     # base_lb1
+      - 0.994   # lb1_lb2
+      - -0.774  # lb2_lb3
+      - 0.0     # base_rb1
+      - 0.994   # rb1_rb2
+      - -0.774  # rb2_rb3
 ```
 
 ## Building
