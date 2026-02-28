@@ -14,6 +14,6 @@ jobs:
           ROS_DISTRO: ${{ matrix.ros_distro }}
           ROS_REPO: ${{ matrix.ros_repo }}
           OS_CODE_NAME: noble
-          ROSDEP_SKIP_KEYS: "ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image gz_ros2_control velodyne_gazebo_plugins gazebo_ros2_control gazebo_plugins gazebo_ros gazebo_dev gazebo_msgs"
+          ROSDEP_SKIP_KEYS: "ecl_threads ros_gz_sim ros_gz_bridge ros_gz_image gz_ros2_control velodyne_gazebo_plugins gazebo_ros2_control gazebo_plugins gazebo_ros gazebo_dev gazebo_msgs champ_base champ champ_msgs champ_description champ_init"
           COLCON_PKG_BLOCKLIST: "champ_gazebo"
           BEFORE_INSTALL_TARGET_DEPENDENCIES: "sudo apt-get update && sudo apt-get install -y python3-vcstool"
