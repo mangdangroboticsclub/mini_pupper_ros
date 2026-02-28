@@ -16,6 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Updated for ROS 2 Jazzy: Gazebo Classic → Gazebo Sim (Harmonic)
 
 from launch import LaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -28,31 +29,29 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_simulation')
 
-    default_world = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.world'])
+    default_world = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.sdf'])
 
     world = LaunchConfiguration('world')
     world_launch_arg = DeclareLaunchArgument(
         name='world',
         default_value=default_world,
-        description='Gazebo world path'
+        description='Gazebo Sim world path (SDF format)'
     )
 
-    gazebo_launch_path = PathJoinSubstitution([
-        FindPackageShare('gazebo_ros'),
+    gz_sim_launch_path = PathJoinSubstitution([
+        FindPackageShare('ros_gz_sim'),
         'launch',
-        'gazebo.launch.py'
+        'gz_sim.launch.py'
     ])
-    gazebo_params_path = PathJoinSubstitution([this_package, 'config', 'gazebo_params.yaml'])
 
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(gazebo_launch_path),
+    gz_sim_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(gz_sim_launch_path),
         launch_arguments={
-            'extra_gazebo_args': f'--ros-args --params-file {gazebo_params_path}',
-            'world': world
+            'gz_args': ['-r ', world],
         }.items()
     )
 
     return LaunchDescription([
         world_launch_arg,
-        gazebo_launch
+        gz_sim_launch
     ])

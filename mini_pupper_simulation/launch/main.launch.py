@@ -16,6 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Updated for ROS 2 Jazzy: Gazebo Classic → Gazebo Sim (Harmonic)
 
 import os
 from launch import LaunchDescription
@@ -33,12 +34,12 @@ ROBOT_MODEL = os.getenv('ROBOT_MODEL', default='mini_pupper_2')
 def generate_launch_description():
     this_package = FindPackageShare('mini_pupper_simulation')
 
-    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.world'])
+    default_world_path = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.sdf'])
     world = LaunchConfiguration('world')
     world_launch_arg = DeclareLaunchArgument(
         name='world',
         default_value=default_world_path,
-        description='Gazebo world path'
+        description='Gazebo Sim world path (SDF format)'
     )
 
     world_init_x = LaunchConfiguration('world_init_x')
@@ -84,12 +85,13 @@ def generate_launch_description():
         }.items()
     )
 
+    # Gazebo Sim uses ros_gz_sim create node instead of gazebo_ros spawn_entity
     spawn_entity = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
+        package='ros_gz_sim',
+        executable='create',
         arguments=[
             '-topic', 'robot_description',
-            '-entity', ROBOT_MODEL,
+            '-name', ROBOT_MODEL,
             '-x', world_init_x,
             '-y', world_init_y,
             '-z', world_init_z,
@@ -112,13 +114,15 @@ def generate_launch_description():
     links_map_path = PathJoinSubstitution(
         [FindPackageShare('mini_pupper_description'), 'config', 'champ', ROBOT_MODEL, 'links.yaml']
     )
+    # Note: champ_gazebo contact_sensor may need updates for Gazebo Sim compatibility.
+    # The champ package should provide a gz-sim compatible version.
     contact_sensor_launch = Node(
         package='champ_gazebo',
         executable='contact_sensor',
         output='screen',
         parameters=[
             {'use_sim_time': True},
-            links_map_path  # Load parameters from the YAML file,
+            links_map_path
         ]
     )
 

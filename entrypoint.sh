@@ -2,7 +2,7 @@
 set -e
 
 # Source ROS2
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 
 # Source workspace
 source /ros2_ws/install/setup.bash
