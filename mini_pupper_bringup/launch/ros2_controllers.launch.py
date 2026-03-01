@@ -39,9 +39,8 @@ def generate_launch_description():
     robot_description = Command(["xacro ", urdf_file, " use_gazebo_hardware:=false"])
 
     controller_params_file = PathJoinSubstitution([
-        FindPackageShare("mini_pupper_description"),
+        FindPackageShare("mini_pupper_controllers"),
         "config",
-        "ros2_control",
         "mini_pupper_2_controllers.yaml"
     ])
 
