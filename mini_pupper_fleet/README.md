@@ -194,7 +194,7 @@ Main coordination launch file that handles fleet-level control and per-robot nam
 
 ### ROS 2 Packages
 ```bash
-sudo apt install ros-humble-tf2 ros-humble-tf2-geometry-msgs
+sudo apt install ros-jazzy-tf2 ros-jazzy-tf2-geometry-msgs
 ```
 
 ### System Dependencies

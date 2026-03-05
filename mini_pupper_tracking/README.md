@@ -82,7 +82,7 @@ pip install flask onnxruntime motpy
 
 ```bash
 # ROS2 dependencies
-sudo apt install ros-humble-imu-filter-madgwick ros-humble-tf-transformations
+sudo apt install ros-jazzy-imu-filter-madgwick ros-jazzy-tf-transformations
 ```
 
 ---
