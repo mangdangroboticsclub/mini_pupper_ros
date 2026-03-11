@@ -21,8 +21,8 @@ jobs:
     strategy:
       matrix:
         env:
-          - { ROS_DISTRO: humble, ROS_REPO: ros }
-    runs-on: ubuntu-latest
+          - { ROS_DISTRO: jazzy, ROS_REPO: ros }
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v3
       - uses: "ros-industrial/industrial_ci@master"
