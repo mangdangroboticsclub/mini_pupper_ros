@@ -902,9 +902,9 @@
     <parent link="base_link"/>
     <child link="Shell_Side"/>
   </joint>
-  <ros2_control name="GazeboSystem" type="system">
+  <ros2_control name="GazeboSimSystem" type="system">
     <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
     <joint name="base_lf1">
       <command_interface name="effort"/> 
@@ -1183,32 +1183,22 @@
           <stddev>0.004</stddev>
         </noise>
       </ray>
-      <plugin name="gazebo_ros_lidar_controller" filename="libgazebo_ros_ray_sensor.so">
-        <ros>
-          <remapping>~/out:=/scan</remapping>
-        </ros>
-        <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>lidar_link</frame_name> 
-      </plugin>
+      <topic>/scan</topic>
+      <gz_frame_id>lidar_link</gz_frame_id>
     </sensor>
   </gazebo> 
 
   <gazebo>
-    <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
-      <ros>
-        <remapping>odom:=odom/ground_truth</remapping>
-      </ros>
-      <body_name>base_link</body_name>
-      <frame_name>world</frame_name>
-      <update_rate>10.0</update_rate>
-      <xyz_offset>0 0 0</xyz_offset>
-      <rpy_offset>0 0 0</rpy_offset>
-      <gaussian_noise>0.01</gaussian_noise>
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>world</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <odom_publish_frequency>10.0</odom_publish_frequency>
+      <odom_topic>odom/ground_truth</odom_topic>
     </plugin>
   </gazebo>
 
   <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(find mini_pupper_description)/config/ros_control/mini_pupper_2_controller.yaml</parameters>
     </plugin>
   </gazebo>
@@ -1230,12 +1220,8 @@
     <sensor name="imu_controller" type="imu">
       <always_on>true</always_on>
       <update_rate>50</update_rate>
-      <plugin name="gazebo_ros_imu_sensor" filename="libgazebo_ros_imu_sensor.so">
-          <ros>
-              <namespace>/imu</namespace>
-              <remapping>~/out:=data</remapping>
-          </ros>
-      </plugin>
+      <topic>/imu/data</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
     </sensor>
   </gazebo>
 
@@ -1279,14 +1265,8 @@
         </clip>
       </camera>
 
-      <!-- Gazebo ROS plugin to publish /image_raw -->
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <always_on>true</always_on>
-        <update_rate>30.0</update_rate>
-        <frame_name>camera_link</frame_name>
-        <image_topic_name>/image_raw</image_topic_name>
-        <!-- camera_info omitted to disable /camera_info -->
-      </plugin>
+      <topic>/image_raw</topic>
+      <gz_frame_id>camera_link</gz_frame_id>
     </sensor>
   </gazebo>
 

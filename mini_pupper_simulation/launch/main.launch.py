@@ -85,11 +85,11 @@ def generate_launch_description():
     )
 
     spawn_entity = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
+        package='ros_gz_sim',
+        executable='create',
         arguments=[
             '-topic', 'robot_description',
-            '-entity', ROBOT_MODEL,
+            '-name', ROBOT_MODEL,
             '-x', world_init_x,
             '-y', world_init_y,
             '-z', world_init_z,

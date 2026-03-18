@@ -194,7 +194,7 @@ Main coordination launch file that handles fleet-level control and per-robot nam
 
 ### ROS 2 Packages
 ```bash
-sudo apt install ros-humble-tf2 ros-humble-tf2-geometry-msgs
+sudo apt install ros-jazzy-tf2 ros-jazzy-tf2-geometry-msgs
 ```
 
 ### System Dependencies
@@ -323,6 +323,6 @@ This package is licensed under the Apache-2.0 License. See individual source fil
 
 ## Compatibility
 
-- **ROS 2**: Humble  
-- **Platform**: Ubuntu 22.04 LTS  
+- **ROS 2**: Jazzy
+- **Platform**: Ubuntu 24.04 LTS
 - **Hardware**: Mini Pupper robots with Stanford Controller  
