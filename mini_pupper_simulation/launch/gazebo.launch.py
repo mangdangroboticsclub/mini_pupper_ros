@@ -37,22 +37,20 @@ def generate_launch_description():
         description='Gazebo world path'
     )
 
-    gazebo_launch_path = PathJoinSubstitution([
-        FindPackageShare('gazebo_ros'),
+    gz_sim_launch_path = PathJoinSubstitution([
+        FindPackageShare('ros_gz_sim'),
         'launch',
-        'gazebo.launch.py'
+        'gz_sim.launch.py'
     ])
-    gazebo_params_path = PathJoinSubstitution([this_package, 'config', 'gazebo_params.yaml'])
 
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(gazebo_launch_path),
+    gz_sim_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(gz_sim_launch_path),
         launch_arguments={
-            'extra_gazebo_args': f'--ros-args --params-file {gazebo_params_path}',
-            'world': world
+            'gz_args': [world, ' -r'],
         }.items()
     )
 
     return LaunchDescription([
         world_launch_arg,
-        gazebo_launch
+        gz_sim_launch
     ])
