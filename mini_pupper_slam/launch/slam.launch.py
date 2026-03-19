@@ -56,11 +56,8 @@ def generate_launch_description():
         Node(
             package='cartographer_ros',
             executable='cartographer_occupancy_grid_node',
-            parameters=[
-                {'use_sim_time': use_sim_time},
-                {'-resolution': '0.05'},
-                {'-publish_period_sec': '1.0'}
-            ]
+            arguments=['-resolution', '0.05', '-publish_period_sec', '1.0'],
+            parameters=[{'use_sim_time': use_sim_time}]
         ),
         Node(
             package='rviz2',

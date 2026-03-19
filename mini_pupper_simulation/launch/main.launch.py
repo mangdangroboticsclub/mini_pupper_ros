@@ -84,6 +84,17 @@ def generate_launch_description():
         }.items()
     )
 
+    bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU',
+        ],
+        output='screen'
+    )
+
     spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -123,5 +134,6 @@ def generate_launch_description():
         world_init_heading_launch_arg,
         mini_pupper_bringup_launch,
         gazebo_launch,
+        bridge,
         spawn_entity
     ])

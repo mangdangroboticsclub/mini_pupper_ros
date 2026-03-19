@@ -46,7 +46,7 @@ def generate_launch_description():
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'gz_args': world
+            'gz_args': ['-r ', world]
         }.items()
     )
 
