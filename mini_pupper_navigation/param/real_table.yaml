@@ -328,8 +328,10 @@ planner_server_rclcpp_node:
 behavior_server:
   ros__parameters:
     use_sim_time: False
-    costmap_topic: local_costmap/costmap_raw
-    footprint_topic: local_costmap/published_footprint
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    local_footprint_topic: local_costmap/published_footprint
+    global_footprint_topic: global_costmap/published_footprint
     cycle_frequency: 10.0
     behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
     global_frame: odom
@@ -370,3 +372,34 @@ waypoint_follower:
       plugin: "nav2_waypoint_follower::WaitAtWaypoint"
       enabled: True
       waypoint_pause_duration: 200
+
+collision_monitor:
+  ros__parameters:
+    use_sim_time: False
+    base_frame_id: "base_footprint"
+    odom_frame_id: "odom"
+    cmd_vel_in_topic: "cmd_vel_smoothed"
+    cmd_vel_out_topic: "cmd_vel"
+    transform_tolerance: 0.5
+    source_timeout: 5.0
+    stop_pub_timeout: 2.0
+    polygons: ["PolygonStop"]
+    PolygonStop:
+      type: "polygon"
+      points: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
+      action_type: "stop"
+      min_points: 4
+      visualize: true
+    observation_sources: ["scan"]
+    scan:
+      type: "scan"
+      topic: "scan"
+# Dummy config: docking_server is loaded by nav2_bringup's hardcoded
+# lifecycle_nodes list but Mini Pupper has no dock hardware.
+docking_server:
+  ros__parameters:
+    use_sim_time: False
+    dock_plugins: ['dummy_dock']
+    dummy_dock:
+      plugin: 'opennav_docking::SimpleChargingDock'
+      use_battery_status: false

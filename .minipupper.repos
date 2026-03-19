@@ -7,7 +7,7 @@ repositories:
     type: git
     url: https://github.com/chvmp/champ_teleop.git
     version: ros2
-  ldlidar_stl_ros:
+  ldlidar:
     type: git
-    url: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
-    version: master
+    url: https://github.com/Myzhar/ldrobot-lidar-ros2.git
+    version: devel

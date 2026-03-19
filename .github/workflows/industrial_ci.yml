@@ -14,14 +14,17 @@ permissions:
 
 env:
   UPSTREAM_WORKSPACE: .minipupper.repos
-  ROSDEP_SKIP_KEYS: ecl_threads
+  ROSDEP_SKIP_KEYS: ecl_threads velodyne_gazebo_plugins gazebo_ros2_control gazebo_plugins gazebo_ros gazebo_dev gazebo_ros_pkgs gazebo
+  BEFORE_BUILD_UPSTREAM_WORKSPACE: >
+    touch /root/upstream_ws/src/champ/champ/champ_gazebo/COLCON_IGNORE &&
+    touch /root/upstream_ws/src/champ/champ/champ_description/COLCON_IGNORE
 
 jobs:
   industrial_ci:
     strategy:
       matrix:
         env:
-          - { ROS_DISTRO: humble, ROS_REPO: ros }
+          - { ROS_DISTRO: jazzy, ROS_REPO: ros }
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
