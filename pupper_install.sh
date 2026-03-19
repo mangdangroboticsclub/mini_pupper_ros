@@ -52,8 +52,6 @@ if ! [ -d "mini_pupper_ros" ]; then
   git clone https://github.com/MushfiqueTM/mini_pupper_ros.git -b ros2-jazzy mini_pupper_ros
 fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
-
-
 # compiling gazebo and cartographer on Raspberry Pi is not recommended
 touch champ/champ/champ_gazebo/AMENT_IGNORE
 touch champ/champ/champ_navigation/AMENT_IGNORE
@@ -66,11 +64,10 @@ rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publi
 sudo apt install ros-jazzy-teleop-twist-keyboard
 sudo apt install ros-jazzy-teleop-twist-joy
 sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
+pip3 install --user simple_pid
 
 # New LD Lidar driver dependency
 sudo apt install -y libudev-dev
-
-pip3 install simple_pid --break-system-packages
 
 #colcon build --symlink-install
 MAKEFLAGS=-j1 colcon build --executor sequential --symlink-install
