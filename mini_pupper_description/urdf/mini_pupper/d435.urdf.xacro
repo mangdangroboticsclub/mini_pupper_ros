@@ -171,8 +171,14 @@ aluminum peripherial evaluation case.
           <far>9</far>
         </clip>
       </camera>
-      <topic>/camera/aligned_depth_to_color/image_raw</topic>
-      <gz_frame_id>camera_depth_optical_frame</gz_frame_id>
+      <plugin filename="libgazebo_ros_openni_kinect.so" name="camera_camera_controller">
+        <imageTopicName>/camera/color/image_raw</imageTopicName>
+        <cameraInfoTopicName>/camera/color/camera_info</cameraInfoTopicName>
+        <depthImageTopicName>/camera/aligned_depth_to_color/image_raw</depthImageTopicName>
+        <depthImageCameraInfoTopicName>/camera/depth/camera_info</depthImageCameraInfoTopicName>
+        <pointCloudTopicName>/camera/depth/color/points</pointCloudTopicName>
+        <frameName>camera_depth_optical_frame</frameName>
+      </plugin>
     </sensor>
   </gazebo>
   
