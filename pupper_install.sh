@@ -64,7 +64,7 @@ rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publi
 sudo apt install ros-jazzy-teleop-twist-keyboard
 sudo apt install ros-jazzy-teleop-twist-joy
 sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
-pip3 install --user simple_pid
+pip3 install --user --break-system-packages simple_pid
 
 # New LD Lidar driver dependency
 sudo apt install -y libudev-dev
