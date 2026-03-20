@@ -60,7 +60,7 @@ touch mini_pupper_ros/mini_pupper_navigation/AMENT_IGNORE
 
 # install dependencies without unused heavy packages
 cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2 --skip-keys=ros_gz_sim
+rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2 --skip-keys=ros_gz_sim || true
 sudo apt install ros-jazzy-teleop-twist-keyboard
 sudo apt install ros-jazzy-teleop-twist-joy
 sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
