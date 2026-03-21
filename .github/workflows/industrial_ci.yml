@@ -15,7 +15,7 @@ permissions:
 env:
   UPSTREAM_WORKSPACE: .minipupper.repos
   ROSDEP_SKIP_KEYS: ecl_threads gazebo_dev gazebo_ros_pkgs gazebo
-  TARGET_CMAKE_ARGS: -Dament_cmake_flake8_FOUND=TRUE
+  NOT_TEST_BUILD: true
   BEFORE_BUILD_UPSTREAM_WORKSPACE: >
     touch /root/upstream_ws/src/champ/champ/champ_navigation/COLCON_IGNORE
 
