@@ -1028,6 +1028,11 @@
     <maxVel>0.0</maxVel>
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
+    <sensor name="lffoot_contact" type="contact">
+      <contact>
+        <collision>lffoot_collision</collision>
+      </contact>
+    </sensor>
   </gazebo>
   <gazebo reference="rf1">
     <kp>100000.0</kp>
@@ -1070,6 +1075,11 @@
     <maxVel>0.0</maxVel>
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
+    <sensor name="rffoot_contact" type="contact">
+      <contact>
+        <collision>rffoot_collision</collision>
+      </contact>
+    </sensor>
   </gazebo>
   <gazebo reference="lb1">
     <kp>100000.0</kp>
@@ -1112,6 +1122,11 @@
     <maxVel>0.0</maxVel>
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
+    <sensor name="lbfoot_contact" type="contact">
+      <contact>
+        <collision>lbfoot_collision</collision>
+      </contact>
+    </sensor>
   </gazebo>
   <gazebo reference="rb1">
     <kp>100000.0</kp>
@@ -1154,6 +1169,11 @@
     <maxVel>0.0</maxVel>
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
+    <sensor name="rbfoot_contact" type="contact">
+      <contact>
+        <collision>rbfoot_collision</collision>
+      </contact>
+    </sensor>
   </gazebo>
 
   <gazebo reference="lidar_link">
