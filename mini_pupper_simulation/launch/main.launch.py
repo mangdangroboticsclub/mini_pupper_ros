@@ -95,22 +95,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    description_package = FindPackageShare('mini_pupper_description')
-    links_config_path = PathJoinSubstitution(
-        [description_package, 'config', 'champ', ROBOT_MODEL, 'links.yaml']
-    )
-
-    contact_sensor = Node(
-        package='champ_gazebo',
-        executable='contact_sensor',
-        name='contact_sensor',
-        parameters=[
-            {'use_sim_time': True},
-            links_config_path,
-        ],
-        output='screen'
-    )
-
     spawn_entity = Node(
         package='ros_gz_sim',
         executable='create',
@@ -134,6 +118,22 @@ def generate_launch_description():
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)
+    )
+
+    description_package = FindPackageShare('mini_pupper_description')
+    links_config_path = PathJoinSubstitution(
+        [description_package, 'config', 'champ', ROBOT_MODEL, 'links.yaml']
+    )
+
+    contact_sensor = Node(
+        package='champ_gazebo',
+        executable='contact_sensor',
+        name='contact_sensor',
+        parameters=[
+            {'use_sim_time': True},
+            links_config_path,
+        ],
+        output='screen'
     )
 
     return LaunchDescription([
