@@ -6,7 +6,7 @@ package_name = 'mini_pupper_dance'
 
 setup(
     name=package_name,
-    version='0.0.1',
+    version='0.0.2',
     packages=['mini_pupper_dance', 'mini_pupper_dance.new_dance'],
     package_dir={
         'mini_pupper_dance': 'mini_pupper_dance'
