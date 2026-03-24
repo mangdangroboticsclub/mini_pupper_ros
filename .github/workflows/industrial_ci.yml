@@ -2,9 +2,15 @@ name: industrial_ci
 
 on:
   push:
+    branches:
+      - ros2-dev
+      - ros2-jazzy
     paths-ignore:
     - '**.md'
   pull_request:
+    branches:
+      - ros2-dev
+      - ros2-jazzy
     paths-ignore:
     - '**.md'
   workflow_dispatch:
@@ -21,9 +27,9 @@ jobs:
     strategy:
       matrix:
         env:
-          - { ROS_DISTRO: humble, ROS_REPO: ros }
+          - { ROS_DISTRO: jazzy, ROS_REPO: ros }
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: "ros-industrial/industrial_ci@master"
         env: ${{ matrix.env }}
