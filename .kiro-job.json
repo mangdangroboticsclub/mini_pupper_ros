@@ -1,0 +1,36 @@
+{
+  "id": "mangdangroboticsclub__mini_pupper_ros__125",
+  "status": "coding",
+  "bounty": {
+    "source": "github",
+    "id": "4004727075",
+    "title": "[mangdangroboticsclub/mini_pupper_ros] Upgrade ROS2 Humble to Jazzy",
+    "reward": 100,
+    "token": "USD",
+    "deadline": "",
+    "days_left": 999,
+    "submissions": 0,
+    "agent_allowed": true,
+    "url": "https://github.com/mangdangroboticsclub/mini_pupper_ros/issues/125",
+    "sponsor": "mangdangroboticsclub/mini_pupper_ros",
+    "score": 20,
+    "type": "github_issue"
+  },
+  "issue": {
+    "owner": "mangdangroboticsclub",
+    "repo": "mini_pupper_ros",
+    "issue_num": "125",
+    "title": "Upgrade ROS2 Humble to Jazzy",
+    "body": "Upgrade ROS2 Humble to Jazzy\n\n/bounty $100",
+    "labels": [
+      "\ud83d\udc8e Bounty",
+      "$100"
+    ]
+  },
+  "branch": "kiro/upgrade-ros2-humble-to-jazzy",
+  "default_branch": "ros2-dev",
+  "job_dir": "/home/ubuntu/.openclaw/workspace/skills/kiro/jobs/mangdangroboticsclub__mini_pupper_ros__125",
+  "task_file": "/home/ubuntu/.openclaw/workspace/skills/kiro/jobs/mangdangroboticsclub__mini_pupper_ros__125/.kiro-task.md",
+  "created_at": "2026-03-25T01:36:29.922524",
+  "auto_execute": true
+}
