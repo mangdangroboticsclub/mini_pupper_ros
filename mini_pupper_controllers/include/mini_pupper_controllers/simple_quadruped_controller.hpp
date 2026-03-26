@@ -55,13 +55,21 @@ public:
 
 private:
   void assign_default_if_needed();
+  std::vector<double> apply_linkage_compensation(const std::vector<double> & positions) const;
 
   std::vector<std::string> joint_names_;
   std::vector<double> default_positions_;
   std::vector<double> commanded_positions_;
+  std::vector<double> idle_start_positions_;
 
   rclcpp::Subscription<CommandMsg>::SharedPtr command_subscription_;
   realtime_tools::RealtimeBuffer<std::shared_ptr<CommandMsg>> command_buffer_;
   bool has_external_command_{false};
+  bool parallel_linkage_compensation_{false};
+  bool idle_ramp_enabled_{false};
+  bool idle_ramp_started_{false};
+  double idle_hold_duration_sec_{0.0};
+  double idle_ramp_duration_sec_{0.0};
+  double idle_ramp_elapsed_sec_{0.0};
 };
 }  // namespace mini_pupper_controllers

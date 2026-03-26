@@ -42,14 +42,23 @@ def generate_launch_description():
         'launch',
         'gazebo.launch.py'
     ])
+    gui = LaunchConfiguration('gui')
+    gui_launch_arg = DeclareLaunchArgument(
+        name='gui',
+        default_value='true',
+        description='Whether to start the Gazebo GUI'
+    )
+
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'world': world
+            'world': world,
+            'gui': gui,
         }.items()
     )
 
     return LaunchDescription([
         world_launch_arg,
+        gui_launch_arg,
         gazebo_launch
     ])

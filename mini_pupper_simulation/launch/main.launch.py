@@ -20,12 +20,12 @@
 import os
 from launch import LaunchDescription
 from launch.actions import (
-    DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, TimerAction)
+    DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, TimerAction)
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
-from launch.event_handlers import OnProcessExit
 
 ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 
@@ -47,6 +47,13 @@ def generate_launch_description():
         name="world",
         default_value=default_world_path,
         description="Gazebo world path"
+    )
+
+    gui = LaunchConfiguration("gui")
+    gui_launch_arg = DeclareLaunchArgument(
+        name="gui",
+        default_value="true",
+        description="Whether to start the Gazebo GUI"
     )
 
     # Conditional spawn height based on debug_control
@@ -84,7 +91,7 @@ def generate_launch_description():
     stanford_controller_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(stanford_controller_launch_path),
         launch_arguments={
-            "orientation_from_imu": "false",  # No IMU in simulation
+            "orientation_from_imu": "false",
             "publish_joint_control": "true",
             "publish_states": "true"
         }.items()
@@ -94,7 +101,8 @@ def generate_launch_description():
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            "world": world
+            "world": world,
+            "gui": gui,
         }.items()
     )
 
@@ -123,23 +131,20 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)
     )
 
-    # Delayed start node for Stanford controller (wait 2 seconds for physics to settle)
+    # Delayed start node for Stanford controller (wait for controllers to be active)
     delayed_stanford_controller_launch = TimerAction(
-        period=2.0,
-        actions=[stanford_controller_launch]
+        period=8.0,
+        actions=[stanford_controller_launch],
     )
 
     return LaunchDescription([
         debug_control_launch_arg,
         world_launch_arg,
+        gui_launch_arg,
         world_init_z_launch_arg,
         description_launch,
         gazebo_launch,
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=spawn_entity,
-                on_exit=[ros2_controllers_launch, delayed_stanford_controller_launch]
-            )
-        ),
-        spawn_entity
+        spawn_entity,
+        ros2_controllers_launch,
+        delayed_stanford_controller_launch,
     ])

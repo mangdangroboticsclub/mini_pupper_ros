@@ -1,10 +1,29 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="pupper_joint" params="joint_name initial_value use_gazebo_hardware">
+    <joint name="${joint_name}">
+      <xacro:if value="${use_gazebo_hardware}">
+        <command_interface name="position_pid"/>
+        <param name="pos_kp">1.0</param>
+        <param name="pos_kd">0.05</param>
+      </xacro:if>
+      <xacro:unless value="${use_gazebo_hardware}">
+        <command_interface name="position"/>
+      </xacro:unless>
+      <state_interface name="position">
+        <param name="initial_value">${initial_value}</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+  </xacro:macro>
+
   <xacro:macro name="mini_pupper_ros2_control" params="use_gazebo_hardware:=^|true">
     <gazebo>
       <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
         <xacro:if value="${use_gazebo_hardware}">
           <parameters>$(find mini_pupper_controllers)/config/mini_pupper_2_controllers_sim.yaml</parameters>
+          <hold_joints>false</hold_joints>
         </xacro:if>
         <xacro:unless value="${use_gazebo_hardware}">
           <parameters>$(find mini_pupper_controllers)/config/mini_pupper_2_controllers.yaml</parameters>
@@ -13,91 +32,29 @@
     </gazebo>
 
     <ros2_control name="MiniPupper" type="system">
-      <xacro:if value="${use_gazebo_hardware}">
-        <hardware>
+      <hardware>
+        <xacro:if value="${use_gazebo_hardware}">
           <plugin>gazebo_ros2_control/GazeboSystem</plugin>
           <param name="hold_joints">true</param>
-        </hardware>
-      </xacro:if>
-      <xacro:unless value="${use_gazebo_hardware}">
-        <hardware>
+        </xacro:if>
+        <xacro:unless value="${use_gazebo_hardware}">
           <plugin>mini_pupper_hardware/MiniPupperHardware</plugin>
           <param name="hardware_interface_type">esp32_proxy</param>
-        </hardware>
-      </xacro:unless>
+        </xacro:unless>
+      </hardware>
 
-      <joint name="base_lf1">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_abduction}</param>
-        </state_interface>
-      </joint>
-      <joint name="lf1_lf2">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_hip}</param>
-        </state_interface>
-      </joint>
-      <joint name="lf2_lf3">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_knee}</param>
-        </state_interface>
-      </joint>
-      <joint name="base_rf1">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_abduction}</param>
-        </state_interface>
-      </joint>
-      <joint name="rf1_rf2">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_hip}</param>
-        </state_interface>
-      </joint>
-      <joint name="rf2_rf3">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_knee}</param>
-        </state_interface>
-      </joint>
-      <joint name="base_lb1">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_abduction}</param>
-        </state_interface>
-      </joint>
-      <joint name="lb1_lb2">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_hip}</param>
-        </state_interface>
-      </joint>
-      <joint name="lb2_lb3">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_knee}</param>
-        </state_interface>
-      </joint>
-      <joint name="base_rb1">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_abduction}</param>
-        </state_interface>
-      </joint>
-      <joint name="rb1_rb2">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_hip}</param>
-        </state_interface>
-      </joint>
-      <joint name="rb2_rb3">
-        <command_interface name="position"/>
-        <state_interface name="position">
-          <param name="initial_value">${startup_knee}</param>
-        </state_interface>
-      </joint>
+      <xacro:pupper_joint joint_name="base_lf1" initial_value="${startup_abduction_left}" use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="lf1_lf2"  initial_value="${startup_hip}"       use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="lf2_lf3"  initial_value="${startup_knee}"      use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="base_rf1" initial_value="${startup_abduction_right}" use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="rf1_rf2"  initial_value="${startup_hip}"       use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="rf2_rf3"  initial_value="${startup_knee}"      use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="base_lb1" initial_value="${startup_abduction_left}" use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="lb1_lb2"  initial_value="${startup_hip}"       use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="lb2_lb3"  initial_value="${startup_knee}"      use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="base_rb1" initial_value="${startup_abduction_right}" use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="rb1_rb2"  initial_value="${startup_hip}"       use_gazebo_hardware="${use_gazebo_hardware}"/>
+      <xacro:pupper_joint joint_name="rb2_rb3"  initial_value="${startup_knee}"      use_gazebo_hardware="${use_gazebo_hardware}"/>
     </ros2_control>
   </xacro:macro>
 </robot>

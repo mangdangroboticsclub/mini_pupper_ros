@@ -10,17 +10,42 @@
   <xacro:arg name="use_debug_stand" default="false"/>
 
   <!-- CONSTANTS -->
-  <xacro:property name="startup_abduction" value="0.0" />
-  <xacro:property name="startup_hip" value="0.994" />
-  <xacro:property name="startup_knee" value="-1.767" />
-  <xacro:property name="foot_mu1" value="50.0" />
-  <xacro:property name="foot_mu2" value="50.0" />
-  <xacro:property name="foot_kp" value="1000000.0" />
-  <xacro:property name="foot_kd" value="100.0" />
-  <xacro:property name="foot_max_contacts" value="40" />
+  <xacro:if value="$(arg use_gazebo_hardware)">
+    <!-- Measured passive settled pose in Gazebo with no stand controller loaded. -->
+    <xacro:property name="startup_abduction_left" value="-0.33" />
+    <xacro:property name="startup_abduction_right" value="0.33" />
+    <xacro:property name="startup_hip" value="1.326" />
+    <xacro:property name="startup_knee" value="-2.927" />
+  </xacro:if>
+  <xacro:unless value="$(arg use_gazebo_hardware)">
+    <xacro:property name="startup_abduction_left" value="0.0" />
+    <xacro:property name="startup_abduction_right" value="0.0" />
+    <xacro:property name="startup_hip" value="0.994" />
+    <xacro:property name="startup_knee" value="-1.767" />
+  </xacro:unless>
+  <xacro:property name="foot_mu1" value="1.5" />
+  <xacro:property name="foot_mu2" value="1.5" />
+  <xacro:property name="foot_kp" value="50000.0" />
+  <xacro:property name="foot_kd" value="5.0" />
+  <xacro:property name="foot_max_contacts" value="10" />
   <xacro:property name="foot_slip" value="0.0" />
-  <xacro:property name="servo_damping" value="5.0" />
-  <xacro:property name="servo_friction" value="1.0" />
+
+  <!-- Joint dynamics: ODE implicit damping must be small relative to link inertia
+       (~2.5e-6 kg·m²). Values above ~0.005 cause ODE to lock joints at origin. -->
+  <xacro:if value="$(arg use_gazebo_hardware)">
+    <xacro:property name="servo_damping" value="0.001" />
+    <xacro:property name="servo_friction" value="0.0" />
+    <!-- Keep limb inertia high enough for stable joint PID, but keep the trunk
+         lighter so pitch/roll corrections still move the body during gait. -->
+    <xacro:property name="sim_inertia_scale" value="100" />
+    <xacro:property name="sim_body_inertia_scale" value="100" />
+  </xacro:if>
+  <xacro:unless value="$(arg use_gazebo_hardware)">
+    <xacro:property name="servo_damping" value="5.0" />
+    <xacro:property name="servo_friction" value="1.0" />
+    <xacro:property name="sim_inertia_scale" value="1" />
+    <xacro:property name="sim_body_inertia_scale" value="1" />
+  </xacro:unless>
 
   <!-- Link group 1 - lf1, rf1, lb1, rb1 -->
   <xacro:property name="lnkgrp1_weight" value="0.020769" />
@@ -47,7 +72,7 @@
     <inertial>
       <origin xyz="-0.008867 0.000396 -0.007154" rpy="0 0 0"/>
       <mass value="0.174884"/>
-      <inertia ixx="0.00090939" iyy="0.00426716" izz="0.00440707" ixy="1.27324e-7" iyz="1.05509e-9" ixz="-1.69927e-7"/>
+      <inertia ixx="${0.00090939 * sim_body_inertia_scale}" iyy="${0.00426716 * sim_body_inertia_scale}" izz="${0.00440707 * sim_body_inertia_scale}" ixy="${1.27324e-7 * sim_body_inertia_scale}" iyz="${1.05509e-9 * sim_body_inertia_scale}" ixz="${-1.69927e-7 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -68,7 +93,7 @@
     <inertial>
       <origin xyz="-0.008867 0.000396 -0.007154" rpy="0 0 0"/>
       <mass value="0.174884"/>
-      <inertia ixx="0.00090939" iyy="0.00426716" izz="0.00440707" ixy="1.27324e-7" iyz="1.05509e-9" ixz="-1.69927e-7"/>
+      <inertia ixx="${0.00090939 * sim_body_inertia_scale}" iyy="${0.00426716 * sim_body_inertia_scale}" izz="${0.00440707 * sim_body_inertia_scale}" ixy="${1.27324e-7 * sim_body_inertia_scale}" iyz="${1.05509e-9 * sim_body_inertia_scale}" ixz="${-1.69927e-7 * sim_body_inertia_scale}"/>
     </inertial>
   </link>
 
@@ -76,7 +101,7 @@
     <inertial>
       <origin xyz="0.020109 0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-6" iyy="3.735906e-6" izz="3.222909e-6" ixy="-7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-6 * sim_inertia_scale}" iyy="${3.735906e-6 * sim_inertia_scale}" izz="${3.222909e-6 * sim_inertia_scale}" ixy="${-7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -97,7 +122,7 @@
     <inertial>
       <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="3.117e-9" iyz="17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${3.117e-9 * sim_inertia_scale}" iyz="${17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -118,7 +143,7 @@
     <inertial>
       <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484471e-6" iyy="0.567615e-6" izz="91.813e-9" ixy="-2.101e-9" iyz="5.008e-9" ixz="0.20057e-6"/>
+      <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-6 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${-2.101e-9 * sim_inertia_scale}" iyz="${5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -139,7 +164,7 @@
     <inertial>
       <origin xyz="0.020109 -0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -160,7 +185,7 @@
     <inertial>
       <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="-3.117e-9" iyz="-17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${-3.117e-9 * sim_inertia_scale}" iyz="${-17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -181,7 +206,7 @@
     <inertial>
       <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484471e-6" iyy="0.567615e-06" izz="91.813e-9" ixy="2.101e-9" iyz="-5.008e-9" ixz="0.20057e-6"/>
+      <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-06 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${2.101e-9 * sim_inertia_scale}" iyz="${-5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -202,7 +227,7 @@
     <inertial>
       <origin xyz="-0.020109 -0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="-7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${-7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -223,7 +248,7 @@
     <inertial>
       <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="-3.117e-9" iyz="-17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${-3.117e-9 * sim_inertia_scale}" iyz="${-17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -244,7 +269,7 @@
     <inertial>
       <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484816e-6" iyy="0.567883e-06" izz="91.777e-9" ixy="2.212e-9" iyz="-5.34e-9" ixz="0.200564e-6"/>
+      <inertia ixx="${0.484816e-6 * sim_inertia_scale}" iyy="${0.567883e-06 * sim_inertia_scale}" izz="${91.777e-9 * sim_inertia_scale}" ixy="${2.212e-9 * sim_inertia_scale}" iyz="${-5.34e-9 * sim_inertia_scale}" ixz="${0.200564e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -265,7 +290,7 @@
     <inertial>
       <origin xyz="-0.020109 0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -286,7 +311,7 @@
     <inertial>
       <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="3.117e-9" iyz="17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${3.117e-9 * sim_inertia_scale}" iyz="${17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -307,7 +332,7 @@
     <inertial>
       <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484471e-6" iyy="0.567615e-06" izz="91.813e-9" ixy="-2.101e-9" iyz="5.008e-9" ixz="0.20057e-6"/>
+      <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-06 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${-2.101e-9 * sim_inertia_scale}" iyz="${5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -328,7 +353,7 @@
     <inertial>
       <origin xyz="-0.005539 -0.000204 0.020223" rpy="0 0 0"/>
       <mass value="0.00785515871148119"/>
-      <inertia ixx="5.306048e-6" iyy="1.837621e-6" izz="3.61974e-6" ixy="-22.863e-9" iyz="-4.925e-9" ixz="-9.195e-9"/>
+      <inertia ixx="${5.306048e-6 * sim_body_inertia_scale}" iyy="${1.837621e-6 * sim_body_inertia_scale}" izz="${3.61974e-6 * sim_body_inertia_scale}" ixy="${-22.863e-9 * sim_body_inertia_scale}" iyz="${-4.925e-9 * sim_body_inertia_scale}" ixz="${-9.195e-9 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="-0.089299 0 0.015543" rpy="0 0 0"/>
@@ -349,7 +374,7 @@
     <inertial>
       <origin xyz="0.089461 0.023505 0.0" rpy="0 0 0"/>
       <mass value="0.014261552601793053"/>
-      <inertia ixx="4.425965e-6" iyy="3.4560775e-5" izz="3.8954441e-5" ixy="0.104871e-6" iyz="75.406e-9" ixz="0.113313e-6"/>
+      <inertia ixx="${4.425965e-6 * sim_body_inertia_scale}" iyy="${3.4560775e-5 * sim_body_inertia_scale}" izz="${3.8954441e-5 * sim_body_inertia_scale}" ixy="${0.104871e-6 * sim_body_inertia_scale}" iyz="${75.406e-9 * sim_body_inertia_scale}" ixz="${0.113313e-6 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0.087701 0.023505 -0.026457" rpy="0 0 0"/>
@@ -415,12 +440,12 @@
         rpy="0 0 -1.57" />
       <mass value="0.108" />
       <inertia
-        ixx="8.74731426973985E-06"
-        ixy="-6.66781590704156E-08"
-        ixz="1.89196685410159E-11"
-        iyy="8.70097486591694E-06"
-        iyz="-1.13397577799603E-17"
-        izz="9.98821295317784E-06" />
+        ixx="${8.74731426973985E-06 * sim_body_inertia_scale}"
+        ixy="${-6.66781590704156E-08 * sim_body_inertia_scale}"
+        ixz="${1.89196685410159E-11 * sim_body_inertia_scale}"
+        iyy="${8.70097486591694E-06 * sim_body_inertia_scale}"
+        iyz="${-1.13397577799603E-17 * sim_body_inertia_scale}"
+        izz="${9.98821295317784E-06 * sim_body_inertia_scale}" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 -1.57"/>
@@ -444,7 +469,7 @@
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -477,7 +502,7 @@
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -510,7 +535,7 @@
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -543,7 +568,7 @@
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -576,7 +601,7 @@
     <inertial>
       <origin xyz="0.002259 0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="24.631e-9" iyz="3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${24.631e-9 * sim_inertia_scale}" iyz="${3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -597,7 +622,7 @@
     <inertial>
       <origin xyz="0.002259 0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="24.631e-9" iyz="3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${24.631e-9 * sim_inertia_scale}" iyz="${3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -618,7 +643,7 @@
     <inertial>
       <origin xyz="0.002259 -0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="-24.631e-9" iyz="-3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${-24.631e-9 * sim_inertia_scale}" iyz="${-3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -639,7 +664,7 @@
     <inertial>
       <origin xyz="0.002259 -0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="-24.631e-9" iyz="-3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${-24.631e-9 * sim_inertia_scale}" iyz="${-3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -660,7 +685,7 @@
     <inertial>
       <origin xyz="-0.001747 0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="1.254e-9" iyz="-13.212e-9" ixz="-0.112894e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${1.254e-9 * sim_inertia_scale}" iyz="${-13.212e-9 * sim_inertia_scale}" ixz="${-0.112894e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -681,7 +706,7 @@
     <inertial>
       <origin xyz="-0.001747 0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="1.254e-9" iyz="-13.212e-9" ixz="-0.112894e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${1.254e-9 * sim_inertia_scale}" iyz="${-13.212e-9 * sim_inertia_scale}" ixz="${-0.112894e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -702,7 +727,7 @@
     <inertial>
       <origin xyz="-0.001747 -0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="-1.254e-9" iyz="13.212e-9" ixz="-0.11152e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${-1.254e-9 * sim_inertia_scale}" iyz="${13.212e-9 * sim_inertia_scale}" ixz="${-0.11152e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -723,7 +748,7 @@
     <inertial>
       <origin xyz="-0.001747 -0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="-1.254e-9" iyz="13.212e-9" ixz="-0.11152e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${-1.254e-9 * sim_inertia_scale}" iyz="${13.212e-9 * sim_inertia_scale}" ixz="${-0.11152e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -745,7 +770,7 @@
       <!-- <origin xyz="-2.7696824994288393e-05 0.0 0.02237056777957029" rpy="0 0 0"/>  -->
       <origin xyz="-0.00003 0.030005 0.022371" rpy="0 0 0"/> 
       <mass value="0.0051928835390001775"/>
-      <inertia ixx="5.834352e-6" iyy="3.214872e-6" izz="6.996514e-6" ixy="0.0e-9" iyz="0.0e-9" ixz="15.218e-9"/>
+      <inertia ixx="${5.834352e-6 * sim_body_inertia_scale}" iyy="${3.214872e-6 * sim_body_inertia_scale}" izz="${6.996514e-6 * sim_body_inertia_scale}" ixy="${0.0e-9 * sim_body_inertia_scale}" iyz="${0.0e-9 * sim_body_inertia_scale}" ixz="${15.218e-9 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0.002701 0.030005 0.016293" rpy="0 0 0"/>
@@ -1191,7 +1216,7 @@
     <inertial>
       <mass value="0.0001"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1e-09" ixy="0.0" ixz="0.0" iyy="1e-09" iyz="0.0" izz="1e-09"/>
+      <inertia ixx="${1e-09 * sim_body_inertia_scale}" ixy="${0.0 * sim_body_inertia_scale}" ixz="${0.0 * sim_body_inertia_scale}" iyy="${1e-09 * sim_body_inertia_scale}" iyz="${0.0 * sim_body_inertia_scale}" izz="${1e-09 * sim_body_inertia_scale}"/>
     </inertial>
   </link>
 

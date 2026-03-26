@@ -17,6 +17,7 @@
 #include "mini_pupper_controllers/simple_quadruped_controller.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <iomanip>
 #include <limits>
 #include <sstream>
@@ -42,6 +43,18 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_init()
   }
   if (!node->has_parameter("default_positions")) {
     node->declare_parameter<std::vector<double>>("default_positions", std::vector<double>{});
+  }
+  if (!node->has_parameter("parallel_linkage_compensation")) {
+    node->declare_parameter<bool>("parallel_linkage_compensation", false);
+  }
+  if (!node->has_parameter("idle_ramp_enabled")) {
+    node->declare_parameter<bool>("idle_ramp_enabled", false);
+  }
+  if (!node->has_parameter("idle_hold_duration_sec")) {
+    node->declare_parameter<double>("idle_hold_duration_sec", 0.0);
+  }
+  if (!node->has_parameter("idle_ramp_duration_sec")) {
+    node->declare_parameter<double>("idle_ramp_duration_sec", 0.0);
   }
   command_buffer_.writeFromNonRT(nullptr);
 
@@ -90,7 +103,17 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_configure(
 
   joint_names_ = node->get_parameter("joints").as_string_array();
   default_positions_ = node->get_parameter("default_positions").as_double_array();
+  parallel_linkage_compensation_ = node->get_parameter("parallel_linkage_compensation").as_bool();
+  idle_ramp_enabled_ = node->get_parameter("idle_ramp_enabled").as_bool();
+  idle_hold_duration_sec_ = node->get_parameter("idle_hold_duration_sec").as_double();
+  idle_ramp_duration_sec_ = node->get_parameter("idle_ramp_duration_sec").as_double();
 
+  RCLCPP_INFO(
+    node->get_logger(), "Parallel linkage compensation: %s",
+    parallel_linkage_compensation_ ? "ENABLED (simulation)" : "disabled (hardware)");
+  RCLCPP_INFO(
+    node->get_logger(), "Idle ramp: %s (hold %.2fs, ramp %.2fs)",
+    idle_ramp_enabled_ ? "enabled" : "disabled", idle_hold_duration_sec_, idle_ramp_duration_sec_);
   if (joint_names_.empty()) {
     RCLCPP_ERROR(node->get_logger(), "Parameter 'joints' must not be empty");
     return controller_interface::CallbackReturn::ERROR;
@@ -106,7 +129,9 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_configure(
 
   assign_default_if_needed();
   commanded_positions_ = default_positions_;
+  idle_start_positions_ = default_positions_;
   has_external_command_ = false;
+  idle_ramp_started_ = false;
 
   // Log the default positions being used
   RCLCPP_INFO(node->get_logger(), "Controller initialized with default_positions:");
@@ -131,7 +156,10 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_activate(
 {
   assign_default_if_needed();
   commanded_positions_ = default_positions_;
+  idle_start_positions_ = default_positions_;
   has_external_command_ = false;
+  idle_ramp_started_ = false;
+  idle_ramp_elapsed_sec_ = 0.0;
   command_buffer_.writeFromNonRT(nullptr);
 
   if (command_interfaces_.size() != joint_names_.size()) {
@@ -140,6 +168,16 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_activate(
       "Number of command interfaces (%zu) does not match joints (%zu)",
       command_interfaces_.size(), joint_names_.size());
     return controller_interface::CallbackReturn::ERROR;
+  }
+
+  if (state_interfaces_.size() >= joint_names_.size()) {
+    for (size_t index = 0; index < joint_names_.size(); ++index) {
+      const double pos = state_interfaces_[index].get_value();
+      if (!std::isnan(pos)) {
+        commanded_positions_[index] = pos;
+        idle_start_positions_[index] = pos;
+      }
+    }
   }
 
   for (size_t index = 0; index < command_interfaces_.size(); ++index) {
@@ -153,14 +191,17 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   commanded_positions_.clear();
+  idle_start_positions_.clear();
   has_external_command_ = false;
+  idle_ramp_started_ = false;
+  idle_ramp_elapsed_sec_ = 0.0;
   command_buffer_.writeFromNonRT(nullptr);
   command_subscription_.reset();
   return controller_interface::CallbackReturn::SUCCESS;
 }
 
 controller_interface::return_type SimpleQuadrupedController::update(
-  const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
+  const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
 {
   auto command_ptr = command_buffer_.readFromRT();
   if (command_ptr && *command_ptr) {
@@ -176,11 +217,51 @@ controller_interface::return_type SimpleQuadrupedController::update(
     }
   }
 
+  std::vector<double> target_positions;
   if (!has_external_command_) {
-    commanded_positions_ = default_positions_;
-  }
+    if (
+      idle_ramp_enabled_ && idle_ramp_duration_sec_ > 0.0 &&
+      idle_start_positions_.size() == default_positions_.size())
+    {
+      idle_ramp_elapsed_sec_ += period.seconds();
+      target_positions.resize(default_positions_.size(), 0.0);
 
-  const auto & target_positions = commanded_positions_;
+      if (idle_ramp_elapsed_sec_ <= idle_hold_duration_sec_) {
+        for (size_t index = 0; index < default_positions_.size(); ++index) {
+          const double pos = state_interfaces_[index].get_value();
+          target_positions[index] = std::isnan(pos) ? commanded_positions_[index] : pos;
+        }
+        idle_start_positions_ = target_positions;
+        idle_ramp_started_ = false;
+      } else {
+        if (!idle_ramp_started_) {
+          for (size_t index = 0; index < default_positions_.size(); ++index) {
+            const double pos = state_interfaces_[index].get_value();
+            idle_start_positions_[index] = std::isnan(pos) ? commanded_positions_[index] : pos;
+          }
+          idle_ramp_started_ = true;
+        }
+
+        const double ramp_time_sec = idle_ramp_elapsed_sec_ - idle_hold_duration_sec_;
+        const double raw_alpha = std::clamp(ramp_time_sec / idle_ramp_duration_sec_, 0.0, 1.0);
+        const double alpha = raw_alpha * raw_alpha * (3.0 - 2.0 * raw_alpha);
+
+        for (size_t index = 0; index < default_positions_.size(); ++index) {
+          target_positions[index] =
+            idle_start_positions_[index] +
+            (default_positions_[index] - idle_start_positions_[index]) * alpha;
+        }
+      }
+    } else {
+      target_positions = commanded_positions_;
+    }
+  } else {
+    // External commands come from the Stanford controller in hardware-space and
+    // need the simulation-specific mapping before they can be sent to Gazebo.
+    target_positions = parallel_linkage_compensation_
+      ? apply_linkage_compensation(commanded_positions_)
+      : commanded_positions_;
+  }
 
   if (command_interfaces_.size() != target_positions.size()) {
     RCLCPP_ERROR(
@@ -197,6 +278,25 @@ controller_interface::return_type SimpleQuadrupedController::update(
   return controller_interface::return_type::OK;
 }
 
+std::vector<double> SimpleQuadrupedController::apply_linkage_compensation(
+  const std::vector<double> & positions) const
+{
+  // On real hardware the knee servo is body-frame-referenced via a parallel 4-bar linkage:
+  //   physical_knee_angle = hip_angle + knee_angle
+  // The URDF models lf2_lf3 as a serial joint relative to the thigh, so Gazebo expects:
+  //   urdf_knee = knee_cmd - hip_cmd
+  // Joint layout per leg (stride = 3): [abduction, hip, knee]
+  std::vector<double> compensated = positions;
+  const size_t stride = 3;
+  const size_t num_legs = positions.size() / stride;
+  for (size_t leg = 0; leg < num_legs; ++leg) {
+    const size_t hip_idx  = leg * stride + 1;
+    const size_t knee_idx = leg * stride + 2;
+    compensated[knee_idx] = positions[knee_idx] - positions[hip_idx];
+  }
+  return compensated;
+}
+
 void SimpleQuadrupedController::assign_default_if_needed()
 {
   auto node = get_node();
@@ -206,6 +306,10 @@ void SimpleQuadrupedController::assign_default_if_needed()
 
   if (commanded_positions_.size() != joint_names_.size()) {
     commanded_positions_.assign(joint_names_.size(), 0.0);
+  }
+
+  if (idle_start_positions_.size() != joint_names_.size()) {
+    idle_start_positions_.assign(joint_names_.size(), 0.0);
   }
 }
 
