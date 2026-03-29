@@ -3,16 +3,18 @@
 <package format="3">
   <name>mini_pupper_driver</name>
   <version>2.0.0</version>
-  <description>Mini Pupper hardware driver nodes</description>
-  <maintainer email="info@mangdang.net">MangDang</maintainer>
+  <description>Mini Pupper driver package for ROS 2 Jazzy</description>
+  <maintainer email="maintainer@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_python</buildtool_depend>
 
   <depend>rclpy</depend>
-  <depend>std_msgs</depend>
-  <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
