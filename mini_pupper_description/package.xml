@@ -3,17 +3,21 @@
 <package format="3">
   <name>mini_pupper_description</name>
   <version>2.0.0</version>
-  <description>Mini Pupper URDF description and meshes</description>
-  <maintainer email="info@mangdang.net">MangDang</maintainer>
+  <description>Mini Pupper robot description package for ROS 2 Jazzy</description>
+  <maintainer email="maintainer@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>joint_state_publisher</exec_depend>
-  <exec_depend>joint_state_publisher_gui</exec_depend>
-  <exec_depend>xacro</exec_depend>
-  <exec_depend>rviz2</exec_depend>
+  <depend>rclpy</depend>
+  <depend>tf2_ros</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>joint_state_publisher_gui</depend>
+  <depend>xacro</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
