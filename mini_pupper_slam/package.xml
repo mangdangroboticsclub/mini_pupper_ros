@@ -2,14 +2,15 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mini_pupper_slam</name>
-  <version>1.0.0</version>
-  <description>Launch files for SLAM with Cartographer</description>
-  <maintainer email="sunhongshuai@gmail.com">cullensun</maintainer>
+  <version>2.0.0</version>
+  <description>Mini Pupper SLAM configuration using slam_toolbox</description>
+  <maintainer email="info@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <exec_depend>cartographer_ros</exec_depend>
+
   <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>nav2_map_server</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
