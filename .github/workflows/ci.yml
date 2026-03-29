@@ -1,4 +1,4 @@
-name: ROS2 Jazzy CI
+name: CI
 
 on:
   push:
@@ -10,46 +10,24 @@ jobs:
   build-and-test:
     runs-on: ubuntu-24.04
     container:
-      image: ros:jazzy-ros-base-noble
-
+      image: ros:jazzy-ros-base
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          path: ros2_ws/src/mini_pupper_ros
 
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y \
-            python3-pip \
-            python3-colcon-common-extensions \
-            python3-rosdep \
-            python3-pytest \
-            python3-pytest-cov
-          rosdep init || true
           rosdep update
-          cd ros2_ws
-          rosdep install --from-paths src --ignore-src -r -y
+          rosdep install --from-paths . --ignore-src -r -y
 
       - name: Build workspace
         run: |
-          source /opt/ros/jazzy/setup.bash
-          cd ros2_ws
-          colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
-        shell: bash
+          . /opt/ros/jazzy/setup.sh
+          colcon build --symlink-install
 
       - name: Run tests
         run: |
-          source /opt/ros/jazzy/setup.bash
-          source ros2_ws/install/setup.bash
-          cd ros2_ws
-          colcon test --return-code-on-test-failure
-        shell: bash
-
-      - name: Test results
-        run: |
-          cd ros2_ws
+          . /opt/ros/jazzy/setup.sh
+          colcon test
           colcon test-result --verbose
-        if: always()
-        shell: bash
