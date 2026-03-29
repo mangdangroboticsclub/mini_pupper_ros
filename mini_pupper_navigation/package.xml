@@ -1,26 +1,23 @@
 <?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mini_pupper_navigation</name>
-  <version>0.1.0</version>
-  <description>Mini Pupper Navigation Package</description>
-
-  <maintainer email="fae@mangdang.net">MangDang</maintainer>
-  <author email="thefoxfoxfox@outlook.com">Han</author>
-
+  <version>2.0.0</version>
+  <description>Mini Pupper navigation package using Nav2 for ROS2 Jazzy</description>
+  <maintainer email="maintainer@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <exec_depend>cartographer_ros</exec_depend>
-  <exec_depend>launch</exec_depend>
-  <exec_depend>launch_ros</exec_depend>
-  <exec_depend>rviz2</exec_depend>
-  <exec_depend>navigation2</exec_depend>
-  <exec_depend>imu_tools</exec_depend>
-  <exec_depend>nav2_bringup</exec_depend>
-  <exec_depend>nav2_smac_planner</exec_depend>
-  <exec_depend>nav2_regulated_pure_pursuit_controller</exec_depend>
-  <exec_depend>nav2_velocity_smoother</exec_depend>
-  <exec_depend>nav2_smoother</exec_depend>
+
+  <depend>mini_pupper_description</depend>
+  <depend>mini_pupper_bringup</depend>
+  <depend>nav2_bringup</depend>
+  <depend>nav2_map_server</depend>
+  <depend>slam_toolbox</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>xacro</depend>
+
+  <exec_depend>ros2launch</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
