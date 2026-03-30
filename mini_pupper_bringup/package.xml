@@ -3,21 +3,20 @@
 <package format="3">
   <name>mini_pupper_bringup</name>
   <version>2.0.0</version>
-  <description>Mini Pupper bringup launch files and configuration</description>
-  <maintainer email="info@mangdang.net">MangDang</maintainer>
+  <description>Bringup launch files for Mini Pupper robot (ROS 2 Jazzy)</description>
+  <maintainer email="maintainer@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>ros2launch</exec_depend>
   <exec_depend>mini_pupper_description</exec_depend>
-  <exec_depend>mini_pupper_driver</exec_depend>
+  <exec_depend>mini_pupper_control</exec_depend>
   <exec_depend>mini_pupper_navigation</exec_depend>
-  <exec_depend>mini_pupper_slam</exec_depend>
-  <exec_depend>mini_pupper_teleop</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
-  <exec_depend>joint_state_publisher_gui</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>xacro</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
