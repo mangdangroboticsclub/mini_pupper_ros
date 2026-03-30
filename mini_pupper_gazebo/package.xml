@@ -3,21 +3,20 @@
 <package format="3">
   <name>mini_pupper_gazebo</name>
   <version>2.0.0</version>
-  <description>Mini Pupper Gazebo simulation package for ROS 2 Jazzy (gz-sim)</description>
+  <description>Gazebo simulation for Mini Pupper robot (ROS 2 Jazzy / Gazebo Harmonic)</description>
   <maintainer email="maintainer@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>rclpy</depend>
-  <depend>ros_gz_sim</depend>
-  <depend>ros_gz_bridge</depend>
-  <depend>ros_gz_interfaces</depend>
-  <depend>mini_pupper_description</depend>
-  <depend>mini_pupper_bringup</depend>
-  <depend>geometry_msgs</depend>
-  <depend>sensor_msgs</depend>
-  <depend>std_msgs</depend>
+  <!-- Jazzy uses Gazebo Harmonic (gz-sim8) via ros_gz -->
+  <exec_depend>ros_gz</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>mini_pupper_description</exec_depend>
+  <exec_depend>mini_pupper_control</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
