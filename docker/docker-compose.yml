@@ -1,36 +1,45 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mini_pupper_ros:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
     image: mini_pupper_ros:jazzy
-    container_name: mini_pupper_ros_jazzy
-    environment:
-      - ROS_DISTRO=jazzy
-      - DISPLAY=${DISPLAY}
-      - QT_X11_NO_MITSHM=1
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - .:/ros2_ws/src/mini_pupper_ros
+    container_name: mini_pupper_ros
     network_mode: host
     privileged: true
-    stdin_open: true
-    tty: true
-    command: /bin/bash
-
-  mini_pupper_rviz:
-    image: mini_pupper_ros:jazzy
-    container_name: mini_pupper_rviz
     environment:
-      - ROS_DISTRO=jazzy
       - DISPLAY=${DISPLAY}
-      - QT_X11_NO_MITSHM=1
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /dev:/dev
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyAMA0:/dev/ttyAMA0
+    stdin_open: true
+    tty: true
+    command: bash
+
+  mini_pupper_sim:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: mini_pupper_ros:jazzy
+    container_name: mini_pupper_sim
     network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - GZ_SIM_RESOURCE_PATH=/ros2_ws/install/mini_pupper_description/share
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true
+    tty: true
     command: >
       bash -c "source /opt/ros/jazzy/setup.bash &&
                source /ros2_ws/install/setup.bash &&
-               ros2 launch mini_pupper_bringup bringup.launch.py"
+               ros2 launch mini_pupper_gazebo mini_pupper_gazebo.launch.py"
