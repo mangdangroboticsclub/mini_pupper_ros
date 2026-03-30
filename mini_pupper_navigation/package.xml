@@ -3,19 +3,19 @@
 <package format="3">
   <name>mini_pupper_navigation</name>
   <version>2.0.0</version>
-  <description>Mini Pupper navigation configuration using Nav2</description>
-  <maintainer email="info@mangdang.net">MangDang</maintainer>
+  <description>Navigation stack for Mini Pupper robot using Nav2 (ROS 2 Jazzy)</description>
+  <maintainer email="maintainer@mangdang.net">MangDang</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <exec_depend>ros2launch</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>
-  <exec_depend>nav2_map_server</exec_depend>
-  <exec_depend>nav2_amcl</exec_depend>
-  <exec_depend>nav2_bt_navigator</exec_depend>
-  <exec_depend>nav2_planner</exec_depend>
-  <exec_depend>nav2_controller</exec_depend>
-  <exec_depend>nav2_lifecycle_manager</exec_depend>
+  <exec_depend>nav2_msgs</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>mini_pupper_description</exec_depend>
+  <exec_depend>mini_pupper_control</exec_depend>
+  <exec_depend>rviz2</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
