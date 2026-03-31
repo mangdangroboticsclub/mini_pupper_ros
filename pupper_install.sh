@@ -49,7 +49,7 @@ source /opt/ros/jazzy/setup.bash
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 if ! [ -d "mini_pupper_ros" ]; then
-  git clone https://github.com/MushfiqueTM/mini_pupper_ros.git -b ros2-jazzy mini_pupper_ros
+  git clone https://github.com/MushfiqueTM/mini_pupper_ros.git -b ros2-jazzy-clean mini_pupper_ros
 fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 # compiling gazebo and cartographer on Raspberry Pi is not recommended
