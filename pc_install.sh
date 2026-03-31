@@ -33,5 +33,9 @@ rosdep install --from-paths src --ignore-src -r -y
 sudo apt install -y ros-jazzy-teleop-twist-keyboard ros-jazzy-teleop-twist-joy
 sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
 sudo apt install -y ros-jazzy-rqt*
-pip3 install --user simple_pid
+pip3 install --user --break-system-packages simple_pid
+
+# Disable legacy Gazebo Classic packages (not available in Jazzy)
+touch ~/ros2_ws/src/champ/champ/champ_gazebo/COLCON_IGNORE
+
 colcon build --symlink-install
