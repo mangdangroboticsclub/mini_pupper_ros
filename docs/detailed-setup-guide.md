@@ -190,7 +190,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:=xbox  # or ps3, ps5, xd3
 ```
 
 ### 2.1.2 Test in Gazebo
@@ -213,7 +213,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 2
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:=xbox  # or ps3, ps5, xd3
 ```
 
 ### 2.1.3 Test SLAM (Mapping) in Gazebo
@@ -244,7 +244,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:=xbox  # or ps3, ps5, xd3
 ```
 
 - Save the map  
@@ -302,7 +302,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 2 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:=xbox  # or ps3, ps5, xd3
 ```
 
 ### 2.2.2 Test SLAM (Mapping)
@@ -334,7 +334,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```sh
 # Terminal 3 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch teleop_twist_joy teleop-launch.py
+ros2 launch teleop_twist_joy teleop-launch.py joy_config:=xbox  # or ps3, ps5, xd3
 ```
 
 - Save the map  

@@ -161,6 +161,7 @@ void RobotBehaviourNode::control_loop_()
   // compute dt from steady clock
   const rclcpp::Time now_st = steady_clock_.now();
   double dt = (now_st - last_tick_st_).seconds();
+  (void)dt;
   last_tick_st_ = now_st;
 
   if (!last_fleet_command_ || !last_ekf_pose_) {
