@@ -14,14 +14,14 @@ permissions:
 
 env:
   UPSTREAM_WORKSPACE: .minipupper.repos
-  ROSDEP_SKIP_KEYS: ecl_threads
+  ROSDEP_SKIP_KEYS: ecl_threads gazebo_ros2_control velodyne_gazebo_plugins
 
 jobs:
   industrial_ci:
     strategy:
       matrix:
         env:
-          - { ROS_DISTRO: jazzy, ROS_REPO: ros }
+          - { ROS_DISTRO: jazzy, ROS_REPO: main }
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
