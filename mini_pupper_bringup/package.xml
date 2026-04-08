@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypename="xs:schema"?>
 <package format="3">
   <name>mini_pupper_bringup</name>
-  <version>0.1.0</version>
-  <description>Mini Pupper Bringup Package</description>
-  <maintainer email="fae@mangdang.net">MangDang</maintainer>
-  <author email="thefoxfoxfox@outlook.com">Han</author>
-
+  <version>1.0.0</version>
+  <description>Bringup package for Mini Pupper</description>
+  <maintainer email="your-email@example.com">Your Name</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <exec_depend>champ_base</exec_depend>
-  <exec_depend>launch</exec_depend>
-  <exec_depend>launch_ros</exec_depend>
+
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend>
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>mini_pupper_description</exec_depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
