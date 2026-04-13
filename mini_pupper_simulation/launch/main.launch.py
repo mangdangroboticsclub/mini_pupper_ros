@@ -40,7 +40,7 @@ def generate_launch_description():
         description="Include support stand in robot description for debugging control (true/false)"
     )
 
-    default_world_path = PathJoinSubstitution([this_package, "worlds", "empty.world"])
+    default_world_path = PathJoinSubstitution([this_package, "worlds", "mini_pupper_home.world"])
 
     world = LaunchConfiguration("world")
     world_launch_arg = DeclareLaunchArgument(
@@ -137,6 +137,15 @@ def generate_launch_description():
         actions=[stanford_controller_launch],
     )
 
+    # TF broadcaster for p3d odometry
+    odom_tf_broadcaster = Node(
+        package="mini_pupper_simulation",
+        executable="odom_tf_broadcaster.py",
+        name="odom_tf_broadcaster",
+        output="screen",
+        parameters=[{"use_sim_time": True}]
+    )
+
     return LaunchDescription([
         debug_control_launch_arg,
         world_launch_arg,
@@ -145,6 +154,7 @@ def generate_launch_description():
         description_launch,
         gazebo_launch,
         spawn_entity,
+        odom_tf_broadcaster,
         ros2_controllers_launch,
         delayed_stanford_controller_launch,
     ])

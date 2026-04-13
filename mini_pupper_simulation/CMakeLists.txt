@@ -11,6 +11,7 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
   mini_pupper_simulation/smooth_position_test.py
+  mini_pupper_simulation/odom_tf_broadcaster.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
