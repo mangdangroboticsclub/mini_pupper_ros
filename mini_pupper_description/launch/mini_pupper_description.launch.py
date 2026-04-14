@@ -27,6 +27,7 @@
 import os
 
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
@@ -89,7 +90,7 @@ def generate_launch_description():
         executable="robot_state_publisher",
         output="screen",
         parameters=[
-            {"robot_description": robot_description_content},
+            {"robot_description": ParameterValue(robot_description_content, value_type=str)},
             {"use_tf_static": False},
             {"publish_frequency": 200.0},
             {"ignore_timestamp": True},

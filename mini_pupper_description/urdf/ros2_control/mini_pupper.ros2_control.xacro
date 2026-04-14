@@ -5,7 +5,11 @@
     <joint name="${joint_name}">
       <xacro:if value="${use_gazebo_hardware}">
         <command_interface name="position_pid"/>
-        <param name="pos_kp">1.0</param>
+        <!-- Gains tuned for sim_inertia_scale=100 (links are 100x heavier inertially).
+             Joint effective I (hip+distal) ~1.3e-4 kg*m^2, knee ~4.8e-5 kg*m^2.
+             Stability constraint: kd &lt; 2*I/dt_physics ~0.096 (use 0.05 with margin).
+             kp=5.0 gives ~22 ms settling vs 200 ms at kp=1 (within 1-2 gait ticks). -->
+        <param name="pos_kp">5.0</param>
         <param name="pos_kd">0.05</param>
       </xacro:if>
       <xacro:unless value="${use_gazebo_hardware}">
