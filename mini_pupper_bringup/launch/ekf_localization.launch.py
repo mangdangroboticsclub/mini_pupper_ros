@@ -27,8 +27,8 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 def generate_launch_description():
     bringup_package = FindPackageShare("mini_pupper_bringup")
-    footprint_to_odom_ekf_config_path = PathJoinSubstitution(
-        [bringup_package, "config", "ekf", "footprint_to_odom.yaml"]
+    baselink_to_odom_ekf_config_path = PathJoinSubstitution(
+        [bringup_package, "config", "ekf", "baselink_to_odom.yaml"]
     )
 
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -44,11 +44,11 @@ def generate_launch_description():
     footprint_to_odom_ekf = Node(
         package="robot_localization",
         executable="ekf_node",
-        name="footprint_to_odom_ekf",
+        name="baselink_to_odom_ekf",
         output="screen",
         parameters=[
             {"use_sim_time": use_sim_time},
-            footprint_to_odom_ekf_config_path,
+            baselink_to_odom_ekf_config_path,
         ],
         remappings=[("odometry/filtered", "odom")],
     )

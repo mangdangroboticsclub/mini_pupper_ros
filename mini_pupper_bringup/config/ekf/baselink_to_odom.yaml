@@ -1,4 +1,4 @@
-footprint_to_odom_ekf:
+baselink_to_odom_ekf:
   ros__parameters:
     frequency: 50.0
     publish_tf: true

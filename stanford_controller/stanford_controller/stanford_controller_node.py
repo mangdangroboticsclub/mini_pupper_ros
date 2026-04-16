@@ -14,6 +14,9 @@ from .Config import Configuration
 import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
 
+import math
+
+from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
 from std_msgs.msg import String, Float64MultiArray
 from mini_pupper_interfaces.msg import Command
@@ -96,9 +99,13 @@ class StanfordControllerNode(Node):
             10
         )
         self.state_publisher = self.create_publisher(String, 'state_log', 10)
+        self.odom_publisher = self.create_publisher(Odometry, 'odom/raw', 10)
 
         self.state = State()
         self.quat_orientation = np.array([1, 0, 0, 0])
+        self._odom_x = 0.0
+        self._odom_y = 0.0
+        self._odom_yaw = 0.0
         # self.timer = self.create_timer(self.config.dt, self.control_loop)
 
     def imu_callback(self, msg):
@@ -305,6 +312,14 @@ class StanfordControllerNode(Node):
 
         self.state.joint_angles = self.limit_joint_angles(self.state.joint_angles)
 
+        if self.state.behavior_state == BehaviorState.TROT:
+            vx = command.horizontal_velocity[0]
+            vy = command.horizontal_velocity[1]
+            vyaw = command.yaw_rate
+        else:
+            vx, vy, vyaw = 0.0, 0.0, 0.0
+        self.publish_odometry(vx, vy, vyaw)
+
         if self.publish_states:
             self.publish_state()
         if self.publish_joint_control:
@@ -327,6 +342,25 @@ class StanfordControllerNode(Node):
             [-1.5, -1.5, -1.2, -1.2]
         ])
         return np.clip(joint_angles, min_lim, max_lim)
+
+    def publish_odometry(self, vx, vy, vyaw):
+        dt = self.config.dt
+        self._odom_x += (vx * math.cos(self._odom_yaw) - vy * math.sin(self._odom_yaw)) * dt
+        self._odom_y += (vx * math.sin(self._odom_yaw) + vy * math.cos(self._odom_yaw)) * dt
+        self._odom_yaw += vyaw * dt
+
+        msg = Odometry()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'odom'
+        msg.child_frame_id = 'base_link'
+        msg.pose.pose.position.x = self._odom_x
+        msg.pose.pose.position.y = self._odom_y
+        msg.pose.pose.orientation.z = math.sin(self._odom_yaw / 2.0)
+        msg.pose.pose.orientation.w = math.cos(self._odom_yaw / 2.0)
+        msg.twist.twist.linear.x = vx
+        msg.twist.twist.linear.y = vy
+        msg.twist.twist.angular.z = vyaw
+        self.odom_publisher.publish(msg)
 
     def publish_state(self):
         state_msg = String()
