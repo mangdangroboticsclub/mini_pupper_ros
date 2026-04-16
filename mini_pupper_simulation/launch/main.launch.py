@@ -84,6 +84,21 @@ def generate_launch_description():
         }.items()
     )
 
+    launch_twist_converter = LaunchConfiguration("launch_twist_converter")
+    launch_twist_converter_launch_arg = DeclareLaunchArgument(
+        name="launch_twist_converter",
+        default_value="true",
+        description="Launch twist_to_command_converter to convert /cmd_vel to robot_command (set false to use your own pipeline)"
+    )
+
+    twist_converter_launch_path = PathJoinSubstitution(
+        [FindPackageShare("stanford_controller"), "twist_to_command_converter.launch.py"]
+    )
+    twist_converter_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(twist_converter_launch_path),
+        condition=IfCondition(launch_twist_converter)
+    )
+
     # Stanford controller launch for simulation
     stanford_controller_launch_path = PathJoinSubstitution(
         [FindPackageShare("stanford_controller"), "stanford_controller.launch.py"]
@@ -131,10 +146,16 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)
     )
 
-    # Delayed start node for Stanford controller (wait for controllers to be active)
+    # Delayed start: Stanford controller first (wait for controllers to be active)
     delayed_stanford_controller_launch = TimerAction(
         period=8.0,
         actions=[stanford_controller_launch],
+    )
+
+    # Delayed start: twist converter after Stanford controller has started
+    delayed_twist_converter_launch = TimerAction(
+        period=12.0,
+        actions=[twist_converter_launch],
     )
 
     # TF broadcaster for p3d odometry
@@ -151,10 +172,12 @@ def generate_launch_description():
         world_launch_arg,
         gui_launch_arg,
         world_init_z_launch_arg,
+        launch_twist_converter_launch_arg,
         description_launch,
         gazebo_launch,
         spawn_entity,
         odom_tf_broadcaster,
         ros2_controllers_launch,
         delayed_stanford_controller_launch,
+        delayed_twist_converter_launch,
     ])

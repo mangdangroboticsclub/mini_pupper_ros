@@ -143,11 +143,27 @@ def generate_launch_description():
         }.items(),
     )
 
+    launch_twist_converter = LaunchConfiguration("launch_twist_converter")
+    launch_twist_converter_launch_arg = DeclareLaunchArgument(
+        name="launch_twist_converter",
+        default_value="true",
+        description="Launch twist_to_command_converter to convert /cmd_vel to robot_command (set false to use your own pipeline)"
+    )
+
+    twist_converter_launch_path = PathJoinSubstitution(
+        [FindPackageShare("stanford_controller"), "twist_to_command_converter.launch.py"]
+    )
+    twist_converter_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(twist_converter_launch_path),
+        condition=IfCondition(launch_twist_converter)
+    )
+
     launch_actions = [
         description_launch,
         accessories_launch,
         ros2_controllers_launch,
         stanford_controller_launch,
+        twist_converter_launch,
     ]
 
     launch_description = [
@@ -155,6 +171,7 @@ def generate_launch_description():
         multi_robot_arg,
         use_sim_time_launch_arg,
         hardware_connected_launch_arg,
+        launch_twist_converter_launch_arg,
         GroupAction(
             actions=[PushRosNamespace(robot_namespace)] + launch_actions,
             condition=IfCondition(multi_robot),

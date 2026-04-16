@@ -62,7 +62,7 @@ We recently migrated Stanford controller to the `mini_pupper_ros` repo, enabling
 ```sh
 # Terminal 1 (ssh)
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
+ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py launch_twist_converter:=false
 ```
 
 **PC (Or Mini Pupper)**
