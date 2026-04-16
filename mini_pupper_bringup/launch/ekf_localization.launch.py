@@ -27,9 +27,6 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 def generate_launch_description():
     bringup_package = FindPackageShare("mini_pupper_bringup")
-    base_to_footprint_ekf_config_path = PathJoinSubstitution(
-        [bringup_package, "config", "ekf", "base_to_footprint.yaml"]
-    )
     footprint_to_odom_ekf_config_path = PathJoinSubstitution(
         [bringup_package, "config", "ekf", "footprint_to_odom.yaml"]
     )
@@ -37,30 +34,19 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration("use_sim_time")
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name="use_sim_time",
-        default_value="False",
+        default_value="false",
         description="Use simulation (Gazebo) clock if true",
     )
 
-    base_to_footprint_ekf = Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="base_to_footprint_ekf",
-        output="screen",
-        parameters=[
-            {"base_link_frame": "base_link"},
-            {"use_sim_time": use_sim_time},
-            base_to_footprint_ekf_config_path,
-        ],
-        remappings=[("odometry/filtered", "odom/local")],
-    )
-
+    # Single EKF: fuses IMU heading to publish odom→base_footprint TF and /odom.
+    # base_footprint→base_link is provided as a fixed joint by robot_state_publisher
+    # (defined in the URDF), so the old base_to_footprint_ekf is no longer needed.
     footprint_to_odom_ekf = Node(
         package="robot_localization",
         executable="ekf_node",
         name="footprint_to_odom_ekf",
         output="screen",
         parameters=[
-            {"base_link_frame": "base_link"},
             {"use_sim_time": use_sim_time},
             footprint_to_odom_ekf_config_path,
         ],
@@ -68,5 +54,5 @@ def generate_launch_description():
     )
 
     return LaunchDescription(
-        [use_sim_time_launch_arg, base_to_footprint_ekf, footprint_to_odom_ekf]
+        [use_sim_time_launch_arg, footprint_to_odom_ekf]
     )

@@ -3,7 +3,7 @@ slam_toolbox:
     use_sim_time: False
     map_frame: map
     odom_frame: odom
-    base_frame: base_footprint
+    base_frame: base_link
     publish_tf: true
     scan_topic: /scan
     mode: mapping

@@ -1,7 +1,7 @@
 amcl:
   ros__parameters:
     use_sim_time: False
-    base_frame_id: "base_footprint"
+    base_frame_id: "base_link"
     global_frame_id: "map"
     odom_frame_id: "odom"
     scan_topic: scan
@@ -64,7 +64,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: False
     global_frame: map
-    robot_base_frame: base_footprint
+    robot_base_frame: base_link
     odom_topic: /odom
     bt_loop_duration: 100
     default_server_timeout: 30
@@ -183,7 +183,7 @@ local_costmap:
     ros__parameters:
       use_sim_time: False
       global_frame: odom
-      robot_base_frame: base_footprint
+      robot_base_frame: base_link
       rolling_window: true
       plugins: ["obstacle_layer", "inflation_layer"]
       always_send_full_costmap: True
@@ -232,7 +232,7 @@ global_costmap:
     ros__parameters:
       use_sim_time: False
       global_frame: map
-      robot_base_frame: base_footprint
+      robot_base_frame: base_link
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       always_send_full_costmap: True
@@ -333,7 +333,7 @@ behavior_server:
     cycle_frequency: 10.0
     behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
     global_frame: odom
-    robot_base_frame: base_footprint
+    robot_base_frame: base_link
     transform_tolerance: 0.3
 
     simulate_ahead_time: 0.5

@@ -28,5 +28,5 @@ footprint_to_odom_ekf:
                   false, false, false]
 
     odom_frame: odom
-    base_link_frame: base_footprint
+    base_link_frame: base_link
     world_frame: odom
