@@ -26,12 +26,12 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
 def generate_launch_description():
-    champ_base_package = FindPackageShare("champ_base")
+    bringup_package = FindPackageShare("mini_pupper_bringup")
     base_to_footprint_ekf_config_path = PathJoinSubstitution(
-        [champ_base_package, "config", "ekf", "base_to_footprint.yaml"]
+        [bringup_package, "config", "ekf", "base_to_footprint.yaml"]
     )
     footprint_to_odom_ekf_config_path = PathJoinSubstitution(
-        [champ_base_package, "config", "ekf", "footprint_to_odom.yaml"]
+        [bringup_package, "config", "ekf", "footprint_to_odom.yaml"]
     )
 
     use_sim_time = LaunchConfiguration("use_sim_time")

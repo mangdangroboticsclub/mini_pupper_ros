@@ -67,17 +67,10 @@ def generate_launch_description():
     has_camera = str(sensors_config["camera"])
     lidar_port = ports_config["lidar"]
 
-    use_sim_time = LaunchConfiguration("use_sim_time")
-    use_sim_time_launch_arg = DeclareLaunchArgument(
-        name="use_sim_time",
-        default_value="False",
-        description="Use simulation (Gazebo) clock if true",
-    )
-
     hardware_connected = LaunchConfiguration("hardware_connected")
     hardware_connected_launch_arg = DeclareLaunchArgument(
         name="hardware_connected",
-        default_value="True",
+        default_value="true",
         description="Set to true if connected to a physical robot",
     )
 
@@ -105,7 +98,7 @@ def generate_launch_description():
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),
         launch_arguments={
-            "use_sim_time": use_sim_time,
+            "use_sim_time": "false",
         }.items(),
     )
 
@@ -139,7 +132,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(stanford_controller_launch_path),
         launch_arguments={
             "orientation_from_imu": has_imu,
-            "publish_joint_control": "True",
+            "publish_joint_control": "true",
         }.items(),
     )
 
@@ -158,18 +151,26 @@ def generate_launch_description():
         condition=IfCondition(launch_twist_converter)
     )
 
+    ekf_localization_launch_path = PathJoinSubstitution(
+        [bringup_package, "launch", "ekf_localization.launch.py"]
+    )
+    ekf_localization_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(ekf_localization_launch_path),
+        launch_arguments={"use_sim_time": "false"}.items(),
+    )
+
     launch_actions = [
         description_launch,
         accessories_launch,
         ros2_controllers_launch,
         stanford_controller_launch,
         twist_converter_launch,
+        ekf_localization_launch,
     ]
 
     launch_description = [
         robot_namespace_arg,
         multi_robot_arg,
-        use_sim_time_launch_arg,
         hardware_connected_launch_arg,
         launch_twist_converter_launch_arg,
         GroupAction(
