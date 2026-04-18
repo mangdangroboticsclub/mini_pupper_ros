@@ -164,7 +164,7 @@ def generate_launch_description():
         name="baselink_to_odom_ekf",
         output="screen",
         parameters=[
-            {"use_sim_time": "false"},
+            {"use_sim_time": False},
             baselink_to_odom_ekf_config_path,
         ],
         remappings=[("odometry/filtered", "odom")],
