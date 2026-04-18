@@ -20,7 +20,7 @@ import os
 
 import yaml
 from ament_index_python.packages import get_package_share_directory
-from launch_ros.actions import PushRosNamespace
+from launch_ros.actions import Node, PushRosNamespace
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
@@ -151,12 +151,23 @@ def generate_launch_description():
         condition=IfCondition(launch_twist_converter)
     )
 
-    ekf_localization_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "ekf_localization.launch.py"]
+    baselink_to_odom_ekf_config_path = PathJoinSubstitution(
+        [bringup_package, "config", "ekf", "baselink_to_odom.yaml"]
     )
-    ekf_localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(ekf_localization_launch_path),
-        launch_arguments={"use_sim_time": "false"}.items(),
+
+    # Single EKF: fuses IMU heading to publish odom→base_footprint TF and /odom.
+    # base_footprint→base_link is provided as a fixed joint by robot_state_publisher
+    # (defined in the URDF), so the old base_to_footprint_ekf is no longer needed.
+    footprint_to_odom_ekf_launch = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="baselink_to_odom_ekf",
+        output="screen",
+        parameters=[
+            {"use_sim_time": "false"},
+            baselink_to_odom_ekf_config_path,
+        ],
+        remappings=[("odometry/filtered", "odom")],
     )
 
     launch_actions = [
@@ -165,7 +176,7 @@ def generate_launch_description():
         ros2_controllers_launch,
         stanford_controller_launch,
         twist_converter_launch,
-        ekf_localization_launch,
+        footprint_to_odom_ekf_launch,
     ]
 
     launch_description = [

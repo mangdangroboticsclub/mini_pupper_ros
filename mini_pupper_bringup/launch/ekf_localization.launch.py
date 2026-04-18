@@ -26,33 +26,47 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
 def generate_launch_description():
-    bringup_package = FindPackageShare("mini_pupper_bringup")
-    baselink_to_odom_ekf_config_path = PathJoinSubstitution(
-        [bringup_package, "config", "ekf", "baselink_to_odom.yaml"]
+    champ_base_package = FindPackageShare("champ_base")
+    base_to_footprint_ekf_config_path = PathJoinSubstitution(
+        [champ_base_package, "config", "ekf", "base_to_footprint.yaml"]
+    )
+    footprint_to_odom_ekf_config_path = PathJoinSubstitution(
+        [champ_base_package, "config", "ekf", "footprint_to_odom.yaml"]
     )
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     use_sim_time_launch_arg = DeclareLaunchArgument(
         name="use_sim_time",
-        default_value="false",
+        default_value="False",
         description="Use simulation (Gazebo) clock if true",
     )
 
-    # Single EKF: fuses IMU heading to publish odom→base_footprint TF and /odom.
-    # base_footprint→base_link is provided as a fixed joint by robot_state_publisher
-    # (defined in the URDF), so the old base_to_footprint_ekf is no longer needed.
+    base_to_footprint_ekf = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="base_to_footprint_ekf",
+        output="screen",
+        parameters=[
+            {"base_link_frame": "base_link"},
+            {"use_sim_time": use_sim_time},
+            base_to_footprint_ekf_config_path,
+        ],
+        remappings=[("odometry/filtered", "odom/local")],
+    )
+
     footprint_to_odom_ekf = Node(
         package="robot_localization",
         executable="ekf_node",
-        name="baselink_to_odom_ekf",
+        name="footprint_to_odom_ekf",
         output="screen",
         parameters=[
+            {"base_link_frame": "base_link"},
             {"use_sim_time": use_sim_time},
-            baselink_to_odom_ekf_config_path,
+            footprint_to_odom_ekf_config_path,
         ],
         remappings=[("odometry/filtered", "odom")],
     )
 
     return LaunchDescription(
-        [use_sim_time_launch_arg, footprint_to_odom_ekf]
+        [use_sim_time_launch_arg, base_to_footprint_ekf, footprint_to_odom_ekf]
     )
