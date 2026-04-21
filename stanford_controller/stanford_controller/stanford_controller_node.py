@@ -102,19 +102,22 @@ class StanfordControllerNode(Node):
         self.odom_publisher = self.create_publisher(Odometry, 'odom/raw', 10)
 
         self.state = State()
-        self.quat_orientation = np.array([1, 0, 0, 0])
         self._odom_x = 0.0
         self._odom_y = 0.0
         self._odom_yaw = 0.0
+        self._last_control_time = None
         # self.timer = self.create_timer(self.config.dt, self.control_loop)
 
     def imu_callback(self, msg):
-        self.quat_orientation = np.array([
+        self.state.quat_orientation = np.array([
             msg.orientation.w,
             msg.orientation.x,
             msg.orientation.y,
             msg.orientation.z
         ])
+        # Use IMU yaw directly for odometry heading to avoid integrated drift
+        (_, _, yaw) = quat2euler(self.state.quat_orientation)
+        self._odom_yaw = yaw
 
     def dance_active(self, command):
         if command.dance_activate_event:
@@ -344,13 +347,21 @@ class StanfordControllerNode(Node):
         return np.clip(joint_angles, min_lim, max_lim)
 
     def publish_odometry(self, vx, vy, vyaw):
-        dt = self.config.dt
+        now = self.get_clock().now()
+        if self._last_control_time is None:
+            dt = self.config.dt
+        else:
+            dt = (now - self._last_control_time).nanoseconds * 1e-9
+            # Clamp dt to avoid large jumps on startup or pauses
+            dt = min(dt, 0.1)
+        self._last_control_time = now
         self._odom_x += (vx * math.cos(self._odom_yaw) - vy * math.sin(self._odom_yaw)) * dt
         self._odom_y += (vx * math.sin(self._odom_yaw) + vy * math.cos(self._odom_yaw)) * dt
-        self._odom_yaw += vyaw * dt
+        if not self.orientation_from_imu:
+            self._odom_yaw += vyaw * dt
 
         msg = Odometry()
-        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.stamp = now.to_msg()
         msg.header.frame_id = 'odom'
         msg.child_frame_id = 'base_link'
         msg.pose.pose.position.x = self._odom_x
