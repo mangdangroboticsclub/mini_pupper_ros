@@ -16,12 +16,16 @@
 
 #include "mini_pupper_hardware/esp32_interface.hpp"
 
-#include <cstring>
 #include <errno.h>
-#include <rclcpp/rclcpp.hpp>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
+
+#include <cstring>
+#include <string>
+#include <vector>
+
+#include <rclcpp/rclcpp.hpp>
 
 namespace mini_pupper_hardware
 {
@@ -72,14 +76,14 @@ bool ESP32Interface::connect()
   struct timeval timeout;
   timeout.tv_sec = 0;
   timeout.tv_usec = 10000;  // 10ms
-  
+
   if (setsockopt(socket_fd_, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
   {
     RCLCPP_WARN(
       rclcpp::get_logger("ESP32Interface"),
       "Failed to set recv timeout: %s", strerror(errno));
   }
-  
+
   if (setsockopt(socket_fd_, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout)) < 0)
   {
     RCLCPP_WARN(
@@ -208,24 +212,26 @@ bool ESP32Interface::servos_set_position_torque(
 
   RCLCPP_DEBUG(rclcpp::get_logger("ESP32Interface"), "Sending position command");
   auto response = send_and_receive(send_data, 2);
-  
+
   if (response.empty())
   {
     static int no_response_count = 0;
     if (++no_response_count % 10 == 0)
     {
-      RCLCPP_WARN(rclcpp::get_logger("ESP32Interface"), 
-                  "No response from ESP32 proxy (count: %d)", no_response_count);
+      RCLCPP_WARN(
+        rclcpp::get_logger("ESP32Interface"),
+        "No response from ESP32 proxy (count: %d)", no_response_count);
     }
     return false;
   }
 
   if (response.size() != 2 || response[0] != 2 || response[1] != 1)
   {
-    RCLCPP_ERROR(rclcpp::get_logger("ESP32Interface"), 
-                 "Invalid acknowledgment: size=%zu, [0]=%d, [1]=%d", 
-                 response.size(), response.size() > 0 ? response[0] : -1, 
-                 response.size() > 1 ? response[1] : -1);
+    RCLCPP_ERROR(
+      rclcpp::get_logger("ESP32Interface"),
+      "Invalid acknowledgment: size=%zu, [0]=%d, [1]=%d",
+      response.size(), response.size() > 0 ? response[0] : -1,
+      response.size() > 1 ? response[1] : -1);
     return false;
   }
 

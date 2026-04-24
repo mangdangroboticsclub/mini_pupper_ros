@@ -24,6 +24,11 @@
  *   ./standalone_hardware_test --live   # send to real esp32-proxy socket
  */
 
+#include <errno.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -33,12 +38,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
-// Socket includes (for live hardware test)
-#include <errno.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
 
 // ============================================================
 // Mirror of mini_pupper_hardware.hpp calibration constants
@@ -55,32 +54,44 @@ static constexpr std::array<std::array<int, 4>, 3> SERVO_MULTIPLIERS = {
 };
 
 static constexpr int NUM_SERVOS = 12;
-static const char* SOCKET_PATH = "/tmp/esp32-proxy.socket";
+static const char * SOCKET_PATH = "/tmp/esp32-proxy.socket";
 
 // ============================================================
 // Servo conversion (mirrors C++ angle_to_servo_position)
 // ============================================================
 uint16_t angle_to_servo_position(double angle_rad, size_t axis_index, size_t leg_index)
 {
-  if (axis_index >= 3 || leg_index >= 4) return static_cast<uint16_t>(NEUTRAL_POSITION);
+  if (axis_index >= 3 || leg_index >= 4)
+  {
+    return static_cast<uint16_t>(NEUTRAL_POSITION);
+  }
 
   const double neutral_angle = NEUTRAL_ANGLES_RAD[axis_index];
   const int multiplier = SERVO_MULTIPLIERS[axis_index][leg_index];
   const double angle_deviation = (angle_rad - neutral_angle) * static_cast<double>(multiplier);
   double servo_position = NEUTRAL_POSITION - MICROS_PER_RAD * angle_deviation;
 
-  if (std::isnan(servo_position)) return 0;
+  if (std::isnan(servo_position))
+  {
+    return 0;
+  }
   servo_position = std::max(0.0, std::min(1023.0, servo_position));
   return static_cast<uint16_t>(std::lround(servo_position));
 }
 
 double servo_position_to_angle(uint16_t servo_position, size_t axis_index, size_t leg_index)
 {
-  if (axis_index >= 3 || leg_index >= 4) return 0.0;
+  if (axis_index >= 3 || leg_index >= 4)
+  {
+    return 0.0;
+  }
 
   const double neutral_angle = NEUTRAL_ANGLES_RAD[axis_index];
   const int multiplier = SERVO_MULTIPLIERS[axis_index][leg_index];
-  if (multiplier == 0) return neutral_angle;
+  if (multiplier == 0)
+  {
+    return neutral_angle;
+  }
 
   const double delta = (NEUTRAL_POSITION - static_cast<double>(servo_position)) / MICROS_PER_RAD;
   return neutral_angle + (delta / static_cast<double>(multiplier));
@@ -97,10 +108,11 @@ public:
   bool connect()
   {
     sock_fd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
-      if (sock_fd < 0) {
-        perror("socket");
-        return false;
-      }
+    if (sock_fd < 0)
+    {
+      perror("socket");
+      return false;
+    }
 
     struct timeval timeout;
     timeout.tv_sec = 2;
@@ -113,7 +125,7 @@ public:
     addr.sun_family = AF_UNIX;
     strncpy(addr.sun_path, SOCKET_PATH, sizeof(addr.sun_path) - 1);
 
-    if (::connect(sock_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0)
+    if (::connect(sock_fd, reinterpret_cast<struct sockaddr *>(&addr), sizeof(addr)) < 0)
     {
       perror("connect");
       ::close(sock_fd);
@@ -124,9 +136,16 @@ public:
     return true;
   }
 
-  void disconnect() { if (sock_fd >= 0) { ::close(sock_fd); sock_fd = -1; } }
+  void disconnect()
+  {
+    if (sock_fd >= 0)
+    {
+      ::close(sock_fd);
+      sock_fd = -1;
+    }
+  }
 
-  bool send_positions(const std::array<uint16_t, 12>& positions)
+  bool send_positions(const std::array<uint16_t, 12> & positions)
   {
     // Protocol: BB12B12H — total 38 bytes
     //   BB:  2 bytes  — header (size=38, cmd=1)
@@ -136,11 +155,19 @@ public:
     pkt.push_back(38);  // size = 2 + 12 + 24 = 38
     pkt.push_back(1);   // cmd: INST_SETPOS
     // torque: 12 x uint8 (BB12B12H protocol - torque is a BYTE, not uint16)
-    for (int i = 0; i < 12; ++i) { pkt.push_back(1); }  // 1 = torque enabled
+    for (int i = 0; i < 12; ++i)
+    {
+      pkt.push_back(1);
+    }  // 1 = torque enabled
     // positions: 12 x uint16 little-endian
-    for (auto p : positions) { pkt.push_back(p & 0xFF); pkt.push_back((p >> 8) & 0xFF); }
+    for (auto p : positions)
+    {
+      pkt.push_back(p & 0xFF);
+      pkt.push_back((p >> 8) & 0xFF);
+    }
 
-    if (send(sock_fd, pkt.data(), pkt.size(), 0) < 0) {
+    if (send(sock_fd, pkt.data(), pkt.size(), 0) < 0)
+    {
       perror("send");
       return false;
     }
@@ -170,7 +197,9 @@ public:
     }
     std::vector<uint16_t> pos;
     for (int i = 0; i < 12; ++i)
-      pos.push_back(buf[2 + i*2] | (buf[2 + i*2 + 1] << 8));
+    {
+      pos.push_back(buf[2 + i * 2] | (buf[2 + i * 2 + 1] << 8));
+    }
     return pos;
   }
 };
@@ -178,16 +207,19 @@ public:
 // ============================================================
 // Print helpers
 // ============================================================
-static const char* LEG_NAMES[] = {"RF", "LF", "RB", "LB"};
-static const char* AXIS_NAMES[] = {"abd", "hip", "knee"};
+static const char * LEG_NAMES[] = {"RF", "LF", "RB", "LB"};
+static const char * AXIS_NAMES[] = {"abd", "hip", "knee"};
 
-void print_servo_array(const std::string& label, const std::array<uint16_t, 12>& s)
+void print_servo_array(const std::string & label, const std::array<uint16_t, 12> & s)
 {
   std::cout << label << ": [";
   for (int i = 0; i < 12; ++i)
   {
     std::cout << s[i];
-    if (i < 11) std::cout << (i % 3 == 2 ? ",  " : ",");
+    if (i < 11)
+    {
+      std::cout << (i % 3 == 2 ? ",  " : ",");
+    }
   }
   std::cout << "]\n";
   std::cout << "  RF[abd=" << s[0] << " hip=" << s[1] << " knee=" << s[2] << "]"
@@ -209,7 +241,7 @@ void run_math_test()
   // RF: abd=+0.080->498, hip=1.078->563, knee_abs=-0.905->491
 
   struct TestCase {
-    const char* name;
+    const char * name;
     double angle;
     size_t axis;
     size_t leg;   // 0=RF, 1=LF, 2=RB, 3=LB
@@ -234,7 +266,7 @@ void run_math_test()
   };
 
   int pass = 0, fail = 0;
-  for (const auto& t : tests)
+  for (const auto & t : tests)
   {
     uint16_t got = angle_to_servo_position(t.angle, t.axis, t.leg);
     bool ok = (got == t.expected);
@@ -254,8 +286,12 @@ void run_math_test()
   std::cout << "Input angles: LF[-0.080, 1.078, -1.983]  RF[+0.080, 1.078, -1.983]\n";
   std::cout << "              LB[-0.080, 1.078, -1.983]  RB[+0.080, 1.078, -1.983]\n\n";
 
-  const double lf_abd=-0.080, rf_abd=0.080, lb_abd=-0.080, rb_abd=0.080;
-  const double hip=1.078, knee=-1.983;
+  const double lf_abd = -0.080;
+  const double rf_abd = 0.080;
+  const double lb_abd = -0.080;
+  const double rb_abd = 0.080;
+  const double hip = 1.078;
+  const double knee = -1.983;
   const double knee_abs = hip + knee;  // = -0.905
 
   std::array<uint16_t, 12> standing;
@@ -281,6 +317,7 @@ void run_math_test()
   // Check round-trip
   std::cout << "\n--- Round-trip test: servo->angle->servo ---\n";
   for (size_t leg = 0; leg < 4; ++leg)
+  {
     for (size_t axis = 0; axis < 3; ++axis)
     {
       uint16_t orig = standing[leg * 3 + axis];
@@ -288,9 +325,12 @@ void run_math_test()
       uint16_t back = angle_to_servo_position(angle, axis, leg);
       bool ok = (orig == back);
       if (!ok)
+      {
         std::cout << "  FAIL round-trip " << LEG_NAMES[leg] << " " << AXIS_NAMES[axis]
                   << ": " << orig << " -> " << angle << " -> " << back << "\n";
+      }
     }
+  }
   std::cout << "  Round-trip OK for all joints\n";
 }
 
@@ -301,11 +341,11 @@ void run_live_test()
 {
   std::cout << "\n========== LIVE HARDWARE TEST ==========\n";
 
-  const char* servo_labels[] = {
-    "RF-abd","RF-hip","RF-knee",
-    "LF-abd","LF-hip","LF-knee",
-    "RB-abd","RB-hip","RB-knee",
-    "LB-abd","LB-hip","LB-knee"
+  const char * servo_labels[] = {
+    "RF-abd", "RF-hip", "RF-knee",
+    "LF-abd", "LF-hip", "LF-knee",
+    "RB-abd", "RB-hip", "RB-knee",
+    "LB-abd", "LB-hip", "LB-knee"
   };
 
   SimpleESP32 esp32;
@@ -321,16 +361,25 @@ void run_live_test()
   if (before.size() == 12)
   {
     std::cout << "  Current: [";
-    for (int i = 0; i < 12; ++i) std::cout << before[i] << (i<11?",":"]\n");
+    for (int i = 0; i < 12; ++i)
+    {
+      std::cout << before[i] << (i < 11 ? "," : "]\n");
+    }
     std::cout << "  RF[abd=" << before[0] << " hip=" << before[1] << " knee=" << before[2] << "]"
               << "  LF[abd=" << before[3] << " hip=" << before[4] << " knee=" << before[5] << "]\n"
               << "  RB[abd=" << before[6] << " hip=" << before[7] << " knee=" << before[8] << "]"
-              << "  LB[abd=" << before[9]  << " hip=" << before[10] << " knee=" << before[11] << "]\n";
+              << "  LB[abd=" << before[9] << " hip=" << before[10]
+              << " knee=" << before[11] << "]\n";
   }
 
   // Build standing pose
-  const double lf_abd=-0.080, rf_abd=0.080, lb_abd=-0.080, rb_abd=0.080;
-  const double hip=1.078, knee=-1.983, knee_abs = hip + knee;
+  const double lf_abd = -0.080;
+  const double rf_abd = 0.080;
+  const double lb_abd = -0.080;
+  const double rb_abd = 0.080;
+  const double hip = 1.078;
+  const double knee = -1.983;
+  const double knee_abs = hip + knee;
 
   std::array<uint16_t, 12> standing;
   standing[0] = angle_to_servo_position(rf_abd, 0, 0);
@@ -367,7 +416,10 @@ void run_live_test()
   if (after.size() == 12)
   {
     std::cout << "  Actual:   [";
-    for (int i = 0; i < 12; ++i) std::cout << after[i] << (i<11?",":"]\n");
+    for (int i = 0; i < 12; ++i)
+    {
+      std::cout << after[i] << (i < 11 ? "," : "]\n");
+    }
     std::cout << "  RF[abd=" << after[0] << " hip=" << after[1] << " knee=" << after[2] << "]"
               << "  LF[abd=" << after[3] << " hip=" << after[4] << " knee=" << after[5] << "]\n"
               << "  RB[abd=" << after[6] << " hip=" << after[7] << " knee=" << after[8] << "]"
@@ -379,17 +431,21 @@ void run_live_test()
     {
       int diff = static_cast<int>(after[i]) - static_cast<int>(standing[i]);
       bool ok = std::abs(diff) <= 5;  // allow 5 counts tolerance
-      if (!ok) any_error = true;
-      printf("  %s%-10s: commanded=%4d  actual=%4d  diff=%+4d  %s\n",
-             ok ? "" : "!!! ",
-             servo_labels[i], standing[i], after[i], diff,
-             ok ? "OK" : "<-- MISMATCH");
+      if (!ok)
+      {
+        any_error = true;
+      }
+      printf(
+        "  %s%-10s: commanded=%4d  actual=%4d  diff=%+4d  %s\n",
+        ok ? "" : "!!! ", servo_labels[i], standing[i], after[i], diff,
+        ok ? "OK" : "<-- MISMATCH");
     }
 
     if (any_error)
     {
       std::cout << "\n*** MISMATCHES DETECTED ***\n";
-      std::cout << "Front servos not reaching commanded positions - physical issue (wiring/mechanical)\n";
+      std::cout << "Front servos not reaching commanded positions - physical issue "
+            << "(wiring/mechanical)\n";
     }
     else
     {
@@ -400,7 +456,7 @@ void run_live_test()
   // Test individual servos to find mapping
   std::cout << "\n[5] Individual servo sweep test (each servo to 400, then 624)...\n";
   std::cout << "    Watch the PHYSICAL robot to identify which servo moves!\n";
-  
+
   std::array<uint16_t, 12> neutral_pos;
   neutral_pos.fill(512);
 
@@ -430,7 +486,10 @@ void run_live_test()
 
     printf("400->actual=%d, 624->actual=%d", actual_400, actual_624);
     int range = std::abs(actual_624 - actual_400);
-    if (range < 50) printf("  <-- SERVO NOT RESPONDING!");
+    if (range < 50)
+    {
+      printf("  <-- SERVO NOT RESPONDING!");
+    }
     printf("\n");
 
     // Return to neutral
@@ -446,11 +505,16 @@ void run_live_test()
 // ============================================================
 // main
 // ============================================================
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
   bool live = false;
   for (int i = 1; i < argc; ++i)
-    if (std::string(argv[i]) == "--live") live = true;
+  {
+    if (std::string(argv[i]) == "--live")
+    {
+      live = true;
+    }
+  }
 
   std::cout << "Mini Pupper Hardware Standalone Test\n";
   std::cout << "=====================================\n";
@@ -459,8 +523,9 @@ int main(int argc, char* argv[])
   run_math_test();
 
   if (live)
+  {
     run_live_test();
-  else
+  } else
   {
     std::cout << "\n[Live test skipped - run with --live to test actual hardware]\n";
     std::cout << "Example: ./standalone_hardware_test --live\n";

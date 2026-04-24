@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP
-#define MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP
+#ifndef MINI_PUPPER_HARDWARE_INCLUDE_MINI_PUPPER_HARDWARE_MINI_PUPPER_HARDWARE_HPP_
+#define MINI_PUPPER_HARDWARE_INCLUDE_MINI_PUPPER_HARDWARE_MINI_PUPPER_HARDWARE_HPP_
 
 #include <cmath>
 #include <memory>
@@ -62,7 +62,7 @@ private:
 
   // Joint names extracted from URDF (in ros2_control order)
   std::vector<std::string> joint_names_;
-  
+
   // Legacy servo calibration model (mirrors MangDang Python Config/HardwareInterface)
   // - neutral position at 512
   // - per-axis neutral angles (0, +45deg, -45deg)
@@ -132,4 +132,4 @@ private:
 
 }  // namespace mini_pupper_hardware
 
-#endif  // MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP
+#endif  // MINI_PUPPER_HARDWARE_INCLUDE_MINI_PUPPER_HARDWARE_MINI_PUPPER_HARDWARE_HPP_

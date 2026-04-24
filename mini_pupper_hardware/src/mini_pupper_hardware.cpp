@@ -21,6 +21,7 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
@@ -62,8 +63,7 @@ CallbackReturn MiniPupperHardware::on_init(const hardware_interface::HardwareInf
   if (info_.hardware_parameters.count("hardware_interface_type"))
   {
     hardware_interface_type_ = info_.hardware_parameters.at("hardware_interface_type");
-  }
-  else
+  } else
   {
     hardware_interface_type_ = "mock";
   }
@@ -72,8 +72,7 @@ CallbackReturn MiniPupperHardware::on_init(const hardware_interface::HardwareInf
   {
     use_mock_hardware_ = true;
     RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Using mock hardware interface");
-  }
-  else
+  } else
   {
     use_mock_hardware_ = false;
     RCLCPP_INFO(
@@ -177,8 +176,7 @@ hardware_interface::return_type MiniPupperHardware::write(
     {
       hw_positions_[i] = hw_position_commands_[i];
     }
-  }
-  else
+  } else
   {
     // Send commands but don't block if it fails
     // The control loop must continue even if communication fails temporarily
@@ -266,7 +264,8 @@ void MiniPupperHardware::send_commands_to_hardware()
   servo_positions.fill(static_cast<uint16_t>(NEUTRAL_POSITION));
 
   // Extract commands from hw_position_commands_[]
-  // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are LB, [9..11] are RB (matches URDF/ros2_control order)
+  // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are LB, [9..11] are RB
+  // (matches URDF/ros2_control order)
   const double lf_abd = hw_position_commands_[0];
   const double lf_hip = hw_position_commands_[1];
   const double lf_knee_abs = hw_position_commands_[2];
@@ -339,7 +338,7 @@ void MiniPupperHardware::read_state_from_hardware()
   const double lb_abd = servo_position_to_angle(servo_positions[9], 0, 3);
   const double lb_hip = servo_position_to_angle(servo_positions[10], 1, 3);
   const double lb_knee_abs = servo_position_to_angle(servo_positions[11], 2, 3);
-  
+
   // Write state back to hw_positions_[] in joint_names_ order
   hw_positions_[0] = lf_abd;
   hw_positions_[1] = lf_hip;
@@ -398,7 +397,8 @@ double MiniPupperHardware::servo_position_to_angle(
     return neutral_angle;
   }
 
-  // Invert: servo_position = neutral - micros_per_rad * ((angle - neutral_angle) * multiplier)
+  // Invert: servo_position = neutral - micros_per_rad *
+  // ((angle - neutral_angle) * multiplier)
   const double delta = (NEUTRAL_POSITION - static_cast<double>(servo_position)) / MICROS_PER_RAD;
   return neutral_angle + (delta / static_cast<double>(multiplier));
 }
@@ -407,7 +407,8 @@ void MiniPupperHardware::build_joint_mapping()
 {
   // Nothing to do - we use joint_names_ order directly
   // StateInterfaces bind joint names to hw_positions_ array indices 1:1
-  RCLCPP_INFO(rclcpp::get_logger("MiniPupperHardware"), "Using joint order as-is from ros2_control");
+  RCLCPP_INFO(
+    rclcpp::get_logger("MiniPupperHardware"), "Using joint order as-is from ros2_control");
 }
 
 uint16_t MiniPupperHardware::radians_to_servo(double radians)
@@ -416,7 +417,7 @@ uint16_t MiniPupperHardware::radians_to_servo(double radians)
   double clamped = std::max(-M_PI, std::min(M_PI, radians));
   // Convert to servo range [0, 1023], neutral position 512
   uint16_t servo_value = static_cast<uint16_t>(512.0 + clamped * RAD_TO_SERVO);
-  return std::max(uint16_t(0), std::min(uint16_t(1023), servo_value));
+  return std::max(static_cast<uint16_t>(0), std::min(static_cast<uint16_t>(1023), servo_value));
 }
 
 double MiniPupperHardware::servo_to_radians(uint16_t servo_value)
