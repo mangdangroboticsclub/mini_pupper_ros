@@ -20,6 +20,7 @@ from launch import LaunchDescription
 from launch.actions import TimerAction
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 import os
 
@@ -36,7 +37,10 @@ def generate_launch_description():
         "mini_pupper_description.urdf.xacro"
     ])
 
-    robot_description = Command(["xacro ", urdf_file, " use_gazebo_hardware:=false"])
+    robot_description = ParameterValue(
+        Command(["xacro ", urdf_file, " use_gazebo_hardware:=false"]),
+        value_type=str,
+    )
 
     controller_params_file = PathJoinSubstitution([
         FindPackageShare("mini_pupper_controllers"),
