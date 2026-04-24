@@ -20,7 +20,7 @@
 import os
 from launch import LaunchDescription
 from launch.actions import (
-    DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, TimerAction)
+    DeclareLaunchArgument, IncludeLaunchDescription, TimerAction)
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
@@ -88,7 +88,10 @@ def generate_launch_description():
     launch_twist_converter_launch_arg = DeclareLaunchArgument(
         name="launch_twist_converter",
         default_value="true",
-        description="Launch twist_to_command_converter to convert /cmd_vel to robot_command (set false to use your own pipeline)"
+        description=(
+            "Launch twist_to_command_converter to convert /cmd_vel to "
+            "robot_command (set false to use your own pipeline)"
+        ),
     )
 
     twist_converter_launch_path = PathJoinSubstitution(

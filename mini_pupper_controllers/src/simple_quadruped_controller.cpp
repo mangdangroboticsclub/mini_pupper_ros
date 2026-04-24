@@ -258,9 +258,9 @@ controller_interface::return_type SimpleQuadrupedController::update(
   } else {
     // External commands come from the Stanford controller in hardware-space and
     // need the simulation-specific mapping before they can be sent to Gazebo.
-    target_positions = parallel_linkage_compensation_
-      ? apply_linkage_compensation(commanded_positions_)
-      : commanded_positions_;
+    target_positions = parallel_linkage_compensation_ ?
+      apply_linkage_compensation(commanded_positions_) :
+      commanded_positions_;
   }
 
   if (command_interfaces_.size() != target_positions.size()) {
@@ -290,7 +290,7 @@ std::vector<double> SimpleQuadrupedController::apply_linkage_compensation(
   const size_t stride = 3;
   const size_t num_legs = positions.size() / stride;
   for (size_t leg = 0; leg < num_legs; ++leg) {
-    const size_t hip_idx  = leg * stride + 1;
+    const size_t hip_idx = leg * stride + 1;
     const size_t knee_idx = leg * stride + 2;
     compensated[knee_idx] = positions[knee_idx] - positions[hip_idx];
   }
