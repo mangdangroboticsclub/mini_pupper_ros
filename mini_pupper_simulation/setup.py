@@ -24,7 +24,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'smooth_position_test = mini_pupper_simulation.smooth_position_test:main',
             'odom_tf_broadcaster = mini_pupper_simulation.odom_tf_broadcaster:main',
         ],
     },

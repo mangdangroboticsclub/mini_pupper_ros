@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdio>
 #include <cstdint>
 #include <cstring>
 #include <iostream>
@@ -96,7 +97,10 @@ public:
   bool connect()
   {
     sock_fd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
-    if (sock_fd < 0) { perror("socket"); return false; }
+      if (sock_fd < 0) {
+        perror("socket");
+        return false;
+      }
 
     struct timeval timeout;
     timeout.tv_sec = 2;
@@ -136,7 +140,10 @@ public:
     // positions: 12 x uint16 little-endian
     for (auto p : positions) { pkt.push_back(p & 0xFF); pkt.push_back((p >> 8) & 0xFF); }
 
-    if (send(sock_fd, pkt.data(), pkt.size(), 0) < 0) { perror("send"); return false; }
+    if (send(sock_fd, pkt.data(), pkt.size(), 0) < 0) {
+      perror("send");
+      return false;
+    }
 
     uint8_t ack[2];
     if (recv(sock_fd, ack, 2, 0) != 2 || ack[0] != 2 || ack[1] != 1)
@@ -150,7 +157,10 @@ public:
   std::vector<uint16_t> get_positions()
   {
     uint8_t req[2] = {2, 2};
-    if (send(sock_fd, req, 2, 0) < 0) { perror("send"); return {}; }
+    if (send(sock_fd, req, 2, 0) < 0) {
+      perror("send");
+      return {};
+    }
 
     uint8_t buf[26];
     if (recv(sock_fd, buf, 26, 0) != 26 || buf[0] != 26 || buf[1] != 2)

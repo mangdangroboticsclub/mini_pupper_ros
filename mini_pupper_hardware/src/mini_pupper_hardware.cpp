@@ -16,6 +16,7 @@
 
 #include "mini_pupper_hardware/mini_pupper_hardware.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <iomanip>

@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP_
-#define MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP_
+#ifndef MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP
+#define MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP
 
 #include <cmath>
 #include <memory>
@@ -132,4 +132,4 @@ private:
 
 }  // namespace mini_pupper_hardware
 
-#endif  // MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP_
+#endif  // MINI_PUPPER_HARDWARE__MINI_PUPPER_HARDWARE_HPP
