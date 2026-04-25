@@ -62,7 +62,7 @@ source install/setup.bash
 ## Running
 
 ```bash
-ros2 launch mini_pupper_bringup bringup.launch.py
+ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
 ```
 
 Set `hardware_interface_type: mock` in the URDF `<ros2_control>` block to run
