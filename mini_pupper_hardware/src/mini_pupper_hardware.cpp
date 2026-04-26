@@ -128,6 +128,8 @@ CallbackReturn MiniPupperHardware::on_activate(const rclcpp_lifecycle::State & /
     read_state_from_hardware();
   }
 
+  read_counter_ = 0;
+
   // Initialize position commands with current positions
   hw_position_commands_ = hw_positions_;
 
@@ -156,11 +158,10 @@ hardware_interface::return_type MiniPupperHardware::read(
   {
     // Only read from hardware every 10 cycles (10Hz instead of 100Hz)
     // to avoid blocking the control loop
-    static int read_counter = 0;
-    if (++read_counter >= 10)
+    if (++read_counter_ >= 10)
     {
       read_state_from_hardware();
-      read_counter = 0;
+      read_counter_ = 0;
     }
   }
 
@@ -228,8 +229,6 @@ void MiniPupperHardware::initialize_state_storage()
   hw_efforts_.assign(NUM_JOINTS, 0.0);
 
   hw_position_commands_.assign(NUM_JOINTS, 0.0);
-  hw_velocity_commands_.assign(NUM_JOINTS, 0.0);
-  hw_effort_commands_.assign(NUM_JOINTS, 0.0);
 
   hw_positions_prev_.assign(NUM_JOINTS, 0.0);
 }
@@ -409,23 +408,6 @@ void MiniPupperHardware::build_joint_mapping()
   // StateInterfaces bind joint names to hw_positions_ array indices 1:1
   RCLCPP_INFO(
     rclcpp::get_logger("MiniPupperHardware"), "Using joint order as-is from ros2_control");
-}
-
-uint16_t MiniPupperHardware::radians_to_servo(double radians)
-{
-  // Clamp radians to [-π, π]
-  double clamped = std::max(-M_PI, std::min(M_PI, radians));
-  // Convert to servo range [0, 1023], neutral position 512
-  uint16_t servo_value = static_cast<uint16_t>(512.0 + clamped * RAD_TO_SERVO);
-  return std::max(static_cast<uint16_t>(0), std::min(static_cast<uint16_t>(1023), servo_value));
-}
-
-double MiniPupperHardware::servo_to_radians(uint16_t servo_value)
-{
-  // Convert from servo range [0, 1023] to radians
-  // Neutral position 512 maps to 0 radians
-  double offset = static_cast<double>(servo_value) - 512.0;
-  return offset * SERVO_TO_RAD;
 }
 
 }  // namespace mini_pupper_hardware

@@ -85,13 +85,14 @@ private:
   std::vector<double> hw_velocities_;
   std::vector<double> hw_efforts_;
 
-  // Joint command: [position, velocity, effort] for each joint
+  // Joint position command for each joint
   std::vector<double> hw_position_commands_;
-  std::vector<double> hw_velocity_commands_;
-  std::vector<double> hw_effort_commands_;
 
   // Previous position for velocity calculation
   std::vector<double> hw_positions_prev_;
+
+  // Per-instance divider for throttling blocking hardware reads.
+  int read_counter_ = 0;
 
   // Configuration parameters
   std::string hardware_interface_type_;  // "mock", "esp32_proxy", etc.
@@ -103,11 +104,6 @@ private:
   // Clock for throttled logging
   rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
 
-  // Servo position scaling (radians to raw servo values)
-  // NOTE: kept for compatibility, but not used for calibrated conversion.
-  static constexpr double RAD_TO_SERVO = 512.0 / M_PI;
-  static constexpr double SERVO_TO_RAD = M_PI / 512.0;
-
   // Helper methods
   void initialize_state_storage();
   void build_joint_mapping();
@@ -117,17 +113,6 @@ private:
 
   uint16_t angle_to_servo_position(double angle_rad, size_t axis_index, size_t leg_index);
   double servo_position_to_angle(uint16_t servo_position, size_t axis_index, size_t leg_index);
-
-  /**
-   * Convert from radians to raw servo values (0-1023).
-   * Assumes neutral position is 512 and range is ±π radians.
-   */
-  uint16_t radians_to_servo(double radians);
-
-  /**
-   * Convert from raw servo values (0-1023) to radians.
-   */
-  double servo_to_radians(uint16_t servo_value);
 };
 
 }  // namespace mini_pupper_hardware
