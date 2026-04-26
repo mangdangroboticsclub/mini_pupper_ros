@@ -80,7 +80,7 @@ def generate_launch_description():
         launch_arguments={
             "use_sim_time": "true",
             "use_debug_stand": debug_control,
-            "use_gazebo_hardware": "true"
+            "use_gazebo_hardware": "true",
         }.items()
     )
 
@@ -143,7 +143,7 @@ def generate_launch_description():
     ros2_controllers_launch_path = PathJoinSubstitution([
         this_package,
         "launch",
-        "ros2_controllers.launch.py"
+        "sim_ros2_controllers.launch.py"
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)

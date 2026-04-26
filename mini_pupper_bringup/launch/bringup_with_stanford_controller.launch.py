@@ -119,7 +119,7 @@ def generate_launch_description():
     ros2_controllers_launch_path = PathJoinSubstitution([
         bringup_package,
         "launch",
-        "ros2_controllers.launch.py"
+        "robot_ros2_controllers.launch.py"
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(ros2_controllers_launch_path)

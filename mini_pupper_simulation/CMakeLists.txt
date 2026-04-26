@@ -15,7 +15,7 @@ install(PROGRAMS
 )
 
 install(
-  DIRECTORY launch resource worlds
+  DIRECTORY launch resource worlds config
   DESTINATION share/${PROJECT_NAME}
 )
 

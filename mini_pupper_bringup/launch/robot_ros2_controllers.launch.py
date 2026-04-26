@@ -29,6 +29,7 @@ def generate_launch_description():
     # Get robot description from URDF file
     robot_model = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
     description_package = FindPackageShare("mini_pupper_description")
+    bringup_package = FindPackageShare("mini_pupper_bringup")
 
     urdf_file = PathJoinSubstitution([
         description_package,
@@ -43,8 +44,9 @@ def generate_launch_description():
     )
 
     controller_params_file = PathJoinSubstitution([
-        FindPackageShare("mini_pupper_controllers"),
+        bringup_package,
         "config",
+        "ros2_control",
         "mini_pupper_2_controllers.yaml"
     ])
 

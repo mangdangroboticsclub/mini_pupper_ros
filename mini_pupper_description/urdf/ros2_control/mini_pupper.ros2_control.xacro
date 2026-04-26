@@ -22,18 +22,15 @@
     </joint>
   </xacro:macro>
 
-  <xacro:macro name="mini_pupper_ros2_control" params="use_gazebo_hardware:=^|true">
-    <gazebo>
-      <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
-        <xacro:if value="${use_gazebo_hardware}">
-          <parameters>$(find mini_pupper_controllers)/config/mini_pupper_2_controllers_sim.yaml</parameters>
+  <xacro:macro name="mini_pupper_ros2_control" params="use_gazebo_hardware">
+    <xacro:if value="${use_gazebo_hardware}">
+      <gazebo>
+        <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+          <parameters>$(find mini_pupper_simulation)/config/ros2_control/mini_pupper_2_controllers_sim.yaml</parameters>
           <hold_joints>false</hold_joints>
-        </xacro:if>
-        <xacro:unless value="${use_gazebo_hardware}">
-          <parameters>$(find mini_pupper_controllers)/config/mini_pupper_2_controllers.yaml</parameters>
-        </xacro:unless>
-      </plugin>
-    </gazebo>
+        </plugin>
+      </gazebo>
+    </xacro:if>
 
     <ros2_control name="MiniPupper" type="system">
       <hardware>
