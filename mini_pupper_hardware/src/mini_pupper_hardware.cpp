@@ -167,6 +167,7 @@ hardware_interface::return_type MiniPupperHardware::read(
 
   return hardware_interface::return_type::OK;
 }
+
 hardware_interface::return_type MiniPupperHardware::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {

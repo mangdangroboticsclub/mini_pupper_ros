@@ -14,8 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MINI_PUPPER_HARDWARE_INCLUDE_MINI_PUPPER_HARDWARE_ESP32_INTERFACE_HPP_
-#define MINI_PUPPER_HARDWARE_INCLUDE_MINI_PUPPER_HARDWARE_ESP32_INTERFACE_HPP_
+#pragma once
 
 #include <array>
 #include <cstdint>
@@ -146,4 +145,3 @@ private:
 
 }  // namespace mini_pupper_hardware
 
-#endif  // MINI_PUPPER_HARDWARE_INCLUDE_MINI_PUPPER_HARDWARE_ESP32_INTERFACE_HPP_

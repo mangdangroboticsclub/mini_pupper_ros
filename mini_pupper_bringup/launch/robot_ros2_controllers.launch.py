@@ -17,7 +17,8 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import TimerAction
+from launch.actions import RegisterEventHandler
+from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -60,8 +61,6 @@ def generate_launch_description():
         output="screen",
     )
 
-    delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager_node])
-
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -76,19 +75,24 @@ def generate_launch_description():
         output="screen"
     )
 
-    # Spawn controllers after controller manager is ready
-    delayed_joint_state_broadcaster = TimerAction(
-        period=5.0,
-        actions=[joint_state_broadcaster_spawner]
+    # Start the broadcaster once controller_manager is up, then load the
+    # quadruped controller after the broadcaster spawner completes.
+    joint_state_broadcaster_handler = RegisterEventHandler(
+        OnProcessStart(
+            target_action=controller_manager_node,
+            on_start=[joint_state_broadcaster_spawner],
+        )
     )
 
-    delayed_quadruped_controller = TimerAction(
-        period=6.0,
-        actions=[simple_quadruped_controller_spawner]
+    quadruped_controller_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[simple_quadruped_controller_spawner],
+        )
     )
 
     return LaunchDescription([
-        delayed_controller_manager,
-        delayed_joint_state_broadcaster,
-        delayed_quadruped_controller,
+        controller_manager_node,
+        joint_state_broadcaster_handler,
+        quadruped_controller_handler,
     ])
