@@ -24,6 +24,7 @@
 #include <memory>
 #include <sstream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
@@ -32,6 +33,16 @@
 
 namespace mini_pupper_hardware
 {
+namespace
+{
+constexpr std::array<const char *, 12> kHardwareJointOrder = {
+  "base_rf1", "rf1_rf2", "rf2_rf3",
+  "base_lf1", "lf1_lf2", "lf2_lf3",
+  "base_rb1", "rb1_rb2", "rb2_rb3",
+  "base_lb1", "lb1_lb2", "lb2_lb3",
+};
+}  // namespace
+
 CallbackReturn MiniPupperHardware::on_init(const hardware_interface::HardwareInfo & info)
 {
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS)
@@ -56,8 +67,11 @@ CallbackReturn MiniPupperHardware::on_init(const hardware_interface::HardwareInf
     return CallbackReturn::ERROR;
   }
 
-  // Build mapping from URDF joint order to our canonical order (LF, RF, LB, RB)
-  build_joint_mapping();
+  // Build mapping from hardware servo order back into the ros2_control joint array.
+  if (!build_joint_mapping())
+  {
+    return CallbackReturn::ERROR;
+  }
 
   // Get configuration from hardware parameters
   if (info_.hardware_parameters.count("hardware_interface_type"))
@@ -254,50 +268,19 @@ void MiniPupperHardware::send_commands_to_hardware()
     return;
   }
 
-  // Convert joint targets to calibrated servo positions.
-  // Hardware servo order matches legacy MangDang PWMParams.servo_ids:
-  // RF: (abd, hip, knee_abs) -> indices 0,1,2
-  // LF: (abd, hip, knee_abs) -> indices 3,4,5
-  // RB: (abd, hip, knee_abs) -> indices 6,7,8
-  // LB: (abd, hip, knee_abs) -> indices 9,10,11
+  // Convert joint targets to calibrated servo positions in hardware servo order:
+  // RF, LF, RB, LB x (abduction, hip, knee_abs).
   std::array<uint16_t, ESP32Interface::NUM_SERVOS> servo_positions;
   servo_positions.fill(static_cast<uint16_t>(NEUTRAL_POSITION));
 
-  // Extract commands from hw_position_commands_[]
-  // joint_names_[0..2] are LF, [3..5] are RF, [6..8] are LB, [9..11] are RB
-  // (matches URDF/ros2_control order)
-  const double lf_abd = hw_position_commands_[0];
-  const double lf_hip = hw_position_commands_[1];
-  const double lf_knee_abs = hw_position_commands_[2];
-
-  const double rf_abd = hw_position_commands_[3];
-  const double rf_hip = hw_position_commands_[4];
-  const double rf_knee_abs = hw_position_commands_[5];
-
-  const double lb_abd = hw_position_commands_[6];
-  const double lb_hip = hw_position_commands_[7];
-  const double lb_knee_abs = hw_position_commands_[8];
-
-  const double rb_abd = hw_position_commands_[9];
-  const double rb_hip = hw_position_commands_[10];
-  const double rb_knee_abs = hw_position_commands_[11];
-
-  // leg_index mapping: 0 RF, 1 LF, 2 RB, 3 LB
-  servo_positions[0] = angle_to_servo_position(rf_abd, 0, 0);
-  servo_positions[1] = angle_to_servo_position(rf_hip, 1, 0);
-  servo_positions[2] = angle_to_servo_position(rf_knee_abs, 2, 0);
-
-  servo_positions[3] = angle_to_servo_position(lf_abd, 0, 1);
-  servo_positions[4] = angle_to_servo_position(lf_hip, 1, 1);
-  servo_positions[5] = angle_to_servo_position(lf_knee_abs, 2, 1);
-
-  servo_positions[6] = angle_to_servo_position(rb_abd, 0, 2);
-  servo_positions[7] = angle_to_servo_position(rb_hip, 1, 2);
-  servo_positions[8] = angle_to_servo_position(rb_knee_abs, 2, 2);
-
-  servo_positions[9] = angle_to_servo_position(lb_abd, 0, 3);
-  servo_positions[10] = angle_to_servo_position(lb_hip, 1, 3);
-  servo_positions[11] = angle_to_servo_position(lb_knee_abs, 2, 3);
+  for (size_t servo_index = 0; servo_index < servo_positions.size(); ++servo_index)
+  {
+    const size_t joint_index = hardware_joint_to_urdf_index_[servo_index];
+    const size_t axis_index = servo_index % 3;
+    const size_t leg_index = servo_index / 3;
+    servo_positions[servo_index] = angle_to_servo_position(
+      hw_position_commands_[joint_index], axis_index, leg_index);
+  }
 
   // Send to hardware - don't care if it fails, we'll try again next cycle
   esp32_interface_->servos_set_position(servo_positions);
@@ -320,41 +303,14 @@ void MiniPupperHardware::read_state_from_hardware()
     return;
   }
 
-  // Convert servo raw values to radians
-
-  // Decode hardware servo order back into URDF joint order.
-  const double rf_abd = servo_position_to_angle(servo_positions[0], 0, 0);
-  const double rf_hip = servo_position_to_angle(servo_positions[1], 1, 0);
-  const double rf_knee_abs = servo_position_to_angle(servo_positions[2], 2, 0);
-
-  const double lf_abd = servo_position_to_angle(servo_positions[3], 0, 1);
-  const double lf_hip = servo_position_to_angle(servo_positions[4], 1, 1);
-  const double lf_knee_abs = servo_position_to_angle(servo_positions[5], 2, 1);
-
-  const double rb_abd = servo_position_to_angle(servo_positions[6], 0, 2);
-  const double rb_hip = servo_position_to_angle(servo_positions[7], 1, 2);
-  const double rb_knee_abs = servo_position_to_angle(servo_positions[8], 2, 2);
-
-  const double lb_abd = servo_position_to_angle(servo_positions[9], 0, 3);
-  const double lb_hip = servo_position_to_angle(servo_positions[10], 1, 3);
-  const double lb_knee_abs = servo_position_to_angle(servo_positions[11], 2, 3);
-
-  // Write state back to hw_positions_[] in joint_names_ order
-  hw_positions_[0] = lf_abd;
-  hw_positions_[1] = lf_hip;
-  hw_positions_[2] = lf_knee_abs;
-
-  hw_positions_[3] = rf_abd;
-  hw_positions_[4] = rf_hip;
-  hw_positions_[5] = rf_knee_abs;
-
-  hw_positions_[6] = lb_abd;
-  hw_positions_[7] = lb_hip;
-  hw_positions_[8] = lb_knee_abs;
-
-  hw_positions_[9] = rb_abd;
-  hw_positions_[10] = rb_hip;
-  hw_positions_[11] = rb_knee_abs;
+  for (size_t servo_index = 0; servo_index < servo_positions.size(); ++servo_index)
+  {
+    const size_t joint_index = hardware_joint_to_urdf_index_[servo_index];
+    const size_t axis_index = servo_index % 3;
+    const size_t leg_index = servo_index / 3;
+    hw_positions_[joint_index] = servo_position_to_angle(
+      servo_positions[servo_index], axis_index, leg_index);
+  }
 }
 
 uint16_t MiniPupperHardware::angle_to_servo_position(
@@ -403,12 +359,59 @@ double MiniPupperHardware::servo_position_to_angle(
   return neutral_angle + (delta / static_cast<double>(multiplier));
 }
 
-void MiniPupperHardware::build_joint_mapping()
+bool MiniPupperHardware::build_joint_mapping()
 {
-  // Nothing to do - we use joint_names_ order directly
-  // StateInterfaces bind joint names to hw_positions_ array indices 1:1
-  RCLCPP_INFO(
-    rclcpp::get_logger("MiniPupperHardware"), "Using joint order as-is from ros2_control");
+  auto logger = rclcpp::get_logger("MiniPupperHardware");
+
+  for (size_t servo_index = 0; servo_index < kHardwareJointOrder.size(); ++servo_index)
+  {
+    const auto joint_it = std::find(
+      joint_names_.begin(), joint_names_.end(), kHardwareJointOrder[servo_index]);
+    if (joint_it == joint_names_.end())
+    {
+      std::ostringstream expected_order;
+      for (size_t i = 0; i < kHardwareJointOrder.size(); ++i)
+      {
+        if (i > 0)
+        {
+          expected_order << ", ";
+        }
+        expected_order << kHardwareJointOrder[i];
+      }
+
+      std::ostringstream actual_order;
+      for (size_t i = 0; i < joint_names_.size(); ++i)
+      {
+        if (i > 0)
+        {
+          actual_order << ", ";
+        }
+        actual_order << joint_names_[i];
+      }
+
+      RCLCPP_ERROR(
+        logger,
+        "URDF joint list is missing expected joint '%s'. Expected joints: [%s]. Actual joints: [%s]",
+        kHardwareJointOrder[servo_index], expected_order.str().c_str(), actual_order.str().c_str());
+      return false;
+    }
+
+    hardware_joint_to_urdf_index_[servo_index] =
+      static_cast<size_t>(std::distance(joint_names_.begin(), joint_it));
+  }
+
+  std::ostringstream mapping;
+  for (size_t servo_index = 0; servo_index < kHardwareJointOrder.size(); ++servo_index)
+  {
+    if (servo_index > 0)
+    {
+      mapping << ", ";
+    }
+    mapping << kHardwareJointOrder[servo_index] << "->" << hardware_joint_to_urdf_index_[servo_index];
+  }
+
+  RCLCPP_INFO(logger, "Validated hardware joint mapping: %s", mapping.str().c_str());
+  return true;
 }
 
 }  // namespace mini_pupper_hardware

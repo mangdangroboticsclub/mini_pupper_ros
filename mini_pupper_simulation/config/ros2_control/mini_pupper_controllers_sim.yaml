@@ -31,7 +31,7 @@ joint_group_effort_controller:
     state_interfaces:
       - position
       - velocity
-      
+
     gains:
       base_lf1 : {p: 10.0, i: 0.0, d: 0.006}
       lf1_lf2  : {p: 10.0, i: 0.0, d: 0.006}

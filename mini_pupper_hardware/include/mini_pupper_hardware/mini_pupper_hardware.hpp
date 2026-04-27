@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <array>
 #include <cmath>
 #include <memory>
 #include <string>
@@ -62,6 +63,10 @@ private:
   // Joint names extracted from URDF (in ros2_control order)
   std::vector<std::string> joint_names_;
 
+  // Maps hardware servo order (RF, LF, RB, LB x abd, hip, knee) to the
+  // corresponding joint index in joint_names_.
+  std::array<size_t, NUM_JOINTS> hardware_joint_to_urdf_index_{};
+
   // Legacy servo calibration model (mirrors MangDang Python Config/HardwareInterface)
   // - neutral position at 512
   // - per-axis neutral angles (0, +45deg, -45deg)
@@ -105,7 +110,7 @@ private:
 
   // Helper methods
   void initialize_state_storage();
-  void build_joint_mapping();
+  bool build_joint_mapping();
   void update_velocities(const rclcpp::Duration & period);
   void send_commands_to_hardware();
   void read_state_from_hardware();

@@ -27,8 +27,9 @@ def clipped_first_order_filter(input, target, max_rate, tau):
 
 
 def convert_to_command_positions(joint_angles):
-    # Convert stanford controller joint angles to JointTrajectoryPoint
-    # positions
+    # Convert a (3, 4) joint_angles array (columns: RF=0, LF=1, RB=2, LB=3)
+    # to a flat list for Float64MultiArray commands in ros2_control joint order
+    # (LF, RF, LB, RB), matching the URDF and controller config.
     rf1_position = joint_angles[0, 0]
     lf1_position = joint_angles[0, 1]
     rb1_position = joint_angles[0, 2]
