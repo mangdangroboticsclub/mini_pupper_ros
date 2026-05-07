@@ -20,7 +20,7 @@ import os
 
 import yaml
 from ament_index_python.packages import get_package_share_directory
-from launch_ros.actions import PushRosNamespace
+from launch_ros.actions import Node, PushRosNamespace
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
@@ -67,17 +67,10 @@ def generate_launch_description():
     has_camera = str(sensors_config["camera"])
     lidar_port = ports_config["lidar"]
 
-    use_sim_time = LaunchConfiguration("use_sim_time")
-    use_sim_time_launch_arg = DeclareLaunchArgument(
-        name="use_sim_time",
-        default_value="False",
-        description="Use simulation (Gazebo) clock if true",
-    )
-
     hardware_connected = LaunchConfiguration("hardware_connected")
     hardware_connected_launch_arg = DeclareLaunchArgument(
         name="hardware_connected",
-        default_value="True",
+        default_value="true",
         description="Set to true if connected to a physical robot",
     )
 
@@ -105,15 +98,15 @@ def generate_launch_description():
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),
         launch_arguments={
-            "use_sim_time": use_sim_time,
+            "use_sim_time": "false",
         }.items(),
     )
 
-    hardware_interface_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "hardware_interface.launch.py"]
+    accessories_launch_path = PathJoinSubstitution(
+        [bringup_package, "launch", "accessories.launch.py"]
     )
-    hardware_interface_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(hardware_interface_launch_path),
+    accessories_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(accessories_launch_path),
         condition=IfCondition(hardware_connected),
         launch_arguments={
             "has_lidar": has_lidar,
@@ -123,6 +116,15 @@ def generate_launch_description():
         }.items(),
     )
 
+    ros2_controllers_launch_path = PathJoinSubstitution([
+        bringup_package,
+        "launch",
+        "robot_ros2_controllers.launch.py"
+    ])
+    ros2_controllers_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(ros2_controllers_launch_path)
+    )
+
     stanford_controller_launch_path = PathJoinSubstitution(
         [FindPackageShare("stanford_controller"), "stanford_controller.launch.py"]
     )
@@ -130,21 +132,61 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(stanford_controller_launch_path),
         launch_arguments={
             "orientation_from_imu": has_imu,
-            "publish_joint_control": "True",
+            "publish_joint_control": "true",
         }.items(),
+    )
+
+    launch_twist_converter = LaunchConfiguration("launch_twist_converter")
+    launch_twist_converter_launch_arg = DeclareLaunchArgument(
+        name="launch_twist_converter",
+        default_value="true",
+        description=(
+            "Launch twist_to_command_converter to convert /cmd_vel to "
+            "robot_command (set false to use your own pipeline)"
+        ),
+    )
+
+    twist_converter_launch_path = PathJoinSubstitution(
+        [FindPackageShare("stanford_controller"), "twist_to_command_converter.launch.py"]
+    )
+    twist_converter_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(twist_converter_launch_path),
+        condition=IfCondition(launch_twist_converter)
+    )
+
+    baselink_to_odom_ekf_config_path = PathJoinSubstitution(
+        [bringup_package, "config", "ekf", "baselink_to_odom.yaml"]
+    )
+
+    # Single EKF: fuses IMU heading to publish odom→base_footprint TF and /odom.
+    # base_footprint→base_link is provided as a fixed joint by robot_state_publisher
+    # (defined in the URDF), so the old base_to_footprint_ekf is no longer needed.
+    footprint_to_odom_ekf_launch = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="baselink_to_odom_ekf",
+        output="screen",
+        parameters=[
+            {"use_sim_time": False},
+            baselink_to_odom_ekf_config_path,
+        ],
+        remappings=[("odometry/filtered", "odom")],
     )
 
     launch_actions = [
         description_launch,
-        hardware_interface_launch,
+        accessories_launch,
+        ros2_controllers_launch,
         stanford_controller_launch,
+        twist_converter_launch,
+        footprint_to_odom_ekf_launch,
     ]
 
     launch_description = [
         robot_namespace_arg,
         multi_robot_arg,
-        use_sim_time_launch_arg,
         hardware_connected_launch_arg,
+        launch_twist_converter_launch_arg,
         GroupAction(
             actions=[PushRosNamespace(robot_namespace)] + launch_actions,
             condition=IfCondition(multi_robot),

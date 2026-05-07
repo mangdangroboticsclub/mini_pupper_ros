@@ -6,7 +6,7 @@ from .swing_controller import SwingController
 
 from .Kinematics import four_legs_inverse_kinematics
 from .Utilities import clipped_first_order_filter
-from .Utilities import convert_to_JTP_positions
+from .Utilities import convert_to_command_positions
 from .State import BehaviorState, State
 
 from .Config import Configuration
@@ -14,9 +14,11 @@ from .Config import Configuration
 import numpy as np
 from transforms3d.euler import euler2mat, quat2euler
 
+import math
+
+from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
-from std_msgs.msg import String
-from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from std_msgs.msg import String, Float64MultiArray
 from mini_pupper_interfaces.msg import Command
 
 
@@ -91,24 +93,31 @@ class StanfordControllerNode(Node):
                 10
             )
 
-        self.joint_trajectory_publisher = self.create_publisher(
-            JointTrajectory,
-            'joint_group_effort_controller/joint_trajectory',
+        self.joint_position_publisher = self.create_publisher(
+            Float64MultiArray,
+            '/simple_quadruped_controller/commands',
             10
         )
         self.state_publisher = self.create_publisher(String, 'state_log', 10)
+        self.odom_publisher = self.create_publisher(Odometry, 'odom/raw', 10)
 
         self.state = State()
-        self.quat_orientation = np.array([1, 0, 0, 0])
+        self._odom_x = 0.0
+        self._odom_y = 0.0
+        self._odom_yaw = 0.0
+        self._last_control_time = None
         # self.timer = self.create_timer(self.config.dt, self.control_loop)
 
     def imu_callback(self, msg):
-        self.quat_orientation = np.array([
+        self.state.quat_orientation = np.array([
             msg.orientation.w,
             msg.orientation.x,
             msg.orientation.y,
             msg.orientation.z
         ])
+        # Use IMU yaw directly for odometry heading to avoid integrated drift
+        (_, _, yaw) = quat2euler(self.state.quat_orientation)
+        self._odom_yaw = yaw
 
     def dance_active(self, command):
         if command.dance_activate_event:
@@ -306,6 +315,14 @@ class StanfordControllerNode(Node):
 
         self.state.joint_angles = self.limit_joint_angles(self.state.joint_angles)
 
+        if self.state.behavior_state == BehaviorState.TROT:
+            vx = command.horizontal_velocity[0]
+            vy = command.horizontal_velocity[1]
+            vyaw = command.yaw_rate
+        else:
+            vx, vy, vyaw = 0.0, 0.0, 0.0
+        self.publish_odometry(vx, vy, vyaw)
+
         if self.publish_states:
             self.publish_state()
         if self.publish_joint_control:
@@ -329,22 +346,42 @@ class StanfordControllerNode(Node):
         ])
         return np.clip(joint_angles, min_lim, max_lim)
 
+    def publish_odometry(self, vx, vy, vyaw):
+        now = self.get_clock().now()
+        if self._last_control_time is None:
+            dt = self.config.dt
+        else:
+            dt = (now - self._last_control_time).nanoseconds * 1e-9
+            # Clamp dt to avoid large jumps on startup or pauses
+            dt = min(dt, 0.1)
+        self._last_control_time = now
+        self._odom_x += (vx * math.cos(self._odom_yaw) - vy * math.sin(self._odom_yaw)) * dt
+        self._odom_y += (vx * math.sin(self._odom_yaw) + vy * math.cos(self._odom_yaw)) * dt
+        if not self.orientation_from_imu:
+            self._odom_yaw += vyaw * dt
+
+        msg = Odometry()
+        msg.header.stamp = now.to_msg()
+        msg.header.frame_id = 'odom'
+        msg.child_frame_id = 'base_link'
+        msg.pose.pose.position.x = self._odom_x
+        msg.pose.pose.position.y = self._odom_y
+        msg.pose.pose.orientation.z = math.sin(self._odom_yaw / 2.0)
+        msg.pose.pose.orientation.w = math.cos(self._odom_yaw / 2.0)
+        msg.twist.twist.linear.x = vx
+        msg.twist.twist.linear.y = vy
+        msg.twist.twist.angular.z = vyaw
+        self.odom_publisher.publish(msg)
+
     def publish_state(self):
         state_msg = String()
         state_msg.data = str(self.state.__dict__)
         self.state_publisher.publish(state_msg)
 
     def publish_joints_command(self):
-        joints_cmd_msg = JointTrajectory()
-        joints_cmd_msg.header.stamp = self.get_clock().now().to_msg()
-        joints_cmd_msg.joint_names = self.joint_names
-
-        point = JointTrajectoryPoint()
-        point.positions = convert_to_JTP_positions(self.state.joint_angles)
-        point.time_from_start = rclpy.duration.Duration(seconds=1.0 / 60.0).to_msg()
-
-        joints_cmd_msg.points.append(point)
-        self.joint_trajectory_publisher.publish(joints_cmd_msg)
+        joints_cmd_msg = Float64MultiArray()
+        joints_cmd_msg.data = convert_to_command_positions(self.state.joint_angles)
+        self.joint_position_publisher.publish(joints_cmd_msg)
 
 
 def main(args=None):

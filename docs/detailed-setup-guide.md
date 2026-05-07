@@ -200,7 +200,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_simulation main.launch.py
+ros2 launch mini_pupper_simulation bringup.launch.py
 ```
 
 - If using keyboard control
@@ -224,7 +224,7 @@ Note: This step is only for PC
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_simulation main.launch.py
+ros2 launch mini_pupper_simulation bringup.launch.py
 ```
 
 - Mapping on PC
@@ -262,7 +262,7 @@ The map will be saved under home directory. Two files will be generated, namely 
 ```sh
 # Terminal 1
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_simulation main.launch.py
+ros2 launch mini_pupper_simulation bringup.launch.py
 ```
 
 - Navigation   
@@ -289,7 +289,7 @@ Open 2 terminals and ssh login to Mini Pupper on both.
 ```sh
 # Terminal 1 (ssh)
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_bringup bringup.launch.py
+ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
 ```
 
 - If using keyboard control
@@ -313,14 +313,14 @@ Note: This step requires both PC and Mini Pupper
 ```sh
 # Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_bringup bringup.launch.py
+ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
 ```
 
 - SLAM on PC
 ```sh
 # Terminal 2 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_slam slam_toolbox.launch.py
+ros2 launch mini_pupper_slam slam.launch.py
 ```
 
 Remotely control the Mini Pupper to complete the mapping.
@@ -352,15 +352,15 @@ The map will be saved under home directory. Two files will be generated, namely 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_bringup bringup.launch.py
+ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
 
 ```
 
 - Navigation with previously saved map from step 2.2.2
 ```sh
-# Terminal 4 (on PC)
+# Terminal 2 (on PC)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_navigation navigation_smacplanner.launch.py map:=$HOME/map.yaml
+ros2 launch mini_pupper_navigation navigation.launch.py map:=$HOME/map.yaml
 ```
 
 ### 2.2.4 Test dance

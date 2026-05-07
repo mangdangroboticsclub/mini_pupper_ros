@@ -27,10 +27,13 @@ from MangDang.mini_pupper.HardwareInterface import HardwareInterface
 class ServoInterface(Node):
     def __init__(self):
         super().__init__('servo_interface')
+
         self.subscriber = self.create_subscription(
             JointTrajectory, 'joint_group_effort_controller/joint_trajectory',
             self.cmd_callback, 1)
         self.hardware_interface = HardwareInterface()
+
+        self.get_logger().info('Servo Interface Node initialized')
 
     def cmd_callback(self, msg):
         joint_positions = msg.points[0].positions
@@ -47,12 +50,18 @@ class ServoInterface(Node):
         rb2_position = joint_positions[10]
         rb3_position = joint_positions[11]
 
+        # Calculate absolute knee angles (hip + knee)
+        lf_knee_abs = lf2_position + lf3_position
+        rf_knee_abs = rf2_position + rf3_position
+        lb_knee_abs = lb2_position + lb3_position
+        rb_knee_abs = rb2_position + rb3_position
+
         joint_angles = np.array([
             [rf1_position, lf1_position, rb1_position, lb1_position],
             [rf2_position, lf2_position, rb2_position, lb2_position],
-            [rf2_position + rf3_position, lf2_position + lf3_position,
-             rb2_position + rb3_position, lb2_position + lb3_position]
+            [rf_knee_abs, lf_knee_abs, rb_knee_abs, lb_knee_abs]
         ])
+
         self.hardware_interface.set_actuator_postions(joint_angles)
 
 

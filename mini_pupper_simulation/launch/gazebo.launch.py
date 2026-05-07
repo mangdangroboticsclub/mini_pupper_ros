@@ -42,17 +42,23 @@ def generate_launch_description():
         'launch',
         'gazebo.launch.py'
     ])
-    gazebo_params_path = PathJoinSubstitution([this_package, 'config', 'gazebo_params.yaml'])
+    gui = LaunchConfiguration('gui')
+    gui_launch_arg = DeclareLaunchArgument(
+        name='gui',
+        default_value='true',
+        description='Whether to start the Gazebo GUI'
+    )
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'extra_gazebo_args': f'--ros-args --params-file {gazebo_params_path}',
-            'world': world
+            'world': world,
+            'gui': gui,
         }.items()
     )
 
     return LaunchDescription([
         world_launch_arg,
+        gui_launch_arg,
         gazebo_launch
     ])

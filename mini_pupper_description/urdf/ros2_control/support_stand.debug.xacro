@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="support_stand_debug" params="robot_base_link:=base_link">
+    <link name="support_stand_base">
+      <inertial>
+        <mass value="5.0"/>
+        <origin xyz="0 0 0.2" rpy="0 0 0"/>
+        <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.01"/>
+      </inertial>
+      
+      <visual>
+        <origin xyz="0 0 0.2" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.4" radius="0.01"/>
+        </geometry>
+        <material name="stick_white">
+          <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>
+      </visual>
+      
+      <collision>
+        <origin xyz="0 0 0.2" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.4" radius="0.01"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- Dummy root link without inertia (required by KDL) -->
+    <link name="ground_anchor"/>
+
+    <!-- Heavy ground anchor with inertia -->
+    <link name="ground_anchor_mass">
+      <inertial>
+        <mass value="1000.0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+      </inertial>
+    </link>
+
+    <!-- Connect dummy root to mass -->
+    <joint name="ground_to_mass" type="fixed">
+      <parent link="ground_anchor"/>
+      <child link="ground_anchor_mass"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Fix stick bottom to ground mass -->
+    <joint name="stick_to_ground" type="fixed">
+      <parent link="ground_anchor_mass"/>
+      <child link="support_stand_base"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Fix stick top to robot base - stick just touches the bottom of robot -->
+    <joint name="robot_to_stick" type="fixed">
+      <parent link="support_stand_base"/>
+      <child link="${robot_base_link}"/>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Gazebo materials -->
+    <gazebo reference="support_stand_base">
+      <material>Gazebo/White</material>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

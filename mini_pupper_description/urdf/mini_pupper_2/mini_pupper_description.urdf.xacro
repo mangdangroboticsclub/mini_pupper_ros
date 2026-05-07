@@ -2,12 +2,54 @@
 <robot name="mini_pupper_2" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper_2/materials.xacro" />
-  <xacro:include filename="$(find mini_pupper_description)/urdf/mini_pupper_2/mini_pupper_description.trans" />
+  <!-- Import Mini Pupper ros2_control description -->
+  <xacro:include filename="$(find mini_pupper_description)/urdf/ros2_control/mini_pupper.ros2_control.xacro" />
   
+  <!-- Arguments -->
+  <xacro:arg name="use_gazebo_hardware" default="true"/>
+  <xacro:arg name="use_debug_stand" default="false"/>
+
   <!-- CONSTANTS -->
+  <xacro:if value="$(arg use_gazebo_hardware)">
+    <!-- Measured passive settled pose in Gazebo with no stand controller loaded. -->
+    <xacro:property name="startup_abduction_left" value="-0.33" />
+    <xacro:property name="startup_abduction_right" value="0.33" />
+    <xacro:property name="startup_hip" value="1.326" />
+    <xacro:property name="startup_knee" value="-2.927" />
+  </xacro:if>
+  <xacro:unless value="$(arg use_gazebo_hardware)">
+    <xacro:property name="startup_abduction_left" value="0.0" />
+    <xacro:property name="startup_abduction_right" value="0.0" />
+    <xacro:property name="startup_hip" value="0.994" />
+    <xacro:property name="startup_knee" value="-1.767" />
+  </xacro:unless>
+  <xacro:property name="foot_mu1" value="1.5" />
+  <xacro:property name="foot_mu2" value="1.5" />
+  <xacro:property name="foot_kp" value="50000.0" />
+  <xacro:property name="foot_kd" value="5.0" />
+  <xacro:property name="foot_max_contacts" value="10" />
+  <xacro:property name="foot_slip" value="0.0" />
+
+  <!-- Joint dynamics: ODE implicit damping must be small relative to link inertia
+       (~2.5e-6 kg·m²). Values above ~0.005 cause ODE to lock joints at origin. -->
+  <xacro:if value="$(arg use_gazebo_hardware)">
+    <xacro:property name="servo_damping" value="0.001" />
+    <xacro:property name="servo_friction" value="0.0" />
+    <!-- Keep limb inertia high enough for stable joint PID, but keep the trunk
+         lighter so pitch/roll corrections still move the body during gait. -->
+    <xacro:property name="sim_inertia_scale" value="100" />
+    <xacro:property name="sim_body_inertia_scale" value="100" />
+  </xacro:if>
+  <xacro:unless value="$(arg use_gazebo_hardware)">
+    <xacro:property name="servo_damping" value="5.0" />
+    <xacro:property name="servo_friction" value="1.0" />
+    <xacro:property name="sim_inertia_scale" value="1" />
+    <xacro:property name="sim_body_inertia_scale" value="1" />
+  </xacro:unless>
+
   <!-- Link group 1 - lf1, rf1, lb1, rb1 -->
   <xacro:property name="lnkgrp1_weight" value="0.020769" />
-  
+
   <!-- Link group 2 - lf2, rf2, lb2, rb2 -->
   <xacro:property name="lnkgrp2_weight" value="0.001906" />
   
@@ -26,8 +68,12 @@
   <!-- COM-Y: 0.00025 -->
   <xacro:property name="feet_centre_of_mass"
                   value="-0.014 0.00025 0.002488" />
-  
   <link name="base_link">
+    <inertial>
+      <origin xyz="-0.008867 0.000396 -0.007154" rpy="0 0 0"/>
+      <mass value="0.174884"/>
+      <inertia ixx="${0.00090939 * sim_body_inertia_scale}" iyy="${0.00426716 * sim_body_inertia_scale}" izz="${0.00440707 * sim_body_inertia_scale}" ixy="${1.27324e-7 * sim_body_inertia_scale}" iyz="${1.05509e-9 * sim_body_inertia_scale}" ixz="${-1.69927e-7 * sim_body_inertia_scale}"/>
+    </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -46,8 +92,8 @@
   <link name="base_inertia">
     <inertial>
       <origin xyz="-0.008867 0.000396 -0.007154" rpy="0 0 0"/>
-      <mass value="0.09818420433466489"/>
-      <inertia ixx="5.2003168e-5" iyy="2.437e-4" izz="2.523e-4" ixy="7.28047e-7" iyz="603.31e-11" ixz="-9.716561e-7"/>
+      <mass value="0.174884"/>
+      <inertia ixx="${0.00090939 * sim_body_inertia_scale}" iyy="${0.00426716 * sim_body_inertia_scale}" izz="${0.00440707 * sim_body_inertia_scale}" ixy="${1.27324e-7 * sim_body_inertia_scale}" iyz="${1.05509e-9 * sim_body_inertia_scale}" ixz="${-1.69927e-7 * sim_body_inertia_scale}"/>
     </inertial>
   </link>
 
@@ -55,7 +101,7 @@
     <inertial>
       <origin xyz="0.020109 0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-6" iyy="3.735906e-6" izz="3.222909e-6" ixy="-7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-6 * sim_inertia_scale}" iyy="${3.735906e-6 * sim_inertia_scale}" izz="${3.222909e-6 * sim_inertia_scale}" ixy="${-7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -76,7 +122,7 @@
     <inertial>
       <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="3.117e-9" iyz="17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${3.117e-9 * sim_inertia_scale}" iyz="${17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -97,7 +143,7 @@
     <inertial>
       <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484471e-6" iyy="0.567615e-6" izz="91.813e-9" ixy="-2.101e-9" iyz="5.008e-9" ixz="0.20057e-6"/>
+      <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-6 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${-2.101e-9 * sim_inertia_scale}" iyz="${5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -118,7 +164,7 @@
     <inertial>
       <origin xyz="0.020109 -0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -139,7 +185,7 @@
     <inertial>
       <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="-3.117e-9" iyz="-17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${-3.117e-9 * sim_inertia_scale}" iyz="${-17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -160,7 +206,7 @@
     <inertial>
       <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484471e-6" iyy="0.567615e-06" izz="91.813e-9" ixy="2.101e-9" iyz="-5.008e-9" ixz="0.20057e-6"/>
+      <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-06 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${2.101e-9 * sim_inertia_scale}" iyz="${-5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -181,7 +227,7 @@
     <inertial>
       <origin xyz="-0.020109 -0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="-7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${-7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -202,7 +248,7 @@
     <inertial>
       <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="-3.117e-9" iyz="-17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${-3.117e-9 * sim_inertia_scale}" iyz="${-17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -223,7 +269,7 @@
     <inertial>
       <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484816e-6" iyy="0.567883e-06" izz="91.777e-9" ixy="2.212e-9" iyz="-5.34e-9" ixz="0.200564e-6"/>
+      <inertia ixx="${0.484816e-6 * sim_inertia_scale}" iyy="${0.567883e-06 * sim_inertia_scale}" izz="${91.777e-9 * sim_inertia_scale}" ixy="${2.212e-9 * sim_inertia_scale}" iyz="${-5.34e-9 * sim_inertia_scale}" ixz="${0.200564e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -244,7 +290,7 @@
     <inertial>
       <origin xyz="-0.020109 0.002332 0.006500" rpy="0 0 0"/>
       <mass value="${lnkgrp1_weight}"/>
-      <inertia ixx="2.494061e-06" iyy="3.735906e-06" izz="3.222909e-06" ixy="7.662e-9" iyz="-0.014e-9" ixz="-33.565e-9"/>
+      <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -265,7 +311,7 @@
     <inertial>
       <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
       <mass value="${lnkgrp2_weight}"/>
-      <inertia ixx="0.462154e-6" iyy="0.481174e-6" izz="26.893e-9" ixy="3.117e-9" iyz="17.662e-9" ixz="-79.269e-9"/>
+      <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${3.117e-9 * sim_inertia_scale}" iyz="${17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -286,7 +332,7 @@
     <inertial>
       <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
       <mass value="${lnkgrp3_weight}"/>
-      <inertia ixx="0.484471e-6" iyy="0.567615e-06" izz="91.813e-9" ixy="-2.101e-9" iyz="5.008e-9" ixz="0.20057e-6"/>
+      <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-06 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${-2.101e-9 * sim_inertia_scale}" iyz="${5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -307,7 +353,7 @@
     <inertial>
       <origin xyz="-0.005539 -0.000204 0.020223" rpy="0 0 0"/>
       <mass value="0.00785515871148119"/>
-      <inertia ixx="5.306048e-6" iyy="1.837621e-6" izz="3.61974e-6" ixy="-22.863e-9" iyz="-4.925e-9" ixz="-9.195e-9"/>
+      <inertia ixx="${5.306048e-6 * sim_body_inertia_scale}" iyy="${1.837621e-6 * sim_body_inertia_scale}" izz="${3.61974e-6 * sim_body_inertia_scale}" ixy="${-22.863e-9 * sim_body_inertia_scale}" iyz="${-4.925e-9 * sim_body_inertia_scale}" ixz="${-9.195e-9 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="-0.089299 0 0.015543" rpy="0 0 0"/>
@@ -328,7 +374,7 @@
     <inertial>
       <origin xyz="0.089461 0.023505 0.0" rpy="0 0 0"/>
       <mass value="0.014261552601793053"/>
-      <inertia ixx="4.425965e-6" iyy="3.4560775e-5" izz="3.8954441e-5" ixy="0.104871e-6" iyz="75.406e-9" ixz="0.113313e-6"/>
+      <inertia ixx="${4.425965e-6 * sim_body_inertia_scale}" iyy="${3.4560775e-5 * sim_body_inertia_scale}" izz="${3.8954441e-5 * sim_body_inertia_scale}" ixy="${0.104871e-6 * sim_body_inertia_scale}" iyz="${75.406e-9 * sim_body_inertia_scale}" ixz="${0.113313e-6 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0.087701 0.023505 -0.026457" rpy="0 0 0"/>
@@ -394,12 +440,12 @@
         rpy="0 0 -1.57" />
       <mass value="0.108" />
       <inertia
-        ixx="8.74731426973985E-06"
-        ixy="-6.66781590704156E-08"
-        ixz="1.89196685410159E-11"
-        iyy="8.70097486591694E-06"
-        iyz="-1.13397577799603E-17"
-        izz="9.98821295317784E-06" />
+        ixx="${8.74731426973985E-06 * sim_body_inertia_scale}"
+        ixy="${-6.66781590704156E-08 * sim_body_inertia_scale}"
+        ixz="${1.89196685410159E-11 * sim_body_inertia_scale}"
+        iyy="${8.70097486591694E-06 * sim_body_inertia_scale}"
+        iyz="${-1.13397577799603E-17 * sim_body_inertia_scale}"
+        izz="${9.98821295317784E-06 * sim_body_inertia_scale}" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 -1.57"/>
@@ -423,7 +469,7 @@
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -439,12 +485,24 @@
       </geometry>
     </collision>
   </link>
+  <gazebo reference="rffoot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <kp>${foot_kp}</kp>
+    <kd>${foot_kd}</kd>
+    <max_contacts>${foot_max_contacts}</max_contacts>
+    <slip1>${foot_slip}</slip1>
+    <slip2>${foot_slip}</slip2>
+    <maxVel>0.0</maxVel>
+    <minDepth>0.001</minDepth>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
 
   <link name="rbfoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -460,12 +518,24 @@
       </geometry>
     </collision>
   </link>
+  <gazebo reference="rbfoot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <kp>${foot_kp}</kp>
+    <kd>${foot_kd}</kd>
+    <max_contacts>${foot_max_contacts}</max_contacts>
+    <slip1>${foot_slip}</slip1>
+    <slip2>${foot_slip}</slip2>
+    <maxVel>0.0</maxVel>
+    <minDepth>0.001</minDepth>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
 
   <link name="lbfoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -481,12 +551,24 @@
       </geometry>
     </collision>
   </link>
+  <gazebo reference="lbfoot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <kp>${foot_kp}</kp>
+    <kd>${foot_kd}</kd>
+    <max_contacts>${foot_max_contacts}</max_contacts>
+    <slip1>${foot_slip}</slip1>
+    <slip2>${foot_slip}</slip2>
+    <maxVel>0.0</maxVel>
+    <minDepth>0.001</minDepth>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
 
   <link name="lffoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
       <mass value="${feet_weight}"/>
-      <inertia ixx="41.995e-9" iyy="62.40e-9" izz="29.798e-9" ixy="0.0e-9" iyz="0.0e-9" ixz="1.616e-9"/>
+      <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -502,12 +584,24 @@
       </geometry>
     </collision>
   </link>
+  <gazebo reference="lffoot">
+    <mu1>${foot_mu1}</mu1>
+    <mu2>${foot_mu2}</mu2>
+    <kp>${foot_kp}</kp>
+    <kd>${foot_kd}</kd>
+    <max_contacts>${foot_max_contacts}</max_contacts>
+    <slip1>${foot_slip}</slip1>
+    <slip2>${foot_slip}</slip2>
+    <maxVel>0.0</maxVel>
+    <minDepth>0.001</minDepth>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
 
   <link name="lpf1">
     <inertial>
       <origin xyz="0.002259 0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="24.631e-9" iyz="3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${24.631e-9 * sim_inertia_scale}" iyz="${3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -528,7 +622,7 @@
     <inertial>
       <origin xyz="0.002259 0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="24.631e-9" iyz="3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${24.631e-9 * sim_inertia_scale}" iyz="${3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -549,7 +643,7 @@
     <inertial>
       <origin xyz="0.002259 -0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="-24.631e-9" iyz="-3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${-24.631e-9 * sim_inertia_scale}" iyz="${-3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -570,7 +664,7 @@
     <inertial>
       <origin xyz="0.002259 -0.008667 -0.002748" rpy="0 0 0"/>
       <mass value="${pltgrp1_weight}"/>
-      <inertia ixx="0.39059e-6" iyy="0.412444e-6" izz="0.246337e-6" ixy="-24.631e-9" iyz="-3.861e-9" ixz="54.116e-9"/>
+      <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${-24.631e-9 * sim_inertia_scale}" iyz="${-3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -591,7 +685,7 @@
     <inertial>
       <origin xyz="-0.001747 0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="1.254e-9" iyz="-13.212e-9" ixz="-0.112894e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${1.254e-9 * sim_inertia_scale}" iyz="${-13.212e-9 * sim_inertia_scale}" ixz="${-0.112894e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -612,7 +706,7 @@
     <inertial>
       <origin xyz="-0.001747 0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="1.254e-9" iyz="-13.212e-9" ixz="-0.112894e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${1.254e-9 * sim_inertia_scale}" iyz="${-13.212e-9 * sim_inertia_scale}" ixz="${-0.112894e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -633,7 +727,7 @@
     <inertial>
       <origin xyz="-0.001747 -0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="-1.254e-9" iyz="13.212e-9" ixz="-0.11152e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${-1.254e-9 * sim_inertia_scale}" iyz="${13.212e-9 * sim_inertia_scale}" ixz="${-0.11152e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -654,7 +748,7 @@
     <inertial>
       <origin xyz="-0.001747 -0.007904 0.005365" rpy="0 0 0"/>
       <mass value="${pltgrp2_weight}"/>
-      <inertia ixx="0.862567e-6" iyy="0.991403e-6" izz="0.13904e-6" ixy="-1.254e-9" iyz="13.212e-9" ixz="-0.11152e-6"/>
+      <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${-1.254e-9 * sim_inertia_scale}" iyz="${13.212e-9 * sim_inertia_scale}" ixz="${-0.11152e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -676,7 +770,7 @@
       <!-- <origin xyz="-2.7696824994288393e-05 0.0 0.02237056777957029" rpy="0 0 0"/>  -->
       <origin xyz="-0.00003 0.030005 0.022371" rpy="0 0 0"/> 
       <mass value="0.0051928835390001775"/>
-      <inertia ixx="5.834352e-6" iyy="3.214872e-6" izz="6.996514e-6" ixy="0.0e-9" iyz="0.0e-9" ixz="15.218e-9"/>
+      <inertia ixx="${5.834352e-6 * sim_body_inertia_scale}" iyy="${3.214872e-6 * sim_body_inertia_scale}" izz="${6.996514e-6 * sim_body_inertia_scale}" ixy="${0.0e-9 * sim_body_inertia_scale}" iyz="${0.0e-9 * sim_body_inertia_scale}" ixz="${15.218e-9 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0.002701 0.030005 0.016293" rpy="0 0 0"/>
@@ -692,7 +786,7 @@
       </geometry>
     </collision>
   </link>
-  
+
   <joint name="base_link_to_base_inertia" type="fixed">
     <parent link="base_link"/>
     <child link="base_inertia"/>
@@ -704,7 +798,8 @@
     <parent link="base_link"/>
     <child link="lf1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="0.425" lower="-0.550" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lf1_lf2" type="revolute">
@@ -712,7 +807,8 @@
     <parent link="lf1"/>
     <child link="lf2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="2.40" lower="0.55" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lf2_lf3" type="revolute">
@@ -720,7 +816,8 @@
     <parent link="lf2"/>
     <child link="lf3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="-0.22" lower="-2.18" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_rf1" type="revolute">
@@ -728,7 +825,8 @@
     <parent link="base_link"/>
     <child link="rf1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="0.550" lower="-0.425" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rf1_rf2" type="revolute">
@@ -736,7 +834,8 @@
     <parent link="rf1"/>
     <child link="rf2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="2.40" lower="0.55" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rf2_rf3" type="revolute">
@@ -744,7 +843,8 @@
     <parent link="rf2"/>
     <child link="rf3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="-0.22" lower="-2.18" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_rb1" type="revolute">
@@ -752,7 +852,8 @@
     <parent link="base_link"/>
     <child link="rb1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="0.550" lower="-0.425" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rb1_rb2" type="revolute">
@@ -760,7 +861,8 @@
     <parent link="rb1"/>
     <child link="rb2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="2.40" lower="0.55" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="rb2_rb3" type="revolute">
@@ -768,7 +870,8 @@
     <parent link="rb2"/>
     <child link="rb3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="-0.22" lower="-2.18" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_lb1" type="revolute">
@@ -776,7 +879,8 @@
     <parent link="base_link"/>
     <child link="lb1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="0.425" lower="-0.550" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lb1_lb2" type="revolute">
@@ -784,7 +888,8 @@
     <parent link="lb1"/>
     <child link="lb2"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="2.40" lower="0.55" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="lb2_lb3" type="revolute">
@@ -792,7 +897,8 @@
     <parent link="lb2"/>
     <child link="lb3"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit upper="-0.22" lower="-2.18" effort="20" velocity="1.5"/>
+    <dynamics damping="${servo_damping}" friction="${servo_friction}"/>
+    <limit upper="3.14" lower="-3.14" effort="10.0" velocity="10.47"/>
   </joint>
 
   <joint name="base_front" type="fixed">
@@ -902,71 +1008,6 @@
     <parent link="base_link"/>
     <child link="Shell_Side"/>
   </joint>
-  <ros2_control name="GazeboSystem" type="system">
-    <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-    </hardware>
-    <joint name="base_lf1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lf1_lf2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lf2_lf3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="base_rf1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rf1_rf2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rf2_rf3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="base_lb1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lb1_lb2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="lb2_lb3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="base_rb1">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rb1_rb2">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-    <joint name="rb2_rb3">
-      <command_interface name="effort"/> 
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control>
   <!-- coloring Gazebo model -->
   <gazebo reference="base_link">
     <material>Gazebo/FlatBlack</material>
@@ -1020,15 +1061,6 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="lffoot">
-    <kp>100000.0</kp>
-    <kd>1.0</kd>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <maxVel>0.0</maxVel>
-    <minDepth>0.001</minDepth>
-    <material>Gazebo/FlatBlack</material>
-  </gazebo>
   <gazebo reference="rf1">
     <kp>100000.0</kp>
     <kd>1.0</kd>
@@ -1054,15 +1086,6 @@
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="rf3">
-    <kp>100000.0</kp>
-    <kd>1.0</kd>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <maxVel>0.0</maxVel>
-    <minDepth>0.001</minDepth>
-    <material>Gazebo/FlatBlack</material>
-  </gazebo>
-  <gazebo reference="rffoot">
     <kp>100000.0</kp>
     <kd>1.0</kd>
     <mu1>0.8</mu1>
@@ -1104,15 +1127,6 @@
     <minDepth>0.001</minDepth>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
-  <gazebo reference="lbfoot">
-    <kp>100000.0</kp>
-    <kd>1.0</kd>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <maxVel>0.0</maxVel>
-    <minDepth>0.001</minDepth>
-    <material>Gazebo/FlatBlack</material>
-  </gazebo>
   <gazebo reference="rb1">
     <kp>100000.0</kp>
     <kd>1.0</kd>
@@ -1138,15 +1152,6 @@
     <material>Gazebo/Yellow</material>
   </gazebo>
   <gazebo reference="rb3">
-    <kp>100000.0</kp>
-    <kd>1.0</kd>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <maxVel>0.0</maxVel>
-    <minDepth>0.001</minDepth>
-    <material>Gazebo/FlatBlack</material>
-  </gazebo>
-  <gazebo reference="rbfoot">
     <kp>100000.0</kp>
     <kd>1.0</kd>
     <mu1>0.8</mu1>
@@ -1195,21 +1200,12 @@
 
   <gazebo>
     <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
-      <ros>
-        <remapping>odom:=odom/ground_truth</remapping>
-      </ros>
       <body_name>base_link</body_name>
-      <frame_name>world</frame_name>
+      <frame_name>odom</frame_name>
       <update_rate>10.0</update_rate>
       <xyz_offset>0 0 0</xyz_offset>
       <rpy_offset>0 0 0</rpy_offset>
       <gaussian_noise>0.01</gaussian_noise>
-    </plugin>
-  </gazebo>
-
-  <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find mini_pupper_description)/config/ros_control/mini_pupper_2_controller.yaml</parameters>
     </plugin>
   </gazebo>
   
@@ -1217,7 +1213,7 @@
     <inertial>
       <mass value="0.0001"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1e-09" ixy="0.0" ixz="0.0" iyy="1e-09" iyz="0.0" izz="1e-09"/>
+      <inertia ixx="${1e-09 * sim_body_inertia_scale}" ixy="${0.0 * sim_body_inertia_scale}" ixz="${0.0 * sim_body_inertia_scale}" iyy="${1e-09 * sim_body_inertia_scale}" iyz="${0.0 * sim_body_inertia_scale}" izz="${1e-09 * sim_body_inertia_scale}"/>
     </inertial>
   </link>
 
@@ -1290,4 +1286,11 @@
     </sensor>
   </gazebo>
 
+  <xacro:mini_pupper_ros2_control use_gazebo_hardware="$(arg use_gazebo_hardware)" />
+
+  <!-- Conditional debug support stand -->
+  <xacro:if value="$(arg use_debug_stand)">
+    <xacro:include filename="$(find mini_pupper_description)/urdf/ros2_control/support_stand.debug.xacro" />
+    <xacro:support_stand_debug robot_base_link="base_link"/>
+  </xacro:if>
 </robot>

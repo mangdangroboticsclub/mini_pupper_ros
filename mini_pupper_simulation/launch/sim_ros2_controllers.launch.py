@@ -16,7 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
@@ -29,14 +28,14 @@ def generate_launch_description():
         output='screen'
     )
 
-    joint_group_effort_controller_spawner = Node(
+    simple_quadruped_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_group_effort_controller"],
-        output='screen'
+        arguments=["simple_quadruped_controller"],
+        output="screen"
     )
 
     return LaunchDescription([
         joint_state_broadcaster_spawner,
-        joint_group_effort_controller_spawner
+        simple_quadruped_controller_spawner,
     ])

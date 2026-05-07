@@ -49,9 +49,6 @@ def generate_launch_description():
 
     driver_package = FindPackageShare("mini_pupper_driver")
 
-    servos_launch_path = PathJoinSubstitution(
-        [driver_package, "launch", "servo_interface.launch.py"]
-    )
     lidar_launch_path = PathJoinSubstitution(
         [driver_package, "launch", "lidar_ld06.launch.py"]
     )
@@ -69,7 +66,6 @@ def generate_launch_description():
             has_imu_launch_arg,
             lidar_port_launch_arg,
             has_camera_launch_arg,
-            IncludeLaunchDescription(PythonLaunchDescriptionSource(servos_launch_path)),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(lidar_launch_path),
                 condition=IfCondition(has_lidar),
