@@ -289,7 +289,7 @@ Open 2 terminals and ssh login to Mini Pupper on both.
 ```sh
 # Terminal 1 (ssh)
 . ~/ros2_ws/install/setup.bash # setup.zsh if you use zsh instead of bash
-ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
+ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
 - If using keyboard control
@@ -313,7 +313,7 @@ Note: This step requires both PC and Mini Pupper
 ```sh
 # Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
+ros2 launch mini_pupper_bringup bringup.launch.py
 ```
 
 - SLAM on PC
@@ -352,7 +352,7 @@ The map will be saved under home directory. Two files will be generated, namely 
 ```sh
 # Terminal 1 (ssh to real mini pupper)
 . ~/ros2_ws/install/setup.bash
-ros2 launch mini_pupper_bringup bringup_with_stanford_controller.launch.py
+ros2 launch mini_pupper_bringup bringup.launch.py
 
 ```
 

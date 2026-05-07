@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (c) 2022-2023 MangDang
+# Copyright (c) 2025 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,13 +20,19 @@ import os
 
 import yaml
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.actions import Node, PushRosNamespace
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
+from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
+from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    EnvironmentVariable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+    TextSubstitution,
+)
 
 ROBOT_MODEL = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
 
@@ -61,18 +67,29 @@ def generate_launch_description():
     has_camera = str(sensors_config["camera"])
     lidar_port = ports_config["lidar"]
 
-    use_sim_time = LaunchConfiguration("use_sim_time")
-    use_sim_time_launch_arg = DeclareLaunchArgument(
-        name="use_sim_time",
-        default_value="False",
-        description="Use simulation (Gazebo) clock if true",
-    )
-
     hardware_connected = LaunchConfiguration("hardware_connected")
     hardware_connected_launch_arg = DeclareLaunchArgument(
         name="hardware_connected",
-        default_value="True",
+        default_value="true",
         description="Set to true if connected to a physical robot",
+    )
+
+    # multi robot and namespacing
+    multi_robot = LaunchConfiguration("multi_robot")
+    multi_robot_arg = DeclareLaunchArgument(
+        "multi_robot",
+        default_value="false",
+        description="Enable multi-robot mode with namespacing",
+    )
+
+    robot_namespace = LaunchConfiguration("robot_namespace")
+    robot_namespace_arg = DeclareLaunchArgument(
+        "robot_namespace",
+        default_value=[
+            TextSubstitution(text="robot"),
+            EnvironmentVariable("ROBOT_ID", default_value="1"),
+        ],
+        description="Namespace for this robot (e.g. robot1, robot2)",
     )
 
     description_launch_path = PathJoinSubstitution(
@@ -81,17 +98,8 @@ def generate_launch_description():
     description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(description_launch_path),
         launch_arguments={
-            "use_sim_time": use_sim_time,
+            "use_sim_time": "false",
         }.items(),
-    )
-
-    driver_package = FindPackageShare("mini_pupper_driver")
-    servo_interface_launch_path = PathJoinSubstitution(
-        [driver_package, "launch", "servo_interface.launch.py"]
-    )
-    servo_interface_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(servo_interface_launch_path),
-        condition=IfCondition(hardware_connected)
     )
 
     accessories_launch_path = PathJoinSubstitution(
@@ -108,30 +116,82 @@ def generate_launch_description():
         }.items(),
     )
 
-    champ_controllers_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "champ_controllers.launch.py"]
-    )
-    champ_controllers_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(champ_controllers_launch_path),
-        launch_arguments={"use_sim_time": use_sim_time, "has_imu": has_imu}.items(),
-    )
-
-    ekf_localization_launch_path = PathJoinSubstitution(
-        [bringup_package, "launch", "ekf_localization.launch.py"]
-    )
-    ekf_localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(ekf_localization_launch_path),
-        launch_arguments={"use_sim_time": use_sim_time}.items(),
+    ros2_controllers_launch_path = PathJoinSubstitution([
+        bringup_package,
+        "launch",
+        "robot_ros2_controllers.launch.py"
+    ])
+    ros2_controllers_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(ros2_controllers_launch_path)
     )
 
-    return LaunchDescription(
-        [
-            use_sim_time_launch_arg,
-            hardware_connected_launch_arg,
-            description_launch,
-            servo_interface_launch,
-            accessories_launch,
-            champ_controllers_launch,
-            ekf_localization_launch,
-        ]
+    stanford_controller_launch_path = PathJoinSubstitution(
+        [FindPackageShare("stanford_controller"), "stanford_controller.launch.py"]
     )
+    stanford_controller_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(stanford_controller_launch_path),
+        launch_arguments={
+            "orientation_from_imu": has_imu,
+            "publish_joint_control": "true",
+        }.items(),
+    )
+
+    launch_twist_converter = LaunchConfiguration("launch_twist_converter")
+    launch_twist_converter_launch_arg = DeclareLaunchArgument(
+        name="launch_twist_converter",
+        default_value="true",
+        description=(
+            "Launch twist_to_command_converter to convert /cmd_vel to "
+            "robot_command (set false to use your own pipeline)"
+        ),
+    )
+
+    twist_converter_launch_path = PathJoinSubstitution(
+        [FindPackageShare("stanford_controller"), "twist_to_command_converter.launch.py"]
+    )
+    twist_converter_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(twist_converter_launch_path),
+        condition=IfCondition(launch_twist_converter)
+    )
+
+    baselink_to_odom_ekf_config_path = PathJoinSubstitution(
+        [bringup_package, "config", "ekf", "baselink_to_odom.yaml"]
+    )
+
+    # Single EKF: fuses IMU heading to publish odom→base_footprint TF and /odom.
+    # base_footprint→base_link is provided as a fixed joint by robot_state_publisher
+    # (defined in the URDF), so the old base_to_footprint_ekf is no longer needed.
+    footprint_to_odom_ekf_launch = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="baselink_to_odom_ekf",
+        output="screen",
+        parameters=[
+            {"use_sim_time": False},
+            baselink_to_odom_ekf_config_path,
+        ],
+        remappings=[("odometry/filtered", "odom")],
+    )
+
+    launch_actions = [
+        description_launch,
+        accessories_launch,
+        ros2_controllers_launch,
+        stanford_controller_launch,
+        twist_converter_launch,
+        footprint_to_odom_ekf_launch,
+    ]
+
+    launch_description = [
+        robot_namespace_arg,
+        multi_robot_arg,
+        hardware_connected_launch_arg,
+        launch_twist_converter_launch_arg,
+        GroupAction(
+            actions=[PushRosNamespace(robot_namespace)] + launch_actions,
+            condition=IfCondition(multi_robot),
+        ),
+        GroupAction(actions=launch_actions, condition=UnlessCondition(multi_robot)),
+    ]
+
+    return LaunchDescription(launch_description)

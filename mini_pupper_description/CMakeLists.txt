@@ -9,7 +9,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 
 # Install data directories
-install(DIRECTORY launch config rviz urdf meshes
+install(DIRECTORY launch rviz urdf meshes
   DESTINATION share/${PROJECT_NAME}
 )
 
