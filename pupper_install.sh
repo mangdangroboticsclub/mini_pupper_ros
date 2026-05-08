@@ -16,9 +16,9 @@ echo "setup.sh started at $(date)"
 # check Ubuntu version
 source /etc/os-release
 
-if [[ $UBUNTU_CODENAME != 'jammy' ]]
+if [[ $UBUNTU_CODENAME != 'noble' ]]
 then
-    echo "Ubuntu 22.04 LTS (Jammy Jellyfish) is required"
+    echo "Ubuntu 24.04 LTS (Noble Numbat) is required for ROS2 Jazzy"
     echo "You are using $VERSION"
     exit 1
 fi
@@ -38,12 +38,12 @@ cd ~
 sudo apt-get update
 sudo apt -y install python3-pip python3-venv python3-virtualenv
 
-#Auto install ROS2 Humble
+#Auto install ROS2 Jazzy
 if ! [ -d "ros2_setup_scripts_ubuntu" ]; then
   git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
 fi
-~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
-source /opt/ros/humble/setup.bash
+~/ros2_setup_scripts_ubuntu/ros2-jazzy-ros-base-main.sh
+source /opt/ros/jazzy/setup.bash
 
 #clone mini pupper 2 ros2 repo
 mkdir -p ~/ros2_ws/src
