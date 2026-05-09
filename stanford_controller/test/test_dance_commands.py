@@ -14,8 +14,8 @@ import launch_testing
 import unittest
 from std_msgs.msg import String
 from mini_pupper_interfaces.msg import Command, Matrix3x4
-from mini_pupper_dance.new_dance.MovementGroup import MovementGroups
-from mini_pupper_dance.new_dance.MovementScheme import MovementScheme
+from mini_pupper_dance.MovementGroup import MovementGroups
+from mini_pupper_dance.MovementScheme import MovementScheme
 
 
 @pytest.mark.rostest

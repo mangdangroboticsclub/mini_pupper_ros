@@ -19,6 +19,10 @@ import pytest
 @pytest.mark.linter
 @pytest.mark.pep257
 def test_pep257():
-    # exclude the 'new_dance' folder from PEP257 checks
-    rc = main(argv=['--exclude', 'new_dance', '.', 'test'])
+    # Exclude files ported from StanfordQuadruped (no docstrings by design)
+    rc = main(argv=[
+        '--exclude', 'MovementGroup.py',
+        '--exclude', 'MovementScheme.py',
+        '.', 'test',
+    ])
     assert rc == 0, 'Found code style errors / warnings'
