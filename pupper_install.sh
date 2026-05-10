@@ -52,15 +52,15 @@ if ! [ -d "mini_pupper_ros" ]; then
   git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
 fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
-# compiling gazebo and cartographer on Raspberry Pi is not recommended
-touch champ/champ/champ_gazebo/AMENT_IGNORE
-touch champ/champ/champ_navigation/AMENT_IGNORE
+# compiling gazebo on Raspberry Pi is not recommended
 touch mini_pupper_ros/mini_pupper_simulation/AMENT_IGNORE
 touch mini_pupper_ros/mini_pupper_navigation/AMENT_IGNORE
 
 # install dependencies without unused heavy packages
 cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2 --skip-keys=gazebo_plugins --skip-keys=velodyne_gazebo_plugins
+sudo apt install -y ros-humble-ros2-control ros-humble-ros2-controllers
+sudo apt install -y ros-humble-robot-localization
 sudo apt install ros-humble-teleop-twist-keyboard
 sudo apt install ros-humble-teleop-twist-joy
 sudo apt install -y ros-humble-v4l2-camera ros-humble-image-transport-plugins

@@ -13,20 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Description: You can use the following FPC(Flexible Programmable Choreography) APIs to define your Mini Pupper to dance.
+# Description: You can use the following FPC(Flexible Programmable Choreography) APIs
+#              to define your Mini Pupper to dance.
 #              There are 3 levels of APIs
 #                 Level 1(for beginners): Simple APIs without input parameters
 #                 Level 2(for makers): APIs with input parameters
-#                 Level 3(for beyond): Samples delicately control the foot locations, move speed, and attitudes at each execution time.
+#                 Level 3(for beyond): Samples delicately control the foot locations,
+#                                       move speed, and attitudes at each execution time.
 #
 # Test method 1 by the controller:
 #   step1: Pair the controller to your Mini Pupper after power on
 #   step2: Click controller "L1" button
-#   step3: Click controller "Circle" button 
+#   step3: Click controller "Circle" button
 #   the mini pupper will dance based on your following script.
 #
 #
-#Test method 2 by command line:
+# Test method 2 by command line:
 #   After editing this file, run run_danceActionList.py to do your designed movements
 #   $python /home/ubuntu/StanfordQuadruped/run_danceActionList.py
 #
@@ -92,7 +94,7 @@ Move.stop()
 Move.body_row(10)
 Move.body_row(-10)
 Move.stop()
-Move.gait_uni(0.25,0)
+Move.gait_uni(0.25, 0)
 Move.gait_uni(0.35, 0.1)
 Move.stop()
 Move.height_move(0.03)

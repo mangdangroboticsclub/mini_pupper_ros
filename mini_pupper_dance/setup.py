@@ -7,7 +7,7 @@ package_name = 'mini_pupper_dance'
 setup(
     name=package_name,
     version='0.0.1',
-    packages=['mini_pupper_dance', 'mini_pupper_dance.new_dance'],
+    packages=['mini_pupper_dance'],
     package_dir={
         'mini_pupper_dance': 'mini_pupper_dance'
     },
@@ -25,10 +25,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'service = mini_pupper_dance.dance_server:main',
-            'client = mini_pupper_dance.dance_client:main',
-            'pose_controller = mini_pupper_dance.pose_controller:main',
-            'mini_pupper_dance = mini_pupper_dance.new_dance.mini_pupper_dance:main'
+            'mini_pupper_dance = mini_pupper_dance.mini_pupper_dance:main'
         ]
     }
 )

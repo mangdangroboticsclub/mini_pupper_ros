@@ -1,28 +1,67 @@
+#!/usr/bin/env python3
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2026 MangDang
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
+def _launch_nodes(context, *args, **kwargs):
+    multi = (LaunchConfiguration('multi_robot').perform(context).lower() == 'true')
+    count = max(1, int(LaunchConfiguration('robot_count').perform(context)))
+
+    nodes = []
+
+    if multi:
+        # Launch multiple nodes with remapped topics
+        for i in range(1, count + 1):
+            nodes.append(
+                Node(
+                    package='mini_pupper_dance',
+                    executable='mini_pupper_dance',
+                    name=f'mini_pupper_dance_{i}',  # unique node name
+                    output='screen',
+                    remappings=[
+                        # remap the node’s internal topic "robot_command"
+                        ('robot_command', f'/robot{i}/robot_command'),
+                    ],
+                )
+            )
+    else:
+        nodes.append(
+            Node(
+                package='mini_pupper_dance',
+                executable='mini_pupper_dance',
+                name='mini_pupper_dance',
+                output='screen',
+            )
+        )
+
+    return nodes
+
+
 def generate_launch_description():
-    dance_server_node = Node(
-            package="mini_pupper_dance",
-            namespace="",
-            executable="service",
-            name="dance_server",
-        )
-    dance_client_node = Node(
-            package="mini_pupper_dance",
-            namespace="",
-            executable="client",
-            name="dance_client",
-        )
-    pose_controller_node = Node(
-            package="mini_pupper_dance",
-            namespace="",
-            executable="pose_controller",
-            name="pose_controller",
-        )
     return LaunchDescription([
-        dance_server_node,
-        dance_client_node,
-        pose_controller_node
+        DeclareLaunchArgument('multi_robot', default_value='false',
+                              description='Set true to launch multiple robots'),
+        DeclareLaunchArgument('robot_count', default_value='1',
+                              description='Number of robots when multi_robot is true'),
+        OpaqueFunction(function=_launch_nodes),
     ])
