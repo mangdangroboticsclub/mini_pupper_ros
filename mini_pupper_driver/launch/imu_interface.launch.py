@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 # This program is referred to the official ros guide link，
-# https://docs.ros.org/en/humble/Tutorials/Intermediate/Launch/Creating-Launch-Files.html
+# https://docs.ros.org/en/jazzy/Tutorials/Intermediate/Launch/Creating-Launch-Files.html
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
