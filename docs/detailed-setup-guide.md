@@ -7,7 +7,8 @@ For a more detailed guide, please refer to our [online documentation](https://mi
 
 Supported Software versions
 
-* Ubuntu 22.04 + ROS 2 Humble
+* Ubuntu 24.04 + ROS 2 Jazzy
+* Ubuntu 22.04 + ROS 2 Humble is still available by running the install scripts with `ROS_DISTRO=humble` for legacy images.
 
 Supported Hardware versions
 
@@ -27,11 +28,11 @@ __Please note that the setup of PC and the mini pupper is separated__
 ### 1.1 Mini Pupper Setup
 
 Mini Pupper Setup corresponds to the Raspberry Pi on your Mini Pupper.  
-Ubuntu 22.04 is required.
+Ubuntu 24.04 is required for the default ROS 2 Jazzy setup.
 
 Before installation, you need to install the BSP(board support package) repo for your [Mini Pupper 2](https://github.com/mangdangroboticsclub/mini_pupper_2_bsp) or [Mini Pupper](https://github.com/mangdangroboticsclub/mini_pupper_bsp.git).
 
-After installing the driver software, install ROS 2 Humble is required, if the installation is unsuccessful, repeat the steps to install the package again.  
+After installing the driver software, install ROS 2 Jazzy is required, if the installation is unsuccessful, repeat the steps to install the package again.
 
 ```sh
 cd ~
@@ -42,7 +43,7 @@ cd mini_pupper_ros
 
 Reference(Just for reference, don't need to do it again.): 
 
-[installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or
+[installation document for ROS Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html) or
 
 [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
 
@@ -52,7 +53,7 @@ Reference(Just for reference, don't need to do it again.):
 PC Setup corresponds to PC (your desktop or laptop PC) for controlling Mini Pupper remotely or execute simulator, if the installation is unsuccessful, repeat the steps to install the package again.  
 __Do not apply these PC Setup commands to your Raspberry Pi on Mini Pupper.__
 
-Ubuntu 22.04 + ROS 2 Humble is required.  
+Ubuntu 24.04 + ROS 2 Jazzy is required by default.
 
 ```sh
 cd ~
@@ -63,7 +64,7 @@ cd mini_pupper_ros
 
 Reference(Just for reference, don't need to do it again.): 
 
-[installation document for ROS Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html) or
+[installation document for ROS Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debians.html) or
 
 [unofficial ROS 2 installation script](https://github.com/Tiryoh/ros2_setup_scripts_ubuntu)
 
@@ -437,9 +438,9 @@ limitations under the License.
 ## FAQ
 
 * Q. Is Ubuntu 20.04 supported?
-  * A. No. Ubuntu 22.04 only for now.
+  * A. No. Ubuntu 24.04 is the default supported platform for ROS 2 Jazzy. Ubuntu 22.04 remains usable only with the legacy `ROS_DISTRO=humble` install path.
 * Q. Is ROS 2 Foxy/Galactic supported?
-  * A. No. ROS 2 Humble only for now.
+  * A. No. ROS 2 Jazzy is the default supported ROS distribution. ROS 2 Humble remains available only for legacy Ubuntu 22.04 installs.
 * Q. `colcon build` shows `1 package had stderr output: mini_pupper_driver`.
   * A. The following warnings can be safely ignored. See [mini_pupper_ros#45](https://github.com/mangdangroboticsclub/mini_pupper_ros/pull/45#discussion_r1104759104) for details.
   ```

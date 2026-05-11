@@ -2,7 +2,8 @@
 set -e
 
 # Source ROS2
-source /opt/ros/humble/setup.bash
+ROS_DISTRO=${ROS_DISTRO:-jazzy}
+source /opt/ros/${ROS_DISTRO}/setup.bash
 
 # Source workspace
 source /ros2_ws/install/setup.bash

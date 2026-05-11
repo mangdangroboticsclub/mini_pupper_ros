@@ -1,11 +1,13 @@
-FROM ros:humble-ros-base
+ARG ROS_DISTRO=jazzy
+FROM ros:${ROS_DISTRO}-ros-base
+ARG ROS_DISTRO
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
-    ros-humble-cv-bridge \
-    ros-humble-tf-transformations \
-    ros-humble-sensor-msgs \
-    ros-humble-geometry-msgs \
+    ros-${ROS_DISTRO}-cv-bridge \
+    ros-${ROS_DISTRO}-tf-transformations \
+    ros-${ROS_DISTRO}-sensor-msgs \
+    ros-${ROS_DISTRO}-geometry-msgs \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python packages with compatible versions
@@ -28,7 +30,7 @@ WORKDIR /ros2_ws
 RUN pip install --upgrade pip && pip cache purge
 
 # Build the ROS workspace
-RUN bash -c "source /opt/ros/humble/setup.bash && colcon build"
+RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build"
 
 # Copy entrypoint script
 COPY entrypoint.sh /ros2_ws/

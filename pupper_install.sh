@@ -16,9 +16,19 @@ echo "setup.sh started at $(date)"
 # check Ubuntu version
 source /etc/os-release
 
-if [[ $UBUNTU_CODENAME != 'jammy' ]]
+ROS_DISTRO=${ROS_DISTRO:-jazzy}
+ROS_SETUP_SCRIPT=${ROS_SETUP_SCRIPT:-ros2-${ROS_DISTRO}-ros-base-main.sh}
+
+if [[ $ROS_DISTRO == 'jazzy' && $UBUNTU_CODENAME != 'noble' ]]
 then
-    echo "Ubuntu 22.04 LTS (Jammy Jellyfish) is required"
+    echo "Ubuntu 24.04 LTS (Noble Numbat) is required for ROS 2 Jazzy"
+    echo "You are using $VERSION"
+    exit 1
+fi
+
+if [[ $ROS_DISTRO == 'humble' && $UBUNTU_CODENAME != 'jammy' ]]
+then
+    echo "Ubuntu 22.04 LTS (Jammy Jellyfish) is required for ROS 2 Humble"
     echo "You are using $VERSION"
     exit 1
 fi
@@ -38,12 +48,12 @@ cd ~
 sudo apt-get update
 sudo apt -y install python3-pip python3-venv python3-virtualenv
 
-#Auto install ROS2 Humble
+# Auto install ROS 2
 if ! [ -d "ros2_setup_scripts_ubuntu" ]; then
   git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
 fi
-~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
-source /opt/ros/humble/setup.bash
+~/ros2_setup_scripts_ubuntu/${ROS_SETUP_SCRIPT}
+source /opt/ros/${ROS_DISTRO}/setup.bash
 
 #clone mini pupper 2 ros2 repo
 mkdir -p ~/ros2_ws/src
@@ -59,11 +69,11 @@ touch mini_pupper_ros/mini_pupper_navigation/AMENT_IGNORE
 # install dependencies without unused heavy packages
 cd ~/ros2_ws
 rosdep install --from-paths src --ignore-src -r -y --skip-keys=joint_state_publisher_gui --skip-keys=rviz2 --skip-keys=gazebo_plugins --skip-keys=velodyne_gazebo_plugins
-sudo apt install -y ros-humble-ros2-control ros-humble-ros2-controllers
-sudo apt install -y ros-humble-robot-localization
-sudo apt install ros-humble-teleop-twist-keyboard
-sudo apt install ros-humble-teleop-twist-joy
-sudo apt install -y ros-humble-v4l2-camera ros-humble-image-transport-plugins
+sudo apt install -y ros-${ROS_DISTRO}-ros2-control ros-${ROS_DISTRO}-ros2-controllers
+sudo apt install -y ros-${ROS_DISTRO}-robot-localization
+sudo apt install ros-${ROS_DISTRO}-teleop-twist-keyboard
+sudo apt install ros-${ROS_DISTRO}-teleop-twist-joy
+sudo apt install -y ros-${ROS_DISTRO}-v4l2-camera ros-${ROS_DISTRO}-image-transport-plugins
 pip3 install simple_pid
 
 #colcon build --symlink-install
