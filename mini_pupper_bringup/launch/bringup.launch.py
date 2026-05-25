@@ -121,8 +121,13 @@ def generate_launch_description():
         "launch",
         "robot_ros2_controllers.launch.py"
     ])
+    
     ros2_controllers_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(ros2_controllers_launch_path)
+        PythonLaunchDescriptionSource(ros2_controllers_launch_path),
+        launch_arguments={
+            "robot_namespace": robot_namespace,
+            "multi_robot": multi_robot,          # ← Pass this too
+        }.items(),
     )
 
     stanford_controller_launch_path = PathJoinSubstitution(
