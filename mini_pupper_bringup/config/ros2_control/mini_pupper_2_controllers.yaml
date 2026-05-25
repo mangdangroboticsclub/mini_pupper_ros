@@ -1,4 +1,4 @@
-controller_manager:
+/**:
   ros__parameters:
     use_sim_time: False
     update_rate: 100  # Hz (realistic for servo hardware, still >67Hz for smooth interpolation)
@@ -7,37 +7,37 @@ controller_manager:
     simple_quadruped_controller:
       type: mini_pupper_controllers/SimpleQuadrupedController
 
-simple_quadruped_controller:
-  ros__parameters:
-    use_sim_time: False
-    joints:
-      - base_lf1
-      - lf1_lf2
-      - lf2_lf3
-      - base_rf1
-      - rf1_rf2
-      - rf2_rf3
-      - base_lb1
-      - lb1_lb2
-      - lb2_lb3
-      - base_rb1
-      - rb1_rb2
-      - rb2_rb3
-    default_positions:
-      # Values match IK output of stanford_controller at REST (z=-0.07, no cmd_vel)
-      # LF leg (left front)
-      - 0.0     # base_lf1 (abduction)
-      - 0.994   # lf1_lf2 (hip)
-      - -0.774  # lf2_lf3 (knee)
-      # RF leg (right front)
-      - 0.0     # base_rf1 (abduction)
-      - 0.994   # rf1_rf2 (hip)
-      - -0.774  # rf2_rf3 (knee)
-      # LB leg (left back)
-      - 0.0     # base_lb1 (abduction)
-      - 0.994   # lb1_lb2 (hip)
-      - -0.774  # lb2_lb3 (knee)
-      # RB leg (right back)
-      - 0.0     # base_rb1 (abduction)
-      - 0.994   # rb1_rb2 (hip)
-      - -0.774  # rb2_rb3 (knee)
+  simple_quadruped_controller:
+    ros__parameters:
+      use_sim_time: False
+      joints:
+        - base_lf1
+        - lf1_lf2
+        - lf2_lf3
+        - base_rf1
+        - rf1_rf2
+        - rf2_rf3
+        - base_lb1
+        - lb1_lb2
+        - lb2_lb3
+        - base_rb1
+        - rb1_rb2
+        - rb2_rb3
+      default_positions:
+        # Values match IK output of stanford_controller at REST (z=-0.07, no cmd_vel)
+        # LF leg (left front)
+        - 0.0     # base_lf1 (abduction)
+        - 0.994   # lf1_lf2 (hip)
+        - -0.774  # lf2_lf3 (knee)
+        # RF leg (right front)
+        - 0.0     # base_rf1 (abduction)
+        - 0.994   # rf1_rf2 (hip)
+        - -0.774  # rf2_rf3 (knee)
+        # LB leg (left back)
+        - 0.0     # base_lb1 (abduction)
+        - 0.994   # lb1_lb2 (hip)
+        - -0.774  # lb2_lb3 (knee)
+        # RB leg (right back)
+        - 0.0     # base_rb1 (abduction)
+        - 0.994   # rb1_rb2 (hip)
+        - -0.774  # rb2_rb3 (knee)
