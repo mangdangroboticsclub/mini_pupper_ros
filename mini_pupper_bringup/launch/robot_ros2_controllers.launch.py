@@ -23,10 +23,19 @@ from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
 import os
 
 
 def generate_launch_description():
+    robot_namespace = LaunchConfiguration("robot_namespace")
+
+    robot_namespace_arg = DeclareLaunchArgument(
+        "robot_namespace",
+        default_value="robot1",  # or whatever default you want
+        description="Namespace for this robot"
+    )
     # Get robot description from URDF file
     robot_model = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
     description_package = FindPackageShare("mini_pupper_description")
@@ -51,6 +60,8 @@ def generate_launch_description():
         "mini_pupper_2_controllers.yaml"
     ])
 
+
+
     controller_manager_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -64,16 +75,43 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster"],
-        output="screen"
+        namespace=robot_namespace,
+        arguments=[
+            "joint_state_broadcaster",
+            "--controller-manager", ["/", robot_namespace, "/controller_manager"],
+            "--param-file", controller_params_file
+        ],
+        output="screen",
     )
 
     simple_quadruped_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["simple_quadruped_controller"],
-        output="screen"
+        namespace=robot_namespace,
+        arguments=[
+            "simple_quadruped_controller",
+            "--controller-manager", ["/", robot_namespace, "/controller_manager"],
+            "--param-file", controller_params_file
+        ],
+        output="screen",
     )
+
+    #it doesn't matter if the spawner has namespace or not (suppose should have when it launches multiple robot -> conflict)
+    #The problem lies at the fact that the mini_pupper_2_controllers.yaml must match with the namespace, for example : 
+    """
+    robot1:
+        controller_manager:
+            ros__parameters:
+            use_sim_time: False
+            update_rate: 100  # Hz (realistic for servo hardware, still >67Hz for smooth interpolation)
+            joint_state_broadcaster:
+                type: joint_state_broadcaster/JointStateBroadcaster
+            simple_quadruped_controller:
+                type: mini_pupper_controllers/SimpleQuadrupedController
+
+        simple_quadruped_controller:
+            ros__parameters:
+    """
 
     # Start the broadcaster once controller_manager is up, then load the
     # quadruped controller after the broadcaster spawner completes.
@@ -81,6 +119,7 @@ def generate_launch_description():
         OnProcessStart(
             target_action=controller_manager_node,
             on_start=[joint_state_broadcaster_spawner],
+            #namespace=robot_namespace
         )
     )
 
@@ -88,6 +127,7 @@ def generate_launch_description():
         OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
             on_exit=[simple_quadruped_controller_spawner],
+            #namespace= 
         )
     )
 
@@ -96,3 +136,9 @@ def generate_launch_description():
         joint_state_broadcaster_handler,
         quadruped_controller_handler,
     ])
+
+
+#Finish for multi_robot case
+#only work: fix the mode multi-robot. Currently the mode multi-robot is applied to single launch and multi-robot launch
+#What changed did i made : ? I add the param file for the spawner under the namespace, and changed the param file mini_pupper_2_controllers.yaml to wildcare
+#source: https://control.ros.org/humble/doc/ros2_control/controller_manager/doc/userdoc.html
