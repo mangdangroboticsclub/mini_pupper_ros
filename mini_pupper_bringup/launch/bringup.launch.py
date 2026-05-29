@@ -85,7 +85,7 @@ def generate_launch_description():
     robot_namespace = LaunchConfiguration("robot_namespace")
     robot_namespace_arg = DeclareLaunchArgument(
         "robot_namespace",
-        default_value="",                                 # ← CHANGED: empty for single robot
+        default_value="",                                
         description="Namespace for this robot (e.g. robot1, robot2). Leave empty for single robot.",
     )
 
@@ -159,6 +159,10 @@ def generate_launch_description():
     baselink_to_odom_ekf_config_path = PathJoinSubstitution(
         [bringup_package, "config", "ekf", "baselink_to_odom.yaml"]
     )
+
+    # Single EKF: fuses IMU heading to publish odom→base_footprint TF and /odom.
+    # base_footprint→base_link is provided as a fixed joint by robot_state_publisher
+    # (defined in the URDF), so the old base_to_footprint_ekf is no longer needed.
 
     footprint_to_odom_ekf_launch = Node(
         package="robot_localization",
