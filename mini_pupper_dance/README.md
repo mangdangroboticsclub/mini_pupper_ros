@@ -43,7 +43,5 @@ source ~/ros2_ws/install/setup.bash
 ros2 launch mini_pupper_dance multi_robot_dance.launch.py multi_robot:=true robot_count:=3
 ```
 
-
-
 ### How to modify
 You can modify the file createDanceActionListSample.py in the mini_pupper_dance folder to define new dance moves by editing or adding actions to the dance action list. Each action specifies a pose or movement for the robot, and modifying this file allows you to create custom dance routines. After making changes, rebuild the package to apply the updates.
