@@ -28,13 +28,16 @@ import os
 
 def launch_setup(context):
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-
+    #Get robot description from URDF file
     robot_model = os.getenv("ROBOT_MODEL", default="mini_pupper_2")
     description_package = FindPackageShare("mini_pupper_description")
     bringup_package = FindPackageShare("mini_pupper_bringup")
 
     urdf_file = PathJoinSubstitution([
-        description_package, "urdf", robot_model, "mini_pupper_description.urdf.xacro"
+        description_package,
+        "urdf",
+        robot_model,
+        "mini_pupper_description.urdf.xacro"
     ])
 
     robot_description = ParameterValue(
@@ -43,17 +46,18 @@ def launch_setup(context):
     )
 
     controller_params_file = PathJoinSubstitution([
-        bringup_package, "config", "ros2_control", "mini_pupper_2_controllers.yaml"
+        bringup_package,
+        "config",
+        "ros2_control",
+        "mini_pupper_2_controllers.yaml"
     ])
 
-    # Controller Manager
     controller_manager_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        #namespace=robot_namespace if robot_namespace else "",
         parameters=[
             {"robot_description": robot_description},
-            controller_params_file,
+            controller_params_file
         ],
         output="screen",
     )
@@ -62,7 +66,7 @@ def launch_setup(context):
         cm_arg = ["/controller_manager"]
     else:
         cm_arg = ["/", robot_namespace, "/controller_manager"]
-
+        
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -72,7 +76,7 @@ def launch_setup(context):
             "--controller-manager", cm_arg,
             "--param-file", controller_params_file,
         ],
-        output="screen",
+        output="screen"
     )
 
     simple_quadruped_controller_spawner = Node(
@@ -84,30 +88,29 @@ def launch_setup(context):
             "--controller-manager", cm_arg,
             "--param-file", controller_params_file,
         ],
-        output="screen",
+        output="screen"
     )
 
-    # Event handlers
     # Start the broadcaster once controller_manager is up, then load the
     # quadruped controller after the broadcaster spawner completes.
-    joint_state_handler = RegisterEventHandler(
+    joint_state_broadcaster_handler = RegisterEventHandler(
         OnProcessStart(
             target_action=controller_manager_node,
-            on_start=[joint_state_broadcaster_spawner]
+            on_start=[joint_state_broadcaster_spawner],
         )
     )
 
-    quadruped_handler = RegisterEventHandler(
+    quadruped_controller_handler = RegisterEventHandler(
         OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[simple_quadruped_controller_spawner]
+            on_exit=[simple_quadruped_controller_spawner],
         )
     )
 
     return [
         controller_manager_node,
-        joint_state_handler,
-        quadruped_handler,
+        joint_state_broadcaster_handler,
+        quadruped_controller_handler,
     ]
 
 

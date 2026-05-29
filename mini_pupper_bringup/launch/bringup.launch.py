@@ -118,7 +118,6 @@ def generate_launch_description():
         "launch",
         "robot_ros2_controllers.launch.py"
     ])
-    
     ros2_controllers_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(ros2_controllers_launch_path),
         launch_arguments={
@@ -163,7 +162,6 @@ def generate_launch_description():
     # Single EKF: fuses IMU heading to publish odom→base_footprint TF and /odom.
     # base_footprint→base_link is provided as a fixed joint by robot_state_publisher
     # (defined in the URDF), so the old base_to_footprint_ekf is no longer needed.
-
     footprint_to_odom_ekf_launch = Node(
         package="robot_localization",
         executable="ekf_node",

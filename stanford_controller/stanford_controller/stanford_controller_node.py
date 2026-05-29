@@ -95,7 +95,7 @@ class StanfordControllerNode(Node):
 
         self.joint_position_publisher = self.create_publisher(
             Float64MultiArray,
-            'simple_quadruped_controller/commands',     #remove absolute topic to match with namespace
+            'simple_quadruped_controller/commands', #remove absolute topic to match with namespace
             10
         )
         self.state_publisher = self.create_publisher(String, 'state_log', 10)
