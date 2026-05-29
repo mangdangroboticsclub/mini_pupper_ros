@@ -65,6 +65,7 @@ sudo apt install ros-humble-teleop-twist-keyboard
 sudo apt install ros-humble-teleop-twist-joy
 sudo apt install -y ros-humble-v4l2-camera ros-humble-image-transport-plugins
 pip3 install simple_pid
+pip3 install --upgrade transforms3d
 
 #colcon build --symlink-install
 MAKEFLAGS=-j1 colcon build --executor sequential --symlink-install

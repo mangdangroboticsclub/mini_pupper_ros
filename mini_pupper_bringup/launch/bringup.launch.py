@@ -85,11 +85,8 @@ def generate_launch_description():
     robot_namespace = LaunchConfiguration("robot_namespace")
     robot_namespace_arg = DeclareLaunchArgument(
         "robot_namespace",
-        default_value=[
-            TextSubstitution(text="robot"),
-            EnvironmentVariable("ROBOT_ID", default_value="1"),
-        ],
-        description="Namespace for this robot (e.g. robot1, robot2)",
+        default_value="",                                
+        description="Namespace for this robot (e.g. robot1, robot2). Leave empty for single robot.",
     )
 
     description_launch_path = PathJoinSubstitution(
@@ -122,7 +119,11 @@ def generate_launch_description():
         "robot_ros2_controllers.launch.py"
     ])
     ros2_controllers_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(ros2_controllers_launch_path)
+        PythonLaunchDescriptionSource(ros2_controllers_launch_path),
+        launch_arguments={
+            "robot_namespace": robot_namespace,
+            "multi_robot": multi_robot,
+        }.items(),
     )
 
     stanford_controller_launch_path = PathJoinSubstitution(
