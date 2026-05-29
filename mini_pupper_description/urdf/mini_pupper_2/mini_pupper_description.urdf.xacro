@@ -1239,13 +1239,10 @@
   <link name="camera_link">
     <visual>
       <geometry>
-        <box>
-          <size>0.02 0.02 0.02</size>
-        </box>
+          <box size="0.02 0.02 0.02" />
       </geometry>
-      <material>
-        <ambient>0 0 1 1</ambient>
-        <diffuse>0 0 1 1</diffuse>
+      <material name="Cyan">
+        <color rgba="0 1.0 1.0 1.0"/>
       </material>
     </visual>
   </link>
