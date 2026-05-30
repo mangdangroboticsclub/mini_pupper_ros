@@ -1,0 +1,33 @@
+=========================================================================
+==  NOTICE file corresponding to the section 4 d of                    ==
+==  the Apache License, Version 2.0,                                   ==
+==  in this case for the Mini Pupper ROS 2 distribution.               ==
+=========================================================================
+
+Mini Pupper ROS 2 Stack
+Copyright 2022-2026 Mangdang Technology Co., Limited 
+www.mangdang.org
+
+This product includes software developed at
+Mangdang Technology Co., Limited.
+
+-------------------------------------------------------------------------
+Third-Party Open Source Software Notices:
+-------------------------------------------------------------------------
+
+This product contains portions of software derived from the following 
+third-party projects, which are licensed under the Apache License 2.0:
+
+1. TurtleBot3
+   Copyright 2019 Open Source Robotics Foundation, Inc.
+   Originally developed by Darby Lim (ROBOTIS)
+
+2. Stanford Quadruped (https://github.com/stanfordroboticsclub/StanfordQuadruped)
+   Copyright (c) 2020 Nathan Kau
+   Portions of gait generation and kinematics algorithms
+
+3. Nav2 (Navigation 2)
+   Copyright (c) 2018 Intel Corporation
+   Portions of navigation and costmap configurations
+
+=========================================================================
