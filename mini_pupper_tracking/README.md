@@ -80,7 +80,7 @@ pip install flask onnxruntime motpy
 
 ```bash
 # ROS2 dependencies
-sudo apt install ros-humble-imu-filter-madgwick ros-humble-tf-transformations
+sudo apt install ros-jazzy-imu-filter-madgwick ros-jazzy-tf-transformations
 ```
 
 ---
@@ -248,6 +248,6 @@ This package is licensed under the Apache-2.0 License. See individual source fil
 
 ## Compatibility
 
-- **ROS 2**: Humble
-- **Platform**: Ubuntu 22.04 LTS
+- **ROS 2**: Jazzy
+- **Platform**: Ubuntu 24.04 LTS
 - **Hardware**: Mini Pupper robots with Stanford Controller
