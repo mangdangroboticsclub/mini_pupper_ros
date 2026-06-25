@@ -38,9 +38,9 @@ def generate_launch_description():
     )
 
     gazebo_launch_path = PathJoinSubstitution([
-        FindPackageShare('gazebo_ros'),
+        FindPackageShare('ros_gz_sim'),
         'launch',
-        'gazebo.launch.py'
+        'gz_sim.launch.py'
     ])
     gui = LaunchConfiguration('gui')
     gui_launch_arg = DeclareLaunchArgument(
@@ -52,8 +52,9 @@ def generate_launch_description():
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            'world': world,
+            'gz_args': ['-r -v4 ', world],
             'gui': gui,
+            'use_sim_time': 'true',
         }.items()
     )
 

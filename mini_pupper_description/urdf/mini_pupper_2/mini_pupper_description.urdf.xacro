@@ -39,12 +39,40 @@
          lighter so pitch/roll corrections still move the body during gait. -->
     <xacro:property name="sim_inertia_scale" value="100" />
     <xacro:property name="sim_body_inertia_scale" value="100" />
+    <xacro:property name="sim_mass_scale" value="30.0" />
+
+    <xacro:property name="base_link_mass" value="${0.174884 * sim_mass_scale}" />
+    <xacro:property name="lnkgrp1_mass" value="${0.020769 * sim_mass_scale}" />
+    <xacro:property name="lnkgrp2_mass" value="${0.001906 * sim_mass_scale}" />
+    <xacro:property name="lnkgrp3_mass" value="${0.001144 * sim_mass_scale}" />
+    <xacro:property name="pltgrp1_mass" value="${0.002574 * sim_mass_scale}" />
+    <xacro:property name="pltgrp2_mass" value="${0.002231 * sim_mass_scale}" />
+    <xacro:property name="feet_mass" value="${0.001405 * sim_mass_scale}" />
+    <xacro:property name="body_front_mass" value="${0.00785515871148119 * sim_mass_scale}" />
+    <xacro:property name="board_pcb_mass" value="${0.014261552601793053 * sim_mass_scale}" />
+    <xacro:property name="lidar_mass" value="${0.108 * sim_mass_scale}" />
+    <xacro:property name="shell_side_mass" value="${0.0051928835390001775 * sim_mass_scale}" />
+    <xacro:property name="imu_mass" value="${0.0001 * sim_mass_scale}" />
+
   </xacro:if>
   <xacro:unless value="$(arg use_gazebo_hardware)">
     <xacro:property name="servo_damping" value="5.0" />
     <xacro:property name="servo_friction" value="1.0" />
     <xacro:property name="sim_inertia_scale" value="1" />
     <xacro:property name="sim_body_inertia_scale" value="1" />
+
+    <xacro:property name="base_link_mass" value="0.174884" />
+    <xacro:property name="lnkgrp1_mass" value="0.020769" />
+    <xacro:property name="lnkgrp2_mass" value="0.001906" />
+    <xacro:property name="lnkgrp3_mass" value="0.001144" />
+    <xacro:property name="pltgrp1_mass" value="0.002574" />
+    <xacro:property name="pltgrp2_mass" value="0.002231" />
+    <xacro:property name="feet_mass" value="0.001405" />
+    <xacro:property name="body_front_mass" value="0.00785515871148119" />
+    <xacro:property name="board_pcb_mass" value="0.014261552601793053" />
+    <xacro:property name="lidar_mass" value="0.108" />
+    <xacro:property name="shell_side_mass" value="0.0051928835390001775" />
+    <xacro:property name="imu_mass" value="0.0001" />
   </xacro:unless>
 
   <!-- Link group 1 - lf1, rf1, lb1, rb1 -->
@@ -71,20 +99,20 @@
   <link name="base_link">
     <inertial>
       <origin xyz="-0.008867 0.000396 -0.007154" rpy="0 0 0"/>
-      <mass value="0.174884"/>
+      <mass value="${base_link_mass}"/>
       <inertia ixx="${0.00090939 * sim_body_inertia_scale}" iyy="${0.00426716 * sim_body_inertia_scale}" izz="${0.00440707 * sim_body_inertia_scale}" ixy="${1.27324e-7 * sim_body_inertia_scale}" iyz="${1.05509e-9 * sim_body_inertia_scale}" ixz="${-1.69927e-7 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/base_link.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/base_link.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/base_link.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/base_link.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -92,7 +120,7 @@
   <link name="base_inertia">
     <inertial>
       <origin xyz="-0.008867 0.000396 -0.007154" rpy="0 0 0"/>
-      <mass value="0.174884"/>
+      <mass value="${base_link_mass}"/>
       <inertia ixx="${0.00090939 * sim_body_inertia_scale}" iyy="${0.00426716 * sim_body_inertia_scale}" izz="${0.00440707 * sim_body_inertia_scale}" ixy="${1.27324e-7 * sim_body_inertia_scale}" iyz="${1.05509e-9 * sim_body_inertia_scale}" ixz="${-1.69927e-7 * sim_body_inertia_scale}"/>
     </inertial>
   </link>
@@ -100,20 +128,20 @@
   <link name="lf1">
     <inertial>
       <origin xyz="0.020109 0.002332 0.006500" rpy="0 0 0"/>
-      <mass value="${lnkgrp1_weight}"/>
+      <mass value="${lnkgrp1_mass}"/>
       <inertia ixx="${2.494061e-6 * sim_inertia_scale}" iyy="${3.735906e-6 * sim_inertia_scale}" izz="${3.222909e-6 * sim_inertia_scale}" ixy="${-7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lf1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -121,20 +149,20 @@
   <link name="lf2">
     <inertial>
       <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
-      <mass value="${lnkgrp2_weight}"/>
+      <mass value="${lnkgrp2_mass}"/>
       <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${3.117e-9 * sim_inertia_scale}" iyz="${17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lf2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque636363"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lf2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -142,20 +170,20 @@
   <link name="lf3">
     <inertial>
       <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
-      <mass value="${lnkgrp3_weight}"/>
+      <mass value="${lnkgrp3_mass}"/>
       <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-6 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${-2.101e-9 * sim_inertia_scale}" iyz="${5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lf3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lf3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lf3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lf3.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -163,20 +191,20 @@
   <link name="rf1">
     <inertial>
       <origin xyz="0.020109 -0.002332 0.006500" rpy="0 0 0"/>
-      <mass value="${lnkgrp1_weight}"/>
+      <mass value="${lnkgrp1_mass}"/>
       <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rf1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -184,20 +212,20 @@
   <link name="rf2">
     <inertial>
       <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
-      <mass value="${lnkgrp2_weight}"/>
+      <mass value="${lnkgrp2_mass}"/>
       <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${-3.117e-9 * sim_inertia_scale}" iyz="${-17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rf2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque636363"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rf2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -205,20 +233,20 @@
   <link name="rf3">
     <inertial>
       <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
-      <mass value="${lnkgrp3_weight}"/>
+      <mass value="${lnkgrp3_mass}"/>
       <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-06 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${2.101e-9 * sim_inertia_scale}" iyz="${-5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rf3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rf3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rf3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rf3.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -226,20 +254,20 @@
   <link name="rb1">
     <inertial>
       <origin xyz="-0.020109 -0.002332 0.006500" rpy="0 0 0"/>
-      <mass value="${lnkgrp1_weight}"/>
+      <mass value="${lnkgrp1_mass}"/>
       <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${-7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rb1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -247,20 +275,20 @@
   <link name="rb2">
     <inertial>
       <origin xyz="-0.003174 -0.000986 -0.017984" rpy="0 0 0"/>
-      <mass value="${lnkgrp2_weight}"/>
+      <mass value="${lnkgrp2_mass}"/>
       <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${-3.117e-9 * sim_inertia_scale}" iyz="${-17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque636363"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rb2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -268,20 +296,20 @@
   <link name="rb3">
     <inertial>
       <origin xyz="0.006211 -0.003456 -0.015014" rpy="0 0 0"/>
-      <mass value="${lnkgrp3_weight}"/>
+      <mass value="${lnkgrp3_mass}"/>
       <inertia ixx="${0.484816e-6 * sim_inertia_scale}" iyy="${0.567883e-06 * sim_inertia_scale}" izz="${91.777e-9 * sim_inertia_scale}" ixy="${2.212e-9 * sim_inertia_scale}" iyz="${-5.34e-9 * sim_inertia_scale}" ixz="${0.200564e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rb3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rb3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rb3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rb3.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -289,20 +317,20 @@
   <link name="lb1">
     <inertial>
       <origin xyz="-0.020109 0.002332 0.006500" rpy="0 0 0"/>
-      <mass value="${lnkgrp1_weight}"/>
+      <mass value="${lnkgrp1_mass}"/>
       <inertia ixx="${2.494061e-06 * sim_inertia_scale}" iyy="${3.735906e-06 * sim_inertia_scale}" izz="${3.222909e-06 * sim_inertia_scale}" ixy="${7.662e-9 * sim_inertia_scale}" iyz="${-0.014e-9 * sim_inertia_scale}" ixz="${-33.565e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lb1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -310,20 +338,20 @@
   <link name="lb2">
     <inertial>
       <origin xyz="-0.003174 0.000986 -0.017984" rpy="0 0 0"/>
-      <mass value="${lnkgrp2_weight}"/>
+      <mass value="${lnkgrp2_mass}"/>
       <inertia ixx="${0.462154e-6 * sim_inertia_scale}" iyy="${0.481174e-6 * sim_inertia_scale}" izz="${26.893e-9 * sim_inertia_scale}" ixy="${3.117e-9 * sim_inertia_scale}" iyz="${17.662e-9 * sim_inertia_scale}" ixz="${-79.269e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque636363"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lb2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -331,20 +359,20 @@
   <link name="lb3">
     <inertial>
       <origin xyz="0.006211 0.003456 -0.015014" rpy="0 0 0"/>
-      <mass value="${lnkgrp3_weight}"/>
+      <mass value="${lnkgrp3_mass}"/>
       <inertia ixx="${0.484471e-6 * sim_inertia_scale}" iyy="${0.567615e-06 * sim_inertia_scale}" izz="${91.813e-9 * sim_inertia_scale}" ixy="${-2.101e-9 * sim_inertia_scale}" iyz="${5.008e-9 * sim_inertia_scale}" ixz="${0.20057e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lb3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lb3.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque252525"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lb3.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lb3.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -352,20 +380,20 @@
   <link name="Body_front">
     <inertial>
       <origin xyz="-0.005539 -0.000204 0.020223" rpy="0 0 0"/>
-      <mass value="0.00785515871148119"/>
+      <mass value="${body_front_mass}"/>
       <inertia ixx="${5.306048e-6 * sim_body_inertia_scale}" iyy="${1.837621e-6 * sim_body_inertia_scale}" izz="${3.61974e-6 * sim_body_inertia_scale}" ixy="${-22.863e-9 * sim_body_inertia_scale}" iyz="${-4.925e-9 * sim_body_inertia_scale}" ixz="${-9.195e-9 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="-0.089299 0 0.015543" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Body_front.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Body_front.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="-0.089299 0 0.015543" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Body_front.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Body_front.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -373,72 +401,63 @@
   <link name="Board_PCB">
     <inertial>
       <origin xyz="0.089461 0.023505 0.0" rpy="0 0 0"/>
-      <mass value="0.014261552601793053"/>
+      <mass value="${board_pcb_mass}"/>
       <inertia ixx="${4.425965e-6 * sim_body_inertia_scale}" iyy="${3.4560775e-5 * sim_body_inertia_scale}" izz="${3.8954441e-5 * sim_body_inertia_scale}" ixy="${0.104871e-6 * sim_body_inertia_scale}" iyz="${75.406e-9 * sim_body_inertia_scale}" ixz="${0.113313e-6 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0.087701 0.023505 -0.026457" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Board_PCB.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Board_PCB.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque646464"/>
     </visual>
     <collision>
       <origin xyz="0.087701 0.023505 -0.026457" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Board_PCB.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Board_PCB.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
   <link name="Board_connectors_1">
-    <!-- <inertial>
-      <origin xyz="-0.07276303117117414 -0.002323344081837562 -0.0010631239213060653" rpy="0 0 0"/>
-      <mass value="0.004688613655947816"/>
-      <inertia ixx="0.203205e-6" iyy="1.5404404e-5" izz="1.5546403e-5" ixy="-0.625328e-6" iyz="42.901e-9" ixz="0.186346e-9"/>
-    </inertial> -->
     <visual>
       <origin xyz="-0.061334 3.3e-05 -0.026457" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Board_connectors_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Board_connectors_1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2491590"/>
     </visual>
     <collision>
       <origin xyz="-0.061334 3.3e-05 -0.026457" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Board_connectors_1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Board_connectors_1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
   <link name="Board_connectors_2">
-    <!-- <inertial>
-      <origin xyz="0.008233541174180986 -0.0021383697865476553 -0.00030110978110910874" rpy="0 0 0"/>
-      <mass value="0.0019746031301169403"/>
-      <inertia ixx="0.458183e-6" iyy="3.284548e-6" izz="3.720196e-6" ixy="-79.741e-9" iyz="4.796e-9" ixz="0.123868e-9"/>
-    </inertial> -->
     <visual>
       <origin xyz="0.045346 5e-06 -0.026457" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Board_connectors_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Board_connectors_2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque255255255"/>
     </visual>
     <collision>
       <origin xyz="0.045346 5e-06 -0.026457" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Board_connectors_2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Board_connectors_2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
+  
   <link
     name="lidar_link">
     <inertial>
       <origin
         xyz="1.56706411611127E-05 -5.16565672073303E-13 -0.0191835739440227"
         rpy="0 0 -1.57" />
-      <mass value="0.108" />
+      <mass value="${lidar_mass}" />
       <inertia
         ixx="${8.74731426973985E-06 * sim_body_inertia_scale}"
         ixy="${-6.66781590704156E-08 * sim_body_inertia_scale}"
@@ -451,7 +470,7 @@
       <origin xyz="0 0 0" rpy="0 0 -1.57"/>
       <geometry>
         <mesh
-          filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lidar.stl" />
+          filename="package://mini_pupper_description/meshes/mini_pupper_2/lidar.stl" />
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1" />
@@ -461,30 +480,32 @@
       <origin xyz="0 0 0" rpy="0 0 -1.57" />
       <geometry>
         <mesh
-          filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lidar.stl" />
+          filename="package://mini_pupper_description/meshes/mini_pupper_2/lidar.stl" />
       </geometry>
     </collision>
   </link>
+  
   <link name="rffoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
-      <mass value="${feet_weight}"/>
+      <mass value="${feet_mass}"/>
       <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rffoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rffoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rffoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rffoot.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
+  
   <gazebo reference="rffoot">
     <mu1>${foot_mu1}</mu1>
     <mu2>${foot_mu2}</mu2>
@@ -501,23 +522,24 @@
   <link name="rbfoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
-      <mass value="${feet_weight}"/>
+      <mass value="${feet_mass}"/>
       <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rbfoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rbfoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rbfoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rbfoot.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
+  
   <gazebo reference="rbfoot">
     <mu1>${foot_mu1}</mu1>
     <mu2>${foot_mu2}</mu2>
@@ -534,23 +556,24 @@
   <link name="lbfoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
-      <mass value="${feet_weight}"/>
+      <mass value="${feet_mass}"/>
       <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lbfoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lbfoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lbfoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lbfoot.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
+  
   <gazebo reference="lbfoot">
     <mu1>${foot_mu1}</mu1>
     <mu2>${foot_mu2}</mu2>
@@ -567,23 +590,24 @@
   <link name="lffoot">
     <inertial>
       <origin xyz="${feet_centre_of_mass}" rpy="0 0 0"/>
-      <mass value="${feet_weight}"/>
+      <mass value="${feet_mass}"/>
       <inertia ixx="${41.995e-9 * sim_inertia_scale}" iyy="${62.40e-9 * sim_inertia_scale}" izz="${29.798e-9 * sim_inertia_scale}" ixy="${0.0e-9 * sim_inertia_scale}" iyz="${0.0e-9 * sim_inertia_scale}" ixz="${1.616e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lffoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lffoot.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque666666"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lffoot.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lffoot.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
+  
   <gazebo reference="lffoot">
     <mu1>${foot_mu1}</mu1>
     <mu2>${foot_mu2}</mu2>
@@ -600,20 +624,20 @@
   <link name="lpf1">
     <inertial>
       <origin xyz="0.002259 0.008667 -0.002748" rpy="0 0 0"/>
-      <mass value="${pltgrp1_weight}"/>
+      <mass value="${pltgrp1_mass}"/>
       <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${24.631e-9 * sim_inertia_scale}" iyz="${3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpf1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -621,20 +645,20 @@
   <link name="lpb1">
     <inertial>
       <origin xyz="0.002259 0.008667 -0.002748" rpy="0 0 0"/>
-      <mass value="${pltgrp1_weight}"/>
+      <mass value="${pltgrp1_mass}"/>
       <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${24.631e-9 * sim_inertia_scale}" iyz="${3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpb1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -642,20 +666,20 @@
   <link name="rpf1">
     <inertial>
       <origin xyz="0.002259 -0.008667 -0.002748" rpy="0 0 0"/>
-      <mass value="${pltgrp1_weight}"/>
+      <mass value="${pltgrp1_mass}"/>
       <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${-24.631e-9 * sim_inertia_scale}" iyz="${-3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpf1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpf1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpf1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -663,20 +687,20 @@
   <link name="rpb1">
     <inertial>
       <origin xyz="0.002259 -0.008667 -0.002748" rpy="0 0 0"/>
-      <mass value="${pltgrp1_weight}"/>
+      <mass value="${pltgrp1_mass}"/>
       <inertia ixx="${0.39059e-6 * sim_inertia_scale}" iyy="${0.412444e-6 * sim_inertia_scale}" izz="${0.246337e-6 * sim_inertia_scale}" ixy="${-24.631e-9 * sim_inertia_scale}" iyz="${-3.861e-9 * sim_inertia_scale}" ixz="${54.116e-9 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpb1.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpb1.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpb1.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -684,20 +708,20 @@
   <link name="lpf2">
     <inertial>
       <origin xyz="-0.001747 0.007904 0.005365" rpy="0 0 0"/>
-      <mass value="${pltgrp2_weight}"/>
+      <mass value="${pltgrp2_mass}"/>
       <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${1.254e-9 * sim_inertia_scale}" iyz="${-13.212e-9 * sim_inertia_scale}" ixz="${-0.112894e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpf2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpf2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -705,20 +729,20 @@
   <link name="lpb2">
     <inertial>
       <origin xyz="-0.001747 0.007904 0.005365" rpy="0 0 0"/>
-      <mass value="${pltgrp2_weight}"/>
+      <mass value="${pltgrp2_mass}"/>
       <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${1.254e-9 * sim_inertia_scale}" iyz="${-13.212e-9 * sim_inertia_scale}" ixz="${-0.112894e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/lpb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/lpb2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -726,20 +750,20 @@
   <link name="rpf2">
     <inertial>
       <origin xyz="-0.001747 -0.007904 0.005365" rpy="0 0 0"/>
-      <mass value="${pltgrp2_weight}"/>
+      <mass value="${pltgrp2_mass}"/>
       <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${-1.254e-9 * sim_inertia_scale}" iyz="${13.212e-9 * sim_inertia_scale}" ixz="${-0.11152e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpf2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpf2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpf2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -747,42 +771,41 @@
   <link name="rpb2">
     <inertial>
       <origin xyz="-0.001747 -0.007904 0.005365" rpy="0 0 0"/>
-      <mass value="${pltgrp2_weight}"/>
+      <mass value="${pltgrp2_mass}"/>
       <inertia ixx="${0.862567e-6 * sim_inertia_scale}" iyy="${0.991403e-6 * sim_inertia_scale}" izz="${0.13904e-6 * sim_inertia_scale}" ixy="${-1.254e-9 * sim_inertia_scale}" iyz="${13.212e-9 * sim_inertia_scale}" ixz="${-0.11152e-6 * sim_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpb2.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/rpb2.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/rpb2.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
 
   <link name="Shell_Side">
     <inertial>
-      <!-- <origin xyz="-2.7696824994288393e-05 0.0 0.02237056777957029" rpy="0 0 0"/>  -->
       <origin xyz="-0.00003 0.030005 0.022371" rpy="0 0 0"/> 
-      <mass value="0.0051928835390001775"/>
+      <mass value="${shell_side_mass}"/>
       <inertia ixx="${5.834352e-6 * sim_body_inertia_scale}" iyy="${3.214872e-6 * sim_body_inertia_scale}" izz="${6.996514e-6 * sim_body_inertia_scale}" ixy="${0.0e-9 * sim_body_inertia_scale}" iyz="${0.0e-9 * sim_body_inertia_scale}" ixz="${15.218e-9 * sim_body_inertia_scale}"/>
     </inertial>
     <visual>
       <origin xyz="0.002701 0.030005 0.016293" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Shell_Side.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Shell_Side.stl" scale="1 1 1"/>
       </geometry>
       <material name="opaque2552210"/>
     </visual>
     <collision>
       <origin xyz="0.002701 0.030005 0.016293" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find mini_pupper_description)/meshes/mini_pupper_2/Shell_Side.stl" scale="1 1 1"/>
+        <mesh filename="package://mini_pupper_description/meshes/mini_pupper_2/Shell_Side.stl" scale="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -1008,6 +1031,7 @@
     <parent link="base_link"/>
     <child link="Shell_Side"/>
   </joint>
+  
   <!-- coloring Gazebo model -->
   <gazebo reference="base_link">
     <material>Gazebo/FlatBlack</material>
@@ -1163,12 +1187,12 @@
 
   <gazebo reference="lidar_link">
     <material>Gazebo/FlatBlack</material>
-    <sensor type="ray" name="lidar">
+    <sensor type="gpu_lidar" name="lidar">
       <always_on>true</always_on>
       <update_rate>30</update_rate>
       <pose>0 0 0 0 0 0</pose>
       <visualize>false</visualize>
-      <ray>
+      <lidar>
         <scan>
           <horizontal>
             <samples>1040</samples>
@@ -1187,33 +1211,26 @@
           <mean>0.0</mean>
           <stddev>0.004</stddev>
         </noise>
-      </ray>
-      <plugin name="gazebo_ros_lidar_controller" filename="libgazebo_ros_ray_sensor.so">
-        <ros>
-          <remapping>~/out:=/scan</remapping>
-        </ros>
-        <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>lidar_link</frame_name> 
-      </plugin>
+      </lidar>
+      <topic>/scan</topic>
+      <gz_frame_id>lidar_link</gz_frame_id>
     </sensor>
-  </gazebo> 
+  </gazebo>
 
   <gazebo>
-    <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
-      <body_name>base_link</body_name>
-      <frame_name>odom</frame_name>
-      <update_rate>10.0</update_rate>
-      <xyz_offset>0 0 0</xyz_offset>
-      <rpy_offset>0 0 0</rpy_offset>
-      <gaussian_noise>0.01</gaussian_noise>
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <odom_publish_frequency>10.0</odom_publish_frequency>
+      <odom_topic>odom</odom_topic>
     </plugin>
   </gazebo>
-  
+
   <link name="imu_link">
     <inertial>
       <mass value="0.0001"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="${1e-09 * sim_body_inertia_scale}" ixy="${0.0 * sim_body_inertia_scale}" ixz="${0.0 * sim_body_inertia_scale}" iyy="${1e-09 * sim_body_inertia_scale}" iyz="${0.0 * sim_body_inertia_scale}" izz="${1e-09 * sim_body_inertia_scale}"/>
+      <inertia ixx="1e-09" ixy="0.0" ixz="0.0" iyy="1e-09" iyz="0.0" izz="1e-09"/>
     </inertial>
   </link>
 
@@ -1226,12 +1243,8 @@
     <sensor name="imu_controller" type="imu">
       <always_on>true</always_on>
       <update_rate>50</update_rate>
-      <plugin name="gazebo_ros_imu_sensor" filename="libgazebo_ros_imu_sensor.so">
-          <ros>
-              <namespace>/imu</namespace>
-              <remapping>~/out:=data</remapping>
-          </ros>
-      </plugin>
+      <topic>/imu/data</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
     </sensor>
   </gazebo>
 
@@ -1239,10 +1252,11 @@
   <link name="camera_link">
     <visual>
       <geometry>
-          <box size="0.02 0.02 0.02" />
+        <box size="0.02 0.02 0.02"/>
       </geometry>
-      <material name="Cyan">
-        <color rgba="0 1.0 1.0 1.0"/>
+      <material name="blue">
+        <ambient>0 0 1 1</ambient>
+        <diffuse>0 0 1 1</diffuse>
       </material>
     </visual>
   </link>
@@ -1272,18 +1286,14 @@
         </clip>
       </camera>
 
-      <!-- Gazebo ROS plugin to publish /image_raw -->
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <always_on>true</always_on>
-        <update_rate>30.0</update_rate>
-        <frame_name>camera_link</frame_name>
-        <image_topic_name>/image_raw</image_topic_name>
-        <!-- camera_info omitted to disable /camera_info -->
-      </plugin>
+      <topic>/image_raw</topic>
+      <gz_frame_id>camera_link</gz_frame_id>
     </sensor>
   </gazebo>
 
-  <xacro:mini_pupper_ros2_control use_gazebo_hardware="$(arg use_gazebo_hardware)" />
+
+  <xacro:mini_pupper_ros2_control use_gazebo_hardware="$(arg use_gazebo_hardware)">
+  </xacro:mini_pupper_ros2_control>
 
   <!-- Conditional debug support stand -->
   <xacro:if value="$(arg use_debug_stand)">

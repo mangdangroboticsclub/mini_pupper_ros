@@ -1,5 +1,5 @@
 repositories:
   ldlidar_stl_ros:
     type: git
-    url: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2.git
+    url: https://github.com/sunflower050105/ldlidar_stl_ros2.git
     version: master

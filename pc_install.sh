@@ -8,30 +8,41 @@
 #    ./pc_install.sh
 ######################################################################################
 
-# Update package lists
+# Update package lists            
 cd ~
 sudo apt update
 
-# Install ROS 2 Humble setup scripts
-if ! [ -d "ros2_setup_scripts_ubuntu" ]; then
-  git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
-fi
-~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
-source /opt/ros/humble/setup.bash
+# Install ROS 2 Jazzy setup scripts ------------ RECHECK REQUIRED - Error to read the link 
+
+# if ! [ -d "ros2_setup_scripts_ubuntu" ]; then
+#   git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
+# fi
+# ~/ros2_setup_scripts_ubuntu/ros2-jazzy-ros-base-main.sh
+source /opt/ros/jazzy/setup.bash
 
 # Create ROS 2 workspace and clone Mini Pupper ROS repository
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 if ! [ -d "mini_pupper_ros" ]; then
-  git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+  git clone https://github.com/sunflower050105/mini_pupper_ros.git -b ros2_dev_Jazzy mini_pupper_ros
+else
+  echo "mini_pupper_ros folder already exists. Pulling latest changes..."
+  cd mini_pupper_ros
+  git pull origin ros2_dev_Jazzy
+  cd ..
 fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 
 # Install dependencies and build the ROS 2 packages
 cd ~/ros2_ws
+sudo apt install python3-rosdep
+sudo rosdep fix-permissions
+rosdep update
 rosdep install --from-paths src --ignore-src -r -y
-sudo apt install -y ros-humble-teleop-twist-keyboard ros-humble-teleop-twist-joy
-sudo apt install -y ros-humble-v4l2-camera ros-humble-image-transport-plugins
-sudo apt install -y ros-humble-rqt*
-pip3 install simple_pid
-colcon build --symlink-install
+sudo apt install -y ros-jazzy-teleop-twist-keyboard ros-jazzy-teleop-twist-joy
+sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
+sudo apt install -y ros-jazzy-rqt*
+sudo apt install python3-pip -y
+pip3 install --user --break-system-packages simple_pid
+
+#colcon build --symlink-install
