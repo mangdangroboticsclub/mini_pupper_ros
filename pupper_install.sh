@@ -50,7 +50,7 @@ source /opt/ros/jazzy/setup.bash
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 if ! [ -d "mini_pupper_ros" ]; then
-  git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+  git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-jazzy mini_pupper_ros
 fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
 # compiling gazebo on Raspberry Pi is not recommended
@@ -66,7 +66,7 @@ sudo apt install -y ros-jazzy-teleop-twist-keyboard
 sudo apt install ros-jazzy-teleop-twist-joy
 sudo apt install -y ros-jazzy-v4l2-camera ros-jazzy-image-transport-plugins
 pip3 install --user --break-system-packages simple_pid
-pip3 install --user --break-system-packages transforms3d
+pip3 install --user --break-system-packages transforms3d --upgrade
 
 #colcon build --symlink-install
 MAKEFLAGS=-j1 colcon build --executor sequential --symlink-install

@@ -24,11 +24,11 @@ source /opt/ros/jazzy/setup.bash
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 if ! [ -d "mini_pupper_ros" ]; then
-  git clone https://github.com/sunflower050105/mini_pupper_ros.git -b ros2_dev_Jazzy mini_pupper_ros
+  git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-jazzy mini_pupper_ros
 else
   echo "mini_pupper_ros folder already exists. Pulling latest changes..."
   cd mini_pupper_ros
-  git pull origin ros2_dev_Jazzy
+  git pull origin ros2-jazzy
   cd ..
 fi
 vcs import < mini_pupper_ros/.minipupper.repos --recursive
@@ -45,4 +45,9 @@ sudo apt install -y ros-jazzy-rqt*
 sudo apt install python3-pip -y
 pip3 install --user --break-system-packages simple_pid
 
-#colcon build --symlink-install
+colcon build --symlink-install
+
+# Add GZ_SIM_RESOURCE_PATH to ~/.bashrc if not already present
+LINE='export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:$HOME/ros2_ws/src/mini_pupper_ros'
+# Check if the line already exists
+grep -qxF "$LINE" ~/.bashrc || echo "$LINE" >> ~/.bashrc
