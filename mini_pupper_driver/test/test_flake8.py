@@ -19,7 +19,7 @@ import pytest
 @pytest.mark.flake8
 @pytest.mark.linter
 def test_flake8():
-    rc, errors = main_with_errors(argv=['--ignore', 'Q000,I100,I201,E261,E262,W503,W504,E501,E704'])
+    rc, errors = main_with_errors(argv=[])
     assert True,  \
         'Found %d code style errors / warnings:\n' % len(errors) + \
         '\n'.join(errors)
