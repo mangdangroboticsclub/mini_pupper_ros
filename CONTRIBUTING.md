@@ -73,7 +73,7 @@ as per clause 5 of the Apache 2.0 License:
 
 ### Code Style
 
-We follow the [ROS code style guidelines](https://docs.ros.org/en/humble/The-ROS2-Project/Contributing/Code-Style-Language-Versions.html) as closely as possible.
+We follow the [ROS code style guidelines](https://docs.ros.org/en/jazzy/The-ROS2-Project/Contributing/Code-Style-Language-Versions.html) as closely as possible.
 Please ensure that any new contributions are compatible with C++17 and Python3.x.
 
 To check Python code style, run the following command in the ROS workspace.

@@ -20,6 +20,7 @@
 #include <cmath>
 #include <iomanip>
 #include <limits>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -172,10 +173,13 @@ controller_interface::CallbackReturn SimpleQuadrupedController::on_activate(
 
   if (state_interfaces_.size() >= joint_names_.size()) {
     for (size_t index = 0; index < joint_names_.size(); ++index) {
-      const double pos = state_interfaces_[index].get_value();
-      if (!std::isnan(pos)) {
-        commanded_positions_[index] = pos;
-        idle_start_positions_[index] = pos;
+      std::optional<double> pos_opt = state_interfaces_[index].get_optional();
+      if (pos_opt) {
+        const double pos = pos_opt.value();
+        if (!std::isnan(pos)) {
+          commanded_positions_[index] = pos;
+          idle_start_positions_[index] = pos;
+        }
       }
     }
   }
@@ -228,7 +232,8 @@ controller_interface::return_type SimpleQuadrupedController::update(
 
       if (idle_ramp_elapsed_sec_ <= idle_hold_duration_sec_) {
         for (size_t index = 0; index < default_positions_.size(); ++index) {
-          const double pos = state_interfaces_[index].get_value();
+          std::optional<double> pos_opt = state_interfaces_[index].get_optional();
+          const double pos = pos_opt ? pos_opt.value() : std::numeric_limits<double>::quiet_NaN();
           target_positions[index] = std::isnan(pos) ? commanded_positions_[index] : pos;
         }
         idle_start_positions_ = target_positions;
@@ -236,7 +241,8 @@ controller_interface::return_type SimpleQuadrupedController::update(
       } else {
         if (!idle_ramp_started_) {
           for (size_t index = 0; index < default_positions_.size(); ++index) {
-            const double pos = state_interfaces_[index].get_value();
+            std::optional<double> pos_opt = state_interfaces_[index].get_optional();
+            const double pos = pos_opt ? pos_opt.value() : std::numeric_limits<double>::quiet_NaN();
             idle_start_positions_[index] = std::isnan(pos) ? commanded_positions_[index] : pos;
           }
           idle_ramp_started_ = true;
