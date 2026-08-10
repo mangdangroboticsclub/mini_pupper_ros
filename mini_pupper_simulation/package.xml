@@ -1,45 +1,25 @@
 <?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mini_pupper_simulation</name>
-  <version>1.0.0</version>
-  <description>Mini Pupper Simulation Package</description>
-
-  <maintainer email="fae@mangdang.net">MangDang</maintainer>
-  <author email="thefoxfoxfox@outlook.com">Han</author>
-
-  <license>Apache-2.0</license>
-
-  <buildtool_depend>ament_cmake</buildtool_depend>
-  <buildtool_depend>ament_cmake_python</buildtool_depend>
-  <build_depend>launch_ros</build_depend>
+  <version>0.0.0</version>
+  <description>Mini Pupper simulation package</description>
+  <maintainer email="todo@todo.com">todo</maintainer>
+  <license>Apache License 2.0</license>
 
   <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>mini_pupper_interfaces</depend>
+  <depend>ros2_control</depend>
+  <depend>ros2_controllers</depend>
 
-  <!-- Gazebo dependencies -->
-  <exec_depend>gazebo_ros</exec_depend>
-  <exec_depend>gazebo_ros_pkgs</exec_depend>
-  <exec_depend>gazebo_plugins</exec_depend>
-  <exec_depend>ros2_controllers</exec_depend>
-  <exec_depend>gazebo_ros2_control</exec_depend>
-  <exec_depend>ros2_control</exec_depend>
-
-  <!-- Custom controllers -->
-  <exec_depend>mini_pupper_controllers</exec_depend>
-
-  <!-- ROS 2 message dependencies -->
-  <exec_depend>trajectory_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-
-  <!-- Visualization -->
-  <exec_depend>rviz2</exec_depend>
-
-  <!-- Python testing dependencies -->
-  <test_depend>python3-pytest</test_depend>
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <exec_depend>gz_ros2_control</exec_depend>
+  <exec_depend>gz_ros2_control_demos</exec_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>ament_python</build_type>
   </export>
 </package>

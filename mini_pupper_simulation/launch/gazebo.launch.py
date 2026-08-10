@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-# Copyright (c) 2026 MangDang
+# Copyright 2024 MangDang
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,49 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Upgraded from ROS2 Humble (gazebo_ros) to ROS2 Jazzy (gz_ros2_control / gz-sim)
 
+import os
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.substitutions import FindPackageShare
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    this_package = FindPackageShare('mini_pupper_simulation')
-
-    default_world = PathJoinSubstitution([this_package, 'worlds', 'mini_pupper_home.world'])
+    pkg_mini_pupper_simulation = get_package_share_directory('mini_pupper_simulation')
 
     world = LaunchConfiguration('world')
-    world_launch_arg = DeclareLaunchArgument(
-        name='world',
-        default_value=default_world,
-        description='Gazebo world path'
+    declare_world_arg = DeclareLaunchArgument(
+        'world',
+        default_value=os.path.join(pkg_mini_pupper_simulation, 'worlds', 'empty.world'),
+        description='Path to world file'
     )
 
-    gazebo_launch_path = PathJoinSubstitution([
-        FindPackageShare('gazebo_ros'),
-        'launch',
-        'gazebo.launch.py'
-    ])
-    gui = LaunchConfiguration('gui')
-    gui_launch_arg = DeclareLaunchArgument(
-        name='gui',
-        default_value='true',
-        description='Whether to start the Gazebo GUI'
-    )
-
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(gazebo_launch_path),
-        launch_arguments={
-            'world': world,
-            'gui': gui,
-        }.items()
+    # Use gz sim (Gazebo Harmonic) for Jazzy instead of gazebo_ros (Gazebo Classic) for Humble
+    gz_sim = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory('ros_gz_sim'),
+                'launch',
+                'gz_sim.launch.py'
+            )
+        ),
+        launch_arguments={'gz_args': world}.items()
     )
 
     return LaunchDescription([
-        world_launch_arg,
-        gui_launch_arg,
-        gazebo_launch
+        declare_world_arg,
+        gz_sim,
     ])

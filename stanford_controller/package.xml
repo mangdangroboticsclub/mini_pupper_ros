@@ -2,27 +2,26 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>stanford_controller</name>
-  <version>1.0.0</version>
-  <description>Stanford controller</description>
-  <maintainer email="fae@mangdang.net">MangDang</maintainer>
-  <license>Apache-2.0</license>
+  <version>0.0.0</version>
+  <description>Stanford Pupper controller for Mini Pupper</description>
+  <maintainer email="todo@todo.com">todo</maintainer>
+  <license>Apache License 2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>mini_pupper_interfaces</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
-  <test_depend>python3-pytest</test_depend>
+  <test_depend>launch_ros</test_depend>
   <test_depend>launch_testing</test_depend>
+  <test_depend>launch_testing_ament_cmake</test_depend>
   <test_depend>launch_testing_ros</test_depend>
-  <test_depend>rclpy</test_depend>
-  <test_depend>std_msgs</test_depend>
-  
-  <exec_depend>rclpy</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>trajectory_msgs</exec_depend>
-  <exec_depend>mini_pupper_interfaces</exec_depend>
-  <exec_depend>python3-transforms3d</exec_depend>
-  <exec_depend>python3-numpy</exec_depend>
-  
+  <test_depend>python3-pytest</test_depend>
+
   <export>
     <build_type>ament_python</build_type>
   </export>

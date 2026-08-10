@@ -67,7 +67,7 @@ class TestTwistToCommandNode(unittest.TestCase):
             # give the node a moment to process & republish
             time.sleep(0.015)
 
-        # let the node cycle a few more times so timer callbacks interleave…
+        # let the node cycle a few more times so timer callbacks interleave...
         for _ in range(15):
             rclpy.spin_once(self.node, timeout_sec=0.1)
             time.sleep(0.015)
@@ -76,7 +76,7 @@ class TestTwistToCommandNode(unittest.TestCase):
         speeds = [cmd.horizontal_velocity[0] for cmd in self.received_cmds]
         trots = [cmd.trot_event for cmd in self.received_cmds]
 
-        # find the first non-zero‐speed message
+        # find the first non-zero-speed message
         first_nz = next(i for i, v in enumerate(speeds) if v > 0.001)
 
         # 1) that first non-zero speed is trot_event == True

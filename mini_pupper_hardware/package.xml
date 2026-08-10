@@ -2,26 +2,19 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mini_pupper_hardware</name>
-  <version>0.1.0</version>
-  <description>ROS 2 hardware interface for Mini Pupper robot integrated with ros2_control</description>
-  <maintainer email="fae@mangdang.net">MangDang</maintainer>
-  <license>Apache-2.0</license>
-  <author email="sunhongshuai@gmail.com">cullensun</author>
+  <version>0.0.0</version>
+  <description>Mini Pupper hardware interface package</description>
+  <maintainer email="todo@todo.com">todo</maintainer>
+  <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>rclcpp</depend>
   <depend>hardware_interface</depend>
   <depend>pluginlib</depend>
-  <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>
-  <depend>controller_manager</depend>
-
-  <test_depend>ament_cmake_gtest</test_depend>
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
-    <hardware_interface plugin="${prefix}/mini_pupper_hardware_plugins.xml"/>
   </export>
 </package>

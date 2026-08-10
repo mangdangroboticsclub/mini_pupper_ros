@@ -1,37 +1,40 @@
 #!/bin/bash
-######################################################################################
-# ROS2
-#
-# This stack will consist of ROS2 install
-#
-# To install
-#    ./pc_install.sh
-######################################################################################
+# Mini Pupper PC Installation Script
+# Upgraded from ROS2 Humble to ROS2 Jazzy
 
-# Update package lists
-cd ~
-sudo apt update
+set -e
 
-# Install ROS 2 Humble setup scripts
-if ! [ -d "ros2_setup_scripts_ubuntu" ]; then
-  git clone https://github.com/Tiryoh/ros2_setup_scripts_ubuntu.git
+echo "Installing Mini Pupper dependencies for ROS2 Jazzy..."
+
+# Install ROS2 Jazzy if not already installed
+if ! command -v ros2 &> /dev/null; then
+    echo "ROS2 not found. Please install ROS2 Jazzy first."
+    echo "See: https://docs.ros.org/en/jazzy/Installation.html"
+    exit 1
 fi
-~/ros2_setup_scripts_ubuntu/ros2-humble-ros-base-main.sh
-source /opt/ros/humble/setup.bash
 
-# Create ROS 2 workspace and clone Mini Pupper ROS repository
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/src
-if ! [ -d "mini_pupper_ros" ]; then
-  git clone https://github.com/mangdangroboticsclub/mini_pupper_ros.git -b ros2-dev mini_pupper_ros
+# Source ROS2 Jazzy
+source /opt/ros/jazzy/setup.bash
+
+# Install dependencies
+sudo apt-get update
+sudo apt-get install -y \
+    ros-jazzy-ros2-control \
+    ros-jazzy-ros2-controllers \
+    ros-jazzy-gz-ros2-control \
+    ros-jazzy-slam-toolbox \
+    ros-jazzy-nav2-map-server \
+    ros-jazzy-cartographer-ros \
+    ros-jazzy-launch-testing-ament-cmake \
+    ros-jazzy-launch-testing-ros \
+    python3-colcon-common-extensions \
+    python3-rosdep
+
+# Initialize rosdep if needed
+if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+    sudo rosdep init
 fi
-vcs import < mini_pupper_ros/.minipupper.repos --recursive
+rosdep update
 
-# Install dependencies and build the ROS 2 packages
-cd ~/ros2_ws
-rosdep install --from-paths src --ignore-src -r -y
-sudo apt install -y ros-humble-teleop-twist-keyboard ros-humble-teleop-twist-joy
-sudo apt install -y ros-humble-v4l2-camera ros-humble-image-transport-plugins
-sudo apt install -y ros-humble-rqt*
-pip3 install simple_pid
-colcon build --symlink-install
+echo "Installation complete. Please source your workspace."
+echo "source /opt/ros/jazzy/setup.bash"

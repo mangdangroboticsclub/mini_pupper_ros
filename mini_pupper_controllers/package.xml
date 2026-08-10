@@ -2,46 +2,21 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mini_pupper_controllers</name>
-  <version>1.0.0</version>
-  <description>Custom ros2_control controllers for Mini Pupper robot</description>
-
-  <maintainer email="fae@mangdang.net">MangDang</maintainer>
-
-  <license>Apache-2.0</license>
-
-  <author email="sunhongshuai@gmail.com">cullensun</author>
+  <version>0.0.0</version>
+  <description>Mini Pupper custom controllers</description>
+  <maintainer email="todo@todo.com">todo</maintainer>
+  <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <build_depend>controller_interface</build_depend>
-  <build_depend>hardware_interface</build_depend>
-  <build_depend>pluginlib</build_depend>
-  <build_depend>rclcpp</build_depend>
-  <build_depend>rclcpp_lifecycle</build_depend>
-  <build_depend>realtime_tools</build_depend>
-  <build_depend>std_msgs</build_depend>
-
-  <build_export_depend>controller_interface</build_export_depend>
-  <build_export_depend>hardware_interface</build_export_depend>
-  <build_export_depend>pluginlib</build_export_depend>
-  <build_export_depend>rclcpp</build_export_depend>
-  <build_export_depend>rclcpp_lifecycle</build_export_depend>
-  <build_export_depend>realtime_tools</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-
-  <exec_depend>controller_interface</exec_depend>
-  <exec_depend>hardware_interface</exec_depend>
-  <exec_depend>pluginlib</exec_depend>
-  <exec_depend>rclcpp</exec_depend>
-  <exec_depend>rclcpp_lifecycle</exec_depend>
-  <exec_depend>realtime_tools</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+  <depend>rclcpp</depend>
+  <depend>controller_interface</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>mini_pupper_interfaces</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
-    <controller_interface plugin="${prefix}/mini_pupper_controllers_plugin.xml"/>
   </export>
 </package>

@@ -3,19 +3,17 @@
 <package format="3">
   <name>mini_pupper_dance</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="mangdang@todo.todo">mangdang</maintainer>
-  <license>TODO: License declaration</license>
+  <description>Mini Pupper dance package</description>
+  <maintainer email="todo@todo.com">todo</maintainer>
+  <license>Apache License 2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>mini_pupper_interfaces</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
-
-  <exec_depend>rclpy</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>mini_pupper_interfaces</exec_depend>
-  <exec_depend>ros2launch</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
