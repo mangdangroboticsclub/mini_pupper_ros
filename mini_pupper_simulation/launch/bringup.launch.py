@@ -119,14 +119,15 @@ def generate_launch_description():
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(gazebo_launch_path),
         launch_arguments={
-            "world": world,
+            "gz_args": ['-r -v4 ', world],
             "gui": gui,
+            'use_sim_time': 'true',
         }.items()
     )
 
     spawn_entity = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
+        package="ros_gz_sim",
+        executable="create",
         arguments=[
             "-topic", "robot_description",
             "-entity", ROBOT_MODEL,
@@ -169,6 +170,21 @@ def generate_launch_description():
         output="screen",
         parameters=[{"use_sim_time": True}]
     )
+    
+    ros_gz_bridge = Node(
+    package="ros_gz_bridge",
+    executable="parameter_bridge",
+    arguments=[
+        "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock"
+        "/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan",
+        "/imu/data@sensor_msgs/msg/Imu@gz.msgs.IMU",
+        "/image_raw@sensor_msgs/msg/Image@gz.msgs.Image",
+        "/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo",
+        "/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry",
+    ],
+    parameters=[{"use_sim_time": True}],
+    output="screen"
+    )
 
     return LaunchDescription([
         debug_control_launch_arg,
@@ -179,6 +195,7 @@ def generate_launch_description():
         description_launch,
         gazebo_launch,
         spawn_entity,
+        ros_gz_bridge,
         odom_tf_broadcaster,
         ros2_controllers_launch,
         delayed_stanford_controller_launch,

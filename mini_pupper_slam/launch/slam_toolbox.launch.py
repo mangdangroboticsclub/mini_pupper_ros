@@ -19,7 +19,7 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
-from launch_ros.actions import Node
+from launch_ros.actions import Node, LifecycleNode
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -39,15 +39,34 @@ def generate_launch_description():
 
     return LaunchDescription([
         use_sim_time_launch_arg,
-        Node(
+
+        # SLAM Toolbox as Lifecycle Node
+        LifecycleNode(
             package='slam_toolbox',
             executable='async_slam_toolbox_node',
             name='slam_toolbox',
+            namespace='',
             output='screen',
             parameters=[
                 slam_config_dir / slam_config_basename,
-                {'use_sim_time': use_sim_time}
+                {
+                    'use_sim_time': use_sim_time,
+                    'use_lifecycle_manager': True,   # Important
+                }
             ],
+        ),
+
+        # Lifecycle Manager - automatically configure + activate slam_toolbox
+        Node(
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager_slam',
+            output='screen',
+            parameters=[{
+                'autostart': True,
+                'node_names': ['slam_toolbox'],
+                'bond_timeout': 0.0,
+            }]
         ),
         Node(
             package='rviz2',

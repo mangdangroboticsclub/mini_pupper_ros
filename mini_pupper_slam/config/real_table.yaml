@@ -7,19 +7,20 @@ slam_toolbox:
     publish_tf: true
     scan_topic: /scan
     mode: mapping
+    use_lifecycle_manager: true
     
     tf_buffer_duration: 30.0
-    transform_publish_period: 0.1
-    transform_timeout: 0.3
+    transform_publish_period: 0.05
+    transform_timeout: 0.75
     
     map_update_interval: 0.5
     minimum_time_interval: 0.1
     
-    scan_queue_size: 50
-    scan_buffer_size: 25
+    scan_queue_size: 150
+    scan_buffer_size: 75
     scan_buffer_maximum_scan_distance: 1.5
     
-    max_laser_range: 1.5
+    max_laser_range: 2.0
     min_laser_range: 0.03
     
     resolution: 0.02

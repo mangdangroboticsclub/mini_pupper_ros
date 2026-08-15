@@ -24,14 +24,14 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster"],
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
         output='screen'
     )
 
     simple_quadruped_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["simple_quadruped_controller"],
+        arguments=["simple_quadruped_controller", "--controller-manager", "/controller_manager"],
         output="screen"
     )
 
