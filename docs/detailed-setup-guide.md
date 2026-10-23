@@ -99,6 +99,9 @@ __This command can be used on both PC and Mini Pupper__
 nano ~/.bashrc
 export ROS_DOMAIN_ID=42 #add to the final line of the file
 
+# If your robot is Mini Pupper 4
+export ROBOT_MODEL=mini_pupper_4
+
 # If your robot is Mini Pupper 2
 export ROBOT_MODEL=mini_pupper_2
 
@@ -117,6 +120,9 @@ source ~/.bashrc
 # Terminal 2 (on PC)
 nano ~/.bashrc
 export ROS_DOMAIN_ID=42 #add to the final line of the file
+
+# If your robot is Mini Pupper 4
+export ROBOT_MODEL=mini_pupper_4
 
 # If your robot is Mini Pupper 2
 export ROBOT_MODEL=mini_pupper_2
