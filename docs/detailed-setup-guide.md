@@ -121,7 +121,7 @@ source ~/.bashrc
 nano ~/.bashrc
 export ROS_DOMAIN_ID=42 #add to the final line of the file
 
-# If your robot is Mini Pupper 3
+# If your robot is Mini Pupper 4
 export ROBOT_MODEL=mini_pupper_4
 
 # If your robot is Mini Pupper 2
